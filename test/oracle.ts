@@ -44,11 +44,12 @@ describe("Oracle", () => {
         const dai = new ethers.Contract(config.daiAddress, ERC20Abi.abi, signer);
 
         const depositAmount = 1e18;
-        await dai.approve(lPool.address, (1e18).toString());
+        await dai.approve(lPool.address, (100e18).toString());
         await lPoolDaiWhale.deposit(config.daiAddress, depositAmount.toString());
 
         // Get the balance of pool tokens for the depositor
-        const waDAIBal = await waDAI.balanceOf(config.daiWhale);
-        console.log(`waDAI balance of DAI whale after deposit: ${waDAIBal}`);
+        const waDAIBal = await waDAI.balanceOf(config.daiWhale); // For some reason this is not working properly ?
+        const waBOOBal = await waBOO.balanceOf(config.daiWhale); // For some reason this is not working properly ?
+        console.log(`waDAI, waBOO balances after deposit: ${waDAIBal}, ${waBOOBal}`);
     });
 });
