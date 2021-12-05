@@ -43,7 +43,7 @@ describe("Oracle", () => {
         const lPoolDaiWhale = lPool.connect(signer);
         const dai = new ethers.Contract(config.daiAddress, ERC20Abi.abi, signer);
 
-        const depositAmount = 500;
+        const depositAmount = 1e18;
         await dai.approve(lPool.address, (1e18).toString());
         await lPoolDaiWhale.deposit(config.daiAddress, depositAmount.toString());
 
