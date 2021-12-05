@@ -45,6 +45,11 @@ contract LPool is Ownable {
         _isApproved = assetsPool[_token] != address(0);
     }
 
+    /**
+     *  @notice gets the approved asset from a pool token
+     *  @param _token address
+     *  @return _approvedAsset address
+     */
     function getApprovedAsset(address _token) public view returns (address _approvedAsset) {
         require(isPoolToken(_token), "This asset is not a pool token");
         _approvedAsset = poolAssets[_token];
@@ -90,26 +95,33 @@ contract LPool is Ownable {
         // Calculate the compensation tokens
         uint256 numerator = _amount.mul(IERC20(_poolToken).totalSupply());
         uint256 denominator = IERC20(_token).balanceOf(address(this));
-        uint256 compensationTokens = numerator.div(denominator.add(1));
+        uint256 compensationTokens = numerator.div(denominator);
 
-        // Deposit to the pool and mint new compensation tokens
+        // Deposit to the pool and mint new pool tokens
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
         PoolToken(_poolToken).mint(_msgSender(), compensationTokens);
-
-        // Emit an event
         emit Deposit(_msgSender(), _token, _amount, _poolToken, compensationTokens);
     }
 
     /**
-     * @notice withdraws tokens in exchange for the percentage worth in the pool
+     *  @notice withdraws tokens in exchange for the percentage worth in the pool
+     *  @param _token address 
+     *  @param _amount uint256
      */
     function withdraw(address _token, uint256 _amount) public {
         // Make sure that the token is approved
-        require(isApprovedAsset(_token), "This token is not approved");
-        address _poolToken = getPoolToken(_token);
+        require(isPoolToken(_token), "This token is not a pool token");
+        address approvedAsset = getApprovedAsset(_token);
 
         // Calculate the withdraw amount
-        uint256 numerator = 
+        uint256 numerator = _amount.mul(IERC20(approvedAsset).totalSupply());
+        uint256 denominator = IERC20(_token).totalSupply();
+        uint256 withdrawAmount = numerator.div(denominator);
+
+        // Burn the pool tokens and withdraw tokens to the user
+        PoolToken(_token).burn(_msgSender(), _amount);
+        IERC20(approvedAsset).transfer(_msgSender(), withdrawAmount);
+        emit Withdraw(_msgSender(), approvedAsset, withdrawAmount, _token, _amount);
     }
 
     // ======== Events ========
