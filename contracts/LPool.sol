@@ -18,7 +18,8 @@ contract LPool is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    mapping(address => address) private approvedAssetsMap;
+    mapping(address => address) private assetsPool;
+    mapping(address => address) private poolAssets;
     address[] private approvedAssets;
 
     constructor() {}
@@ -30,8 +31,9 @@ contract LPool is Ownable {
     function approveAsset(address _token, string memory _name, string memory _symbol) public onlyOwner {
         require(!isApprovedAsset(_token), "This token has already been approved");
         address newFarmToken = address(new PoolToken(_name, _symbol, 0)); 
+        assetsPool[_token] = newFarmToken;
+        poolAssets[newFarmToken] = _token;
         approvedAssets.push(_token);
-        approvedAssetsMap[_token] = newFarmToken;
     }
 
     /**
@@ -40,15 +42,29 @@ contract LPool is Ownable {
      *  @return _isApproved bool
      */
     function isApprovedAsset(address _token) public view returns (bool _isApproved) {
-        _isApproved = approvedAssetsMap[_token] != address(0);
+        _isApproved = assetsPool[_token] != address(0);
+    }
+
+    function getApprovedAsset(address _token) public view returns (address _approvedAsset) {
+        require(isPoolToken(_token), "This asset is not a pool token");
+        _approvedAsset = poolAssets[_token];
     }
 
     /**
      *  @notice return the list of assets the protocol may accept
      *  @return _approvedAssets address[]
      */
-    function getApproveAssets() public view returns (address[] memory _approvedAssets) {
+    function getApprovedAssets() public view returns (address[] memory _approvedAssets) {
         _approvedAssets = approvedAssets;
+    }
+
+    /**
+     *  @notice returns whether or not a specified asset is a pool token
+     *  @param _token address
+     *  @return _isPool bool
+     */
+    function isPoolToken(address _token) public view returns (bool _isPool) {
+        _isPool = poolAssets[_token] != address(0);
     }
 
     /**
@@ -58,7 +74,7 @@ contract LPool is Ownable {
      */
     function getPoolToken(address _token) public view returns (address _poolToken) {
         require(isApprovedAsset(_token), "This asset is not approved");
-        _poolToken = approvedAssetsMap[_token];
+        _poolToken = assetsPool[_token];
     }
 
     /**
@@ -88,7 +104,12 @@ contract LPool is Ownable {
      * @notice withdraws tokens in exchange for the percentage worth in the pool
      */
     function withdraw(address _token, uint256 _amount) public {
+        // Make sure that the token is approved
+        require(isApprovedAsset(_token), "This token is not approved");
+        address _poolToken = getPoolToken(_token);
 
+        // Calculate the withdraw amount
+        uint256 numerator = 
     }
 
     // ======== Events ========
