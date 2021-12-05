@@ -42,7 +42,7 @@ contract Oracle is IOracle, Ownable {
         require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
 
         // Update the path if the tokens are pool tokens
-        address[] memory path = new uint256[](2);
+        address[] memory path = new address[](2);
         if (pool.isPoolToken(_token1)) {
             path[0] = pool.getApprovedAsset(_token1);
         } else {
@@ -55,21 +55,21 @@ contract Oracle is IOracle, Ownable {
         }
 
         // Get the amount of token2 earned from token1
-        uint256 asset1ToAssest2 = UniswapV2Router02(router).getAmountsOut(decimals, path)[1];
+        uint256 asset1ToAsset2 = UniswapV2Router02(router).getAmountsOut(decimals, path)[1];
 
         // Now consider the value of the pool tokens along with the swapped value
         if (pool.isPoolToken(_token1) && pool.isPoolToken(_token2)) {
             uint256 token1ToAsset = poolTokenValue(_token1);
-            uint256 token2ToAsset = poolTokenValue(_toke2);
+            uint256 token2ToAsset = poolTokenValue(_token2);
 
-            _value = token1ToAsset.mul(asset1ToAssest2).div(token2ToAsset.add(1)); // Add one to avoid division by 0
+            _value = token1ToAsset.mul(asset1ToAsset2).div(token2ToAsset.add(1)); // Add one to avoid division by 0
 
         } else if (pool.isPoolToken(_token1)) {
             uint256 token1ToAsset = poolTokenValue(_token1);
             _value = asset1ToAsset2.mul(token1ToAsset).div(decimals.add(1)); // Add one to avoid division by 0
 
         } else if (pool.isPoolToken(_token2)) {
-            uint256 token2ToAsset = poolTokenValue(_toke2);
+            uint256 token2ToAsset = poolTokenValue(_token2);
             _value = asset1ToAsset2.mul(decimals).div(token2ToAsset.add(1)); // Add one to avoid division by 0
 
         } else {
