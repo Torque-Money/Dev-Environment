@@ -15,6 +15,8 @@ import "./PoolToken.sol";
 // **** Maybe this is not even necessary at all and it can just be a decentralized lending platform
 // **** Maybe we should have our own DAO which is what the tokens can be used for, and some of the liquidity is transferred over to the DAO to be used to back and fund new projects and such
 
+// **** Ownable is not going to suffice - we are going to have to borrow from multiple pools different amounts
+
 contract LPool is ILPool, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
