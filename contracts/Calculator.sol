@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ILPool.sol";
 
-// **** It appears that the standard deployed contracts are factory and router, 
-
 contract Calculator is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
@@ -26,7 +24,7 @@ contract Calculator is Ownable {
 
     function poolTokenValue(address _token) public view returns (uint256 _value) {
         // Validate that the token is valid
-        ILPool pool = ILPool(_token);
+        ILPool pool = ILPool(lPool);
         require(pool.isPoolToken(_token), "Invalid pool token");
         address approvedAsset = pool.getApprovedAsset(_token);
 
@@ -37,6 +35,11 @@ contract Calculator is Ownable {
     }
 
     function pairValue(address _token1, address _token2) public view returns (uint256 _value) {
+        // Make sure that the tokens are valid
+        ILPool pool = ILPool(lPool);
+        require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
+        require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
+
         // Update the path if the tokens are pool tokens
         address[] memory path = new uint256[](2);
 
