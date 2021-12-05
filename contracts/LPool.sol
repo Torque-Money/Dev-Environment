@@ -7,8 +7,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract LPool is Ownable {
     address private wabbit;
 
-    mapping(address => bool) private approvedAssetsMap;
-    address[] private approvedAssets;
+    struct ApprovedAsset {
+        ERC20 asset;
+        address token;
+    }
+    mapping(address => ApprovedAsset) private approvedAssetsMap;
+    ApprovedAsset[] private approvedAssets;
 
     /**
      *  @param _wabbit address
@@ -44,7 +48,18 @@ contract LPool is Ownable {
         _approvedAssets = approvedAssets;
     }
 
-    function deposit() public {
+    /**
+     *  @notice deposits a given amount of assets into the pool and mints a portion of tokens to represent the share
+     */
+    function deposit(address _token, uint256 _amount) public {
+        // **** Since the tokens represent a percentage of the total liquidity, they can only redeem the percentage of the pool which they own ?
+        require(approvedAssetsMap[_token] == true, "Thi asset is not approved");
+    }
+
+    /**
+     * @notice withdraws tokens in exchange for the percentage worth in the pool
+     */
+    function withdraw(address _token, uint256 _amount) public {
 
     }
 }
