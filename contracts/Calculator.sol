@@ -3,8 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import "@uniswap/v2-periphery/contracts/UniswapV2Router02.sol";
 
 // **** It appears that the standard deployed contracts are factory and router, 
 
@@ -19,6 +18,10 @@ contract Calculator is Ownable {
 
     // **** Now I need some sort of way of getting the price with the oracle
     // **** I also need a way of hooking into the liquidity pool
+
+    function valueTokenPair() public {
+        UniswapV2Router02(router).getAmountsOut(amountIn, path);
+    }
 
     function setFactoryAddress(address _factory) public onlyOwner {
         factory = _factory;
