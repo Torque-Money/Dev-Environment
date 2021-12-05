@@ -27,9 +27,9 @@ contract LPool is ILPool, Ownable {
 
     constructor() {}
 
-    function approveAsset(address _token, string memory _name, string memory _symbol) public override onlyOwner {
+    function approveAsset(address _token, string memory _ltName, string memory _ltSymbol) public override onlyOwner {
         require(!isApprovedAsset(_token), "This token has already been approved");
-        address newFarmToken = address(new PoolToken(_name, _symbol, 0)); 
+        address newFarmToken = address(new PoolToken(_ltName, _ltSymbol, 0)); 
         assetsPool[_token] = newFarmToken;
         poolAssets[newFarmToken] = _token;
         approvedAssets.push(_token);

@@ -5,8 +5,10 @@ interface ILPool {
     /**
      *  @notice approves an asset to be used throughout the protocol and generate a new pool token for it
      *  @param _token address
+     *  @param _ltName string
+     *  @param _ltSymbol string
      */
-    function approveAsset(address _token, string memory _name, string memory _symbol) external;
+    function approveAsset(address _token, string memory _ltName, string memory _ltSymbol) external;
 
     /**
      *  @notice returns whether a specified asset is approved
