@@ -12,16 +12,12 @@ describe("Oracle", function () {
     const poolAssets: string[] = []; // waDAI, waBOO
 
     beforeEach(async () => {
+        // Deploy pool
         const LPool = await ethers.getContractFactory("LPool");
         lPool = await LPool.deploy();
         await lPool.deployed();
 
-        const Oracle = await ethers.getContractFactory("Oracle");
-        oracle = await Oracle.deploy(config.routerAddress, lPool.address, decimals.toString());
-        await oracle.deployed();
-    });
-
-    it("Should approve the asset pairs for the pool and get the pool tokens", async () => {
+        // Approve assets for pool
         await lPool.approveAsset(assets[0], "Wabbit Dai", "waDAI");
         await lPool.approveAsset(assets[1], "Wabbit Boo", "waBOO");
 
@@ -31,6 +27,11 @@ describe("Oracle", function () {
         poolAssets.push(poolAsset2);
 
         console.log(`Approved assets ${assets} that correspond to pool tokens ${poolAssets}`);
+
+        // Deploy oracle
+        const Oracle = await ethers.getContractFactory("Oracle");
+        oracle = await Oracle.deploy(config.routerAddress, lPool.address, decimals.toString());
+        await oracle.deployed();
     });
 
     it("Should return the trade value of two non-pool tokens", async () => {
