@@ -2,7 +2,7 @@
     "name": "wabbit-protocol",
     "version": "1.0.0",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "npx hardhat test"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.3",

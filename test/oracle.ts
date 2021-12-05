@@ -16,6 +16,9 @@ describe("Oracle", function () {
         const asset1 = "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E"; // DAI
         const asset2 = "0x841fad6eae12c286d1fd18d1d525dffa75c7effe"; // BOO
 
+        const value = await oracle.pairValue(asset1, asset2);
+        console.log(value);
+
         // const Greeter = await ethers.getContractFactory("Greeter");
         // const greeter = await Greeter.deploy("Hello, world!");
         // await greeter.deployed();
