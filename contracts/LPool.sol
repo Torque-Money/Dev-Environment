@@ -3,32 +3,23 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./PoolToken.sol";
 
 contract LPool is Ownable {
     address private wabbit;
 
-    struct ApprovedAsset {
-        ERC20 asset;
-        address token;
-    }
-    mapping(address => ApprovedAsset) private approvedAssetsMap;
-    ApprovedAsset[] private approvedAssets;
+    mapping(address => address) private approvedAssetsMap;
+    address[] private approvedAssets;
 
     /**
-     *  @param _wabbit address
-     */
-    constructor(address _wabbit) {
-        wabbit = _wabbit;
-    }
-
-    /**
-     *  @notice approves an asset to be used throughout the protocol
+     *  @notice approves an asset to be used throughout the protocol and generate a new pool token for it
      *  @param _token address
      */
-    function approvePoolAsset(address _token) public onlyOwner {
-        require(approvedAssetsMap[_token] == false, "This token has already been approved");
+    function approveAsset(address _token, string memory _name, string memory _symbol) public onlyOwner {
+        require(!isApprovedAsset(_token), "This token has already been approved");
+        address newFarmToken = address(new PoolToken(_name, _symbol, 0)); 
         approvedAssets.push(_token);
-        approvedAssetsMap[_token] = true;
+        approvedAssetsMap[_token] = newFarmToken;
     }
 
     /**
@@ -37,7 +28,7 @@ contract LPool is Ownable {
      *  @return _isApproved bool
      */
     function isApprovedAsset(address _token) public view returns (bool _isApproved) {
-        _isApproved = approvedAssetsMap[_token];
+        _isApproved = approvedAssetsMap[_token] != address(0);
     }
 
     /**
@@ -46,6 +37,11 @@ contract LPool is Ownable {
      */
     function getApproveAssets() public view returns (address[] memory _approvedAssets) {
         _approvedAssets = approvedAssets;
+    }
+
+    function getPoolToken(address _token) public view returns (address _poolToken) {
+        require(isApprovedAsset(_token), "This asset is not approved");
+        _poolToken = approvedAssetsMap[_token];
     }
 
     /**
