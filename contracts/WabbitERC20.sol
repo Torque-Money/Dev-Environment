@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Wabbit is ERC20, AccessControl {
-    constructor() ERC20("Wabbit", "WBT") {
-        // **** Initialize new roles for the different administrators here
+contract Wabbit is ERC20, Ownable {
+    constructor(uint256 _initialSupply) ERC20("Wabbit", "WBT") {
+        _mint(_msgSender(), _initialSupply);
     }
 
     function mint(address _to, uint256 _amount) external onlyOwner {
