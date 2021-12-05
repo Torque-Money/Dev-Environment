@@ -41,6 +41,11 @@ contract LPool is Ownable {
         _approvedAssets = approvedAssets;
     }
 
+    /**
+     *  @notice returns the pool token that corresponds to an approved asset
+     *  @param _token address
+     *  @return _poolToken address
+     */
     function getPoolToken(address _token) public view returns (address _poolToken) {
         require(isApprovedAsset(_token), "This asset is not approved");
         _poolToken = approvedAssetsMap[_token];
@@ -51,7 +56,7 @@ contract LPool is Ownable {
      */
     function deposit(address _token, uint256 _amount) public {
         // **** Since the tokens represent a percentage of the total liquidity, they can only redeem the percentage of the pool which they own ?
-        require(approvedAssetsMap[_token] == true, "Thi asset is not approved");
+        require(isApprovedAsset(_token), "This asset is not approved");
     }
 
     /**
