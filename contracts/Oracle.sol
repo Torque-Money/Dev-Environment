@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@uniswap/v2-periphery/contracts/UniswapV2Router02.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ILPool.sol";
 import "./IOracle.sol";
+import "./lib/UniswapV2Router02.sol";
 
 contract Oracle is IOracle, Ownable {
     using SafeERC20 for IERC20;
@@ -43,8 +43,6 @@ contract Oracle is IOracle, Ownable {
 
         // Update the path if the tokens are pool tokens
         address[] memory path = new uint256[](2);
-
-        ILPool pool = ILPool(lPool);
         if (pool.isPoolToken(_token1)) {
             path[0] = pool.getApprovedAsset(_token1);
         } else {
