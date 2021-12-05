@@ -38,8 +38,8 @@ contract Oracle is IOracle, Ownable {
     function pairValue(address _token1, address _token2) public view override returns (uint256 _value) {
         // Make sure that the tokens are valid
         ILPool pool = ILPool(lPool);
-        require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
-        require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
+        // require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
+        // require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
 
         // Update the path if the tokens are pool tokens
         address[] memory path = new address[](2);

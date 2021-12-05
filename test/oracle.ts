@@ -6,6 +6,7 @@ import config from "../config.json";
 describe("Oracle", function () {
     let oracle: Contract;
     let lPool: Contract;
+    const decimals = 1e5;
 
     beforeEach(async () => {
         const LPool = await ethers.getContractFactory("LPool");
@@ -13,7 +14,7 @@ describe("Oracle", function () {
         await lPool.deployed();
 
         const Oracle = await ethers.getContractFactory("Oracle");
-        oracle = await Oracle.deploy(config.routerAddress, lPool.address, (1e5).toString());
+        oracle = await Oracle.deploy(config.routerAddress, lPool.address, decimals.toString());
         await oracle.deployed();
     });
 
@@ -21,9 +22,9 @@ describe("Oracle", function () {
         const asset1 = "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E"; // DAI
         const asset2 = "0x841fad6eae12c286d1fd18d1d525dffa75c7effe"; // BOO
 
-        console.log(oracle);
         const value = await oracle.pairValue(asset1, asset2);
-        console.log(value);
+        const result = value.toNumber() / decimals;
+        console.log(result);
 
         // const Greeter = await ethers.getContractFactory("Greeter");
         // const greeter = await Greeter.deploy("Hello, world!");
