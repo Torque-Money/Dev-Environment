@@ -91,5 +91,6 @@ contract LPool is Ownable {
     }
 
     // ======== Events ========
-    event Deposit(address indexed from, address indexed tokenDeposited, uint256 depositAmount, address indexed tokenRewarded, uint256 rewardedAmount);
+    event Deposit(address indexed from, address indexed tokenDeposited, uint256 depositAmount, address indexed poolToken, uint256 mintedAmount);
+    event Withdraw(address indexed to, address indexed tokenWithdrawn, uint256 withdrawAmount, address indexed poolToken, uint256 burnedAmount);
 }
