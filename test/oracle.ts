@@ -1,10 +1,11 @@
 import { ethers } from "hardhat";
 import config from "../config.json";
+import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 describe("Oracle", () => {
     it("Should deploy the pool and oracle, approve the assets for the pool, and get the value of the assets from the oracle", async () => {
         const DECIMALS = 1e5;
-        const assets = ["0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E", "0x841fad6eae12c286d1fd18d1d525dffa75c7effe"]; // DAI, BOO
+        const assets = [config.daiAddress, config.booAddress];
         const poolAssets: string[] = []; // waDAI, waBOO
 
         // Deploy pool
@@ -32,5 +33,12 @@ describe("Oracle", () => {
         console.log(`Value: ${result}`);
 
         // Now we want to deposit tokens to the pool an get the conversion rates of the pool
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [config.daiWhale],
+        });
+        const signer = await ethers.getSigner(config.daiWhale);
+        const dai = new ethers.Contract(config.daiAddress, ERC20Abi.abi, signer);
+        console.log(await dai.balanceOf(signer.address));
     });
 });
