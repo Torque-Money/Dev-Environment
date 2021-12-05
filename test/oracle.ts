@@ -20,9 +20,12 @@ describe("Oracle", function () {
         await oracle.deployed();
     });
 
-    it("Should approve the asset pairs for the pool and get the trading tokens", async function () {});
+    it("Should approve the asset pairs for the pool and get the pool tokens", async () => {
+        await lPool.approveAsset(pairs[0], "Wabbit Dai", "waDAI");
+        await lPool.approveAsset(pairs[1], "Wabbit Boo", "waBOO");
+    });
 
-    it("Should return the trade value of two non-pool tokens", async function () {
+    it("Should return the trade value of two non-pool tokens", async () => {
         const value = await oracle.pairValue(pairs[0], pairs[1]);
         const result = value.toNumber() / decimals;
         console.log(`Value: ${result}`);
