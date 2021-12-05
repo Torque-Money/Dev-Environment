@@ -79,8 +79,6 @@ contract Calculator is ICalculator, Ownable {
         }
     }
 
-    // ======== Setters ========
-
     function setDecimals(uint256 _decimals) public onlyOwner {
         decimals = _decimals;
     }
@@ -92,8 +90,6 @@ contract Calculator is ICalculator, Ownable {
     function setLPoolAddress(address _lPool) public onlyOwner {
         lPool = _lPool;
     }
-
-    // ======== Getters ========
 
     function getDecimals() public view returns (uint256 _decimals) {
         _decimals = decimals;
