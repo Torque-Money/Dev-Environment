@@ -24,7 +24,7 @@ describe("Oracle", function () {
 
         const value = await oracle.pairValue(asset1, asset2);
         const result = value.toNumber() / decimals;
-        console.log(result);
+        console.log(`Value: ${result}`);
 
         // const Greeter = await ethers.getContractFactory("Greeter");
         // const greeter = await Greeter.deploy("Hello, world!");
