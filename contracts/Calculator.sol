@@ -14,7 +14,7 @@ contract Calculator is Ownable {
 
     address private router;
     address private lPool;
-    uint256 public decimals;
+    uint256 private decimals;
 
     constructor(address router_, address lPool_, uint256 decimals_) {
         router = router_;
@@ -90,5 +90,11 @@ contract Calculator is Ownable {
 
     function setLPoolAddress(address _lPool) public onlyOwner {
         lPool = _lPool;
+    }
+
+    // ======== Getters ========
+
+    function getDecimals() public view returns (uint256 _decimals) {
+        _decimals = decimals;
     }
 }
