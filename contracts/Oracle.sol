@@ -23,7 +23,7 @@ contract Oracle is IOracle, Ownable {
         decimals = decimals_;
     }
 
-    function poolTokenValue(address _token) public view returns (uint256 _value) {
+    function poolTokenValue(address _token) public view override returns (uint256 _value) {
         // Validate that the token is valid
         ILPool pool = ILPool(lPool);
         require(pool.isPoolToken(_token), "Invalid pool token");
@@ -35,7 +35,7 @@ contract Oracle is IOracle, Ownable {
         _value = numerator.div(denominator.add(1)); // Prevent division by 0 errors
     }
 
-    function pairValue(address _token1, address _token2) public view returns (uint256 _value) {
+    function pairValue(address _token1, address _token2) public view override returns (uint256 _value) {
         // Make sure that the tokens are valid
         ILPool pool = ILPool(lPool);
         require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
@@ -77,19 +77,19 @@ contract Oracle is IOracle, Ownable {
         }
     }
 
-    function setDecimals(uint256 _decimals) public onlyOwner {
+    function setDecimals(uint256 _decimals) public override onlyOwner {
         decimals = _decimals;
     }
 
-    function setRouterAddress(address _router) public onlyOwner {
+    function setRouterAddress(address _router) public override onlyOwner {
         router = _router;
     }
 
-    function setLPoolAddress(address _lPool) public onlyOwner {
+    function setLPoolAddress(address _lPool) public override onlyOwner {
         lPool = _lPool;
     }
 
-    function getDecimals() public view returns (uint256 _decimals) {
+    function getDecimals() public view override returns (uint256 _decimals) {
         _decimals = decimals;
     }
 }
