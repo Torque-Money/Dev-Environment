@@ -50,8 +50,8 @@ contract Calculator is Ownable {
             path[1] = _token2;
         }
 
-        // Get the value of the tokens
-        uint256[] values = UniswapV2Router02(router).getAmountsOut(_decimals, path);
+        // Get the number of tokens2 earned from token1
+        uint256[] value = UniswapV2Router02(router).getAmountsOut(_decimals, path)[1];
     }
 
     // ======== Setters ========
