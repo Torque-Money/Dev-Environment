@@ -65,7 +65,7 @@ contract LPool is ILPool, Ownable {
         // Calculate the compensation tokens
         uint256 numerator = _amount.mul(IERC20(_poolToken).totalSupply());
         uint256 denominator = IERC20(_token).balanceOf(address(this));
-        uint256 compensationTokens = numerator.div(denominator);
+        uint256 compensationTokens = numerator.div(denominator.add(1)); // Add one to prevent division by 0 errors
 
         // Deposit to the pool and mint new pool tokens
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
@@ -81,7 +81,7 @@ contract LPool is ILPool, Ownable {
         // Calculate the withdraw amount
         uint256 numerator = _amount.mul(IERC20(approvedAsset).totalSupply());
         uint256 denominator = IERC20(_token).totalSupply();
-        uint256 withdrawAmount = numerator.div(denominator);
+        uint256 withdrawAmount = numerator.div(denominator.add(1)); // Add one to prevent division by 0 errors
 
         // Burn the pool tokens and withdraw tokens to the user
         PoolToken(_token).burn(_msgSender(), _amount);
