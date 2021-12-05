@@ -12,6 +12,7 @@ import "./PoolToken.sol";
 // **** What does AAVE's token actually do ? Maybe I can have it as an airdrop and an aditional minting reward which can be used for voting ?
 // **** Perhaps stakers get occasionally rewarded with tokens proportional to the amount they deposited and the amount of time they staked for after a given amount of time
 // **** Maybe this is not even necessary at all and it can just be a decentralized lending platform
+// **** Maybe we should have our own DAO which is what the tokens can be used for, and some of the liquidity is transferred over to the DAO to be used to back and fund new projects and such
 
 contract LPool is Ownable {
     using SafeERC20 for IERC20;
