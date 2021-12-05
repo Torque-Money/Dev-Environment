@@ -17,12 +17,10 @@ contract Calculator is Ownable {
     address private router;
     address private lPool;
 
-    constructor(address router_) {
+    constructor(address router_, address lPool_) {
         router = router_;
+        lPool = lPool_;
     }
-
-    // **** Now I need some sort of way of getting the price with the oracle
-    // **** I also need a way of hooking into the liquidity pool
 
     function poolTokenValue(address _token, uint256 _decimals) public returns (uint256 _value) {
         // Validate that the token is valid
@@ -36,14 +34,33 @@ contract Calculator is Ownable {
         _value = numerator.div(denominator.add(1)); // Prevent division by 0 errors
     }
 
-    function pairValue(address _token1, address _token2) public {
-        // **** If the token is valued against one of the tokens from the pool we will value it against its respective pair and use that maths
-        UniswapV2Router02(router).getAmountsOut(amountIn, path);
+    function pairValue(address _token1, address _token2, uint256 _decimals) public {
+        // Update the path if the tokens are pool tokens
+        address[] memory path = new uint256[](2);
+
+        ILPool pool = ILPool(lPool);
+        if (pool.isPoolToken(_token1)) {
+            path[0] = pool.getApprovedAsset(_token1);
+        } else {
+            path[0] = _token1;
+        }
+        if (pool.isPoolToken(_token2)) {
+            path[1] = pool.getApprovedAsset(_token2);
+        } else {
+            path[1] = _token2;
+        }
+
+        // Get the value of the tokens
+        uint256[] values = UniswapV2Router02(router).getAmountsOut(_decimals, path);
     }
 
     // ======== Setters ========
 
     function setRouterAddress(address _router) public onlyOwner {
         router = _router;
+    }
+
+    function setLPoolAddress(address _lPool) public onlyOwner {
+        lPool = _lPool;
     }
 }
