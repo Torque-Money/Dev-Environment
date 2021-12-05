@@ -1,5 +1,3 @@
-import { Contract } from "@ethersproject/contracts";
-import { expect } from "chai";
 import { ethers } from "hardhat";
 import config from "../config.json";
 
@@ -33,6 +31,6 @@ describe("Oracle", () => {
         const result = value.toNumber() / DECIMALS;
         console.log(`Value: ${result}`);
 
-        // Now we want to deposit tokens to the pool an get the conversions of the pool
+        // Now we want to deposit tokens to the pool an get the conversion rates of the pool
     });
 });
