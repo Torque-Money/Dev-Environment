@@ -65,13 +65,13 @@ contract LPool is ILPool, Ownable {
 
         // Calculate the compensation tokens, if the denominator is zero then it means there is 0 staked and there should be 0 tokens, therefore 
         uint256 numerator = _amount.mul(IERC20(_poolToken).totalSupply());
-        uint256 denominator = IERC20(_token).balanceOf(address(this)).add(1); // Avoid division by zero errors
+        uint256 denominator = IERC20(_token).balanceOf(address(this)); // Avoid division by zero errors
 
         uint256 compensationTokens;
         if (numerator == 0 && denominator == 0) {
             compensationTokens = _amount;
         } else {
-            compensationTokens = numerator.div(denominator);
+            compensationTokens = numerator.div(denominator.add(1));
         }
 
         // Deposit to the pool and mint new pool tokens
