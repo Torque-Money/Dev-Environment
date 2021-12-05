@@ -60,12 +60,19 @@ contract LPool is ILPool, Ownable {
     function deposit(address _token, uint256 _amount) public override {
         // Make sure that the token is approved
         require(isApprovedAsset(_token), "This asset is not approved");
+        require(_amount > 0, "Deposit amount must be greater than 0");
         address _poolToken = getPoolToken(_token);
 
-        // Calculate the compensation tokens
+        // Calculate the compensation tokens, if the denominator is zero then it means there is 0 staked and there should be 0 tokens, therefore 
         uint256 numerator = _amount.mul(IERC20(_poolToken).totalSupply());
-        uint256 denominator = IERC20(_token).balanceOf(address(this));
-        uint256 compensationTokens = numerator.div(denominator.add(1)); // Add one to prevent division by 0 errors
+        uint256 denominator = IERC20(_token).balanceOf(address(this)).add(1); // Avoid division by zero errors
+
+        uint256 compensationTokens;
+        if (numerator == 0 && denominator == 0) {
+            compensationTokens = _amount;
+        } else {
+            compensationTokens = numerator.div(denominator);
+        }
 
         // Deposit to the pool and mint new pool tokens
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
@@ -76,6 +83,7 @@ contract LPool is ILPool, Ownable {
     function withdraw(address _token, uint256 _amount) public override {
         // Make sure that the token is approved
         require(isPoolToken(_token), "This token is not a pool token");
+        require(_amount > 0, "Withdraw amount must be greater than 0");
         address approvedAsset = getApprovedAsset(_token);
 
         // Calculate the withdraw amount
