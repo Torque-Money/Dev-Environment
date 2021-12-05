@@ -32,5 +32,7 @@ describe("Oracle", () => {
         const value = await oracle.pairValue(assets[0], assets[1]);
         const result = value.toNumber() / DECIMALS;
         console.log(`Value: ${result}`);
+
+        // Now we want to deposit tokens to the pool an get the conversions of the pool
     });
 });
