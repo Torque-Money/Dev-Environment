@@ -80,6 +80,7 @@ contract LPool is Ownable {
         PoolToken(_poolToken).mint(_msgSender(), compensationTokens);
 
         // Emit an event
+        emit Deposit(_msgSender(), _token, _amount, _poolToken, compensationTokens);
     }
 
     /**
@@ -90,5 +91,5 @@ contract LPool is Ownable {
     }
 
     // ======== Events ========
-    event Deposit(address indexed from, address indexed token, uint256 depositAmount, uint256 tokensCompensated);
+    event Deposit(address indexed from, address indexed tokenDeposited, uint256 depositAmount, address indexed tokenRewarded, uint256 rewardedAmount);
 }
