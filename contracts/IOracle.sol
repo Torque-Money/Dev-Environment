@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 // **** Users are rewarded in the amount of time between the previous data fetch and the current one in the form of treasury tokens for the DAO
 // **** Users may only call more price data after a given amount of time to avoid the same flash loan attacks by manipulating all of the prices in the same transaction
 // **** At least SOME form of time decay is going to be necessary to prevent flash loans in the same transaction destroying the pool where they cant change the price in the same transaction
-// **** Perhaps you must request the price, and then you can execute that requested price in a different transaction ?
+// **** Perhaps you must request the price, and then you can execute the trade for that requested price in a different transaction ?
 
 interface IOracle {
     /**
