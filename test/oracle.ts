@@ -1,6 +1,5 @@
 import { ethers } from "hardhat";
 import config from "../config.json";
-import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 describe("Oracle", () => {
     it("Should deploy the pool and oracle, approve the assets for the pool, and get the value of the assets from the oracle", async () => {
@@ -38,7 +37,8 @@ describe("Oracle", () => {
             params: [config.daiWhale],
         });
         const signer = await ethers.getSigner(config.daiWhale);
-        const dai = new ethers.Contract(config.daiAddress, ERC20Abi.abi, signer);
-        console.log(await dai.balanceOf(signer.address));
+
+        const depositAmount = 500;
+        await lPool.connect(signer).deposit(assets[0], depositAmount.toString());
     });
 });
