@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 // **** Users are rewarded in the amount of time between the previous data fetch and the current one in the form of treasury tokens for the DAO
 // **** Users may only call more price data after a given amount of time to avoid the same flash loan attacks by manipulating all of the prices in the same transaction
 
-interface ICalculator {
+interface IOracle {
     /**
      *  @notice gets the amount of approved tokens each pool token is worth
      *  @param _token address
