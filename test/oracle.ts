@@ -49,6 +49,6 @@ describe("Oracle", () => {
 
         // Get the balance of pool tokens for the depositor
         const waDAIBal = await waDAI.balanceOf(config.daiWhale);
-        console.log(waDAIBal);
+        console.log(`waDAI balance of DAI whale after deposit: ${waDAIBal}`);
     });
 });
