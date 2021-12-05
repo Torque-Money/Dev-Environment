@@ -32,13 +32,14 @@ describe("Oracle", () => {
         const result = value.toNumber() / DECIMALS;
         console.log(`Value: ${result}`);
 
-        // Now we want to deposit tokens to the pool an get the conversion rates of the pool
+        // Impersonate a DAI whale and deposit using it
         await hre.network.provider.request({
             method: "hardhat_impersonateAccount",
             params: [config.daiWhale],
         });
         const signer = await ethers.getSigner(config.daiWhale);
 
+        // Deposit DAI into the pool in exchange for pool tokens
         const lPoolDaiWhale = lPool.connect(signer);
         const dai = new ethers.Contract(config.daiAddress, ERC20Abi.abi, signer);
 
