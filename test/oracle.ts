@@ -5,8 +5,6 @@ import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
 describe("Oracle", () => {
     it("Should deploy the pool and oracle, approve the assets for the pool, and get the value of the assets from the oracle", async () => {
         const DECIMALS = 1e5;
-        const assets = [config.daiAddress, config.booAddress];
-        const poolAssets: string[] = []; // waDAI, waBOO
 
         // Deploy pool
         const LPool = await ethers.getContractFactory("LPool");
@@ -19,16 +17,18 @@ describe("Oracle", () => {
         await oracle.deployed();
 
         // Approve assets for pool
-        await lPool.approveAsset(assets[0], "Wabbit Dai", "waDAI");
-        await lPool.approveAsset(assets[1], "Wabbit Boo", "waBOO");
-        const poolAsset1 = await lPool.getPoolToken(assets[0]);
-        const poolAsset2 = await lPool.getPoolToken(assets[1]);
-        poolAssets.push(poolAsset1);
-        poolAssets.push(poolAsset2);
-        console.log(`Approved assets ${assets} that correspond to pool tokens ${poolAssets}`);
+        await lPool.approveAsset(config.daiAddress, "Wabbit Dai", "waDAI");
+        await lPool.approveAsset(config.booAddress, "Wabbit Boo", "waBOO");
+
+        const waDAIAddress = await lPool.getPoolToken(config.daiAddress);
+        const waBOOAddress = await lPool.getPoolToken(config.booAddress);
+
+        const waDAI = new ethers.Contract(waDAIAddress, ERC20Abi.abi, ethers.provider.getSigner());
+        const waBOO = new ethers.Contract(waBOOAddress, ERC20Abi.abi, ethers.provider.getSigner());
+        console.log(`DAI and BOO correspond to pool tokens ${waDAIAddress}, ${waBOOAddress} respectively`);
 
         // Get the price of asset 1 against asset2
-        const value = await oracle.pairValue(assets[0], assets[1]);
+        const value = await oracle.pairValue(config.daiAddress, config.booAddress);
         const result = value.toNumber() / DECIMALS;
         console.log(`Value: ${result}`);
 
@@ -46,5 +46,9 @@ describe("Oracle", () => {
         const depositAmount = 500;
         await dai.approve(lPool.address, (1e18).toString());
         await lPoolDaiWhale.deposit(config.daiAddress, depositAmount.toString());
+
+        // Get the balance of pool tokens for the depositor
+        const waDAIBal = await waDAI.balanceOf(config.daiWhale);
+        console.log(waDAIBal);
     });
 });
