@@ -9,6 +9,20 @@ pragma solidity ^0.8.0;
 
 interface IOracle {
     /**
+     *  @notice requests the value of a price for a user - the purpose is to seperate the calls for the request for the price and the time of consuming the price to prevent flash loan manipulation
+     *  @param _token1 address
+     *  @param _token2 address
+     */
+    function requestValue(address _token1, address _token2) external;
+
+    /**
+     *  @notice consumes the price requested as long as it falls within a given time frame and as long as a price has been requested
+     *  @param _token1 address
+     *  @param _token2 address
+     */
+    function consumeValue(address _token1, address _token2) external;
+
+    /**
      *  @notice gets the amount of approved tokens each pool token is worth
      *  @param _token address
      *  @return _value uint256
