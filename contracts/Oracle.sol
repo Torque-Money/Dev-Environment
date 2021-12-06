@@ -20,6 +20,8 @@ contract Oracle is IOracle, Ownable {
     address private router;
     address private lPool;
 
+    uint256 private interestInterval;
+
     struct RequestedValue {
         uint256 value;
         uint256 timeRequested;
@@ -27,11 +29,12 @@ contract Oracle is IOracle, Ownable {
     mapping(address => mapping(bytes => RequestedValue)) private requestedValues;
     uint256 requestedExpiry;
 
-    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_) {
+    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_, uint256 interestInterval_) {
         router = router_;
         lPool = lPool_;
         decimals = decimals_;
         requestedExpiry = requestedExpiry_;
+        interestInterval = interestInterval_;
     }
 
     function requestValue(address _token1, address _token2) public override {
@@ -149,10 +152,19 @@ contract Oracle is IOracle, Ownable {
     }
 
     function getPoolLended(address _token) public view override returns (uint256 _value) {
-        return 0; // Nothing has been lended out just yet
+        require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
+        return 0; // Nothing has been lended out just yet - when we do take into consideration ALL of the different pools
     }
 
     function calculateInterest(address _token, uint256 _since) external view returns (uint256 _interest) {
-        return 0;
+        // Make sure the asset is an approved asset
+        require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
+
+        // Calculate the interest
+        uint256 debt = getPoolLended(_token);
+        uint256 liquidity = IERC20(_token).balanceOf(lPool);
+        uint256 interestRate = decimals.mul(debt).div(debt.add(liquidity));
+        uint256 current = block.timestamp;
+        _interest = interestRate.mul(current.sub(_since)).div(interestInterval);
     }
 }
