@@ -53,8 +53,12 @@ describe("Oracle", () => {
         console.log(`waDAI, waBOO balances after deposit: ${waDAIBal}, ${waBOOBal}`);
 
         // Get the value at which the oracle values the token at compared to the asset it is backed by
-        const booWaDaiDecimals = await oracle.pairValue(waDAIAddress, config.booAddress);
+        const booWaDaiDecimals = await oracle.pairValue(waDAIAddress, config.booAddress); // **** This does not work with trying to compare the asset to itself - perhaps a wrapper is necessary ?
         const booWaDai = booWaDaiDecimals.toNumber() / DECIMALS;
         console.log(`BOOwaDAI value: ${booWaDai}`);
+
+        const waDaiBooDecimals = await oracle.pairValue(config.booAddress, waDAIAddress); // **** This does not work with trying to compare the asset to itself - perhaps a wrapper is necessary ?
+        const waDaiBoo = waDaiBooDecimals.toNumber() / DECIMALS;
+        console.log(`waDAIBOO value: ${waDaiBoo}`);
     });
 });
