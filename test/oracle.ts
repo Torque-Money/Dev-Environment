@@ -57,7 +57,7 @@ describe("Oracle", () => {
         const booWaDai = booWaDaiDecimals.toNumber() / DECIMALS;
         console.log(`BOOwaDAI value: ${booWaDai}`);
 
-        const waDaiBooDecimals = await oracle.pairValue(config.booAddress, waDAIAddress); // **** This does not work with trying to compare the asset to itself - perhaps a wrapper is necessary ?
+        const waDaiBooDecimals = await oracle.pairValue(config.daiAddress, waDAIAddress);
         const waDaiBoo = waDaiBooDecimals.toNumber() / DECIMALS;
         console.log(`waDAIBOO value: ${waDaiBoo}`);
     });
