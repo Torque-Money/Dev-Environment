@@ -68,10 +68,10 @@ interface IOracle {
     function getPoolLended(address _token) external view returns (uint256 _value);
 
     /**
-     *  @notice returns the interest accumulated as a percent of a given borrowed asset from a given timestamp
+     *  @notice returns the interest accumulated as a percent of a given borrowed asset for a given timeframe
      *  @param _token address
-     *  @param _since uint256
+     *  @param _timeframe uint256
      *  @return _interest uint256
      */
-    function calculateInterest(address _token, uint256 _since) external view returns (uint256 _interest);
+    function calculateInterest(address _token, uint256 _timeframe) external view returns (uint256 _interest);
 }
