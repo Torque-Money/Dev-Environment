@@ -16,7 +16,6 @@ contract Oracle is IOracle, Ownable {
     using SafeMath for uint256;
 
     uint256 private decimals;
-    uint256 private adjustmentConstant;
 
     address private router;
     address private lPool;
@@ -137,6 +136,31 @@ contract Oracle is IOracle, Ownable {
         }
     }
 
+    function getPoolLiquidity(address _token) public view override returns (uint256 _value) {
+        // Get the full list of backed assets
+        address[] memory assets = ILPool(lPool).getApprovedAssets();
+
+        // Sum the values of each asset times the amount in each pool
+        _value = 0;
+        for (uint i = 0; i < assets.length; i++) {
+            uint256 value = pairValue(assets[i], _token);
+            uint256 amount = IERC20(assets[i]).balanceOf(lPool);
+            _value = _value.add(value.mul(amount).div(decimals.add(1))); // Add 1 to avoid division by zero error
+        }
+    }
+
+    function getPoolLended(address _token) public view override returns (uint256 _value) {
+        return 0; // **** NEEDS IMPLEMENTATION
+    }
+
+    function getPoolTotal(address _token) public view override returns (uint256 _value) {
+        return getPoolLiquidity(_token).add(getPoolLended(_token));
+    }
+
+    function calculateInterest(address _token) public view override returns (uint256 _interest) {
+
+    }
+
     function setRouterAddress(address _router) public override onlyOwner {
         router = _router;
     }
@@ -147,22 +171,5 @@ contract Oracle is IOracle, Ownable {
 
     function getDecimals() public view override returns (uint256 _decimals) {
         _decimals = decimals;
-    }
-
-    function getTreasuryTotalValue(address _token) public view override returns (uint256 _value) {
-        // Get the full list of backed assets
-        address[] memory assets = ILPool(lPool).getApprovedAssets();
-
-        // Sum the values of each asset times the amount in each pool
-        _value = 0;
-        for (uint i = 0; i < assets.length; i++) {
-            uint256 value = pairValue(assets[i], _token);
-            uint256 amount = IERC20(assets[i]).balanceOf(lPool);
-            _value += value.mul(amount).div(decimals.add(1)); // Add 1 to avoid division by zero error
-        }
-    }
-
-    function getInterestRate(address _token) public view override returns (uint256 _interestRate) {
-        
     }
 }

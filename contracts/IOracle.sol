@@ -49,14 +49,30 @@ interface IOracle {
     function getDecimals() external view returns (uint256 _decimals);
 
     /**
-     *  @notice returns the total value of the treasury in terms of the specified asset
+     *  @notice returns the total liquidity in the pool ready that is not collateralized in terms of the token
      *  @param _token address
+     *  @return _value uint256
      */
-    function getTreasuryTotalValue(address _token) external view returns (uint256 _value);
+    function getPoolLiquidity(address _token) external view returns (uint256 _value);
 
     /**
-     *  @notice returns the interest rate of a given backed asset
+     *  @notice returns the amount of outstanding tokens lended from the pool
      *  @param _token address
+     *  @return _value uint256
      */
-    function getInterestRate(address _token) external view returns (uint256 _interestRate);
+    function getPoolLended(address _token) external view returns (uint256 _value);
+
+    /**
+     *  @notice returns the total value of the treasury in terms of the specified asset
+     *  @param _token address
+     *  @return _value uint256
+     */
+    function getPoolTotal(address _token) external view returns (uint256 _value);
+
+    /**
+     *  @notice returns the interest of a given borrowed asset over a given amount of time
+     *  @param _token address
+     *  @return _interest uint256
+     */
+    function calculateInterest(address _token) external view returns (uint256 _interest);
 }
