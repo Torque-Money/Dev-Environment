@@ -42,6 +42,22 @@ contract FlashLoanLender is IERC3156FlashLender, Ownable {
         uint256 _amount,
         bytes calldata _data
     ) public override returns (bool) {
+        // Check that the loan satisfies the requirements
+        require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
+        require(_amount > 0, "Loan must be greater than 0");
+        require(_amount <= maxFlashLoan(_token), "This amount exceeds the max flash loan amount");
 
+        // Borrow the tokens from the liquidity pool
+        ILPool(lPool).lend(_token, _amount, address(_receiver));
+        IERC3156FlashBorrower.onFlashLoan(initiator, token, amount, fee, data);
+
+        // Check that the funds have been returned and revert if not
+
+        // Perform success
+        emit FlashLoan(address(_receiver), _token, _amount, _data);
+        return true;
     }
+
+    // ======== Events ========
+    event FlashLoan(address indexed receiver, address indexed token, uint256 amount, bytes data);
 }
