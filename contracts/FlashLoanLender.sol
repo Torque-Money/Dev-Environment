@@ -54,10 +54,10 @@ contract FlashLoanLender is IERC3156FlashLender, Ownable {
         require(IERC20(_token).balanceOf(lPool) >= _amount + fee, "Failed to payback loan");
 
         // Perform success
-        emit FlashLoan(address(_receiver), _token, _amount, _data);
+        emit FlashLoan(address(_receiver), _token, _data, _amount, fee);
         return true;
     }
 
     // ======== Events ========
-    event FlashLoan(address indexed receiver, address indexed token, uint256 amount, bytes data);
+    event FlashLoan(address indexed receiver, address indexed token, bytes data, uint256 amount, uint256 fee);
 }
