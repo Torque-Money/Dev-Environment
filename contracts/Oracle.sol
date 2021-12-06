@@ -165,6 +165,6 @@ contract Oracle is IOracle, Ownable {
         uint256 liquidity = IERC20(_token).balanceOf(lPool);
         uint256 interestRate = decimals.mul(debt).div(debt.add(liquidity));
         uint256 current = block.timestamp;
-        _interest = interestRate.mul(current.sub(_since)).div(interestInterval);
+        _interest = interestRate.mul(current.sub(_since)).div(interestInterval.add(1)); // Add 1 to avoid division by zero error
     }
 }
