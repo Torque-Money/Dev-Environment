@@ -58,7 +58,7 @@ contract LPool is ILPool, AccessControl {
         _poolToken = assetsPool[_token];
     }
 
-    function deposit(address _token, uint256 _amount) public override {
+    function depositTokensReceived(address _token, uint256 _amount) public view returns (uint256 _tokensReceived) {
         // Make sure that the token is approved
         require(isApprovedAsset(_token), "This asset is not approved");
         require(_amount > 0, "Deposit amount must be greater than 0");
@@ -68,20 +68,29 @@ contract LPool is ILPool, AccessControl {
         uint256 numerator = _amount.mul(IERC20(_poolToken).totalSupply());
         uint256 denominator = IERC20(_token).balanceOf(address(this));
 
-        uint256 compensationTokens;
         if (numerator == 0 && denominator == 0) {
-            compensationTokens = _amount;
+            _tokensReceived = _amount;
         } else {
-            compensationTokens = numerator.div(denominator.add(1)); // Add 1 to avoid division by zero errors
+            _tokensReceived = numerator.div(denominator.add(1)); // Add 1 to avoid division by zero errors
         }
+    }
+
+    function deposit(address _token, uint256 _amount) public override {
+        // Make sure that the token is approved
+        require(isApprovedAsset(_token), "This asset is not approved");
+        require(_amount > 0, "Deposit amount must be greater than 0");
+        address _poolToken = getPoolToken(_token);
 
         // Deposit to the pool and mint new pool tokens
+        uint256 compensationTokens = depositTokensReceived(_token, _amount);
+        require(compensationTokens > 0, "Tokens received is too low to allow the deposit");
+
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
         PoolToken(_poolToken).mint(_msgSender(), compensationTokens);
         emit Deposit(_msgSender(), _token, _amount, _poolToken, compensationTokens);
     }
 
-    function withdraw(address _token, uint256 _amount) public override {
+    function withdrawTokensReceived(address _token, uint256 _amount) public view returns (uint256 _tokensReceived) {
         // Make sure that the token is approved
         require(isPoolToken(_token), "This token is not a pool token");
         require(_amount > 0, "Withdraw amount must be greater than 0");
@@ -90,9 +99,19 @@ contract LPool is ILPool, AccessControl {
         // Calculate the withdraw amount
         uint256 numerator = _amount.mul(IERC20(approvedAsset).totalSupply());
         uint256 denominator = IERC20(_token).totalSupply();
-        uint256 withdrawAmount = numerator.div(denominator.add(1)); // Add one to prevent division by 0 errors
+        _tokensReceived = numerator.div(denominator.add(1)); // Add one to prevent division by 0 errors
+    }
+
+    function withdraw(address _token, uint256 _amount) public override {
+        // Make sure that the token is approved
+        require(isPoolToken(_token), "This token is not a pool token");
+        require(_amount > 0, "Withdraw amount must be greater than 0");
+        address approvedAsset = getApprovedAsset(_token);
 
         // Burn the pool tokens and withdraw tokens to the user
+        uint256 withdrawAmount = withdrawTokensReceived(_token, _amount);
+        require(withdrawAmount > 0, "The amount of tokens withdrawn is too low");
+
         PoolToken(_token).burn(_msgSender(), _amount);
         IERC20(approvedAsset).transfer(_msgSender(), withdrawAmount);
         emit Withdraw(_msgSender(), approvedAsset, withdrawAmount, _token, _amount);
