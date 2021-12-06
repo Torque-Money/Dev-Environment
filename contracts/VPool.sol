@@ -2,12 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "./IVPool.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 // **** For the moment users will have to withraw profits and restake into a new pool manually
 
-contract VPool is IVPool {
+contract VPool is IVPool, AccessControl {
     struct StakingPeriod {
         uint256 totalDeposited;
+        uint256 poolValue;
     }
     mapping(uint256 => StakingPeriod) private stakingPeriods;
     uint256 private stakingTimeframe;
@@ -16,6 +18,7 @@ contract VPool is IVPool {
     constructor(uint256 stakingTimeframe_, uint256 cooldownTimeframe_) {
         stakingTimeframe = stakingTimeframe_;
         cooldownTimeframe = cooldownTimeframe_;
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
     function stake() external returns (uint256) {
@@ -24,7 +27,7 @@ contract VPool is IVPool {
     }
 
     function balance(uint256 _periodId) external returns (uint256) {
-
+        // Returns the total amount owed by the pool back to the user
     }
 
     function withdraw() external returns (uint256) {
@@ -33,7 +36,13 @@ contract VPool is IVPool {
         // **** Stakers will ONLY be able to withdraw the amount that has been tracked by the deposited itself. If that value in the StakingPeriod is not updated, it will not be possible
     }
 
-    function lend() external {
+    function lend() external onlyRole(DEFAULT_ADMIN_ROLE) {
         // **** This will lend money out to another pool, and will also accumulate debt for the given pool
+        // **** Lending can only be done via 
+        // **** We are not lending out of the pool directly, we are lending off of the amount that was allocated to the stake
+    }
+
+    function repay() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        // **** This will be used for redepositing tokens back into the staking pool
     }
 }
