@@ -80,6 +80,11 @@ contract Oracle is IOracle, Ownable {
         require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
         require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
 
+        // Trivial case
+        if (_token1 == _token2) {
+            return decimals;
+        }
+
         // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
         address[] memory path = new address[](2);
         if (pool.isPoolToken(_token1)) {
