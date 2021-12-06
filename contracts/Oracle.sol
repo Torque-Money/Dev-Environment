@@ -80,18 +80,23 @@ contract Oracle is IOracle, Ownable {
         require(pool.isApprovedAsset(_token1) || pool.isPoolToken(_token1), "Token 1 is not an approved asset or pool token");
         require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
 
-        // Update the path if the tokens are pool tokens
-        // **** ADD IN THE CASE WHEN WE WANT TO COMPARE THE VALUE TO ITSELF USING '_poolTokenValue'
+        // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
         address[] memory path = new address[](2);
         if (pool.isPoolToken(_token1)) {
             address approvedAsset = pool.getApprovedAsset(_token1);
             path[0] = approvedAsset;
+
+            // Case that we are swapping from pool to approved
             if (_token2 == approvedAsset) {
                 return _poolTokenValue(_token1);
             } 
         } else {
             path[0] = _token1;
-            // **** Now we check if token1 is the equivalent of what token2 is ????
+
+            // Case that we are swapping from approved to pool
+            if (_token2 == pool.getPoolToken(_token1)) {
+                return decimals.mul(decimals).div(_poolTokenValue(_token2).add(1));
+            }
         }
 
         if (pool.isPoolToken(_token2)) {
