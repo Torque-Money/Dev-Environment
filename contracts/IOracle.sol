@@ -53,4 +53,10 @@ interface IOracle {
      *  @param _token address
      */
     function getTreasuryTotalValue(address _token) external view returns (uint256 _value);
+
+    /**
+     *  @notice returns the interest rate of a given backed asset
+     *  @param _token address
+     */
+    function getInterestRate(address _token) external view returns (uint256 _interestRate);
 }

@@ -28,12 +28,11 @@ contract Oracle is IOracle, Ownable {
     mapping(address => mapping(bytes => RequestedValue)) private requestedValues;
     uint256 requestedExpiry;
 
-    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_, uint256 adjustmentConstant_) {
+    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_) {
         router = router_;
         lPool = lPool_;
         decimals = decimals_;
         requestedExpiry = requestedExpiry_;
-        adjustmentConstant = adjustmentConstant_;
     }
 
     function requestValue(address _token1, address _token2) public override {
@@ -161,5 +160,9 @@ contract Oracle is IOracle, Ownable {
             uint256 amount = IERC20(assets[i]).balanceOf(lPool);
             _value += value.mul(amount).div(decimals.add(1)); // Add 1 to avoid division by zero error
         }
+    }
+
+    function getInterestRate(address _token) public view override returns (uint256 _interestRate) {
+        
     }
 }
