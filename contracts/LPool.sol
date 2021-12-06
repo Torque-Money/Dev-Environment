@@ -58,7 +58,7 @@ contract LPool is ILPool, AccessControl {
         _poolToken = assetsPool[_token];
     }
 
-    function depositTokensReceived(address _token, uint256 _amount) public view returns (uint256 _tokensReceived) {
+    function depositTokensReceived(address _token, uint256 _amount) public view override returns (uint256 _tokensReceived) {
         // Make sure that the token is approved
         require(isApprovedAsset(_token), "This asset is not approved");
         require(_amount > 0, "Deposit amount must be greater than 0");
@@ -90,7 +90,7 @@ contract LPool is ILPool, AccessControl {
         emit Deposit(_msgSender(), _token, _amount, _poolToken, compensationTokens);
     }
 
-    function withdrawTokensReceived(address _token, uint256 _amount) public view returns (uint256 _tokensReceived) {
+    function withdrawTokensReceived(address _token, uint256 _amount) public view override returns (uint256 _tokensReceived) {
         // Make sure that the token is approved
         require(isPoolToken(_token), "This token is not a pool token");
         require(_amount > 0, "Withdraw amount must be greater than 0");

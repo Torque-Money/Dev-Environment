@@ -45,11 +45,25 @@ interface ILPool {
     function getPoolToken(address _token) external view returns (address _poolToken);
 
     /**
+     *  @notice calculates the number of tokens received from a deposit
+     *  @param _token address
+     *  @param _amount uint256
+     */
+    function depositTokensReceived(address _token, uint256 _amount) external view returns (uint256 _tokensReceived);
+
+    /**
      *  @notice deposits a given amount of assets into the pool and mints a portion of tokens to represent the share
      *  @param _token address
      *  @param _amount uint256
      */
     function deposit(address _token, uint256 _amount) external;
+
+    /**
+     *  @notice returns the amount of tokens received from a withdraw
+     *  @param _token address
+     *  @param _amount uint256
+     */
+    function withdrawTokensReceived(address _token, uint256 _amount) external view returns (uint256 _tokensReceived);
 
     /**
      *  @notice withdraws tokens in exchange for the percentage worth in the pool
