@@ -48,11 +48,10 @@ contract FlashLoanLender is IERC3156FlashLender, Ownable {
         uint256 fee = flashFee(_token, _amount);
         require(fee > 0, "Borrow amount is not large enough");
 
-        // Borrow the tokens from the liquidity pool
+        // Borrow the tokens from the liquidity pool and check they have been returned
         ILPool(lPool).lend(_token, _amount, address(_receiver));
-        IERC3156FlashBorrower.onFlashLoan(initiator, token, amount, fee, data);
-
-        // Check that the funds have been returned and revert if not
+        _receiver.onFlashLoan(_msgSender(), _token, _amount, fee, _data);
+        require(IERC20(_token).balanceOf(lPool) >= _amount + fee, "Failed to payback loan");
 
         // Perform success
         emit FlashLoan(address(_receiver), _token, _amount, _data);
