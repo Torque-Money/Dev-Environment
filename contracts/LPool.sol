@@ -2,7 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "./ILPool.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -17,7 +18,7 @@ import "./PoolToken.sol";
 
 // **** Ownable is not going to suffice - we are going to have to borrow from multiple pools different amounts
 
-contract LPool is ILPool, Ownable {
+contract LPool is ILPool, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -25,9 +26,11 @@ contract LPool is ILPool, Ownable {
     mapping(address => address) private poolAssets;
     address[] private approvedAssets;
 
-    constructor() {}
+    constructor() {
+        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    }
 
-    function approveAsset(address _token, string memory _ltName, string memory _ltSymbol) public override onlyOwner {
+    function approveAsset(address _token, string memory _ltName, string memory _ltSymbol) public override onlyRole(DEFAULT_ADMIN_ROLE) {
         require(!isApprovedAsset(_token), "This token has already been approved");
         address newFarmToken = address(new PoolToken(_ltName, _ltSymbol, 0)); 
         assetsPool[_token] = newFarmToken;
@@ -95,5 +98,16 @@ contract LPool is ILPool, Ownable {
         PoolToken(_token).burn(_msgSender(), _amount);
         IERC20(approvedAsset).transfer(_msgSender(), withdrawAmount);
         emit Withdraw(_msgSender(), approvedAsset, withdrawAmount, _token, _amount);
+    }
+
+    // Borrows assets from the pool to be used in another account
+    function lend(address _token, uint256 _amount, address _to) public override onlyRole(DEFAULT_ADMIN_ROLE) {
+        // Make sure the asset to be loaned is a backed asset
+        require(isApprovedAsset(_token), "Only approved assets may be lended");
+        require(_amount > 0, "Lended amount must be greater than 0");
+
+        // Lend the tokens
+        IERC20(_token).transfer(_to, _amount);
+        emit Lend(_token, _amount, _to);
     }
 }

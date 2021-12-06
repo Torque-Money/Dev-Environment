@@ -58,7 +58,16 @@ interface ILPool {
      */
     function withdraw(address _token, uint256 _amount) external;
 
+    /**
+     *  @notice allows an admin to lend a specific amount of tokens from the pool to a given address
+     *  @param _token address
+     *  @param _amount uint256
+     *  @param _to address
+     */
+    function lend(address _token, uint256 _amount, address _to) external;
+
     // ======== Events ========
     event Deposit(address indexed from, address indexed tokenDeposited, uint256 depositAmount, address indexed poolToken, uint256 mintedAmount);
     event Withdraw(address indexed to, address indexed tokenWithdrawn, uint256 withdrawAmount, address indexed poolToken, uint256 burnedAmount);
+    event Lend(address indexed token, uint256 amount, address indexed to);
 }
