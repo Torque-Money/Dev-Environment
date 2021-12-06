@@ -30,7 +30,10 @@ contract FlashLoanLender is IERC3156FlashLender, Ownable {
     function flashFee(address _token, uint256 _amount) public view override returns (uint256 _fee) {
         // Make sure that the token is approved
         require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
-        _fee = IOracle(oracle).calculateInterest(_token, _since);
+
+        // Calculate the fee rate
+        uint256 timeframe = uint256(5).mul(IOracle(oracle).getInterestInterval()).div(100);
+        _fee = IOracle(oracle).calculateInterest(_token, timeframe, _amount);
     }
 
     function flashLoan(

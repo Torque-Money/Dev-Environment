@@ -162,14 +162,15 @@ contract Oracle is IOracle, Ownable {
         return 0; // Nothing has been lended out just yet - when we do take into consideration ALL of the different pools
     }
 
-    function calculateInterest(address _token, uint256 _timeframe) public view returns (uint256 _interest) {
+    function calculateInterest(address _token, uint256 _timeframe, uint256 _amount) public view returns (uint256 _interest) {
         // Make sure the asset is an approved asset
         require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
 
         // Calculate the interest
         uint256 debt = getPoolLended(_token);
         uint256 liquidity = IERC20(_token).balanceOf(lPool);
-        uint256 interestRate = decimals.mul(debt).div(debt.add(liquidity));
-        _interest = interestRate.mul(_timeframe).div(interestInterval.add(1)); // Add 1 to avoid division by zero error
+
+        uint256 interestOneInterval = _amount.mul(debt).div(debt.add(liquidity).add(1)); // Add 1 to avoid division by zero error
+        _interest = interestOneInterval.mul(_timeframe).div(interestInterval.add(1)); // Add 1 to avoid division by zero error
     }
 }
