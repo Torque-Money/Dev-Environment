@@ -13,7 +13,7 @@ describe("Oracle", () => {
 
         // Deploy oracle
         const Oracle = await ethers.getContractFactory("Oracle");
-        const oracle = await Oracle.deploy(config.routerAddress, lPool.address, DECIMALS.toString(), 60);
+        const oracle = await Oracle.deploy(config.routerAddress, lPool.address, DECIMALS.toString(), 60, (2.628e6).toString());
         await oracle.deployed();
 
         // Approve assets for pool
