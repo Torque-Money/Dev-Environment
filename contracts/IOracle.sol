@@ -20,7 +20,7 @@ interface IOracle {
      *  @param _token1 address
      *  @param _token2 address
      */
-    function consumeValue(address _token1, address _token2) external;
+    function useRequestedValue(address _token1, address _token2) external view returns (uint256);
 
     /**
      *  @notice gets the amount of approved tokens each pool token is worth
@@ -36,12 +36,6 @@ interface IOracle {
      *  @return _value uint256
      */
     function pairValue(address _token1, address _token2) external view returns (uint256 _value);
-
-    /**
-     *  @notice sets the decimals for the calculator to return
-     *  @param _decimals uint256
-     */
-    function setDecimals(uint256 _decimals) external;
 
     /**
      *  @notice sets the Uniswap router address

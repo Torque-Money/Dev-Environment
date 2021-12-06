@@ -17,10 +17,44 @@ contract Oracle is IOracle, Ownable {
     address private lPool;
     uint256 private decimals;
 
-    constructor(address router_, address lPool_, uint256 decimals_) {
+    struct RequestedValue {
+        uint256 value;
+        uint256 timeRequested;
+    }
+    mapping(address => mapping(bytes => RequestedValue)) private requestedValues;
+    uint256 requestedExpiry;
+
+    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_) {
         router = router_;
         lPool = lPool_;
         decimals = decimals_;
+        requestedExpiry = requestedExpiry_;
+    }
+
+    function requestValue(address _token1, address _token2) public override {
+        // Get the pair hash and timestamp of the request
+        bytes memory pairId = abi.encodePacked(_token1, _token2);
+        uint256 timestamp = block.timestamp;
+        uint256 value = pairValue(_token1, _token2);
+
+        // Record the timestamp and the value of the request
+        requestedValues[_msgSender()][pairId] = RequestedValue({
+            value: value,
+            timeRequested: timestamp
+        });
+    }
+
+    function useRequestedValue(address _token1, address _token2) public view override returns (uint256) {
+        // Get the requested value
+        bytes memory pairId = abi.encodePacked(_token1, _token2);
+        RequestedValue memory req = requestedValues[_msgSender()][pairId];
+
+        // Check that the consumer requested the value between a specific amount of time
+        require(block.timestamp > req.timeRequested, "You must wait for the cooldown period to expire before consuming this value");
+        require(block.timestamp < req.timeRequested + requestedExpiry, "This requested price has expired, please request again");
+
+        // Return the requested value for use
+        return req.value;
     }
 
     function poolTokenValue(address _token) public view override returns (uint256 _value) {
@@ -75,10 +109,6 @@ contract Oracle is IOracle, Ownable {
         } else {
             _value = asset1ToAsset2;
         }
-    }
-
-    function setDecimals(uint256 _decimals) public override onlyOwner {
-        decimals = _decimals;
     }
 
     function setRouterAddress(address _router) public override onlyOwner {
