@@ -44,8 +44,9 @@ contract FlashLoanLender is IERC3156FlashLender, Ownable {
     ) public override returns (bool) {
         // Check that the loan satisfies the requirements
         require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
-        require(_amount > 0, "Loan must be greater than 0");
         require(_amount <= maxFlashLoan(_token), "This amount exceeds the max flash loan amount");
+        uint256 fee = flashFee(_token, _amount);
+        require(fee > 0, "Borrow amount is not large enough");
 
         // Borrow the tokens from the liquidity pool
         ILPool(lPool).lend(_token, _amount, address(_receiver));
