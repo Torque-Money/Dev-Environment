@@ -53,7 +53,7 @@ describe("Oracle", () => {
         console.log(`waDAI, waBOO balances after deposit: ${waDAIBal}, ${waBOOBal}`);
 
         // Get the value at which the oracle values the token at compared to the asset it is backed by
-        const booWaDaiDecimals = await oracle.pairValue(waDAIAddress, config.daiAddress);
+        const booWaDaiDecimals = await oracle.pairValue(waDAIAddress, config.booAddress);
         const booWaDai = booWaDaiDecimals.toNumber() / DECIMALS;
         console.log(`BOOwaDAI value: ${booWaDai}`);
     });
