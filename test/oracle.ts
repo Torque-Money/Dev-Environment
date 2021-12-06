@@ -28,9 +28,9 @@ describe("Oracle", () => {
         console.log(`DAI and BOO correspond to pool tokens ${waDAIAddress}, ${waBOOAddress} respectively`);
 
         // Get the price of asset 1 against asset2
-        const value = await oracle.pairValue(config.daiAddress, config.booAddress);
-        const result = value.toNumber() / DECIMALS;
-        console.log(`Value: ${result}`);
+        const booDaiDecimals = await oracle.pairValue(config.daiAddress, config.booAddress);
+        const booDai = booDaiDecimals.toNumber() / DECIMALS;
+        console.log(`BOODAI value: ${booDai}`);
 
         // Impersonate a DAI whale and deposit using it
         await hre.network.provider.request({
@@ -51,5 +51,10 @@ describe("Oracle", () => {
         const waDAIBal = await waDAI.balanceOf(config.daiWhale); // For some reason this is not working properly ?
         const waBOOBal = await waBOO.balanceOf(config.daiWhale); // For some reason this is not working properly ?
         console.log(`waDAI, waBOO balances after deposit: ${waDAIBal}, ${waBOOBal}`);
+
+        // Get the value at which the oracle values the token at compared to the asset it is backed by
+        const booWaDaiDecimals = await oracle.pairValue(waDAIAddress, config.daiAddress);
+        const booWaDai = booWaDaiDecimals.toNumber() / DECIMALS;
+        console.log(`BOOwaDAI value: ${booWaDai}`);
     });
 });
