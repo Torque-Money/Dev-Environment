@@ -150,14 +150,15 @@ contract Oracle is IOracle, Ownable {
     }
 
     function getPoolLended(address _token) public view override returns (uint256 _value) {
-        return 0; // **** NEEDS IMPLEMENTATION
+        // **** NEEDS IMPLEMENTATION
+        return 0;
     }
 
     function getPoolTotal(address _token) public view override returns (uint256 _value) {
         return getPoolLiquidity(_token).add(getPoolLended(_token));
     }
 
-    function calculateInterest(address _token) public view override returns (uint256 _interest) {
+    function calculateInterest(address _token, uint256 _since) public view override returns (uint256 _interest) {
 
     }
 

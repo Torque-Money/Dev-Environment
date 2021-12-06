@@ -70,9 +70,10 @@ interface IOracle {
     function getPoolTotal(address _token) external view returns (uint256 _value);
 
     /**
-     *  @notice returns the interest of a given borrowed asset over a given amount of time
+     *  @notice returns the interest of a given borrowed asset from a given timestamp
      *  @param _token address
+     *  @param _since uint256
      *  @return _interest uint256
      */
-    function calculateInterest(address _token) external view returns (uint256 _interest);
+    function calculateInterest(address _token, uint256 _since) external view returns (uint256 _interest);
 }
