@@ -23,7 +23,7 @@ interface IOracle {
     function useRequestedValue(address _token1, address _token2) external view returns (uint256);
 
     /**
-     *  @notice gets the value of a pair of tokens that are either approved or pool tokens
+     *  @notice gets the number of token2 returned for token1
      *  @param _token1 address
      *  @param _token2 address
      *  @return _value uint256
@@ -47,4 +47,10 @@ interface IOracle {
      *  @return _decimals uint256
      */
     function getDecimals() external view returns (uint256 _decimals);
+
+    /**
+     *  @notice returns the total value of the treasury in terms of the specified asset
+     *  @param _token address
+     */
+    function getTreasuryTotalValue(address _token) external view returns (uint256 _value);
 }

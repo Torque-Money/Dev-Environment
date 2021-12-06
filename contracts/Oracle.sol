@@ -9,13 +9,17 @@ import "./ILPool.sol";
 import "./IOracle.sol";
 import "./lib/UniswapV2Router02.sol";
 
+// **** Now I need to implement some sort of way of calculating the interest rates from this ???
+
 contract Oracle is IOracle, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
+    uint256 private decimals;
+    uint256 private adjustmentConstant;
+
     address private router;
     address private lPool;
-    uint256 private decimals;
 
     struct RequestedValue {
         uint256 value;
@@ -24,11 +28,12 @@ contract Oracle is IOracle, Ownable {
     mapping(address => mapping(bytes => RequestedValue)) private requestedValues;
     uint256 requestedExpiry;
 
-    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_) {
+    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_, uint256 adjustmentConstant_) {
         router = router_;
         lPool = lPool_;
         decimals = decimals_;
         requestedExpiry = requestedExpiry_;
+        adjustmentConstant = adjustmentConstant_;
     }
 
     function requestValue(address _token1, address _token2) public override {
@@ -143,5 +148,18 @@ contract Oracle is IOracle, Ownable {
 
     function getDecimals() public view override returns (uint256 _decimals) {
         _decimals = decimals;
+    }
+
+    function getTreasuryTotalValue(address _token) public view override returns (uint256 _value) {
+        // Get the full list of backed assets
+        address[] memory assets = ILPool(lPool).getApprovedAssets();
+
+        // Sum the values of each asset times the amount in each pool
+        _value = 0;
+        for (uint i = 0; i < assets.length; i++) {
+            uint256 value = pairValue(assets[i], _token);
+            uint256 amount = IERC20(assets[i]).balanceOf(lPool);
+            _value += value.mul(amount);
+        }
     }
 }
