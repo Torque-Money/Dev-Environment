@@ -159,7 +159,7 @@ contract Oracle is IOracle, Ownable {
         for (uint i = 0; i < assets.length; i++) {
             uint256 value = pairValue(assets[i], _token);
             uint256 amount = IERC20(assets[i]).balanceOf(lPool);
-            _value += value.mul(amount);
+            _value += value.mul(amount).div(decimals.add(1)); // Add 1 to avoid division by zero error
         }
     }
 }
