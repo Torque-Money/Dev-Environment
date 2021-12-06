@@ -57,7 +57,12 @@ contract Oracle is IOracle, Ownable {
         return req.value;
     }
 
-    function poolTokenValue(address _token) public view override returns (uint256 _value) {
+    /**
+     *  @notice gets the amount of approved tokens each pool token is worth
+     *  @param _token address
+     *  @return _value uint256
+     */
+    function _poolTokenValue(address _token) internal view returns (uint256 _value) {
         // Validate that the token is valid
         ILPool pool = ILPool(lPool);
         require(pool.isPoolToken(_token), "Invalid pool token");
@@ -76,12 +81,19 @@ contract Oracle is IOracle, Ownable {
         require(pool.isApprovedAsset(_token2) || pool.isPoolToken(_token2), "Token 2 is not an approved asset or pool token");
 
         // Update the path if the tokens are pool tokens
+        // **** ADD IN THE CASE WHEN WE WANT TO COMPARE THE VALUE TO ITSELF USING '_poolTokenValue'
         address[] memory path = new address[](2);
         if (pool.isPoolToken(_token1)) {
-            path[0] = pool.getApprovedAsset(_token1);
+            address approvedAsset = pool.getApprovedAsset(_token1);
+            path[0] = approvedAsset;
+            if (_token2 == approvedAsset) {
+                return _poolTokenValue(_token1);
+            } 
         } else {
             path[0] = _token1;
+            // **** Now we check if token1 is the equivalent of what token2 is ????
         }
+
         if (pool.isPoolToken(_token2)) {
             path[1] = pool.getApprovedAsset(_token2);
         } else {
@@ -93,17 +105,17 @@ contract Oracle is IOracle, Ownable {
 
         // Now consider the value of the pool tokens along with the swapped value
         if (pool.isPoolToken(_token1) && pool.isPoolToken(_token2)) {
-            uint256 token1ToAsset = poolTokenValue(_token1);
-            uint256 token2ToAsset = poolTokenValue(_token2);
+            uint256 token1ToAsset = _poolTokenValue(_token1);
+            uint256 token2ToAsset = _poolTokenValue(_token2);
 
             _value = token1ToAsset.mul(asset1ToAsset2).div(token2ToAsset.add(1)); // Add one to avoid division by 0
 
         } else if (pool.isPoolToken(_token1)) {
-            uint256 token1ToAsset = poolTokenValue(_token1);
+            uint256 token1ToAsset = _poolTokenValue(_token1);
             _value = asset1ToAsset2.mul(token1ToAsset).div(decimals.add(1)); // Add one to avoid division by 0
 
         } else if (pool.isPoolToken(_token2)) {
-            uint256 token2ToAsset = poolTokenValue(_token2);
+            uint256 token2ToAsset = _poolTokenValue(_token2);
             _value = asset1ToAsset2.mul(decimals).div(token2ToAsset.add(1)); // Add one to avoid division by 0
 
         } else {

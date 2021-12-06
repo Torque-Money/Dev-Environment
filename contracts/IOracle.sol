@@ -23,13 +23,6 @@ interface IOracle {
     function useRequestedValue(address _token1, address _token2) external view returns (uint256);
 
     /**
-     *  @notice gets the amount of approved tokens each pool token is worth
-     *  @param _token address
-     *  @return _value uint256
-     */
-    function poolTokenValue(address _token) external view returns (uint256 _value);
-
-    /**
      *  @notice gets the value of a pair of tokens that are either approved or pool tokens
      *  @param _token1 address
      *  @param _token2 address
