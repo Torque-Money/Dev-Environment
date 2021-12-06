@@ -27,13 +27,13 @@ contract Oracle is IOracle, Ownable {
         uint256 timeRequested;
     }
     mapping(address => mapping(bytes => RequestedValue)) private requestedValues;
-    uint256 requestedExpiry;
+    uint256 requestExpiry;
 
-    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestedExpiry_, uint256 interestInterval_) {
+    constructor(address router_, address lPool_, uint256 decimals_, uint256 requestExpiry_, uint256 interestInterval_) {
         router = router_;
         lPool = lPool_;
         decimals = decimals_;
-        requestedExpiry = requestedExpiry_;
+        requestExpiry = requestExpiry_;
         interestInterval = interestInterval_;
     }
 
@@ -57,7 +57,7 @@ contract Oracle is IOracle, Ownable {
 
         // Check that the consumer requested the value between a specific amount of time
         require(block.timestamp > req.timeRequested, "You must wait for the cooldown period to expire before consuming this value");
-        require(block.timestamp < req.timeRequested + requestedExpiry, "This requested price has expired, please request again");
+        require(block.timestamp < req.timeRequested + requestExpiry, "This requested price has expired, please request again");
 
         // Return the requested value for use
         return req.value;
@@ -151,12 +151,20 @@ contract Oracle is IOracle, Ownable {
         _decimals = decimals;
     }
 
+    function getRequestExpiry() public view override returns (uint256 _requestExpiry) {
+        _requestExpiry = requestExpiry;
+    }
+
+    function getInterestInterval() public view override returns (uint256 _interestInterval) {
+        _interestInterval = interestInterval;
+    }
+
     function getPoolLended(address _token) public view override returns (uint256 _value) {
         require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
         return 0; // Nothing has been lended out just yet - when we do take into consideration ALL of the different pools
     }
 
-    function calculateInterest(address _token, uint256 _since) external view returns (uint256 _interest) {
+    function calculateInterest(address _token, uint256 _since) public view returns (uint256 _interest) {
         // Make sure the asset is an approved asset
         require(ILPool(lPool).isApprovedAsset(_token), "This token is not approved");
 

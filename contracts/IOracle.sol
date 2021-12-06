@@ -49,6 +49,18 @@ interface IOracle {
     function getDecimals() external view returns (uint256 _decimals);
 
     /**
+     *  @notice gets the request expiry timeframe
+     *  @return _requestExpiry uint256
+     */
+    function getRequestExpiry() external view returns (uint256 _requestExpiry);
+
+    /**
+     *  @notice gets the interest interval
+     *  @return _interestInterval uint256
+     */
+    function getInterestInterval() external view returns (uint256 _interestInterval);
+
+    /**
      *  @notice returns the amount of outstanding tokens lended by the pool
      *  @param _token address
      *  @return _value uint256
