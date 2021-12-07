@@ -58,6 +58,10 @@ contract VPool is IVPool, AccessControl {
         return uint256(block.timestamp).div(stakingTimeframe);
     }
 
+    function nextPeriodStart() public view returns (uint256) {
+        return currentPeriodId().add(1).mul(stakingTimeframe);
+    }
+
     // ======== Approved tokens ========
 
     function approveToken(address _token) external onlyRole(DEFAULT_ADMIN_ROLE) {
