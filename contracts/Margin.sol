@@ -54,6 +54,10 @@ contract Margin is IMargin {
 
     }
 
+    function depositCollateral() external {
+        
+    }
+
     function borrow(IERC20 _token) external {
 
     }
