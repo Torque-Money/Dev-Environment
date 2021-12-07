@@ -144,16 +144,22 @@ contract VPool is IVPool, AccessControl {
     }
 
     function deposit(address _token, uint256 _amount) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
-        // Receive a given number of funds to the current pool
+        // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
+        require(!isCooldown(periodId), "Cannot deposit on period cooldown");
+
+        // Receive a given number of funds to the current pool
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
         emit Deposit(_token, periodId, _amount);
     }
 
     function withdraw(address _token, uint256 _amount, address _to) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
-        // Withdraw an amount from the current pool
+        // Make sure no withdraws during cooldown period
         uint256 periodId = currentPeriodId();
+        require(!isCooldown(periodId), "Cannot withdraw on period cooldown");
+
+        // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
         stakingPeriods[periodId][_token].liquidity = stakingPeriod.liquidity.sub(_amount);
