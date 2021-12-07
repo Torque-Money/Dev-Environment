@@ -19,6 +19,10 @@ contract Oracle is IOracle, Context {
         decimals = decimals_;
     }
 
+    function getDecimals() public view override returns (uint256) {
+        return decimals;
+    }
+
     // ======== Verify price from multiple sources ========
 
     function _min(uint256[] memory _array, uint256 _start) private pure returns (uint256) {
@@ -73,9 +77,5 @@ contract Oracle is IOracle, Context {
             prices[i] = routers[i].getAmountsOut(decimals, path)[1];
         }
         return _median(prices);
-    }
-
-    function getDecimals() public view override returns (uint256) {
-        return decimals;
     }
 }
