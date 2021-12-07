@@ -36,12 +36,17 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Check the staking period and cooldown periods ========
 
-    function isCooldown() public view returns (bool) {
-        // Check if the cooldown period of the current protocol is present
-        uint256 periodStart = currentStakingId().mul(stakingTimeframe);
+    function isCooldown(uint256 _periodId) public view returns (bool) {
+        // Check if the cooldown period of the specified period is present
+        uint256 periodStart = _periodId.mul(stakingTimeframe);
         uint256 cooldownEnd = periodStart + cooldownTimeframe;
         uint256 current = block.timestamp;
         return current >= periodStart && current < cooldownEnd;
+    }
+
+    function isCooldown() public view returns (bool) {
+        // Check if the cooldown period of the current period is present
+        return isCooldown(currentStakingId());
     }
 
     function periodEnded(uint256 _periodId) public view returns (bool) {
@@ -76,7 +81,7 @@ contract VPool is IVPool, AccessControl {
         _;
     }
 
-    // ======== Liquidity manipulation ========
+    // ======== Balance management ========
 
     function balance(address _token, uint256 _periodId) public view approvedOnly(_token) returns (uint256) {
         // Get the balance of tokens owed for a given period
@@ -94,8 +99,12 @@ contract VPool is IVPool, AccessControl {
         return balance(_token, currentStakingId());
     }
 
+    // ======== Liquidity manipulation ========
 
     function stake(address _token, uint256 _amount) external approvedOnly(_token) returns (uint256) {
+        // Make sure the requirements are satisfied
+        require(isCooldown() == true, "Staking is only allowed during the cooldown period");
+    
         // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
         // **** Maybe I can do it if the current timeframe is the same number returned by the cooldown, but the timeframe will consider the entire timeframe a bit more ???
     }
