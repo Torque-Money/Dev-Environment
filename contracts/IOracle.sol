@@ -2,12 +2,19 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./lib/UniswapV2Router02.sol";
 
 interface IOracle {
     /**
      *  @dev Returns the decimals used for the pair price
      */
     function getDecimals() external view returns (uint256);
+
+    /**
+     *  @dev Adds a router to be used in price calculation
+     *  @param _router Router to be added
+     */
+    function addRouter(UniswapV2Router02 _router) external;
 
     /**
      *  @dev Returns the median price of the tokens passed to it over the stored exchanges
