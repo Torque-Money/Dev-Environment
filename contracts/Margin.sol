@@ -69,7 +69,7 @@ contract Margin is IMargin {
     }
 
     function withdraw() external {
-
+        // Allows users to take their earned funds and get out
     }
 
     // ======== Events ========
