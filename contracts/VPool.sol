@@ -121,7 +121,7 @@ contract VPool is IVPool, AccessControl {
         emit Stake(_msgSender(), _token, periodId, _amount);
     }
 
-    function redeem(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
+    function redeem(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) {
         // Make sure the requirements are satisfied
         require(isCooldown(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during cooldown or once period has ended");
         require(_amount > 0, "Redeem amount must be greater than 0");
@@ -129,20 +129,17 @@ contract VPool is IVPool, AccessControl {
 
         // Update the balances of the period
         uint256 deposited = stakingPeriods[_periodId][_token].deposits[_msgSender()];
-        // uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
-        // uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
+        uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
+        uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
 
         stakingPeriods[_periodId][_token].deposits[_msgSender()] = deposited.sub(_amount);
-        // stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
-
-        // **** What happens when we reduce the price of the liquidity pool by taking an amount from it - does it stay the same of what other people should of earned from it ?
-        // **** No, it shouldnt remove liquidity at all - the liquidity just sets how many tokens have been allocated out, and in doing so we should also NOT update the total deposited
-        // **** JUst for curiosity, did this same misunderstanding of percentages affect my previous ideas ?
-        // **** Wait it doesnt even really matter does it, the percentage of tokens from the original pool is going to be the same either way ?
-        // stakingPeriods[_periodId][_token].liquidity = liquidity.sub(_amount);
+        stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
 
         // Withdraw the allocated amount from the pool and return it to the user
-        // uint256 redeemed = 
+        uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
+        stakingPeriods[_periodId][_token].liquidity = liquidity.sub(tokensRedeemed);
+        IERC20(_token).transfer(_msgSender(), tokensRedeemed);
+        emit Redeem(_msgSender(), _token, _periodId, _amount, tokensRedeemed);
     }
 
     function deposit(address _token, uint256 _amount) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -158,7 +155,7 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Events ========
     event Stake(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
-    event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
+    event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount, uint256 liquidity);
 
     event Deposit();
     event Withdraw();
