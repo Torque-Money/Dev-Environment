@@ -31,6 +31,10 @@ contract Margin is IMargin {
 
     }
 
+    function interest(address _token, uint256 _amount, uint256 _time) public returns (uint256) {
+
+    }
+
     // **** Then we will need a way of liquidating them according to some margin level
 
     // **** We will also need a way of quering the margin level, as well as the time left on a borrow and such
