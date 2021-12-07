@@ -85,20 +85,24 @@ contract VPool is IVPool, AccessControl {
     // ======== Balance management ========
 
     function balance(address _token, uint256 _periodId) public view approvedOnly(_token) returns (uint256) {
-        // Get the balance of tokens owed for a given period
+        // Get the amount of tokens the user deposited into a given period
+        return stakingPeriods[_periodId][_token].deposits[_msgSender()];
+    }
+
+    function balance(address _token) external view approvedOnly(_token) returns (uint256) {
+        // Get the amount of tokens the user deposited into the current period
+        return balance(_token, currentPeriodId());
+    }
+
+    function redeemValue(address _token, uint256 _periodId, uint256 _amount) public view approvedOnly(_token) returns (uint256) {
+        // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = stakingPeriods[_periodId][_token];
 
-        uint256 deposited = period.deposits[_msgSender()];
         uint256 totalDeposited = period.totalDeposited;
         uint256 liquidity = period.liquidity;
         uint256 loaned = period.loaned;
 
-        return deposited.mul(liquidity.add(loaned)).div(totalDeposited);
-    }
-
-    function balance(address _token) external view approvedOnly(_token) returns (uint256) {
-        // Get the balance of tokens owed for the current period
-        return balance(_token, currentPeriodId());
+        return _amount.mul(liquidity.add(loaned)).div(totalDeposited);
     }
 
     // ======== Liquidity manipulation ========
@@ -118,13 +122,23 @@ contract VPool is IVPool, AccessControl {
         emit Deposit(_msgSender(), _token, periodId, _amount);
     }
 
-    function withdraw(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
-        // **** This will only be possible to do during the cooldown period or after the thing has commenced
-        // **** I will manually have to track the amount available to be used during the given period
-        // **** Stakers will ONLY be able to withdraw the amount that has been tracked by the deposited itself. If that value in the StakingPeriod is not updated, it will not be possible
-
+    function redeem(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
         // Make sure the requirements are satisfied
         require(isCooldown(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during cooldown or once period has ended");
+        require(_amount <= balance(_token, _periodId), "Cannot redeem more than total balance");
+
+        // **** OH NO - WHAT DO I DO IN THE CASE OF EVERYTHING BEING IN DEBT ??????? - THIS WOULDNT WORK IN THIS CASE BECAUSE IT MIGHT BE ALL IN DEBT EVEN THOUGH ITS STILL IN THE POOL ?????
+
+        // Update the balances of the period
+        uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
+        uint256 deposit = stakingPeriods[_periodId][_token].deposits[_msgSender()];
+
+        stakingPeriods[_periodId][_token].deposits[_msgSender()] = stakingPeriods[_periodId][_token].deposits[_msgSender()].sub(_amount);
+        stakingPeriods[_periodId][_token].totalDeposited = stakingPeriods[_periodId][_token].totalDeposited.sub(_amount);
+        stakingPeriods[_periodId][_token].liquidity = stakingPeriods[_periodId][_token].liquidity.sub(_amount);
+
+        // Withdraw the allocated amount from the pool and return it to the user
+        uint256 redeemed = 
     }
 
     function lend() external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -133,11 +147,15 @@ contract VPool is IVPool, AccessControl {
         // **** We are not lending out of the pool directly, we are lending off of the amount that was allocated to the stake
     }
 
+    function reportLost() external onlyRole(DEFAULT_ADMIN_ROLE) {
+
+    }
+
     function repay() external onlyRole(DEFAULT_ADMIN_ROLE) {
         // **** This will be used for redepositing tokens back into the staking pool
     }
 
     // ======== Events ========
     event Deposit(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
-    event Withdraw(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
+    event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
 }
