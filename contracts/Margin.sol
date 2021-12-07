@@ -14,16 +14,16 @@ contract Margin is IMargin {
     }
     mapping(uint256 => mapping(uint256 => Margin)) private borrowPeriods;
 
-    address private vPool;
-    address private oracle;
+    IVPool private vPool;
+    IOracle private oracle;
 
-    constructor(address vPool_, address oracle_) {
+    constructor(IVPool vPool_, IOracle oracle_) {
         vPool = vPool_;
         oracle = oracle_;
     }
 
-    modifier approvedOnly(address _token) {
-        // **** Add implementation for approved tokens only
+    modifier approvedOnly(IERC20 _token) {
+        require(vPool.isApproved(_token), "This token has not been approved");
         _;
     }
 
@@ -36,11 +36,11 @@ contract Margin is IMargin {
 
     }
 
-    function borrow(address _token ) external {
+    function borrow(IERC20 _token) external {
 
     }
 
-    function interest(address _token, uint256 _amount, uint256 _time) public returns (uint256) {
+    function interest(IERC20 _token, uint256 _amount, uint256 _time) public returns (uint256) {
         // Needs to compensate for the interval too
     }
 
