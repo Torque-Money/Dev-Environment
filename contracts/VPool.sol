@@ -128,6 +128,8 @@ contract VPool is IVPool, AccessControl {
         require(_amount <= balance(_token, _periodId), "Cannot redeem more than total balance");
 
         // **** OH NO - WHAT DO I DO IN THE CASE OF EVERYTHING BEING IN DEBT ??????? - THIS WOULDNT WORK IN THIS CASE BECAUSE IT MIGHT BE ALL IN DEBT EVEN THOUGH ITS STILL IN THE POOL ?????
+        // **** Hangon, but this can only occur when there si nothing being borrowed, and therefore there would be no debt - I should remove the debt concept as a whole from this
+        // **** Hangon too, we are not changing the amount deposited OR the liquidity at this stage - that stays the same as what it was originally. All that should change is the percent remaining
 
         // Update the balances of the period
         uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
