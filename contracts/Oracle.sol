@@ -36,10 +36,13 @@ contract Oracle is IOracle, Context {
     }
 
     function _sorted(uint256[] memory _array) private pure returns(uint256[] memory) {
+        require(_array.length > 0, "Length of array must be greater than 0");
+
         uint256[] memory sorted = new uint256[](_array.length);
         for (uint256 i = 0; i < _array.length; i++) {
             sorted[i] = _min(_array, i);
         }
+        
         return sorted;
     }
 
