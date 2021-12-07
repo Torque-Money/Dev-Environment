@@ -35,14 +35,20 @@ contract Oracle is IOracle, Context {
         return index;
     }
 
+    function _swap(uint256[] memory _array, uint256 _i, uint256 _j) private pure {
+        (_array[_i], _array[_j]) = (_array[_j], _array[_i]);
+    }
+
     function _sorted(uint256[] memory _array) private pure returns(uint256[] memory) {
         require(_array.length > 0, "Length of array must be greater than 0");
 
+        // Perform selection sort
         uint256[] memory sorted = new uint256[](_array.length);
         for (uint256 i = 0; i < _array.length; i++) {
-            sorted[i] = _min(_array, i);
+            uint256 minElem = _min(_array, i);
+            _swap(_array, i, minElem);
         }
-        
+
         return sorted;
     }
 
