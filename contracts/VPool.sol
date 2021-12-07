@@ -147,16 +147,23 @@ contract VPool is IVPool, AccessControl {
         uint256 periodId = currentPeriodId();
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
+        emit Deposit(_token, periodId, _amount);
     }
 
-    function withdraw(address _token, uint256 _amount) external onlyRole(DEFAULT_ADMIN_ROLE) approvedOnly(_token) {
+    function withdraw(address _token, uint256 _amount, address _to) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
         // Withdraw an amount from the current pool
+        uint256 periodId = currentPeriodId();
+        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
+        require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
+        stakingPeriods[periodId][_token].liquidity = stakingPeriod.liquidity.sub(_amount);
+        IERC20(_token).transfer(_to, _amount);
+        emit Withdraw(_token, periodId, _to, _amount);
     }
 
     // ======== Events ========
     event Stake(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
     event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount, uint256 liquidity);
 
-    event Deposit();
-    event Withdraw();
+    event Deposit(address indexed token, uint256 indexed periodId, uint256 amount);
+    event Withdraw(address indexed token, uint256 indexed periodId, address indexed to, uint256 amount);
 }
