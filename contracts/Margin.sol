@@ -32,7 +32,7 @@ contract Margin is IMargin {
     }
 
     function interest(address _token, uint256 _amount, uint256 _time) public returns (uint256) {
-
+        // Needs to compensate for the interval too
     }
 
     // **** Then we will need a way of liquidating them according to some margin level
