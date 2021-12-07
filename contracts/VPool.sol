@@ -34,21 +34,33 @@ contract VPool is IVPool, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
-    function isCooldown() public {
-        // We will look at if we are at the start of the given staking period based on the cooldown time, and if we are then we will exit
+    // ======== Check the staking period and cooldown periods ========
+
+    function isCooldown() public view returns (bool) {
+        // Check if the cooldown period of the current protocol is present
+        uint256 periodStart = currentStakingId().mul(stakingTimeframe);
+        uint256 cooldownEnd = periodStart + cooldownTimeframe;
+        uint256 current = block.timestamp;
+        return current >= periodStart && current < cooldownEnd;
+    }
+
+    function periodEnded(uint256 _periodId) public view returns (bool) {
+        return _periodId != currentStakingId();
     }
 
     function currentStakingId() public view returns (uint256) {
         return uint256(block.timestamp).div(stakingTimeframe);
     }
 
-    function stake() external returns (uint256) {
-        // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
-        // **** Maybe I can do it if the current timeframe is the same number returned by the cooldown, but the timeframe will consider the entire timeframe a bit more ???
-    }
+    // ======== Liquidity manipulation ========
 
     function balance(uint256 _periodId) external returns (uint256) {
         // Returns the total amount owed by the pool back to the user
+    }
+
+    function stake() external returns (uint256) {
+        // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
+        // **** Maybe I can do it if the current timeframe is the same number returned by the cooldown, but the timeframe will consider the entire timeframe a bit more ???
     }
 
     function withdraw() external returns (uint256) {
