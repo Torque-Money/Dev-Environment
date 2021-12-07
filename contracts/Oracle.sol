@@ -15,12 +15,20 @@ contract Oracle is IOracle, Context {
     UniswapV2Router02[] private routers;
     uint256 private decimals;
 
+    mapping(UniswapV2Router02 => bool) private storedRouters;
+
     constructor(uint256 decimals_) {
         decimals = decimals_;
     }
 
     function getDecimals() public view override returns (uint256) {
         return decimals;
+    }
+
+    function addRouter(UniswapV2Router02 _router) external {
+        require(storedRouters[_router] != true, "This router has already been added");
+        routers.push(_router);
+        storedRouters[_router] = true;
     }
 
     // ======== Verify price from multiple sources ========
