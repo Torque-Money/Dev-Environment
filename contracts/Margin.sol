@@ -12,6 +12,7 @@ contract Margin is IMargin {
 
     // **** How am I going to do this, maybe I can have a way where if the user borrows more it resets their time for borrowing
     // **** Everytime a user borrows it resets their levels ?
+    // **** Currently the "borrowed" doesnt consider the asset it is using as collateral ?
 
     struct BorrowPeriod {
         uint256 totalBorrowed;
