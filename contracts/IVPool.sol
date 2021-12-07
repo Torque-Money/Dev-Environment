@@ -62,10 +62,20 @@ interface IVPool {
      */
     function balanceOf(address _account, address _token) external view returns (uint256);
 
+    /**
+     *  @dev Returns the value of the tokens for a given period for a given token once they are redeemed
+     *  @param _token The token that will be received on redemption
+     *  @param _periodId The id of the period of which the redeem will occur
+     *  @param _amount The amount of tokens to redeem
+     */
     function redeemValue(address _token, uint256 _periodId, uint256 _amount) external view returns (uint256);
 
     // ======== Liquidity manipulation ========
 
+    /**
+     *  @dev Stakes a given amount of specified tokens in the pool
+     *  @param 
+     */
     function stake(address _token, uint256 _amount) external;
 
     function redeem(address _token, uint256 _amount, uint256 _periodId) external;
