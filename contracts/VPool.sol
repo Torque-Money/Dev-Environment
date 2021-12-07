@@ -143,10 +143,12 @@ contract VPool is IVPool, AccessControl {
         emit Redeem(_msgSender(), _token, _periodId, _amount, tokensRedeemed);
     }
 
-    function deposit(address _token, uint256 _amount) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
+    function deposit(address _token, uint256 _amount) external approvedOnly(_token) {
         // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isCooldown(periodId), "Cannot deposit on period cooldown");
+
+        // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
 
         // Receive a given number of funds to the current pool
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
