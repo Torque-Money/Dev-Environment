@@ -20,12 +20,14 @@ contract Margin is IMargin {
         mapping(address => uint256) collateral;
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
+    uint256 private minBorrowPeriod;
 
     uint256 private interestInterval;
 
-    constructor(IVPool vPool_, IOracle oracle_, uint256 interestInterval_) {
+    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 interestInterval_) {
         vPool = vPool_;
         oracle = oracle_;
+        minBorrowPeriod = minBorrowPeriod_;
         interestInterval = interestInterval_;
     }
 
