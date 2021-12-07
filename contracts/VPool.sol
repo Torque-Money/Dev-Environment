@@ -72,28 +72,28 @@ contract VPool is IVPool, AccessControl {
     }
 
     modifier approvedOnly(address _token) {
-        require(isApproved(_token), "Only approved tokens are allowed");
+        require(isApproved(_token), "This token has not been approved");
         _;
     }
 
     // ======== Liquidity manipulation ========
 
-    function balance(address _token, uint256 _periodId) public returns (uint256) {
+    function balance(address _token, uint256 _periodId) public approvedOnly(_token) returns (uint256) {
         // Returns the total amount owed by the pool back to the user for a given token for a given periodId
     }
 
-    function balance(address _token) external returns (uint256) {
+    function balance(address _token) external approvedOnly(_token) returns (uint256) {
         // Returns the total amount owed by the pool back to the user for a given token
         return balance(_token, currentStakingId());
     }
 
 
-    function stake() external returns (uint256) {
+    function stake(address _token, uint256 _amount) external approvedOnly(_token) returns (uint256) {
         // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
         // **** Maybe I can do it if the current timeframe is the same number returned by the cooldown, but the timeframe will consider the entire timeframe a bit more ???
     }
 
-    function withdraw() external returns (uint256) {
+    function withdraw(address _token, uint256 _amount) external approvedOnly(_token) returns (uint256) {
         // **** This will only be possible to do during the cooldown period or after the thing has commenced
         // **** I will manually have to track the amount available to be used during the given period
         // **** Stakers will ONLY be able to withdraw the amount that has been tracked by the deposited itself. If that value in the StakingPeriod is not updated, it will not be possible
