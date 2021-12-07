@@ -86,7 +86,11 @@ contract Margin is IMargin {
         // In here we consume the requested price if it is present for the given token pair
     }
 
-    function withdraw() external {
+    function withdrawCollateral() external {
+        // Allows a user to withdraw their collateral given that it is not locked in
+    }
+
+    function withdrawProfits() external {
         // Allows users to take their earned funds and get out
     }
 
