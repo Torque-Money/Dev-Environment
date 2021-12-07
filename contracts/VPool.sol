@@ -129,11 +129,11 @@ contract VPool is IVPool, AccessControl {
 
         // Update the balances of the period
         uint256 deposited = stakingPeriods[_periodId][_token].deposits[_msgSender()];
-        uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
+        // uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
         // uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
 
         stakingPeriods[_periodId][_token].deposits[_msgSender()] = deposited.sub(_amount);
-        stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
+        // stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
 
         // **** What happens when we reduce the price of the liquidity pool by taking an amount from it - does it stay the same of what other people should of earned from it ?
         // **** No, it shouldnt remove liquidity at all - the liquidity just sets how many tokens have been allocated out, and in doing so we should also NOT update the total deposited
