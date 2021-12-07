@@ -7,11 +7,12 @@ import "./IVPool.sol";
 import "./ILiquidator.sol";
 
 contract Margin is IMargin {
-    struct Borrow {
+    struct BorrowPeriod {
         uint256 totalBorrowed;
         mapping(address => uint256) borrowed;
+        mapping(address => uint256) collateral;
     }
-    mapping(uint256 => mapping(uint256 => Borrow)) private borrows;
+    mapping(uint256 => mapping(uint256 => Margin)) private borrowPeriods;
 
     address private vPool;
     address private oracle;
@@ -21,12 +22,20 @@ contract Margin is IMargin {
         oracle = oracle_;
     }
 
+    modifier approvedOnly(address _token) {
+        // **** Add implementation for approved tokens only
+        _;
+    }
+
     // Probably better off to be an oracle function
     function liquidityAvailable() public returns (uint256) {
 
     }
 
-    // **** First we will need some way of letting people borrow
+    function marginLevel() public returns (uint256) {
+
+    }
+
     function borrow(address _token ) external {
 
     }
@@ -35,7 +44,21 @@ contract Margin is IMargin {
         // Needs to compensate for the interval too
     }
 
-    // **** Then we will need a way of liquidating them according to some margin level
+    function flashLiquidateOwing() external returns (uint256) {
+        // This is the amount that is required to be paid back to the protocol - this is NOT the amount that will be actually given off
+    }
 
-    // **** We will also need a way of quering the margin level, as well as the time left on a borrow and such
+    function flashLiquidate() external returns (uint256) {
+        // In here we consume the requested price if it is present for the given token pair
+    }
+
+    function withdraw() external {
+
+    }
+
+    // ======== Events ========
+
+    event Borrow();
+    event Withdraw();
+    event FlashLiquidation();
 }
