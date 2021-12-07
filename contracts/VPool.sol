@@ -52,11 +52,41 @@ contract VPool is IVPool, AccessControl {
         return uint256(block.timestamp).div(stakingTimeframe);
     }
 
+    // ======== Approved tokens ========
+
+    function approveToken(address _token) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        // Satisfy the requirements
+        require(!isApproved(_token), "This token has already been approved");
+
+        // Approve the token
+        approved[_token] = true;
+        approvedList.push(_token);
+    }
+
+    function isApproved(address _token) public view returns (bool) {
+        return approved[_token];
+    }
+
+    function getApproved() public view returns (address[] memory) {
+        return approvedList;
+    }
+
+    modifier approvedOnly(address _token) {
+        require(isApproved(_token), "Only approved tokens are allowed");
+        _;
+    }
+
     // ======== Liquidity manipulation ========
 
-    function balance(uint256 _periodId) external returns (uint256) {
-        // Returns the total amount owed by the pool back to the user
+    function balance(address _token, uint256 _periodId) public returns (uint256) {
+        // Returns the total amount owed by the pool back to the user for a given token for a given periodId
     }
+
+    function balance(address _token) external returns (uint256) {
+        // Returns the total amount owed by the pool back to the user for a given token
+        return balance(_token, currentStakingId());
+    }
+
 
     function stake() external returns (uint256) {
         // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
