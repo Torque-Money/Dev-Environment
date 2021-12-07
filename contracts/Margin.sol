@@ -10,14 +10,14 @@ contract Margin is IMargin {
     IVPool private vPool;
     IOracle private oracle;
 
-    // **** How am I going to do this, maybe I can have a way where if the user borrows more it resets their time for borrowing
-    // **** Everytime a user borrows it resets their levels ?
-    // **** Currently the "borrowed" doesnt consider the asset it is using as collateral ?
-
+    struct AccountBorrow {
+        uint256 collateral;
+        uint256 borrowed;
+        uint256 borrowTime;
+    }
     struct BorrowPeriod {
         uint256 totalBorrowed;
-        mapping(address => uint256) borrowed;
-        mapping(address => uint256) collateral;
+        mapping(address => mapping(address => AccountBorrow)) collateral; // account => token => borrow - this way the same account can have different borrows with different collaterals independently
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowPeriod;
@@ -55,7 +55,7 @@ contract Margin is IMargin {
     }
 
     function depositCollateral() external {
-        
+
     }
 
     function borrow(IERC20 _token) external {
