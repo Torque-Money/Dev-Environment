@@ -52,6 +52,10 @@ interface IVPool {
      */
     function getApproved() external view returns (IERC20[] memory);
 
+    // ======== Helper functions ========
+
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256);
+
     // ======== Balance management ========
 
     /**

@@ -86,6 +86,12 @@ contract VPool is IVPool, AccessControl {
         _;
     }
 
+    // ======== Helper functions ========
+
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view override approvedOnly(_token) returns (uint256) {
+        return stakingPeriods[_periodId][_token].liquidity;
+    }
+
     // ======== Balance management ========
 
     function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view override approvedOnly(_token) returns (uint256) {

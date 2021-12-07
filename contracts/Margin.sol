@@ -7,19 +7,25 @@ import "./IVPool.sol";
 import "./ILiquidator.sol";
 
 contract Margin is IMargin {
+    IVPool private vPool;
+    IOracle private oracle;
+
+    // **** How am I going to do this, maybe I can have a way where if the user borrows more it resets their time for borrowing
+    // **** Everytime a user borrows it resets their levels ?
+
     struct BorrowPeriod {
         uint256 totalBorrowed;
         mapping(address => uint256) borrowed;
         mapping(address => uint256) collateral;
     }
-    mapping(uint256 => mapping(uint256 => Margin)) private borrowPeriods;
+    mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
 
-    IVPool private vPool;
-    IOracle private oracle;
+    uint256 private interestInterval;
 
-    constructor(IVPool vPool_, IOracle oracle_) {
+    constructor(IVPool vPool_, IOracle oracle_, uint256 interestInterval_) {
         vPool = vPool_;
         oracle = oracle_;
+        interestInterval = interestInterval_;
     }
 
     modifier approvedOnly(IERC20 _token) {
@@ -27,12 +33,21 @@ contract Margin is IMargin {
         _;
     }
 
-    // Probably better off to be an oracle function
-    function liquidityAvailable() public returns (uint256) {
+    function liquidityAvailable(IERC20 _token) public view approvedOnly(_token) returns (uint256) {
+        // Calculate the liquidity available for the current token for the current period
+        uint256 periodId = vPool.currentPeriodId();
 
+        uint256 liquidity = vPool.getLiquidity(_token, periodId);
+        uint256 borrowed = borrowPeriods[periodId][_token].totalBorrowed;
+
+        return liquidity - borrowed;
     }
 
-    function marginLevel() public returns (uint256) {
+    function marginLevel(IERC20 _token, address _account) public approvedOnly(_token) returns (uint256) {
+        
+    }
+
+    function liquidatable(IERC20 _token) public approvedOnly(_token) returns (uint256) {
 
     }
 
