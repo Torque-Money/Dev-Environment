@@ -138,6 +138,7 @@ contract VPool is IVPool, AccessControl {
         // **** What happens when we reduce the price of the liquidity pool by taking an amount from it - does it stay the same of what other people should of earned from it ?
         // **** No, it shouldnt remove liquidity at all - the liquidity just sets how many tokens have been allocated out, and in doing so we should also NOT update the total deposited
         // **** JUst for curiosity, did this same misunderstanding of percentages affect my previous ideas ?
+        // **** Wait it doesnt even really matter does it, the percentage of tokens from the original pool is going to be the same either way ?
         // stakingPeriods[_periodId][_token].liquidity = liquidity.sub(_amount);
 
         // Withdraw the allocated amount from the pool and return it to the user
