@@ -1,12 +1,18 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./IMargin.sol";
 import "./IOracle.sol";
 import "./IVPool.sol";
 import "./ILiquidator.sol";
 
 contract Margin is IMargin {
+    using SafeERC20 for IERC20;
+    using SafeMath for uint256;
+
     IVPool private vPool;
     IOracle private oracle;
 
@@ -46,24 +52,30 @@ contract Margin is IMargin {
         return liquidity - borrowed;
     }
 
-    function marginLevel(IERC20 _token, IERC20 _tokenBorrowed, address _account) public approvedOnly(_token) returns (uint256) {
-         
+    function marginLevel(IERC20 _collateral, IERC20 _borrowed) public approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+
     }
 
-    function liquidatable(IERC20 _token) public approvedOnly(_token) returns (uint256) {
-
+    function liquidatable(address _account) public returns (uint256) {
+        // Check if a given account is liquidatable
     }
 
     function depositCollateral() external {
 
     }
 
-    function borrow(IERC20 _token) external {
-
+    function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
+        // Borrow against collateral
     }
 
-    function interest(IERC20 _token, uint256 _amount, uint256 _time) public returns (uint256) {
-        // Needs to compensate for the interval too
+    function interest(IERC20 _token, uint256 _borrowed, uint256 _time) public view returns (uint256) {
+        // interest = timesAccumulated * amountBorrowed * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+
+        uint256 periodId = vPool.currentPeriodId();
+        uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
+        uint256 liquidity = liquidityAvailable(_token);
+
+        return _time.mul(_borrowed).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
     }
 
     function flashLiquidateOwing() external returns (uint256) {
