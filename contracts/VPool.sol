@@ -3,15 +3,28 @@ pragma solidity ^0.8.0;
 
 import "./IVPool.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 // **** For the moment users will have to withraw profits and restake into a new pool manually
+// **** Perhaps in the future we will allow minting of a new token that will be used by the DAO - a specific amount of tokens based on supply will be allocated to each pool, and will be distributed out at the end
 
 contract VPool is IVPool, AccessControl {
+    using SafeERC20 for IERC20;
+    using SafeMath for uint256;
+
+    // Approved assets of the pool
+    address[] private approvedList;
+    mapping(address => bool) private approved;
+
+    // Staking data
     struct StakingPeriod {
         uint256 totalDeposited;
-        uint256 poolValue;
+        mapping(address => uint256) poolValue;
+        mapping(address => mapping(address => uint256)) deposits;
     }
-    mapping(uint256 => StakingPeriod) private stakingPeriods;
+    mapping(uint256 => mapping(address => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
     uint256 private stakingTimeframe;
     uint256 private cooldownTimeframe;
 
@@ -19,6 +32,14 @@ contract VPool is IVPool, AccessControl {
         stakingTimeframe = stakingTimeframe_;
         cooldownTimeframe = cooldownTimeframe_;
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+    }
+
+    function isCooldown() public {
+        // We will look at if we are at the start of the given staking period based on the cooldown time, and if we are then we will exit
+    }
+
+    function currentStakingId() public view returns (uint256) {
+        return uint256(block.timestamp).div(stakingTimeframe);
     }
 
     function stake() external returns (uint256) {
