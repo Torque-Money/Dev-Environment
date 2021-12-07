@@ -12,7 +12,7 @@ contract Oracle is IOracle, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    address private router;
+    UniswapV2Router02 private router;
 
     uint256 private decimals;
 
@@ -23,7 +23,7 @@ contract Oracle is IOracle, Context {
     mapping(bytes => RequestedPrice) private requestedPrices;
     uint256 requestExpiry;
 
-    constructor(address router_, uint256 decimals_, uint256 requestExpiry_) {
+    constructor(UniswapV2Router02 router_, uint256 decimals_, uint256 requestExpiry_) {
         router = router_;
         decimals = decimals_;
         requestExpiry = requestExpiry_;
@@ -69,7 +69,7 @@ contract Oracle is IOracle, Context {
         path[1] = _token2;
 
         // Get the amount of token2 earned from token1
-        uint256 price = UniswapV2Router02(router).getAmountsOut(decimals, path)[1];
+        uint256 price = router.getAmountsOut(decimals, path)[1];
         return price;
     }
 
