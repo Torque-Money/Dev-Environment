@@ -21,8 +21,8 @@ contract VPool is IVPool, AccessControl {
     // Staking data
     struct StakingPeriod {
         uint256 totalDeposited;
-        mapping(address => uint256) poolValue;
-        mapping(address => mapping(address => uint256)) deposits;
+        uint256 poolValue;
+        mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(address => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
     uint256 private stakingTimeframe;
@@ -78,12 +78,19 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Liquidity manipulation ========
 
-    function balance(address _token, uint256 _periodId) public approvedOnly(_token) returns (uint256) {
-        // Returns the total amount owed by the pool back to the user for a given token for a given periodId
+    function balance(address _token, uint256 _periodId) public view approvedOnly(_token) returns (uint256) {
+        // Get the balance of tokens owed for a given period
+        StakingPeriod storage period = stakingPeriods[_periodId][_token];
+
+        uint256 deposited = period.deposits[_msgSender()];
+        uint256 totalDeposited = period.totalDeposited;
+        uint256 poolValue = period.poolValue;
+
+        return deposited.mul(poolValue).div(totalDeposited);
     }
 
-    function balance(address _token) external approvedOnly(_token) returns (uint256) {
-        // Returns the total amount owed by the pool back to the user for a given token
+    function balance(address _token) external view approvedOnly(_token) returns (uint256) {
+        // Get the balance of tokens owed for the current period
         return balance(_token, currentStakingId());
     }
 
