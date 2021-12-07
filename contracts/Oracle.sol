@@ -21,8 +21,8 @@ contract Oracle is IOracle, Context {
 
     // ======== Verify price from multiple sources ========
 
-    function _min(uint256[] memory _array, uint256 _start) private pure {
-        uint256 min = uint256(-1);
+    function _min(uint256[] memory _array, uint256 _start) private pure returns (uint256) {
+        uint256 min = 2 ** 256 - 1;
         uint256 index = _start;
 
         for (uint256 i = _start; i < _array.length; i++) {
@@ -63,13 +63,16 @@ contract Oracle is IOracle, Context {
         if (_token1 == _token2) return decimals;
 
         // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
-        IERC20[] memory path = new IERC20[](2);
-        path[0] = _token1;
-        path[1] = _token2;
+        address[] memory path = new address[](2);
+        path[0] = address(_token1);
+        path[1] = address(_token2);
 
-        // Get the amount of token2 earned from token1
-        uint256 price = router.getAmountsOut(decimals, path)[1];
-        return price;
+        // Get the median price of token2 earned from token1 from the different exchanges
+        uint256[] memory prices = new uint256[](routers.length);
+        for (uint256 i = 0; i < routers.length; i++) {
+            prices[i] = routers[i].getAmountsOut(decimals, path)[1];
+        }
+        return _median(prices);
     }
 
     function getDecimals() public view override returns (uint256) {
