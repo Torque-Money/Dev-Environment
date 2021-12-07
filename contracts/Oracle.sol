@@ -21,29 +21,32 @@ contract Oracle is IOracle, Context {
 
     // ======== Verify price from multiple sources ========
 
-    function _max(uint256[] memory _array) private pure {
-        require(_array.length > 0, "Cannot find the max of an empty array");
-        uint256 index;
-        uint256 max = 0;
-        for (uint256 i = 0; i < _array.length; i++) {
-            if (_array[i] > max) {
-                max = _array[i];
+    function _min(uint256[] memory _array, uint256 _start) private pure {
+        uint256 min = uint256(-1);
+        uint256 index = _start;
+
+        for (uint256 i = _start; i < _array.length; i++) {
+            if (_array[i] < min) {
+                min = _array[i];
                 index = i;
             }
         }
+
         return index;
     }
 
-    function _sort(int256[] memory array) private pure {
-        for (int i = 0; i < array.length; i++) {
-
+    function _sorted(uint256[] memory _array) private pure returns(uint256[] memory) {
+        uint256[] memory sorted = new uint256[](_array.length);
+        for (uint256 i = 0; i < _array.length; i++) {
+            sorted[i] = _min(_array, i);
         }
+        return sorted;
     }
 
-    function _median(uint256[] memory array) private pure returns(int256) {
-        uint256 length = array.length;
-        _sort(array, 0, length);
-        return length % 2 == 0 ? array[length/2-1].add(array[length/2]).div(2) : array[length/2];
+    function _median(uint256[] memory _array) private pure returns(uint256) {
+        uint256 length = _array.length;
+        _sorted(_array);
+        return length % 2 == 0 ? _array[length/2-1].add(_array[length/2]).div(2) : _array[length/2];
     }
 
     function pairPrice(IERC20 _token1, IERC20 _token2) public view override returns (uint256) {
