@@ -21,7 +21,8 @@ contract VPool is IVPool, AccessControl {
     // Staking data
     struct StakingPeriod {
         uint256 totalDeposited;
-        uint256 poolValue;
+        uint256 liquidity;
+        uint256 loaned;
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(address => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
@@ -46,14 +47,14 @@ contract VPool is IVPool, AccessControl {
 
     function isCooldown() public view returns (bool) {
         // Check if the cooldown period of the current period is present
-        return isCooldown(currentStakingId());
+        return isCooldown(currentPeriodId());
     }
 
-    function periodEnded(uint256 _periodId) public view returns (bool) {
-        return _periodId != currentStakingId();
+    function isCurrentPeriod(uint256 _periodId) public view returns (bool) {
+        return _periodId == currentPeriodId();
     }
 
-    function currentStakingId() public view returns (uint256) {
+    function currentPeriodId() public view returns (uint256) {
         return uint256(block.timestamp).div(stakingTimeframe);
     }
 
@@ -89,30 +90,41 @@ contract VPool is IVPool, AccessControl {
 
         uint256 deposited = period.deposits[_msgSender()];
         uint256 totalDeposited = period.totalDeposited;
-        uint256 poolValue = period.poolValue;
+        uint256 liquidity = period.liquidity;
+        uint256 loaned = period.loaned;
 
-        return deposited.mul(poolValue).div(totalDeposited);
+        return deposited.mul(liquidity.add(loaned)).div(totalDeposited);
     }
 
     function balance(address _token) external view approvedOnly(_token) returns (uint256) {
         // Get the balance of tokens owed for the current period
-        return balance(_token, currentStakingId());
+        return balance(_token, currentPeriodId());
     }
 
     // ======== Liquidity manipulation ========
 
-    function stake(address _token, uint256 _amount) external approvedOnly(_token) returns (uint256) {
+    function deposit(address _token, uint256 _amount) external approvedOnly(_token) {
         // Make sure the requirements are satisfied
         require(isCooldown() == true, "Staking is only allowed during the cooldown period");
-    
-        // **** Can only stake during periods where it is valid to stake and is within the cooldown period (how will I do this using some clever maths ?)
-        // **** Maybe I can do it if the current timeframe is the same number returned by the cooldown, but the timeframe will consider the entire timeframe a bit more ???
+
+        // Move the tokens to the pool and update the users deposit amount
+        IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
+
+        uint256 periodId = currentPeriodId();
+        stakingPeriods[periodId][_token].deposits[_msgSender()] = stakingPeriods[periodId][_token].deposits[_msgSender()].add(_amount);
+        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
+        stakingPeriods[periodId][_token].totalDeposited = stakingPeriods[periodId][_token].totalDeposited.add(_amount);
+
+        emit Deposit(_msgSender(), _token, periodId, _amount);
     }
 
-    function withdraw(address _token, uint256 _amount) external approvedOnly(_token) returns (uint256) {
+    function withdraw(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
         // **** This will only be possible to do during the cooldown period or after the thing has commenced
         // **** I will manually have to track the amount available to be used during the given period
         // **** Stakers will ONLY be able to withdraw the amount that has been tracked by the deposited itself. If that value in the StakingPeriod is not updated, it will not be possible
+
+        // Make sure the requirements are satisfied
+        require(isCooldown(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during cooldown or once period has ended");
     }
 
     function lend() external onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -124,4 +136,8 @@ contract VPool is IVPool, AccessControl {
     function repay() external onlyRole(DEFAULT_ADMIN_ROLE) {
         // **** This will be used for redepositing tokens back into the staking pool
     }
+
+    // ======== Events ========
+    event Deposit(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
+    event Withdraw(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
 }
