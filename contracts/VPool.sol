@@ -22,7 +22,6 @@ contract VPool is IVPool, AccessControl {
     struct StakingPeriod {
         uint256 totalDeposited;
         uint256 liquidity;
-        uint256 loaned;
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(address => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
@@ -84,14 +83,14 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Balance management ========
 
-    function balance(address _token, uint256 _periodId) public view approvedOnly(_token) returns (uint256) {
-        // Get the amount of tokens the user deposited into a given period
-        return stakingPeriods[_periodId][_token].deposits[_msgSender()];
+    function balanceOf(address _account, address _token, uint256 _periodId) public view approvedOnly(_token) returns (uint256) {
+        // Get the amount of tokens the account deposited into a given period
+        return stakingPeriods[_periodId][_token].deposits[_account];
     }
 
-    function balance(address _token) external view approvedOnly(_token) returns (uint256) {
-        // Get the amount of tokens the user deposited into the current period
-        return balance(_token, currentPeriodId());
+    function balanceOf(address _account, address _token) external view approvedOnly(_token) returns (uint256) {
+        // Get the amount of tokens the account deposited into the current period
+        return balance(_account, _token, currentPeriodId());
     }
 
     function redeemValue(address _token, uint256 _periodId, uint256 _amount) public view approvedOnly(_token) returns (uint256) {
@@ -100,9 +99,8 @@ contract VPool is IVPool, AccessControl {
 
         uint256 totalDeposited = period.totalDeposited;
         uint256 liquidity = period.liquidity;
-        uint256 loaned = period.loaned;
 
-        return _amount.mul(liquidity.add(loaned)).div(totalDeposited);
+        return _amount.mul(liquidity).div(totalDeposited);
     }
 
     // ======== Liquidity manipulation ========
@@ -125,32 +123,27 @@ contract VPool is IVPool, AccessControl {
     function redeem(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
         // Make sure the requirements are satisfied
         require(isCooldown(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during cooldown or once period has ended");
-        require(_amount <= balance(_token, _periodId), "Cannot redeem more than total balance");
-
-        // **** OH NO - WHAT DO I DO IN THE CASE OF EVERYTHING BEING IN DEBT ??????? - THIS WOULDNT WORK IN THIS CASE BECAUSE IT MIGHT BE ALL IN DEBT EVEN THOUGH ITS STILL IN THE POOL ?????
-        // **** Hangon, but this can only occur when there si nothing being borrowed, and therefore there would be no debt - I should remove the debt concept as a whole from this and put it in the margin
-        // **** Hangon too, we are not changing the amount deposited OR the liquidity at this stage - that stays the same as what it was originally. All that should change is the percent remaining
+        require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
+        uint256 deposited = stakingPeriods[_periodId][_token].deposits[_msgSender()];
         uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
-        uint256 deposit = stakingPeriods[_periodId][_token].deposits[_msgSender()];
+        uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
 
-        stakingPeriods[_periodId][_token].deposits[_msgSender()] = stakingPeriods[_periodId][_token].deposits[_msgSender()].sub(_amount);
-        stakingPeriods[_periodId][_token].totalDeposited = stakingPeriods[_periodId][_token].totalDeposited.sub(_amount);
-        stakingPeriods[_periodId][_token].liquidity = stakingPeriods[_periodId][_token].liquidity.sub(_amount);
+        stakingPeriods[_periodId][_token].deposits[_msgSender()] = deposited.sub(_amount);
+        stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
+
+        // **** What happens when we reduce the price of the liquidity pool by taking an amount from it - does it stay the same of what other people should of earned from it ?
+        // stakingPeriods[_periodId][_token].liquidity = liquidity.sub(_amount);
 
         // Withdraw the allocated amount from the pool and return it to the user
-        uint256 redeemed = 
+        // uint256 redeemed = 
     }
 
     function lend() external onlyRole(DEFAULT_ADMIN_ROLE) {
         // **** This will lend money out to another pool, and will also accumulate debt for the given pool
         // **** Lending can only be done via 
         // **** We are not lending out of the pool directly, we are lending off of the amount that was allocated to the stake
-    }
-
-    function reportLost() external onlyRole(DEFAULT_ADMIN_ROLE) {
-
     }
 
     function repay() external onlyRole(DEFAULT_ADMIN_ROLE) {
