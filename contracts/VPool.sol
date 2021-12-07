@@ -72,7 +72,7 @@ contract VPool is IVPool, AccessControl {
         return approved[_token];
     }
 
-    function getApproved() public view returns (address[] memory) {
+    function getApproved() external view returns (address[] memory) {
         return approvedList;
     }
 
@@ -159,11 +159,4 @@ contract VPool is IVPool, AccessControl {
         IERC20(_token).transfer(_to, _amount);
         emit Withdraw(_token, periodId, _to, _amount);
     }
-
-    // ======== Events ========
-    event Stake(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
-    event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount, uint256 liquidity);
-
-    event Deposit(address indexed token, uint256 indexed periodId, uint256 amount);
-    event Withdraw(address indexed token, uint256 indexed periodId, address indexed to, uint256 amount);
 }
