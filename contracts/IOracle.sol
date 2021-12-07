@@ -11,7 +11,7 @@ interface IOracle {
     function getDecimals() external view returns (uint256);
 
     /**
-     *  @dev Adds a router to be used in price calculation
+     *  @dev Adds a new router to be used in price calculation
      *  @param _router Router to be added
      */
     function addRouter(UniswapV2Router02 _router) external;
