@@ -74,14 +74,32 @@ interface IVPool {
 
     /**
      *  @dev Stakes a given amount of specified tokens in the pool
-     *  @param 
+     *  @param _token The token to stake
+     *  @param _amount The amount of the token to stake
      */
     function stake(address _token, uint256 _amount) external;
 
+    /**
+     *  @dev Redeems the staked amount of tokens in a given pool
+     *  @param _token Token to redeem for
+     *  @param _amount Amount of the token to redeem
+     *  @param _periodId The id of the period to redeem from
+     */
     function redeem(address _token, uint256 _amount, uint256 _periodId) external;
 
+    /**
+     *  @dev Deposit tokens into the pool and increase the liquidity of the pool
+     *  @param _token The token to deposit
+     *  @param _amount The amount of the token to deposit
+     */
     function deposit(address _token, uint256 _amount) external;
 
+    /**
+     *  @dev Withdraw tokens from the pool and decrease the liquidity of the pool
+     *  @param _token The token to withdraw
+     *  @param _amount The amount of the token to withdraw
+     *  @param _to The address to withdraw to
+     */
     function withdraw(address _token, uint256 _amount, address _to) external;
 
     // ======== Events ========
