@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 interface ILiquidator {
     /**
-     *  @dev Liquidates the assets and returns the amount back to the specified pool
+     *  @dev Liquidates the assets and returns the amount back to the specified pool and returns true if the callback was successful
      *  @param _initiator The caller of the function that executed this callback
      *  @param _token The address of the token received
      *  @param _amount The amount of the token received
