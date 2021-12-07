@@ -19,22 +19,24 @@ contract Oracle is IOracle, Context {
         decimals = decimals_;
     }
 
-    function _swap(int256[] memory array, uint256 i, uint256 j) private pure {
-        (array[i], array[j]) = (array[j], array[i]);
+    // ======== Verify price from multiple sources ========
+
+    function _max(uint256[] memory _array) private pure {
+        require(_array.length > 0, "Cannot find the max of an empty array");
+        uint256 index;
+        uint256 max = 0;
+        for (uint256 i = 0; i < _array.length; i++) {
+            if (_array[i] > max) {
+                max = _array[i];
+                index = i;
+            }
+        }
+        return index;
     }
 
-    function _sort(int256[] memory array, uint256 begin, uint256 end) private pure {
-        if (begin < end) {
-            uint256 j = begin;
-            int256 pivot = array[j];
-            for (uint256 i = begin + 1; i < end; ++i) {
-                if (array[i] < pivot) {
-                    _swap(array, i, ++j);
-                }
-            }
-            _swap(array, begin, j);
-            _sort(array, begin, j);
-            _sort(array, j + 1, end);
+    function _sort(int256[] memory array) private pure {
+        for (int i = 0; i < array.length; i++) {
+
         }
     }
 
