@@ -90,7 +90,7 @@ contract VPool is IVPool, AccessControl {
 
     function balanceOf(address _account, address _token) external view approvedOnly(_token) returns (uint256) {
         // Get the amount of tokens the account deposited into the current period
-        return balance(_account, _token, currentPeriodId());
+        return balanceOf(_account, _token, currentPeriodId());
     }
 
     function redeemValue(address _token, uint256 _periodId, uint256 _amount) public view approvedOnly(_token) returns (uint256) {
@@ -105,9 +105,10 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Liquidity manipulation ========
 
-    function deposit(address _token, uint256 _amount) external approvedOnly(_token) {
+    function stake(address _token, uint256 _amount) external approvedOnly(_token) {
         // Make sure the requirements are satisfied
         require(isCooldown() == true, "Staking is only allowed during the cooldown period");
+        require(_amount > 0, "Stake amount must be greater than 0");
 
         // Move the tokens to the pool and update the users deposit amount
         IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
@@ -117,40 +118,46 @@ contract VPool is IVPool, AccessControl {
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
         stakingPeriods[periodId][_token].totalDeposited = stakingPeriods[periodId][_token].totalDeposited.add(_amount);
 
-        emit Deposit(_msgSender(), _token, periodId, _amount);
+        emit Stake(_msgSender(), _token, periodId, _amount);
     }
 
     function redeem(address _token, uint256 _amount, uint256 _periodId) external approvedOnly(_token) returns (uint256) {
         // Make sure the requirements are satisfied
         require(isCooldown(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during cooldown or once period has ended");
+        require(_amount > 0, "Redeem amount must be greater than 0");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
         uint256 deposited = stakingPeriods[_periodId][_token].deposits[_msgSender()];
         uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
-        uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
+        // uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
 
         stakingPeriods[_periodId][_token].deposits[_msgSender()] = deposited.sub(_amount);
         stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
 
         // **** What happens when we reduce the price of the liquidity pool by taking an amount from it - does it stay the same of what other people should of earned from it ?
+        // **** No, it shouldnt remove liquidity at all - the liquidity just sets how many tokens have been allocated out, and in doing so we should also NOT update the total deposited
         // stakingPeriods[_periodId][_token].liquidity = liquidity.sub(_amount);
 
         // Withdraw the allocated amount from the pool and return it to the user
         // uint256 redeemed = 
     }
 
-    function lend() external onlyRole(DEFAULT_ADMIN_ROLE) {
-        // **** This will lend money out to another pool, and will also accumulate debt for the given pool
-        // **** Lending can only be done via 
-        // **** We are not lending out of the pool directly, we are lending off of the amount that was allocated to the stake
+    function deposit(address _token, uint256 _amount) external approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
+        // Receive a given number of funds to the current pool
+        uint256 periodId = currentPeriodId();
+        IERC20(_token).transferFrom(_msgSender(), address(this), _amount);
+        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
     }
 
-    function repay() external onlyRole(DEFAULT_ADMIN_ROLE) {
-        // **** This will be used for redepositing tokens back into the staking pool
+    function withdraw(address _token, uint256 _amount) external onlyRole(DEFAULT_ADMIN_ROLE) approvedOnly(_token) {
+        // Withdraw an amount from the current pool
     }
 
     // ======== Events ========
-    event Deposit(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
+    event Stake(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
     event Redeem(address indexed sender, address indexed token, uint256 indexed periodId, uint256 amount);
+
+    event Deposit();
+    event Withdraw();
 }
