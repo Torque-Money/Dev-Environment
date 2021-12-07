@@ -46,8 +46,8 @@ contract Margin is IMargin {
         return liquidity - borrowed;
     }
 
-    function marginLevel(IERC20 _token, address _account) public approvedOnly(_token) returns (uint256) {
-        
+    function marginLevel(IERC20 _token, IERC20 _tokenBorrowed, address _account) public approvedOnly(_token) returns (uint256) {
+         
     }
 
     function liquidatable(IERC20 _token) public approvedOnly(_token) returns (uint256) {
