@@ -133,12 +133,13 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
-        require(borrowAccount.collateral > 0, "Must deposit collateral before borrowing"); // **** Careful with this - we need to have a calculator to check if the value deposited will be enough to be liquidated
+        // Require that the borrowed amount will be above the required margin level
+        uint256 borrowInitialPrice = oracle.pairPrice(_borrow, _collateral).mul(_amount).div(oracle.getDecimals());
+        require(calculateMarginLevel(borrowAccount.collateral, borrowInitialPrice, _amount, _borrow, _collateral) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
 
-        uint256 borrowInitialPrice = oracle.pairPrice(_borrow, _collateral).mul(_amount).div(oracle.getDecimals());
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
 
