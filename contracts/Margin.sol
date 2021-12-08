@@ -125,7 +125,7 @@ contract Margin is IMargin, Context {
         require(_amount > 0, "Amount must be greater than 0");
         require(!vPool.isPrologue(periodId), "Cannot borrow during prologue");
         uint256 epilogueStart = vPool.getEpilogueTimes(periodId)[0];
-        require(block.timestamp <= epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue"); // **** Should this be <= or just < ?
+        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
         require(liquidityAvailable(_borrow) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
