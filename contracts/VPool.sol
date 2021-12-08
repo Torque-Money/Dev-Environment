@@ -199,7 +199,7 @@ contract VPool is IVPool, AccessControl {
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
-        stakingPeriods[periodId][_token].liquidity = stakingPeriod.liquidity.sub(_amount);
+        stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_to, _amount);
         emit Withdraw(_token, periodId, _to, _amount);
     }
