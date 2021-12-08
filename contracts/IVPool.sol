@@ -7,15 +7,26 @@ interface IVPool {
     // ======== Check the staking period and cooldown periods ========
 
     /**
-     *  @dev Checks if the period Id is on a cooldown
-     *  @param _periodId The id of the period to check if it is on cooldown
+     *  @dev Checks if the period Id is the prologue phase
+     *  @param _periodId The id of the period to check if it is in prologue phase
      */
-    function isCooldown(uint256 _periodId) external view returns (bool);
+    function isPrologue(uint256 _periodId) external view returns (bool);
 
     /**
-     *  @dev Checks if the current period is on cooldown
+     *  @dev Checks if the current period is within the prologue phase
      */
-    function isCooldown() external view returns (bool);
+    function isPrologue() external view returns (bool);
+
+    /**
+     *  @dev Checks if the period Id is in the epilogue phase
+     *  @param _periodId The id of the period to check if it is in epilogue phase
+     */
+    function isEpilogue(uint256 _periodId) external view returns (bool);
+    
+    /**
+     *  @dev Checks if the current period is within the epilogue phase
+     */
+    function isEpilogue() external view returns (bool);
 
     /**
      *  @dev Checks if the specified period is the current period

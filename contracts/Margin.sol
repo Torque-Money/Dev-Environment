@@ -162,6 +162,10 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
+    function repay(address _account) public {
+        // **** Use this to repay accounts outside of the given borrow period
+    }
+
     function repay() external {
         // **** Perhaps we need an amount for how much needs to be repaid exactly off of the margin ?
         // Repay off the loan
