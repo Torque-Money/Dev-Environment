@@ -142,7 +142,7 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function repayValue(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
+    function balance(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
@@ -169,8 +169,8 @@ contract Margin is IMargin, Context {
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
 
-        uint256 rValue = repayValue(_account, _collateral, _borrow, _periodId);
-        if (rValue > borrowAccount.collateral) {
+        uint256 repayValue = balance(_account, _collateral, _borrow, _periodId);
+        if (repayValue > borrowAccount.collateral) {
 
         } else {
             // Reswap the collateral for the given number of tokens
