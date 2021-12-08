@@ -147,7 +147,7 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit();
+    event Deposit(address indexed depositor, IERC20 indexed collateral, IERC20 indexed borrow, uint256 amount); // **** I need some way of doing the periodId ?????
     event Borrow();
     event Repay();
     event Withdraw();
