@@ -155,6 +155,8 @@ contract Margin is IMargin, Context {
         // **** So basically at the current time, if the user is in the red but not enough to be liquidated when the next period ends, the protocol is the one who takes the loss - this SHOULD NOT happen - how can I fix this ?
         // **** Maybe flash liquidate should always be callable, but only up to what the user actually owes the protocol - same collateralization rates will occur
 
+        // **** The answer is to have the repay be callable by EVERYONE before the new period happens and stakers can withdraw their amount - the problem was if users couldnt repay, but if they have to this problem doesnt exist. Flash liquidates can still happen though for on the go liquidity
+
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
 
