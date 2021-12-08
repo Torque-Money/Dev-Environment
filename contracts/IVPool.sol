@@ -39,11 +39,6 @@ interface IVPool {
      */
     function currentPeriodId() external view returns (uint256);
 
-    /**
-     *  @dev Returns the time of which the next period starts
-     */
-    function nextPeriodStart() external view returns (uint256);
-
     // ======== Approved tokens ========
 
     /**
