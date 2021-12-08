@@ -100,8 +100,8 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function depositCollateral() external {
-
+    function depositCollateral(address _account, IERC20 _collateral) external approvedOnly(_collateral) {
+        // Store funds in the account for the given asset they wish to borrow
     }
 
     // ======== Borrow ========
