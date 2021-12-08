@@ -53,6 +53,8 @@ contract Margin is IMargin, Context {
         _;
     }
 
+    // ======== Calculations ========
+
     function liquidityAvailable(IERC20 _token) public view approvedOnly(_token) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 periodId = vPool.currentPeriodId();
@@ -86,14 +88,6 @@ contract Margin is IMargin, Context {
         return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     }
 
-    function depositCollateral() external {
-
-    }
-
-    function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
-        // Borrow against collateral
-    }
-
     function calculateInterest(IERC20 _token, uint256 _borrowed, uint256 _time) public view approvedOnly(_token) returns (uint256) {
         // interest = timesAccumulated * amountBorrowed * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
 
@@ -102,6 +96,14 @@ contract Margin is IMargin, Context {
         uint256 liquidity = liquidityAvailable(_token);
 
         return _time.mul(_borrowed).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+    }
+
+    function depositCollateral() external {
+
+    }
+
+    function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
+        // Borrow against collateral
     }
 
     function flashLiquidateOwing() external returns (uint256) {
