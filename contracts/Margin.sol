@@ -112,8 +112,13 @@ contract Margin is IMargin, Context {
         // In here we consume the requested price if it is present for the given token pair
     }
 
+    function repayBorrow() external {
+        // Repay off the loan
+    }
+
     function withdrawCollateral() external {
         // Allows a user to withdraw their collateral given that it is not locked in
+        // **** Only allowed to withdraw once borrow has been repaid
     }
 
     function withdrawProfits() external {
