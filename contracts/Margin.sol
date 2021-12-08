@@ -61,7 +61,7 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _borrowed, IERC20 _collateral) public view returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _borrowed, IERC20 _collateral) public view approvedOnly(_borrowed) approvedOnly(_collateral) returns (uint256) {
         uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
         uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice);
         return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
