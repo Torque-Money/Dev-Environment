@@ -139,6 +139,8 @@ contract Margin is IMargin, Context {
         uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow).mul(_amount).div(oracle.getDecimals());
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialValue.mul(_amount).div(oracle.getDecimals()));
 
+        // **** Update ALL of the stats for each borrow - this is why I havent had this problem before ??????
+
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
 
