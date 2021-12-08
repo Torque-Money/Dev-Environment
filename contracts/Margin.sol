@@ -35,12 +35,15 @@ contract Margin is IMargin, Context {
 
     uint256 private maxInterestPercent;
 
-    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
+    uint256 private automatorReward;
+
+    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_, uint256 automatorReward_) {
         vPool = vPool_;
         oracle = oracle_;
         minBorrowPeriod = minBorrowPeriod_;
         maxInterestPercent = maxInterestPercent_;
         minMarginLevel = minMarginLevel_;
+        automatorReward = automatorReward_;
     }
 
     // ======== Modifiers ========
@@ -158,32 +161,39 @@ contract Margin is IMargin, Context {
         // If the period has entered the epilogue phase, then anyone may repay the account
         require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
 
-        // **** IN THE CASE OF THE USER DOING SOMETHING, WE NEED TO UPDATE THEIR ACCOUNT WITH A PORTION OF THE COLLATERAL / EARNINGS TOO
-        // **** This collateral needs to be swapped into the correct asset (AND SHOULD BE BASED OFF OF THE MIN MARGIN LEVEL)
-
-        // **** When the repay is above the deposit, return for them the amount of the tokens they are owed, when the amount is below, they must swap a portion of their collateral for the borrowed asset
-
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
 
-        uint256 repayBalance = balance(_account, _collateral, _borrow, _periodId);
-        if (repayBalance > borrowAccount.collateral) {
+        uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
+        if (balAfterRepay > borrowAccount.collateral) {
 
         } else {
-            uint256 repayAmount = borrowAccount.collateral.sub(repayBalance);
-            borrowAccount.collateral = repayBalance; // **** Just be careful with this ?
+            uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
+            borrowAccount.collateral = balAfterRepay;
 
-            // **** Make sure to update the balances of the amounts borrowed and initial value and such
+            // Update the borrowed
+            borrowAccount.initialPrice = 0;
+            borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+            borrowAccount.borrowed = 0;
 
             // Swap the repay value back for the borrowed asset and return it back to the pool
             UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
             address[] memory path = new address[](2);
             path[0] = address(_collateral);
             path[1] = address(_borrow);
+
             uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
+
+            // Provide a reward to the user who repayed the account if they are not the account owner
+            uint256 reward = 0;
+            if (_account != _msgSender()) {
+                reward = amountOut.mul(automatorReward).div(100);
+                _borrow.safeTransfer(_msgSender(), reward);
+            }
+            vPool.deposit(_borrow, amountOut.sub(reward));
         }
     }
 
