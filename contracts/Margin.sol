@@ -169,13 +169,21 @@ contract Margin is IMargin, Context {
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
 
-        uint256 repayValue = balance(_account, _collateral, _borrow, _periodId);
-        if (repayValue > borrowAccount.collateral) {
+        uint256 repayBalance = balance(_account, _collateral, _borrow, _periodId);
+        if (repayBalance > borrowAccount.collateral) {
 
         } else {
-            // Reswap the collateral for the given number of tokens
-            // We will deposit the recollateralized value of the amount of tokens we get back to the pool at the end
-            // **** All of the debt from the initial amount will be removed as well
+            uint256 repayAmount = borrowAccount.collateral.sub(repayBalance);
+            borrowAccount.collateral = repayBalance; // **** Just be careful with this ?
+
+            // **** Make sure to update the balances of the amounts borrowed and initial value and such
+
+            // Swap the repay value back for the borrowed asset and return it back to the pool
+            UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
+            address[] memory path = new address[](2);
+            path[0] = address(_collateral);
+            path[1] = address(_borrow);
+            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
         }
     }
 
