@@ -82,6 +82,7 @@ contract Margin is IMargin, Context {
     }
 
     function getMinMarginLevel() public view returns (uint256) {
+        // Return the minimum margin level before liquidation
         return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     }
 
