@@ -128,7 +128,7 @@ contract Margin is IMargin, Context {
 
     function withdrawCollateral() external {
         // Allows a user to withdraw their collateral given that it is not locked in
-        // **** Only allowed to withdraw once borrow has been repaid
+        // **** Only allowed to withdraw once borrow has been repaid and borrowed amount is 0
     }
 
     function withdrawProfits() external {
