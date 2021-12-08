@@ -126,6 +126,10 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         require(borrowAccount.collateral > 0, "Must deposit collateral before borrowing");
+
+        // Update the balances of the borrowed value
+        borrowPeriods[periodId][_borrow].totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+        emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
 
     // ======== Repay and withdraw ========
@@ -151,8 +155,8 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount); // **** I need some way of doing the periodId ?????
-    event Borrow();
+    event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
+    event Borrow(address indexed borrower, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
     event Repay();
     event Withdraw();
     event FlashLiquidation();

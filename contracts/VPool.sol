@@ -160,8 +160,6 @@ contract VPool is IVPool, AccessControl {
 
         // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
 
-        // **** Might need a way of doing this without using safe transfer from, perhaps we can replace this with an "update balance", and just assume that the amount has been transferred naively ?
-
         // Receive a given number of funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
