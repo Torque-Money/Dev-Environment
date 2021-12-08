@@ -142,7 +142,7 @@ contract Margin is IMargin, Context {
     // ======== Repay and withdraw ========
 
     function repayValue(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
-        // The value returned from repaying a margin
+        // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
@@ -150,14 +150,15 @@ contract Margin is IMargin, Context {
         uint256 interest = calculateInterest(_borrow, borrowAccount.initialPrice);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrow, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
-        // **** Wait, this doesnt actually look at how much the user should have their balance updated by though, what ???? - it WILL be for a different deposit asset anyway
-        // **** We actually need to calculate the amount that we can return here ?
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
+
+        // **** IN THE CASE OF THE USER DOING SOMETHING, WE NEED TO UPDATE THEIR ACCOUNT WITH A PORTION OF THE COLLATERAL / EARNINGS TOO
+        // **** This collateral needs to be swapped into the correct asset
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
