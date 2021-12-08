@@ -169,7 +169,7 @@ contract Margin is IMargin, Context {
 
         uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
-            // **** Give the user back their deposited amount WITHOUT reswapping to save gas
+            // **** Give the user back their deposited amount in terms of the deposited token
 
         } else {
             uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
