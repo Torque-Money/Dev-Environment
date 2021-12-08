@@ -116,12 +116,16 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
+    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) isNotCooldown {
         // Requirements
         require(_amount > 0, "Amount must be greater than 0");
-        require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(liquidityAvailable(_borrow) >= _amount, "Amount to borrow exceeds available liquidity");
 
+        uint256 periodId = vPool.currentPeriodId();
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
+        require(borrowAccount.collateral > 0, "Must deposit collateral before borrowing");
     }
 
     // ======== Repay and withdraw ========
