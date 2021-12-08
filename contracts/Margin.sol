@@ -78,6 +78,8 @@ contract Margin is IMargin, Context {
         // Calculate margin level - if there is none borrowed then return 999
         if (borrowAccount.borrowed == 0) return uint256(999).mul(oracle.getDecimals());
         else {
+            // **** I HAVENT DONE THE PRICE PROPERLY FOR THIS I BELIEVE
+
             uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral);
             uint256 borrowedInitialPrice = borrowAccount.initialPrice;
             uint256 interest = calculateInterest(_borrowed, borrowAccount.borrowed, block.timestamp - borrowAccount.borrowTime);
@@ -90,13 +92,24 @@ contract Margin is IMargin, Context {
         return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     }
 
-    function calculateInterest(IERC20 _token, uint256 _borrowed, uint256 _time) public view approvedOnly(_token) returns (uint256) {
-        // interest = timesAccumulated * amountBorrowed * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+    function calculateInterest(IERC20 _token, uint256 _initialBorrowPrice, uint256 _time) public view approvedOnly(_token) returns (uint256) {
+        // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
         uint256 periodId = vPool.currentPeriodId();
         uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
         uint256 liquidity = liquidityAvailable(_token);
 
-        return _time.mul(_borrowed).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+        return _time.mul(_initialBorrowPrice).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+    }
+
+    // ======== Data retrievers ========
+
+    function getCollateral(address _account, IERC20 _borrow, IERC20 _collateral) public approvedOnly(_borrow) approvedOnly(_collateral) {
+        // Get the balance owed to the account
+    }
+
+    function getDebt(address _account, IERC20 _borrow, IERC20 _collateral) public approvedOnly(_borrow) approvedOnly(_collateral) {
+        // Get the debt of the account
+
     }
 
     // ======== Deposit ========
@@ -129,6 +142,14 @@ contract Margin is IMargin, Context {
 
         // Update the balances of the borrowed value
         borrowPeriods[periodId][_borrow].totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+
+        uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow);
+        // **** REGARDING THIS WHAT DO I DO IN THE CASE OF ME WANTING TO BORROW MORE - DOES IT JUST GET RESET ???
+        borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].initialPrice = borrowInitialValue.mul(_amount).div(oracle.getDecimals());
+
+        // **** I NEED TO SET THE INITIAL BORROWED PRICE
+        // **** DID I TAKE THE DECIMALS INTO ACCOUNT FOR ALL OF MY CALCULATIONS ?????
+
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
 
