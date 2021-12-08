@@ -50,8 +50,21 @@ contract Margin is IMargin, Context {
         _;
     }
 
-    modifier isNotPrologue {
-        require(!vPool.isPrologue(), "Cannot perform operation during prologue period");
+    modifier isPrologue(bool _isPrologue) {
+        if (_isPrologue) {
+            require(vPool.isPrologue(), "Can only perform operation during prologue period");
+        } else {
+            require(!vPool.isPrologue(), "Cannot perform operation during prologue period");
+        }
+        _;
+    }
+
+    modifier isEpilogue(bool _isEpilogue) {
+        if (_isEpilogue) {
+            require(vPool.isEpilogue(), "Can only perform operation during epilogue period");
+        } else {
+            require(!vPool.isEpilogue(), "Cannot perform operation during epilogue period");
+        }
         _;
     }
 
