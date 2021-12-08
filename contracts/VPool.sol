@@ -150,9 +150,11 @@ contract VPool is IVPool, AccessControl {
         // Move the tokens to the pool and update the users deposit amount
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
 
-        stakingPeriods[periodId][_token].deposits[_msgSender()] = stakingPeriods[periodId][_token].deposits[_msgSender()].add(_amount);
-        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
-        stakingPeriods[periodId][_token].totalDeposited = stakingPeriods[periodId][_token].totalDeposited.add(_amount);
+        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
+
+        stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].add(_amount);
+        stakingPeriod.liquidity = stakingPeriod.liquidity.add(_amount);
+        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(_amount);
 
         emit Stake(_msgSender(), _token, periodId, _amount);
     }
@@ -164,16 +166,14 @@ contract VPool is IVPool, AccessControl {
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
-        uint256 deposited = stakingPeriods[_periodId][_token].deposits[_msgSender()];
-        uint256 totalDeposited = stakingPeriods[_periodId][_token].totalDeposited;
-        uint256 liquidity = stakingPeriods[_periodId][_token].liquidity;
+        StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
 
-        stakingPeriods[_periodId][_token].deposits[_msgSender()] = deposited.sub(_amount);
-        stakingPeriods[_periodId][_token].totalDeposited = totalDeposited.sub(_amount);
+        stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].sub(_amount);
+        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.sub(_amount);
 
         // Withdraw the allocated amount from the pool and return it to the user
         uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
-        stakingPeriods[_periodId][_token].liquidity = liquidity.sub(tokensRedeemed);
+        stakingPeriod.liquidity = stakingPeriod.liquidity.sub(tokensRedeemed);
         _token.safeTransfer(_msgSender(), tokensRedeemed);
         emit Redeem(_msgSender(), _token, _periodId, _amount, tokensRedeemed);
     }
