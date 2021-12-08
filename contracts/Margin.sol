@@ -101,7 +101,7 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function depositCollateral(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) isNotCooldown {
+    function depositCollateral(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
 
@@ -111,7 +111,7 @@ contract Margin is IMargin, Context {
 
         uint256 collateral = borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral;
         borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral = collateral.add(_amount);
-        emit Deposit();
+        emit Deposit(_msgSender(), _collateral, periodId, _borrow, _amount);
     }
 
     // ======== Borrow ========
@@ -147,7 +147,7 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(address indexed depositor, IERC20 indexed collateral, IERC20 indexed borrow, uint256 amount); // **** I need some way of doing the periodId ?????
+    event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount); // **** I need some way of doing the periodId ?????
     event Borrow();
     event Repay();
     event Withdraw();
