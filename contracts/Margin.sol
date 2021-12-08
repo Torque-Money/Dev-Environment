@@ -149,10 +149,7 @@ contract Margin is IMargin, Context {
         // Update the balances of the borrowed value
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
         uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow).mul(_amount).div(oracle.getDecimals());
-        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialValue.mul(_amount).div(oracle.getDecimals())); // **** Then I will just resub this off everytime there is a withdraw I believe ?
-
-        // **** I NEED TO SET THE INITIAL BORROWED PRICE
-        // **** DID I TAKE THE DECIMALS INTO ACCOUNT FOR ALL OF MY CALCULATIONS ?????
+        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialValue.mul(_amount).div(oracle.getDecimals()));
 
         // **** THINK ABOUT THE LIQUIDATION LEVEL MORE - DOES IT OCCUR WHEN A BIT OF THE VALUE HAS BEEN LOST AND AS SUCH WE JUST TAKE THE COLLATERAL - IF THIS IS THE CASE THIS NEEDS TO HAPPEN IN OUR REPAY
 
