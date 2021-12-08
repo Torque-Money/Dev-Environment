@@ -23,7 +23,6 @@ contract Margin is IMargin, Context {
         uint256 collateral;
         uint256 borrowed;
         uint256 initialPrice;
-        uint256 borrowTime;
     }
     struct BorrowPeriod {
         uint256 totalBorrowed;
@@ -33,13 +32,13 @@ contract Margin is IMargin, Context {
     uint256 private minBorrowPeriod;
     uint256 private minMarginLevel;
 
-    uint256 private interestInterval;
+    uint256 private maxInterestPercent;
 
-    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 interestInterval_, uint256 minMarginLevel_) {
+    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         vPool = vPool_;
         oracle = oracle_;
         minBorrowPeriod = minBorrowPeriod_;
-        interestInterval = interestInterval_;
+        maxInterestPercent = maxInterestPercent_;
         minMarginLevel = minMarginLevel_;
     }
 
@@ -62,10 +61,16 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    // **** Due to the need for depositing before borrowing and that the ratio is a bit above 1:1, depositing such a small value is instantly liquidatable. Make a function for the min deposit required
-    // **** HUGE NOTE: INSTEAD OF USING THOSE NESTED CALLING I SHOULD JUST USE STORAGE AND SEE IF IT ACTS AS A POINTER FOR CONVENIANCE - CHANGE ALL OVER TO THIS + IMPLEMENT INTERFACE
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _borrowed, IERC20 _collateral) public view returns (uint256) {
+        uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
+        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice);
+        return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
+    }
 
-    // **** LETS JUST USE THESE CALCULATORS AFTER THE CORE IS DONE
+    function getMinMarginLevel() public view returns (uint256) {
+        // Return the minimum margin level before liquidation
+        return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
+    }
 
     // function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
     //     // Get the margin level of an account for the current period
@@ -86,19 +91,14 @@ contract Margin is IMargin, Context {
     //     }
     // }
 
-    // function getMinMarginLevel() public view returns (uint256) {
-    //     // Return the minimum margin level before liquidation
-    //     return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
-    // }
-
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrowAmount, uint256 _timeSinceBorrow) public view approvedOnly(_borrowed) returns (uint256) {
-        // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) public view approvedOnly(_borrowed) returns (uint256) {
+        // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
         uint256 periodId = vPool.currentPeriodId();
 
         uint256 totalBorrowed = borrowPeriods[periodId][_borrowed].totalBorrowed;
         uint256 liquidity = liquidityAvailable(_borrowed);
 
-        return _timeSinceBorrow.mul(_initialBorrowAmount).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+        return _initialBorrow.mul(maxInterestPercent).mul(totalBorrowed).div(totalBorrowed.add(liquidity)).div(100);
     }
 
     // ======== Deposit ========
@@ -138,10 +138,7 @@ contract Margin is IMargin, Context {
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
 
         uint256 borrowInitialPrice = oracle.pairPrice(_borrow, _collateral).mul(_amount).div(oracle.getDecimals());
-        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice); // **** Should I really be adding to the current amount (I believe so)
-        if (borrowAccount.borrowed == 0) {
-            borrowAccount.borrowTime = block.timestamp; // **** This affects the interest AND the min staking time - how do I actually perform this properly ????? (IMPORTANT)
-        }
+        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
 
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
@@ -154,10 +151,8 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
-        // **** Hangon if this is the case, then when we go and redeposit, what happens to the borrow time and thus the interest rate ????
-
         uint256 collateral = borrowAccount.collateral;
-        uint256 interest = calculateInterest(_borrow, borrowAccount.initialPrice, block.timestamp - borrowAccount.borrowTime);
+        uint256 interest = calculateInterest(_borrow, borrowAccount.initialPrice);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrow, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
