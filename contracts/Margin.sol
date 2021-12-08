@@ -67,39 +67,43 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
-        // Get the margin level of an account for the current period
-        uint256 periodId = vPool.currentPeriodId();
+    // **** Due to the need for depositing before borrowing and that the ratio is a bit above 1:1, depositing such a small value is instantly liquidatable. Make a function for the min deposit required
+    // **** HUGE NOTE: INSTEAD OF USING THOSE NESTED CALLING I SHOULD JUST USE STORAGE AND SEE IF IT ACTS AS A POINTER FOR CONVENIANCE - CHANGE ALL OVER TO THIS + IMPLEMENT INTERFACE
 
-        // Get the borrowed period and and borrowed asset data
-        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+    // **** LETS JUST USE THESE CALCULATORS AFTER THE CORE IS DONE
 
-        // Calculate margin level - if there is none borrowed then return 999
-        if (borrowAccount.borrowed == 0) return uint256(999).mul(oracle.getDecimals());
-        else {
-            // **** I HAVENT DONE THE PRICE PROPERLY FOR THIS I BELIEVE
+    // function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    //     // Get the margin level of an account for the current period
+    //     uint256 periodId = vPool.currentPeriodId();
 
-            uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral);
-            uint256 borrowedInitialPrice = borrowAccount.initialPrice;
-            uint256 interest = calculateInterest(_borrowed, borrowAccount.borrowed, block.timestamp - borrowAccount.borrowTime);
-            return oracle.getDecimals().mul(borrowedCurrentPrice.add(borrowAccount.collateral)).div(borrowedInitialPrice.add(interest));
-        }
-    }
+    //     // Get the borrowed period and and borrowed asset data
+    //     BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
+    //     BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
-    function getMinMarginLevel() public view returns (uint256) {
-        // Return the minimum margin level before liquidation
-        return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
-    }
+    //     // Calculate margin level - if there is none borrowed then return 999
+    //     if (borrowAccount.borrowed == 0) return uint256(999).mul(oracle.getDecimals());
+    //     else {
+    //         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
+    //         uint256 borrowedInitialPrice = borrowAccount.initialPrice; // **** This is also probably stored using decimals I believe ????
+    //         uint256 interest = calculateInterest(_borrowed, borrowedInitialPrice, block.timestamp - borrowAccount.borrowTime);
 
-    function calculateInterest(IERC20 _token, uint256 _initialBorrowPrice, uint256 _time) public view approvedOnly(_token) returns (uint256) {
-        // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
-        uint256 periodId = vPool.currentPeriodId();
-        uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
-        uint256 liquidity = liquidityAvailable(_token);
+    //         return oracle.getDecimals().mul(borrowedCurrentPrice.add(borrowAccount.collateral)).div(borrowedInitialPrice.add(interest));
+    //     }
+    // }
 
-        return _time.mul(_initialBorrowPrice).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
-    }
+    // function getMinMarginLevel() public view returns (uint256) {
+    //     // Return the minimum margin level before liquidation
+    //     return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
+    // }
+
+    // function calculateInterest(IERC20 _token, uint256 _initialBorrowPrice, uint256 _timeSinceBorrow) public view approvedOnly(_token) returns (uint256) {
+    //     // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+    //     uint256 periodId = vPool.currentPeriodId();
+    //     uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
+    //     uint256 liquidity = liquidityAvailable(_token);
+
+    //     return _timeSinceBorrow.mul(_initialBorrowPrice).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+    // }
 
     // ======== Data retrievers ========
 
@@ -114,7 +118,7 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function depositCollateral(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) {
+    function deposit(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
 
@@ -122,8 +126,10 @@ contract Margin is IMargin, Context {
         _collateral.safeTransferFrom(_msgSender(), address(this), _amount);
         uint256 periodId = vPool.currentPeriodId();
 
-        uint256 collateral = borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral;
-        borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral = collateral.add(_amount);
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+
+        borrowAccount.collateral = borrowAccount.collateral.add(_amount);
         emit Deposit(_msgSender(), _collateral, periodId, _borrow, _amount);
     }
 
@@ -141,14 +147,16 @@ contract Margin is IMargin, Context {
         require(borrowAccount.collateral > 0, "Must deposit collateral before borrowing");
 
         // Update the balances of the borrowed value
-        borrowPeriods[periodId][_borrow].totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+        uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow).mul(_amount).div(oracle.getDecimals());
 
-        uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow);
         // **** REGARDING THIS WHAT DO I DO IN THE CASE OF ME WANTING TO BORROW MORE - DOES IT JUST GET RESET ???
         borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].initialPrice = borrowInitialValue.mul(_amount).div(oracle.getDecimals());
 
         // **** I NEED TO SET THE INITIAL BORROWED PRICE
         // **** DID I TAKE THE DECIMALS INTO ACCOUNT FOR ALL OF MY CALCULATIONS ?????
+
+        // **** THINK ABOUT THE LIQUIDATION LEVEL MORE - DOES IT OCCUR WHEN A BIT OF THE VALUE HAS BEEN LOST AND AS SUCH WE JUST TAKE THE COLLATERAL - IF THIS IS THE CASE THIS NEEDS TO HAPPEN IN OUR REPAY
 
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
