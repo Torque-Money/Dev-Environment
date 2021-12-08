@@ -150,11 +150,20 @@ contract Margin is IMargin, Context {
         uint256 interest = calculateInterest(_borrow, borrowAccount.initialPrice);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrow, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
+        // **** Wait, this doesnt actually look at how much the user should have their balance updated by though, what ???? - it WILL be for a different deposit asset anyway
+        // **** We actually need to calculate the amount that we can return here ?
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function repay(address _account) public {
-        // **** Use this to repay accounts outside of the given borrow period
+    function repay(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) {
+        // If the period has entered the epilogue phase, then anyone may repay the account
+        require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
+
+        // Repay off the margin and update the users collateral to reflect it
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        uint256 value = 
     }
 
     function repay() external {
