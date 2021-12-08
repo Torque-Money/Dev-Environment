@@ -163,6 +163,8 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
+        require(borrowAccount.borrowed > 0, "No debt to repay");
+
     }
 
     function repay() external {
@@ -170,8 +172,13 @@ contract Margin is IMargin, Context {
         // Repay off the loan
     }
 
-    function withdraw() external {
-        // Make sure that the amount to be repaid is not valid yet
+    function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId) external {
+        // Check that the user does not have any debt
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+
+        require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
+
     }
 
     // ======== Liquidate ========

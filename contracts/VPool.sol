@@ -37,43 +37,31 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Check the staking period and cooldown periods ========
 
-    function getPrologueTimes(uint256 _periodId) public view override returns (uint256[] memory) {
+    function getPrologueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the prologue is between
-        uint256[] memory times = new uint256[](2);
-
         uint256 prologueStart = _periodId.mul(stakingTimeframe);
         uint256 prologueEnd = prologueStart.add(cooldownTimeframe);
-
-        times[0] = prologueStart;
-        times[1] = prologueEnd;
-        return times;
+        return (prologueStart, prologueEnd);
     }
 
     function isPrologue(uint256 _periodId) public view override returns (bool) {
         // Check if the prologue period of the specified period is present
-        uint256[] memory prologueTimes = getPrologueTimes(_periodId);
-        (uint256 prologueStart, uint256 prologueEnd) = (prologueTimes[0], prologueTimes[1]);
+        (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return current >= prologueStart && current < prologueEnd;
     }
 
-    function getEpilogueTimes(uint256 _periodId) public view override returns (uint256[] memory) {
+    function getEpilogueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the epilogue is between
-        uint256[] memory times = new uint256[](2);
-
         uint256 epilogueEnd = _periodId.mul(stakingTimeframe);
         uint256 epilogueStart = epilogueEnd.sub(cooldownTimeframe);
-
-        times[0] = epilogueStart;
-        times[1] = epilogueEnd;
-        return times;
+        return (epilogueStart, epilogueEnd);
     }
 
     function isEpilogue(uint256 _periodId) public view override returns (bool) {
         // Check if the epilogue period of the specified period is present
-        uint256[] memory epilogueTimes = getEpilogueTimes(_periodId);
-        (uint256 epilogueStart, uint256 epilogueEnd) = (epilogueTimes[0], epilogueTimes[1]);
+        (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return current >= epilogueStart && current < epilogueEnd;

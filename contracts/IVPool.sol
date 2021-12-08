@@ -10,7 +10,7 @@ interface IVPool {
      *  @dev Get the times at which the prologue of the given period occurs
      *  @param _periodId The id of the period to get the prologue times
      */
-    function getPrologueTimes(uint256 _periodId) external view returns (uint256[] memory);
+    function getPrologueTimes(uint256 _periodId) external view returns (uint256, uint256);
 
     /**
      *  @dev Checks if the period Id is the prologue phase
@@ -22,7 +22,7 @@ interface IVPool {
      *  @dev Get the times at which the epilogue of the given period occurs
      *  @param _periodId The id of the period to get the epilogue times
      */
-    function getEpilogueTimes(uint256 _periodId) external view returns (uint256[] memory);
+    function getEpilogueTimes(uint256 _periodId) external view returns (uint256, uint256);
 
     /**
      *  @dev Checks if the period Id is in the epilogue phase
