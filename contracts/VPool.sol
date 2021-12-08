@@ -122,7 +122,7 @@ contract VPool is IVPool, AccessControl {
         require(_amount > 0, "Stake amount must be greater than 0");
 
         // Move the tokens to the pool and update the users deposit amount
-        _token.transferFrom(_msgSender(), address(this), _amount);
+        _token.safeTransferFrom(_msgSender(), address(this), _amount);
 
         uint256 periodId = currentPeriodId();
         stakingPeriods[periodId][_token].deposits[_msgSender()] = stakingPeriods[periodId][_token].deposits[_msgSender()].add(_amount);
@@ -149,7 +149,7 @@ contract VPool is IVPool, AccessControl {
         // Withdraw the allocated amount from the pool and return it to the user
         uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
         stakingPeriods[_periodId][_token].liquidity = liquidity.sub(tokensRedeemed);
-        _token.transfer(_msgSender(), tokensRedeemed);
+        _token.safeTransfer(_msgSender(), tokensRedeemed);
         emit Redeem(_msgSender(), _token, _periodId, _amount, tokensRedeemed);
     }
 
@@ -161,7 +161,7 @@ contract VPool is IVPool, AccessControl {
         // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
 
         // Receive a given number of funds to the current pool
-        _token.transferFrom(_msgSender(), address(this), _amount);
+        _token.safeTransferFrom(_msgSender(), address(this), _amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
         emit Deposit(_token, periodId, _amount);
     }
@@ -175,7 +175,7 @@ contract VPool is IVPool, AccessControl {
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
         stakingPeriods[periodId][_token].liquidity = stakingPeriod.liquidity.sub(_amount);
-        _token.transfer(_to, _amount);
+        _token.safeTransfer(_to, _amount);
         emit Withdraw(_token, periodId, _to, _amount);
     }
 }

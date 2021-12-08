@@ -92,7 +92,6 @@ contract Margin is IMargin, Context {
 
     function calculateInterest(IERC20 _token, uint256 _borrowed, uint256 _time) public view approvedOnly(_token) returns (uint256) {
         // interest = timesAccumulated * amountBorrowed * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
-
         uint256 periodId = vPool.currentPeriodId();
         uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
         uint256 liquidity = liquidityAvailable(_token);
@@ -102,8 +101,17 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function depositCollateral(address _account, IERC20 _collateral) external approvedOnly(_collateral) {
+    function depositCollateral(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) isNotCooldown {
+        // Make sure the amount is greater than 0
+        require(_amount > 0, "Amount must be greater than 0");
+
         // Store funds in the account for the given asset they wish to borrow
+        _collateral.safeTransferFrom(_msgSender(), address(this), _amount);
+        uint256 periodId = vPool.currentPeriodId();
+
+        uint256 collateral = borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral;
+        borrowPeriods[periodId][_borrow].collateral[_msgSender()][_collateral].collateral = collateral.add(_amount);
+        emit Deposit();
     }
 
     // ======== Borrow ========
