@@ -72,6 +72,7 @@ contract Margin is IMargin, Context {
         return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     }
 
+    // **** FIX THIS ONE UP + PUT THIS INTO THE INTERFACE
     // function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
     //     // Get the margin level of an account for the current period
     //     uint256 periodId = vPool.currentPeriodId();
