@@ -37,7 +37,6 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Check the staking period and cooldown periods ========
 
-    // **** Add the following to the interface
     function getPrologueTimes(uint256 _periodId) public view returns (uint256[] memory) {
         // Return the times of when the prologue is between
         uint256[] memory times = new uint256[](2);
@@ -50,7 +49,6 @@ contract VPool is IVPool, AccessControl {
         return times;
     }
 
-    // **** Fix this up obviously
     function isPrologue(uint256 _periodId) public view override returns (bool) {
         // Check if the prologue period of the specified period is present
         uint256[] memory prologueTimes = getPrologueTimes(_periodId);
@@ -60,7 +58,6 @@ contract VPool is IVPool, AccessControl {
         return current >= prologueStart && current < prologueEnd;
     }
 
-    // **** Add to the interface
     function getEpilogueTimes(uint256 _periodId) public view returns (uint256[] memory) {
         // Return the times of when the epilogue is between
         uint256[] memory times = new uint256[](2);
@@ -73,7 +70,6 @@ contract VPool is IVPool, AccessControl {
         return times;
     }
 
-    // **** Fix this up obviously
     function isEpilogue(uint256 _periodId) public view override returns (bool) {
         // Check if the epilogue period of the specified period is present
         uint256[] memory epilogueTimes = getEpilogueTimes(_periodId);
@@ -82,8 +78,6 @@ contract VPool is IVPool, AccessControl {
         uint256 current = block.timestamp;
         return current >= epilogueStart && current < epilogueEnd;
     }
-
-    // **** Add to interface
 
     function isCurrentPeriod(uint256 _periodId) public view override returns (bool) {
         return _periodId == currentPeriodId();
@@ -149,13 +143,13 @@ contract VPool is IVPool, AccessControl {
 
     function stake(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
-        require(isPrologue(), "Staking is only allowed during the prologue period");
+        uint256 periodId = currentPeriodId();
+        require(isPrologue(periodId), "Staking is only allowed during the prologue period");
         require(_amount > 0, "Stake amount must be greater than 0");
 
         // Move the tokens to the pool and update the users deposit amount
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
 
-        uint256 periodId = currentPeriodId();
         stakingPeriods[periodId][_token].deposits[_msgSender()] = stakingPeriods[periodId][_token].deposits[_msgSender()].add(_amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
         stakingPeriods[periodId][_token].totalDeposited = stakingPeriods[periodId][_token].totalDeposited.add(_amount);
@@ -187,7 +181,7 @@ contract VPool is IVPool, AccessControl {
     function deposit(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
         // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
-        require(!isPrologue(), "Cannot deposit during prologue");
+        require(!isPrologue(periodId), "Cannot deposit during prologue");
 
         // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
 
@@ -200,7 +194,7 @@ contract VPool is IVPool, AccessControl {
     function withdraw(IERC20 _token, uint256 _amount, address _to) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
         // Make sure no withdraws during cooldown period
         uint256 periodId = currentPeriodId();
-        require(!isPrologue(), "Cannot withdraw during prologue");
+        require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
