@@ -91,14 +91,15 @@ contract Margin is IMargin, Context {
     //     return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     // }
 
-    // function calculateInterest(IERC20 _token, uint256 _initialBorrowPrice, uint256 _timeSinceBorrow) public view approvedOnly(_token) returns (uint256) {
-    //     // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
-    //     uint256 periodId = vPool.currentPeriodId();
-    //     uint256 totalBorrowed = borrowPeriods[periodId][_token].totalBorrowed;
-    //     uint256 liquidity = liquidityAvailable(_token);
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrowAmount, uint256 _timeSinceBorrow) public view approvedOnly(_borrowed) returns (uint256) {
+        // interest = timesAccumulated * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+        uint256 periodId = vPool.currentPeriodId();
 
-    //     return _timeSinceBorrow.mul(_initialBorrowPrice).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
-    // }
+        uint256 totalBorrowed = borrowPeriods[periodId][_borrowed].totalBorrowed;
+        uint256 liquidity = liquidityAvailable(_borrowed);
+
+        return _timeSinceBorrow.mul(_initialBorrowAmount).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
+    }
 
     // ======== Deposit ========
 
@@ -143,8 +144,18 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function repayValue() public {
+    function repayValue(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
         // The value returned from repaying a margin
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        // **** Hangon if this is the case, then when we go and redeposit, what happens to the borrow time and thus the interest rate ????
+
+        uint256 collateral = borrowAccount.collateral;
+        uint256 interest = calculateInterest(_borrow, borrowAccount.initialPrice, block.timestamp - borrowAccount.borrowTime);
+        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrow, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
+
+        return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
     function repay(address _account) public {
