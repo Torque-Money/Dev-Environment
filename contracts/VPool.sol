@@ -133,7 +133,6 @@ contract VPool is IVPool, AccessControl {
         // Make sure the requirements are satisfied
         uint256 periodId = currentPeriodId();
         require(isPrologue(periodId), "Staking is only allowed during the prologue period");
-        require(_amount > 0, "Stake amount must be greater than 0");
 
         // Move the tokens to the pool and update the users deposit amount
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
@@ -150,7 +149,6 @@ contract VPool is IVPool, AccessControl {
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during prologue period or once period has ended");
-        require(_amount > 0, "Redeem amount must be greater than 0");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
