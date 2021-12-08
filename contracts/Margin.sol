@@ -137,7 +137,9 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
+    event Deposit();
     event Borrow();
+    event Repay();
     event Withdraw();
     event FlashLiquidation();
 }
