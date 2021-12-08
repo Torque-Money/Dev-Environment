@@ -153,6 +153,7 @@ contract Margin is IMargin, Context {
 
         // **** THINK ABOUT THE LIQUIDATION LEVEL MORE - DOES IT OCCUR WHEN A BIT OF THE VALUE HAS BEEN LOST AND AS SUCH WE JUST TAKE THE COLLATERAL - IF THIS IS THE CASE THIS NEEDS TO HAPPEN IN OUR REPAY
         // **** So basically at the current time, if the user is in the red but not enough to be liquidated when the next period ends, the protocol is the one who takes the loss - this SHOULD NOT happen - how can I fix this ?
+        // **** Maybe flash liquidate should always be callable, but only up to what the user actually owes the protocol - same collateralization rates will occur
 
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
