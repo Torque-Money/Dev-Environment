@@ -152,6 +152,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialValue.mul(_amount).div(oracle.getDecimals()));
 
         // **** THINK ABOUT THE LIQUIDATION LEVEL MORE - DOES IT OCCUR WHEN A BIT OF THE VALUE HAS BEEN LOST AND AS SUCH WE JUST TAKE THE COLLATERAL - IF THIS IS THE CASE THIS NEEDS TO HAPPEN IN OUR REPAY
+        // **** So basically at the current time, if the user is in the red but not enough to be liquidated when the next period ends, the protocol is the one who takes the loss - this SHOULD NOT happen - how can I fix this ?
 
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
