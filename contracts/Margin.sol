@@ -50,24 +50,6 @@ contract Margin is IMargin, Context {
         _;
     }
 
-    modifier isPrologue(bool _isPrologue) {
-        if (_isPrologue) {
-            require(vPool.isPrologue(), "Can only perform operation during prologue period");
-        } else {
-            require(!vPool.isPrologue(), "Cannot perform operation during prologue period");
-        }
-        _;
-    }
-
-    modifier isEpilogue(bool _isEpilogue) {
-        if (_isEpilogue) {
-            require(vPool.isEpilogue(), "Can only perform operation during epilogue period");
-        } else {
-            require(!vPool.isEpilogue(), "Cannot perform operation during epilogue period");
-        }
-        _;
-    }
-
     // ======== Calculations ========
 
     function liquidityAvailable(IERC20 _token) public view approvedOnly(_token) returns (uint256) {
@@ -137,13 +119,15 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) isPrologue(false) isEpilogue(false) {
+    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) {
         // Requirements for borrowing
+        uint256 periodId = vPool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
-        // **** I need to make sure that the borrow cant happen before the epilogue time
+        require(!vPool.isPrologue(periodId), "Cannot borrow during prologue");
+        uint256 epilogueStart = vPool.getEpilogueTimes(periodId)[0];
+        require(block.timestamp <= epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue"); // **** Should this be <= or just < ?
         require(liquidityAvailable(_borrow) >= _amount, "Amount to borrow exceeds available liquidity");
 
-        uint256 periodId = vPool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
@@ -153,12 +137,6 @@ contract Margin is IMargin, Context {
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
         uint256 borrowInitialValue = oracle.pairPrice(_collateral, _borrow).mul(_amount).div(oracle.getDecimals());
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialValue.mul(_amount).div(oracle.getDecimals()));
-
-        // **** THINK ABOUT THE LIQUIDATION LEVEL MORE - DOES IT OCCUR WHEN A BIT OF THE VALUE HAS BEEN LOST AND AS SUCH WE JUST TAKE THE COLLATERAL - IF THIS IS THE CASE THIS NEEDS TO HAPPEN IN OUR REPAY
-        // **** So basically at the current time, if the user is in the red but not enough to be liquidated when the next period ends, the protocol is the one who takes the loss - this SHOULD NOT happen - how can I fix this ?
-        // **** Maybe flash liquidate should always be callable, but only up to what the user actually owes the protocol - same collateralization rates will occur
-
-        // **** The answer is to have the repay be callable by EVERYONE before the new period happens and stakers can withdraw their amount - the problem was if users couldnt repay, but if they have to this problem doesnt exist. Flash liquidates can still happen though for on the go liquidity
 
         emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
     }
