@@ -144,7 +144,7 @@ contract Margin is IMargin, Context {
     // ======== Repay and withdraw ========
 
     function repayValue() public {
-        // The value returned from repaying a user
+        // The value returned from repaying a margin
     }
 
     function repay(address _account) public {
