@@ -73,25 +73,17 @@ contract Margin is IMargin, Context {
         return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
     }
 
-    // **** FIX THIS ONE UP + PUT THIS INTO THE INTERFACE
-    // function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
-    //     // Get the margin level of an account for the current period
-    //     uint256 periodId = vPool.currentPeriodId();
+    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+        // Get the margin level of an account for the current period
+        uint256 periodId = vPool.currentPeriodId();
 
-    //     // Get the borrowed period and and borrowed asset data
-    //     BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
-    //     BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+        // Get the borrowed period and and borrowed asset data
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
-    //     // Calculate margin level - if there is none borrowed then return 999
-    //     if (borrowAccount.borrowed == 0) return uint256(999).mul(oracle.getDecimals());
-    //     else {
-    //         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
-    //         uint256 borrowedInitialPrice = borrowAccount.initialPrice; // **** This is also probably stored using decimals I believe ????
-    //         uint256 interest = calculateInterest(_borrowed, borrowedInitialPrice, block.timestamp - borrowAccount.borrowTime);
-
-    //         return oracle.getDecimals().mul(borrowedCurrentPrice.add(borrowAccount.collateral)).div(borrowedInitialPrice.add(interest));
-    //     }
-    // }
+        // Calculate and return accounts margin level
+        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _borrowed, _collateral);
+    }
 
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) public view approvedOnly(_borrowed) returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
