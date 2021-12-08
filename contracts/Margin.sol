@@ -144,7 +144,7 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function repayValue(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
+    function repayValue(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
         // The value returned from repaying a margin
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
