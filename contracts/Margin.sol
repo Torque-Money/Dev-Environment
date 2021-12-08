@@ -117,7 +117,9 @@ contract Margin is IMargin, Context {
     // ======== Borrow ========
 
     function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
-        // Borrow against collateral
+        // Requirements
+        require(_amount > 0, "Amount must be greater than 0");
+        require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
     }
 
     // ======== Repay and withdraw ========
