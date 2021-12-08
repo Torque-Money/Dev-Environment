@@ -144,7 +144,7 @@ contract Margin is IMargin, Context {
     // ======== Repay and withdraw ========
 
     function repayValue() public {
-
+        // The value returned from repaying a user
     }
 
     function repay(address _account) public {
@@ -174,7 +174,7 @@ contract Margin is IMargin, Context {
 
     event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
     event Borrow(address indexed borrower, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
-    event Repay();
+    event Repay(address indexed repayer);
     event Withdraw();
     event FlashLiquidation();
 }
