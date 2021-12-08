@@ -9,6 +9,7 @@ import "./IMargin.sol";
 import "./IOracle.sol";
 import "./IVPool.sol";
 import "./ILiquidator.sol";
+import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps the Margin will be independent of the pool, and users may choose which pool they wish to use at runtime
 
@@ -119,7 +120,7 @@ contract Margin is IMargin, Context {
         uint256 periodId = vPool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!vPool.isPrologue(periodId), "Cannot borrow during prologue");
-        uint256 epilogueStart = vPool.getEpilogueTimes(periodId)[0];
+        (uint256 epilogueStart,) = vPool.getEpilogueTimes(periodId);
         require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
         require(liquidityAvailable(_borrow) >= _amount, "Amount to borrow exceeds available liquidity");
 
@@ -158,7 +159,9 @@ contract Margin is IMargin, Context {
         require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
 
         // **** IN THE CASE OF THE USER DOING SOMETHING, WE NEED TO UPDATE THEIR ACCOUNT WITH A PORTION OF THE COLLATERAL / EARNINGS TOO
-        // **** This collateral needs to be swapped into the correct asset
+        // **** This collateral needs to be swapped into the correct asset (AND SHOULD BE BASED OFF OF THE MIN MARGIN LEVEL)
+
+        // **** When the repay is above the deposit, return for them the amount of the tokens they are owed, when the amount is below, they must swap a portion of their collateral for the borrowed asset
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
@@ -166,6 +169,14 @@ contract Margin is IMargin, Context {
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
 
+        uint256 rValue = repayValue(_account, _collateral, _borrow, _periodId);
+        if (rValue > borrowAccount.collateral) {
+
+        } else {
+            // Reswap the collateral for the given number of tokens
+            // We will deposit the recollateralized value of the amount of tokens we get back to the pool at the end
+            // **** All of the debt from the initial amount will be removed as well
+        }
     }
 
     function repay() external {
