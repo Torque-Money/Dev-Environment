@@ -120,9 +120,20 @@ contract Margin is IMargin, Context {
         // Requirements
         require(_amount > 0, "Amount must be greater than 0");
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+
+
     }
 
     // ======== Repay and withdraw ========
+
+    function repay() external {
+        // **** Perhaps we need an amount for how much needs to be repaid exactly off of the margin ?
+        // Repay off the loan
+    }
+
+    function withdraw() external {
+        // Make sure that the amount to be repaid is not valid yet
+    }
 
     // ======== Liquidate ========
 
@@ -132,19 +143,6 @@ contract Margin is IMargin, Context {
 
     function flashLiquidate() external returns (uint256) {
         // In here we consume the requested price if it is present for the given token pair
-    }
-
-    function repayBorrow() external {
-        // Repay off the loan
-    }
-
-    function withdrawCollateral() external {
-        // Allows a user to withdraw their collateral given that it is not locked in
-        // **** Only allowed to withdraw once borrow has been repaid and borrowed amount is 0
-    }
-
-    function withdrawProfits() external {
-        // Allows users to take their earned funds and get out
     }
 
     // ======== Events ========
