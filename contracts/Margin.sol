@@ -50,8 +50,8 @@ contract Margin is IMargin, Context {
         _;
     }
 
-    modifier isNotCooldown {
-        require(!vPool.isCooldown(), "Cannot perform operation during cooldown");
+    modifier isNotPrologue {
+        require(!vPool.isPrologue(), "Cannot perform operation during prologue period");
         _;
     }
 
