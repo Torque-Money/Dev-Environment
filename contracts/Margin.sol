@@ -118,17 +118,6 @@ contract Margin is IMargin, Context {
     //     return _timeSinceBorrow.mul(_initialBorrowPrice).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
     // }
 
-    // ======== Data retrievers ========
-
-    function getCollateral(address _account, IERC20 _borrow, IERC20 _collateral) public approvedOnly(_borrow) approvedOnly(_collateral) {
-        // Get the balance owed to the account
-    }
-
-    function getDebt(address _account, IERC20 _borrow, IERC20 _collateral) public approvedOnly(_borrow) approvedOnly(_collateral) {
-        // Get the debt of the account
-
-    }
-
     // ======== Deposit ========
 
     function deposit(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) {
@@ -148,9 +137,10 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) isNotCooldown {
+    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) isPrologue(false) isEpilogue(false) {
         // Requirements for borrowing
         require(_amount > 0, "Amount must be greater than 0");
+        // **** I need to make sure that the borrow cant happen before the epilogue time
         require(liquidityAvailable(_borrow) >= _amount, "Amount to borrow exceeds available liquidity");
 
         uint256 periodId = vPool.currentPeriodId();
@@ -174,6 +164,10 @@ contract Margin is IMargin, Context {
     }
 
     // ======== Repay and withdraw ========
+
+    function repayValue() public {
+
+    }
 
     function repay(address _account) public {
         // **** Use this to repay accounts outside of the given borrow period

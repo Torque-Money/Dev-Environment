@@ -37,31 +37,53 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Check the staking period and cooldown periods ========
 
+    // **** Add the following to the interface
+    function getPrologueTimes(uint256 _periodId) public view returns (uint256[] memory) {
+        // Return the times of when the prologue is between
+        uint256[] memory times = new uint256[](2);
+
+        uint256 prologueStart = _periodId.mul(stakingTimeframe);
+        uint256 prologueEnd = prologueStart.add(cooldownTimeframe);
+
+        times[0] = prologueStart;
+        times[1] = prologueEnd;
+        return times;
+    }
+
+    // **** Fix this up obviously
     function isPrologue(uint256 _periodId) public view override returns (bool) {
         // Check if the prologue period of the specified period is present
-        uint256 periodStart = _periodId.mul(stakingTimeframe);
-        uint256 cooldownEnd = periodStart.add(cooldownTimeframe);
+        uint256[] memory prologueTimes = getPrologueTimes(_periodId);
+        (uint256 prologueStart, uint256 prologueEnd) = (prologueTimes[0], prologueTimes[1]);
+
         uint256 current = block.timestamp;
-        return current >= periodStart && current < cooldownEnd;
+        return current >= prologueStart && current < prologueEnd;
     }
 
-    function isPrologue() public view override returns (bool) {
-        // Check if the prologue period of the current period is present
-        return isPrologue(currentPeriodId());
+    // **** Add to the interface
+    function getEpilogueTimes(uint256 _periodId) public view returns (uint256[] memory) {
+        // Return the times of when the epilogue is between
+        uint256[] memory times = new uint256[](2);
+
+        uint256 epilogueEnd = _periodId.mul(stakingTimeframe);
+        uint256 epilogueStart = epilogueEnd.sub(cooldownTimeframe);
+
+        times[0] = epilogueStart;
+        times[1] = epilogueEnd;
+        return times;
     }
 
+    // **** Fix this up obviously
     function isEpilogue(uint256 _periodId) public view override returns (bool) {
-        // Check if the epilogue period of the specified period has started
-        uint256 periodEnd = _periodId.mul(stakingTimeframe);
-        uint256 cooldownStart = periodEnd.sub(cooldownTimeframe);
+        // Check if the epilogue period of the specified period is present
+        uint256[] memory epilogueTimes = getEpilogueTimes(_periodId);
+        (uint256 epilogueStart, uint256 epilogueEnd) = (epilogueTimes[0], epilogueTimes[1]);
+
         uint256 current = block.timestamp;
-        return current >= cooldownStart && current < periodEnd;
+        return current >= epilogueStart && current < epilogueEnd;
     }
-    
-    function isEpilogue() external view override returns (bool) {
-        // Check if the epilogue period of the specified period has started
-        return isEpilogue(currentPeriodId());
-    }
+
+    // **** Add to interface
 
     function isCurrentPeriod(uint256 _periodId) public view override returns (bool) {
         return _periodId == currentPeriodId();
