@@ -24,7 +24,7 @@ interface IOracle {
     function pairPrice(IERC20 _token1, IERC20 _token2) external view returns (uint256);
 
     /**
-     *  @dev Returns a router to use
+     *  @dev Returns a pseudo random router to use
      */
     function getRouter() external view returns (UniswapV2Router02);
 }

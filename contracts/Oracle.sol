@@ -88,7 +88,7 @@ contract Oracle is IOracle, Context {
     }
 
     function getRouter() external view override returns (UniswapV2Router02) {
-        uint256 index = uint256(keccak256(abi.encodePacked(_msgSender()))).mod(routers.length);
+        uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(routers.length);
         return routers[index];
     }
 }
