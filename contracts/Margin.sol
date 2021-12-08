@@ -98,13 +98,21 @@ contract Margin is IMargin, Context {
         return _time.mul(_borrowed).mul(totalBorrowed).div(interestInterval).div(liquidity.add(totalBorrowed));
     }
 
+    // ======== Deposit ========
+
     function depositCollateral() external {
 
     }
 
+    // ======== Borrow ========
+
     function borrow(IERC20 _borrowed, IERC20 _collateral, uint256 _amount) external {
         // Borrow against collateral
     }
+
+    // ======== Repay and withdraw ========
+
+    // ======== Liquidate ========
 
     function flashLiquidateOwing() external returns (uint256) {
         // This is the amount that is required to be paid back to the protocol - this is NOT the amount that will be actually given off
