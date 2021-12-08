@@ -22,4 +22,9 @@ interface IOracle {
      *  @param _token2 The tokens of which will be swapped to from token1
      */
     function pairPrice(IERC20 _token1, IERC20 _token2) external view returns (uint256);
+
+    /**
+     *  @dev Returns a router to use
+     */
+    function getRouter() external view returns (UniswapV2Router02);
 }

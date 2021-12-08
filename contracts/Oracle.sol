@@ -87,7 +87,7 @@ contract Oracle is IOracle, Context {
         return _median(prices);
     }
 
-    function getRouter() external view returns (UniswapV2Router02) {
+    function getRouter() external view override returns (UniswapV2Router02) {
         uint256 index = uint256(keccak256(abi.encodePacked(_msgSender()))).mod(routers.length);
         return routers[index];
     }
