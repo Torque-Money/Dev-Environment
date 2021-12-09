@@ -12,7 +12,6 @@ import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps, users should be able to choose between different pools for their margin to trade against - this way I can use the same margin protocol for everything and just switch pools (best idea)
 // **** Also add in the auto reborrowing and auto redepositing requirements
-// **** This concept of no interest rate is stupid - fix this up by always just using the initial time invested and then tracking sepereately the time borrowed for min staking period
 
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
@@ -26,6 +25,7 @@ contract Margin is IMargin, Context {
         uint256 borrowed;
         uint256 initialPrice;
         uint256 borrowTime;
+        uint256 initialBorrowTime;
     }
     struct BorrowPeriod {
         uint256 totalBorrowed;
@@ -69,9 +69,9 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
-        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice);
+        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime);
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
         return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
     }
@@ -90,17 +90,22 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         // Calculate and return accounts margin level
-        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _borrowed, _collateral);
+        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _borrowed, _collateral);
     }
 
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) public view override approvedOnly(_borrowed) returns (uint256) {
-        // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override approvedOnly(_borrowed) returns (uint256) {
+        // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable)) * (timeBorrowed / interestPeriod)
         uint256 periodId = vPool.currentPeriodId();
 
         uint256 totalBorrowed = borrowPeriods[periodId][_borrowed].totalBorrowed;
         uint256 liquidity = liquidityAvailable(_borrowed);
 
-        return _initialBorrow.mul(maxInterestPercent).mul(totalBorrowed).div(totalBorrowed.add(liquidity)).div(100);
+        uint256 current = block.timestamp;
+        (,uint256 prologueEnd) = vPool.getPrologueTimes(periodId);
+        (uint256 epilogueStart,) = vPool.getEpilogueTimes(periodId);
+        uint256 timeFrame = epilogueStart - prologueEnd;
+
+        return _initialBorrow.mul(maxInterestPercent).mul(totalBorrowed).div(totalBorrowed.add(liquidity)).div(100).mul(current.sub(_borrowTime)).div(timeFrame);
     }
 
     // ======== Deposit ========
@@ -134,9 +139,13 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
+        if (borrowAccount.borrowed == 0) {
+            borrowAccount.initialBorrowTime = block.timestamp;
+        }
+
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
@@ -157,7 +166,7 @@ contract Margin is IMargin, Context {
 
         uint256 collateral = borrowAccount.collateral;
         if (!vPool.isCurrentPeriod(_periodId)) return collateral;
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice);
+        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);

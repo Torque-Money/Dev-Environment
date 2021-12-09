@@ -21,11 +21,12 @@ interface IMargin {
      *  @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals
      *  @param _deposited The amount of the collateral deposited
      *  @param _initialBorrowPrice The amount of the collateral asset the initial borrowed amount could be redeemed for
+     *  @param _borrowTime The time at which the first borrow was made
      *  @param _amountBorrowed The amount of the asset borrowed
      *  @param _collateral The asset used as collateral
      *  @param _borrowed The asset borrowed
      */
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);
 
     /**
      *  @dev Return the minimum margin level in terms of decimals
@@ -43,8 +44,9 @@ interface IMargin {
      *  @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
      *  @param _borrowed The asset borrowed
      *  @param _initialBorrow The amount of the asset borrowed initially
+     *  @param _borrowTime The time at which the first borrow was made
      */
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) external view returns (uint256);
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) external view returns (uint256);
 
     // ======== Deposit ========
 
