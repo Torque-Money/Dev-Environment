@@ -196,7 +196,7 @@ contract Margin is IMargin, Context {
         } else {
             // Amount the user has to repay the protocol
             uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
-            borrowAccount.collateral = balAfterRepay; // **** What happens when the actual amount is above or below ?
+            borrowAccount.collateral = balAfterRepay;
 
             // Swap the repay value back for the borrowed asset
             path[0] = address(_collateral);
