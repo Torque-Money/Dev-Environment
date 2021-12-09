@@ -149,7 +149,7 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function balance(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
@@ -177,7 +177,7 @@ contract Margin is IMargin, Context {
         address[] memory path = new address[](2);
         uint256 deadline = block.timestamp + 1 hours;
 
-        uint256 balAfterRepay = balance(_account, _collateral, _borrowed, periodId);
+        uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
             uint256 payoutAmount = balAfterRepay.sub(borrowAccount.collateral);

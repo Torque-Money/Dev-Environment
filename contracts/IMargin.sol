@@ -28,7 +28,7 @@ interface IMargin {
 
     // ======== Repay and withdraw ========
 
-    function balance(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed) external;
 
