@@ -10,8 +10,6 @@ import "./IOracle.sol";
 import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
-// **** Also add in the auto reborrowing and auto redepositing requirements FOR the pool and the margin
-
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;

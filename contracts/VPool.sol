@@ -11,6 +11,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 // **** Perhaps in the future we will allow minting of a new token that will be used by the DAO - a specific amount of tokens based on supply will be allocated to each pool, and will be distributed out at the end
 // **** This should be performed from the DAO itself, not from the pool directly - it will be issued by the pools functions however
 
+// **** Also add in the auto reborrowing and auto redepositing requirements FOR the pool and the margin
+
 contract VPool is IVPool, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
