@@ -220,6 +220,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
+        emit Repay(_msgSender(), _borrow, _collateral, _periodId);
     }
 
     function repay(IERC20 _collateral, IERC20 _borrow, uint256 _periodId) external {
@@ -239,6 +240,7 @@ contract Margin is IMargin, Context {
         // Update the balance and transfer
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
+        emit Withdraw(_msgSender(), _borrow, _collateral, _periodId);
     }
 
     // ======== Liquidate ========
@@ -253,9 +255,9 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
-    event Borrow(address indexed borrower, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
-    event Repay(address indexed repayer); // **** DAMN I forgot this
-    event Withdraw();
+    event Deposit(address indexed account, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
+    event Borrow(address indexed account, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
+    event Repay(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
+    event Withdraw(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
     event FlashLiquidation();
 }
