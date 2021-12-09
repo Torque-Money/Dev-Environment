@@ -10,6 +10,8 @@ import "./IOracle.sol";
 import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
+// **** Perhaps, users should be able to choose between different pools for their margin to trade against - this way I can use the same margin protocol for everything and just switch pools (best idea)
+
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
