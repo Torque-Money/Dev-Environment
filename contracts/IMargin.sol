@@ -145,11 +145,11 @@ interface IMargin {
 
     // **** MIGHT NEED TO REUPDATE THIS
 
-    event Deposit(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
-    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Deposit(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Withdraw(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
 
-    event Borrow(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
-    event Repay(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 balance);
+    event Borrow(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Repay(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 balance);
 
-    event FlashLiquidation(address indexed account, uint256 indexed periodId, address indexed liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event FlashLiquidation(address indexed account, uint256 indexed periodId, IVPool indexed pool, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
 }
