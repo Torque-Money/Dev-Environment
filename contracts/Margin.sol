@@ -113,7 +113,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), _collateral, periodId, _borrow, _amount);
+        emit Deposit(_msgSender(), _borrow, _collateral, periodId, _amount);
     }
 
     // ======== Borrow ========
@@ -140,7 +140,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
 
-        emit Borrow(_msgSender(), _borrow, periodId, _collateral, _amount);
+        emit Borrow(_msgSender(), _borrow, _collateral, periodId, _amount);
     }
 
     // ======== Repay and withdraw ========
@@ -157,14 +157,13 @@ contract Margin is IMargin, Context {
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) {
-        // **** THIS SHOULDNT BE ALLOWED TO KEEP BORROWING DURING THE END OF THE COOLDOWN - PERHAPS JUST NOT ALLOW IT AT ALL OF IT IT IS DONE JUST SET THEIR BALANCE TO 0
-
+    function repay(address _account, IERC20 _collateral, IERC20 _borrow) public approvedOnly(_collateral) approvedOnly(_borrow) {
         // If the period has entered the epilogue phase, then anyone may repay the account
-        require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
+        uint256 periodId = vPool.currentPeriodId();
+        require(_account == _msgSender() || vPool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
 
         // Repay off the margin and update the users collateral to reflect it
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
@@ -173,7 +172,7 @@ contract Margin is IMargin, Context {
         address[] memory path = new address[](2);
         uint256 deadline = block.timestamp + 1 hours;
 
-        uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
+        uint256 balAfterRepay = balance(_account, _collateral, _borrow, periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
             uint256 payoutAmount = balAfterRepay.sub(borrowAccount.collateral);
@@ -222,12 +221,12 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
-        emit Repay(_msgSender(), _borrow, _collateral, _periodId);
+        emit Repay(_msgSender(), _borrow, _collateral, periodId);
     }
 
-    function repay(IERC20 _collateral, IERC20 _borrow, uint256 _periodId) external {
+    function repay(IERC20 _collateral, IERC20 _borrow) external {
         // Repay off the loan for the caller
-        repay(_msgSender(), _collateral, _borrow, _periodId);
+        repay(_msgSender(), _collateral, _borrow);
     }
 
     function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId, uint256 _amount) external {
@@ -253,8 +252,8 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(address indexed account, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
-    event Borrow(address indexed account, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
+    event Deposit(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId, uint256 amount);
+    event Borrow(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId, uint256 amount);
     event Repay(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
     event Withdraw(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
     event FlashLiquidation();
