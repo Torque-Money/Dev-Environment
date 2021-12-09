@@ -194,7 +194,7 @@ contract VPool is IVPool, AccessControl {
 
     // **** Dont forget the function to approve whether or not to auto redeposit - add this to the margin system as well
 
-    function redeposit() public {
+    function restake(address account, IERC20 _token, uint256 _periodId) public {
         // Redeposit existing deposited amount from a previous period into the current period
     }
 }
