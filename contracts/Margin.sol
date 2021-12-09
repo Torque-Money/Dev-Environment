@@ -57,7 +57,7 @@ contract Margin is IMargin, Context {
         return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(2);
     }
 
-    function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token) returns (uint256) {
+    function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token, _pool) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 periodId = _pool.currentPeriodId();
 
@@ -67,9 +67,9 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
-        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime);
+        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime, _pool);
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
         return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
     }
@@ -79,7 +79,7 @@ contract Margin is IMargin, Context {
         return minMarginLevel.add(100).mul(oracle.getDecimals()).div(100);
     }
 
-    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         // Get the margin level of an account for the current period
         uint256 periodId = _pool.currentPeriodId();
 
@@ -88,10 +88,10 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         // Calculate and return accounts margin level
-        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _borrowed, _collateral);
+        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _borrowed, _collateral, _pool);
     }
 
-    function calculateInterestRate(IERC20 _borrowed, IVPool _pool) public view override returns (uint256) {
+    function calculateInterestRate(IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_borrowed, _pool) returns (uint256) {
         // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
         uint256 periodId = _pool.currentPeriodId();
@@ -102,11 +102,11 @@ contract Margin is IMargin, Context {
         return totalBorrowed.mul(oracle.getDecimals()).div(liquidity.add(totalBorrowed));
     }
 
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override approvedOnly(_borrowed) returns (uint256) {
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
         uint256 periodId = _pool.currentPeriodId();
 
-        uint256 interestRate = calculateInterestRate(_borrowed);
+        uint256 interestRate = calculateInterestRate(_borrowed, _pool);
 
         uint256 current = block.timestamp;
         (,uint256 prologueEnd) = _pool.getPrologueTimes(periodId);
@@ -118,7 +118,7 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
 
@@ -135,14 +135,14 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Requirements for borrowing
         uint256 periodId = _pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
         (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
         require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
-        require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
@@ -153,7 +153,7 @@ contract Margin is IMargin, Context {
 
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
@@ -167,20 +167,20 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         uint256 collateral = borrowAccount.collateral;
         if (!_pool.isCurrentPeriod(_periodId)) return collateral;
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
+        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, _pool);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
         require(_account == _msgSender() || _pool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
@@ -253,7 +253,7 @@ contract Margin is IMargin, Context {
         repay(_msgSender(), _collateral, _borrowed, _pool);
     }
 
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount, IVPool _pool) external override {
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
@@ -270,17 +270,17 @@ contract Margin is IMargin, Context {
 
     // ======== Liquidate ========
 
-    function isLiquidatable(address _account, IERC20 _borrowed, IERC20 _collateral) public view override returns (bool) {
+    function isLiquidatable(address _account, IERC20 _borrowed, IERC20 _collateral, IVPool _pool) public view override returns (bool) {
         // Return if a given account is liquidatable
-        return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel(); 
+        return getMarginLevel(_account, _collateral, _borrowed, _pool) <= getMinMarginLevel(); 
     }
 
     function flashLiquidate(address _account, IERC20 _borrowed, IERC20 _collateral, IVPool _pool) external override {
         // Liquidate an at risk account
         uint256 periodId = _pool.currentPeriodId();
-        require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
+        require(isLiquidatable(_account, _borrowed, _collateral, _pool), "This account is not liquidatable");
 
-        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         // Update the users account
