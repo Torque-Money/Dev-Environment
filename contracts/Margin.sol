@@ -174,21 +174,27 @@ contract Margin is IMargin, Context {
         uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
-            uint256 repayAmount = balAfterRepay.sub(borrowAccount.collateral);
-            uint256 borrowedRepay = oracle.pairPrice(_collateral, _borrow).mul(repayAmount).div(oracle.getDecimals());
+            uint256 payoutAmount = balAfterRepay.sub(borrowAccount.collateral);
+            uint256 payout = oracle.pairPrice(_collateral, _borrow).mul(payoutAmount).div(oracle.getDecimals());
 
             // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
-            vPool.withdraw(_borrow, borrowedRepay);
+            vPool.withdraw(_borrow, payout);
             path[0] = address(_borrow);
             path[1] = address(_collateral);
-            uint256 amountOut = router.swapExactTokensForTokens(borrowedRepay, 0, path, address(this), deadline)[1];
+            uint256 amountOut = router.swapExactTokensForTokens(payout, 0, path, address(this), deadline)[1];
 
-            // **** Make sure that we did indeed swap the correct amount of collateral - the swap will NOT get us the same amount - we have to fix this up as the recollateralized amount
+            // Provide a reward to the user who repayed the account if they are not the account owner
+            uint256 reward = 0;
+            if (_account != _msgSender()) {
+                reward = amountOut.mul(automatorReward).div(100);
+                _collateral.safeTransfer(_msgSender(), reward);
+            }
 
             // Update the balance of the user
-            borrowAccount.collateral = balAfterRepay;
+            borrowAccount.collateral = borrowAccount.collateral.add(amountOut.sub(reward));
 
         } else {
+            // Amount the user has to repay the protocol
             uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
             borrowAccount.collateral = balAfterRepay;
 
