@@ -165,28 +165,33 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
+        UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
+        address[] memory path = new address[](2);
+        uint256 deadline = block.timestamp + 1 hours;
+
         require(borrowAccount.borrowed > 0, "No debt to repay");
 
         uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
+            uint256 repayAmount = balAfterRepay.sub(borrowAccount.collateral);
+
+            // Swap and pay the user in terms of the deposited asset
+            path[0] = address(_borrow);
+            path[1] = address(_collateral);
+            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), deadline)[1]; // **** Perhaps in this case we want to use tokensForExact ???
+
+            // Update the balance of the user
+            borrowAccount.collateral = balAfterRepay;
 
         } else {
             uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
             borrowAccount.collateral = balAfterRepay;
 
-            // Update the borrowed
-            borrowAccount.initialPrice = 0;
-            borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
-            borrowAccount.borrowed = 0;
-
             // Swap the repay value back for the borrowed asset
-            UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
-            address[] memory path = new address[](2);
             path[0] = address(_collateral);
             path[1] = address(_borrow);
-
-            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
+            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), deadline)[1];
 
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
@@ -200,6 +205,11 @@ contract Margin is IMargin, Context {
             _borrow.safeApprove(address(vPool), depositValue);
             vPool.deposit(_borrow, depositValue);
         }
+
+        // Update the borrowed
+        borrowAccount.initialPrice = 0;
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+        borrowAccount.borrowed = 0;
     }
 
     function repay() external {
