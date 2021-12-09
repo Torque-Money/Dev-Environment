@@ -159,6 +159,8 @@ contract Margin is IMargin, Context {
     }
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrow) public approvedOnly(_collateral) approvedOnly(_borrow) {
+        // **** YOU FORGOT THE MINIMUM AMOUNT OF TIME BORROWED FOR
+
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = vPool.currentPeriodId();
         require(_account == _msgSender() || vPool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
@@ -247,8 +249,32 @@ contract Margin is IMargin, Context {
 
     // ======== Liquidate ========
 
-    function flashLiquidate() external {
-        // In here we consume the requested price if it is present for the given token pair
+    function isLiquidatable(address _account, IERC20 _borrow, IERC20 _collateral) public view returns (bool) {
+        // Return if a given account is liquidatable
+        return getMarginLevel(_account, _collateral, _borrow) <= getMinMarginLevel(); 
+    }
+
+    function flashLiquidate(address _account, IERC20 _borrow, IERC20 _collateral, ILiquidator liquidator) external {
+        // Liquidate an at risk account
+        uint256 periodId = vPool.currentPeriodId();
+        require(isLiquidatable(_account, _borrow, _collateral), "This account is not liquidatable");
+
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        // Swap the users collateral for assets
+        UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
+        address[] memory path = new address[](2);
+        uint256 deadline = block.timestamp + 1 hours;
+
+        path[0] = address(_collateral);
+        path[1] = address(_borrow);
+
+        uint256 amountOut = router.swapExactTokensForTokens(borrowAccount.collateral, 0, path, address(this), deadline)[1];
+
+        
+
+        // **** Make sure to update the account too
     }
 
     // ======== Events ========
