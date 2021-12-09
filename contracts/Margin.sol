@@ -31,6 +31,7 @@ contract Margin is IMargin, Context {
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowPeriod;
+                                    // **** BIG ALERT HERE =====================
     uint256 private minMarginLevel; // **** Hangon, this is actually the same thing that should control the amount that the others get rewarded too - we will take just enough to make profit off of liquidators and the rest to stakers
 
     uint256 private maxInterestPercent;
