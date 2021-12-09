@@ -17,7 +17,6 @@ contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    IVPool private vPool;
     IOracle private oracle;
 
     struct BorrowAccount {
@@ -31,15 +30,14 @@ contract Margin is IMargin, Context {
         uint256 totalBorrowed;
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - this way the same account can have different borrows with different collaterals independently
     }
-    mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
+    mapping(IVPool => mapping(uint256 => mapping(IERC20 => BorrowPeriod))) private borrowPeriods;
     uint256 private minBorrowPeriod;
 
     uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
 
     uint256 private maxInterestPercent;
 
-    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
-        vPool = vPool_;
+    constructor(IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         oracle = oracle_;
         minBorrowPeriod = minBorrowPeriod_;
         maxInterestPercent = maxInterestPercent_;
