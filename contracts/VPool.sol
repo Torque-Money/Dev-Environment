@@ -191,4 +191,10 @@ contract VPool is IVPool, AccessControl {
         _token.safeTransfer(_msgSender(), _amount);
         emit Withdraw(_msgSender(), periodId, _token, _amount);
     }
+
+    // **** Dont forget the function to approve whether or not to auto redeposit - add this to the margin system as well
+
+    function redeposit() public {
+        // Redeposit existing deposited amount from a previous period into the current period
+    }
 }
