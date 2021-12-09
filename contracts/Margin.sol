@@ -224,7 +224,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
-        emit Repay(_msgSender(), periodId, _borrow, _collateral);
+        emit Repay(_msgSender(), periodId, _borrow, _collateral, balAfterRepay);
     }
 
     function repay(IERC20 _collateral, IERC20 _borrow) external {
@@ -244,7 +244,7 @@ contract Margin is IMargin, Context {
         // Update the balance and transfer
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
-        emit Withdraw(_msgSender(), _periodId, _borrow, _collateral);
+        emit Withdraw(_msgSender(), _periodId, _borrow, _collateral, _amount);
     }
 
     // ======== Liquidate ========
@@ -254,13 +254,21 @@ contract Margin is IMargin, Context {
         return getMarginLevel(_account, _collateral, _borrow) <= getMinMarginLevel(); 
     }
 
-    function flashLiquidate(address _account, IERC20 _borrow, IERC20 _collateral, ILiquidator liquidator) external {
+    function flashLiquidate(address _account, IERC20 _borrow, IERC20 _collateral) external {
         // Liquidate an at risk account
         uint256 periodId = vPool.currentPeriodId();
         require(isLiquidatable(_account, _borrow, _collateral), "This account is not liquidatable");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        // Update the users account
+        uint256 collateral = borrowAccount.collateral;
+
+        borrowAccount.collateral = 0;
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+        borrowAccount.borrowed = 0;
+        borrowAccount.initialPrice = 0;
 
         // Swap the users collateral for assets
         UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
@@ -270,20 +278,25 @@ contract Margin is IMargin, Context {
         path[0] = address(_collateral);
         path[1] = address(_borrow);
 
-        uint256 amountOut = router.swapExactTokensForTokens(borrowAccount.collateral, 0, path, address(this), deadline)[1];
+        uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
 
-        
+        // Compensate the liquidator
+        uint256 reward = amountOut.mul(automatorReward).div(100);
+        _borrow.safeTransfer(_msgSender(), reward);
+        uint256 depositValue = amountOut.sub(reward);
+        _borrow.safeApprove(address(vPool), depositValue);
+        vPool.deposit(_borrow, depositValue);
 
-        // **** Make sure to update the account too
+        emit FlashLiquidation(_account, periodId, _msgSender(), _borrow, _collateral, collateral);
     }
 
     // ======== Events ========
 
     event Deposit(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
-    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral);
+    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
 
     event Borrow(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
-    event Repay(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral);
+    event Repay(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 balance);
 
-    event FlashLiquidation();
+    event FlashLiquidation(address indexed account, uint256 indexed periodId, address indexed liquidator, IERC20 borrowed, IERC20 collateral, uint256 amount);
 }
