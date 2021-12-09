@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 interface IMargin {
     // ======== Calculations ========
 
+    function compensationPercentage() external view returns (uint256);
+
     function liquidityAvailable(IERC20 _token) external view returns (uint256);
 
     function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);

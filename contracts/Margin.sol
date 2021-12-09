@@ -11,6 +11,7 @@ import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps, users should be able to choose between different pools for their margin to trade against - this way I can use the same margin protocol for everything and just switch pools (best idea)
+// **** Also add in the auto reborrowing and auto redepositing requirements
 
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
@@ -32,7 +33,7 @@ contract Margin is IMargin, Context {
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowPeriod;
 
-    uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold - ***** I BELIEVE THE WAY THIS HAS BEEN CALCULATED IS WRONG
+    uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
 
     uint256 private maxInterestPercent;
 
@@ -52,6 +53,10 @@ contract Margin is IMargin, Context {
     }
 
     // ======== Calculations ========
+
+    function compensationPercentage() public view override returns (uint256) {
+        return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(2);
+    }
 
     function liquidityAvailable(IERC20 _token) public view override approvedOnly(_token) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
@@ -187,7 +192,7 @@ contract Margin is IMargin, Context {
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
             if (_account != _msgSender()) {
-                reward = amountOut.mul(minMarginLevel).div(200);
+                reward = amountOut.mul(compensationPercentage()).div(100);
                 _collateral.safeTransfer(_msgSender(), reward);
             }
 
@@ -207,7 +212,7 @@ contract Margin is IMargin, Context {
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
             if (_account != _msgSender()) {
-                reward = amountOut.mul(minMarginLevel).div(200);
+                reward = amountOut.mul(compensationPercentage()).div(100);
                 _borrowed.safeTransfer(_msgSender(), reward);
             }
 
@@ -278,7 +283,7 @@ contract Margin is IMargin, Context {
         uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
 
         // Compensate the liquidator
-        uint256 reward = amountOut.mul(minMarginLevel).div(200);
+        uint256 reward = amountOut.mul(compensationPercentage()).div(100);
         _borrowed.safeTransfer(_msgSender(), reward);
         uint256 depositValue = amountOut.sub(reward);
         _borrowed.safeApprove(address(vPool), depositValue);
