@@ -41,6 +41,12 @@ interface IMargin {
     function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);
 
     /**
+     *  @dev Get the interest rate for a given asset
+     *  @param _borrowed The asset to calculate the interest rate of
+     */
+    function calculateInterestRate(IERC20 _borrowed) external view returns (uint256);
+
+    /**
      *  @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
      *  @param _borrowed The asset borrowed
      *  @param _initialBorrow The amount of the asset borrowed initially
