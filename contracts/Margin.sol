@@ -249,7 +249,7 @@ contract Margin is IMargin, Context {
         // This is the amount that is required to be paid back to the protocol - this is NOT the amount that will be actually given off
     }
 
-    function flashLiquidate() external returns (uint256) {
+    function flashLiquidate() external returns (bool) {
         // In here we consume the requested price if it is present for the given token pair
     }
 
