@@ -129,6 +129,8 @@ interface IMargin {
 
     // ======== Events ========
 
+    // **** MIGHT NEED TO REUPDATE THIS
+
     event Deposit(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
     event Withdraw(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
 
