@@ -51,7 +51,7 @@ contract Margin is IMargin, Context {
 
     // ======== Calculations ========
 
-    function liquidityAvailable(IERC20 _token) public view approvedOnly(_token) returns (uint256) {
+    function liquidityAvailable(IERC20 _token) public view override approvedOnly(_token) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 periodId = vPool.currentPeriodId();
 
@@ -61,19 +61,19 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _borrowed, IERC20 _collateral) public view approvedOnly(_borrowed) approvedOnly(_collateral) returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed, IERC20 _borrowed, IERC20 _collateral) public view override approvedOnly(_borrowed) approvedOnly(_collateral) returns (uint256) {
         uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
         uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice);
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
         return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
     }
 
-    function getMinMarginLevel() public view returns (uint256) {
+    function getMinMarginLevel() public view override returns (uint256) {
         // Return the minimum margin level before liquidation
         return minMarginLevel.add(100).mul(oracle.getDecimals()).div(100);
     }
 
-    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Get the margin level of an account for the current period
         uint256 periodId = vPool.currentPeriodId();
 
@@ -85,7 +85,7 @@ contract Margin is IMargin, Context {
         return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _borrowed, _collateral);
     }
 
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) public view approvedOnly(_borrowed) returns (uint256) {
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow) public view override approvedOnly(_borrowed) returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable))
         uint256 periodId = vPool.currentPeriodId();
 
@@ -97,7 +97,7 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function deposit(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external approvedOnly(_collateral) approvedOnly(_borrow) {
+    function deposit(IERC20 _collateral, uint256 _amount, IERC20 _borrow) external override approvedOnly(_collateral) approvedOnly(_borrow) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
 
@@ -114,7 +114,7 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external approvedOnly(_borrow) approvedOnly(_collateral) {
+    function borrow(IERC20 _borrow, IERC20 _collateral, uint256 _amount) external override approvedOnly(_borrow) approvedOnly(_collateral) {
         // Requirements for borrowing
         uint256 periodId = vPool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
@@ -142,7 +142,7 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function balance(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
+    function balance(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public view override approvedOnly(_collateral) approvedOnly(_borrow) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
@@ -154,7 +154,7 @@ contract Margin is IMargin, Context {
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrow) public approvedOnly(_collateral) approvedOnly(_borrow) {
+    function repay(address _account, IERC20 _collateral, IERC20 _borrow) public override approvedOnly(_collateral) approvedOnly(_borrow) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = vPool.currentPeriodId();
         require(_account == _msgSender() || vPool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
@@ -222,12 +222,12 @@ contract Margin is IMargin, Context {
         emit Repay(_msgSender(), periodId, _borrow, _collateral, balAfterRepay);
     }
 
-    function repay(IERC20 _collateral, IERC20 _borrow) external {
+    function repay(IERC20 _collateral, IERC20 _borrow) external override {
         // Repay off the loan for the caller
         repay(_msgSender(), _collateral, _borrow);
     }
 
-    function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId, uint256 _amount) external {
+    function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId, uint256 _amount) external override {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
@@ -244,12 +244,12 @@ contract Margin is IMargin, Context {
 
     // ======== Liquidate ========
 
-    function isLiquidatable(address _account, IERC20 _borrow, IERC20 _collateral) public view returns (bool) {
+    function isLiquidatable(address _account, IERC20 _borrow, IERC20 _collateral) public view override returns (bool) {
         // Return if a given account is liquidatable
         return getMarginLevel(_account, _collateral, _borrow) <= getMinMarginLevel(); 
     }
 
-    function flashLiquidate(address _account, IERC20 _borrow, IERC20 _collateral) external {
+    function flashLiquidate(address _account, IERC20 _borrow, IERC20 _collateral) external override {
         // Liquidate an at risk account
         uint256 periodId = vPool.currentPeriodId();
         require(isLiquidatable(_account, _borrow, _collateral), "This account is not liquidatable");
