@@ -72,7 +72,7 @@ contract Margin is IMargin, Context {
 
     function getMinMarginLevel() public view returns (uint256) {
         // Return the minimum margin level before liquidation
-        return uint256(minMarginLevel).mul(oracle.getDecimals()).div(100);
+        return minMarginLevel.add(100).mul(oracle.getDecimals()).div(100);
     }
 
     function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
@@ -166,7 +166,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
-        require(block.timestamp > borrowAccount.borrowTime + minBorrowPeriod, "Cannot repay untilminimum borrow period is over");
+        require(block.timestamp > borrowAccount.borrowTime + minBorrowPeriod, "Cannot repay until minimum borrow period is over");
 
         UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
         address[] memory path = new address[](2);
@@ -278,7 +278,7 @@ contract Margin is IMargin, Context {
         uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
 
         // Compensate the liquidator
-        uint256 reward = amountOut.mul(automatorReward).div(100);
+        uint256 reward = amountOut.mul(minMarginLevel).div(200);
         _borrow.safeTransfer(_msgSender(), reward);
         uint256 depositValue = amountOut.sub(reward);
         _borrow.safeApprove(address(vPool), depositValue);
