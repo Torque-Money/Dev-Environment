@@ -232,8 +232,13 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
+        // Require the amount in the balance and the user not to be borrowing
         require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
+        require(borrowAccount.collateral >= _amount, "Insufficient balance to withdraw");
 
+        // Update the balance and transfer
+        borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
+        _collateral.safeTransfer(_msgSender(), _amount);
     }
 
     // ======== Liquidate ========
