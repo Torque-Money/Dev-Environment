@@ -10,8 +10,6 @@ import "./IOracle.sol";
 import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
-// **** Perhaps the Margin will be independent of the pool, and users may choose which pool they wish to use at runtime
-
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
