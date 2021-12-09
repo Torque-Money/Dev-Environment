@@ -113,7 +113,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), _borrow, _collateral, periodId, _amount);
+        emit Deposit(periodId, _borrow, _collateral, _msgSender(), _amount);
     }
 
     // ======== Borrow ========
@@ -140,7 +140,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
 
-        emit Borrow(_msgSender(), _borrow, _collateral, periodId, _amount);
+        emit Borrow(periodId, _borrow, _collateral, _msgSender(), _amount);
     }
 
     // ======== Repay and withdraw ========
@@ -221,7 +221,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
-        emit Repay(_msgSender(), _borrow, _collateral, periodId);
+        emit Repay(periodId, _borrow, _collateral, _msgSender());
     }
 
     function repay(IERC20 _collateral, IERC20 _borrow) external {
@@ -241,7 +241,7 @@ contract Margin is IMargin, Context {
         // Update the balance and transfer
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
-        emit Withdraw(_msgSender(), _borrow, _collateral, _periodId);
+        emit Withdraw(_periodId, _borrow, _collateral, _msgSender());
     }
 
     // ======== Liquidate ========
@@ -252,9 +252,9 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId, uint256 amount);
-    event Borrow(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId, uint256 amount);
-    event Repay(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
-    event Withdraw(address indexed account, IERC20 indexed borrowed, IERC20 indexed collateral, uint256 periodId);
+    event Deposit(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account, uint256 amount);
+    event Borrow(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account, uint256 amount);
+    event Repay(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account);
+    event Withdraw(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account);
     event FlashLiquidation();
 }
