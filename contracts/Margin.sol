@@ -93,19 +93,29 @@ contract Margin is IMargin, Context {
         return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _borrowed, _collateral);
     }
 
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override approvedOnly(_borrowed) returns (uint256) {
-        // interest = maxInterestPercent * priceBorrowedInitially * (totalBorrowed / (totalBorrowed + liquiditiyAvailable)) * (timeBorrowed / interestPeriod)
+    function calculateInterestRate(IERC20 _borrowed) public view override returns (uint256) {
+        // Calculate the interest rate for a given asset
+        // interest = totalBorrowed / (totalBorrowed + liquidity)
         uint256 periodId = vPool.currentPeriodId();
 
         uint256 totalBorrowed = borrowPeriods[periodId][_borrowed].totalBorrowed;
         uint256 liquidity = liquidityAvailable(_borrowed);
+
+        return totalBorrowed.mul(oracle.getDecimals()).div(liquidity.add(totalBorrowed));
+    }
+
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override approvedOnly(_borrowed) returns (uint256) {
+        // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
+        uint256 periodId = vPool.currentPeriodId();
+
+        uint256 interestRate = calculateInterestRate(_borrowed);
 
         uint256 current = block.timestamp;
         (,uint256 prologueEnd) = vPool.getPrologueTimes(periodId);
         (uint256 epilogueStart,) = vPool.getEpilogueTimes(periodId);
         uint256 timeFrame = epilogueStart - prologueEnd;
 
-        return _initialBorrow.mul(maxInterestPercent).mul(totalBorrowed).div(totalBorrowed.add(liquidity)).div(100).mul(current.sub(_borrowTime)).div(timeFrame);
+        return _initialBorrow.mul(maxInterestPercent).mul(interestRate).mul(current.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
     }
 
     // ======== Deposit ========
