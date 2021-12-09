@@ -222,12 +222,12 @@ contract Margin is IMargin, Context {
         borrowAccount.borrowed = 0;
     }
 
-    function repay() external {
-        // **** Perhaps we need an amount for how much needs to be repaid exactly off of the margin ?
-        // Repay off the loan
+    function repay(IERC20 _collateral, IERC20 _borrow, uint256 _periodId) external {
+        // Repay off the loan for the caller
+        repay(_msgSender(), _collateral, _borrow, _periodId);
     }
 
-    function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId) external {
+    function withdraw(IERC20 _collateral, IERC20 _borrow, uint256 _periodId, uint256 _amount) external {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
@@ -250,7 +250,7 @@ contract Margin is IMargin, Context {
 
     event Deposit(address indexed depositor, IERC20 indexed collateral, uint256 periodId, IERC20 borrow, uint256 amount);
     event Borrow(address indexed borrower, IERC20 indexed borrowed, uint256 periodId, IERC20 collateral, uint256 amount);
-    event Repay(address indexed repayer);
+    event Repay(address indexed repayer); // **** DAMN I forgot this
     event Withdraw();
     event FlashLiquidation();
 }
