@@ -30,7 +30,7 @@ contract Margin is IMargin, Context {
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowPeriod;
 
-    uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
+    uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold - ***** I BELIEVE THE WAY THIS HAS BEEN CALCULATED IS WRONG
 
     uint256 private maxInterestPercent;
 
@@ -284,14 +284,4 @@ contract Margin is IMargin, Context {
 
         emit FlashLiquidation(_account, periodId, _msgSender(), _borrow, _collateral, collateral);
     }
-
-    // ======== Events ========
-
-    event Deposit(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
-    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
-
-    event Borrow(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
-    event Repay(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 balance);
-
-    event FlashLiquidation(address indexed account, uint256 indexed periodId, address indexed liquidator, IERC20 borrowed, IERC20 collateral, uint256 amount);
 }
