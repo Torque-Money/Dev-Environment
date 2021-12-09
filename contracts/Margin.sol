@@ -130,7 +130,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), periodId, _collateral, _borrowed, _amount);
+        emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
     // ======== Borrow ========
@@ -162,7 +162,7 @@ contract Margin is IMargin, Context {
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
         borrowAccount.borrowTime = block.timestamp;
 
-        emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
+        emit Borrow(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
     // ======== Repay and withdraw ========
@@ -245,7 +245,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
-        emit Repay(_msgSender(), periodId, _collateral, _borrowed, balAfterRepay);
+        emit Repay(_msgSender(), periodId, _pool, _collateral, _borrowed, balAfterRepay);
     }
 
     function repay(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override {
@@ -265,7 +265,7 @@ contract Margin is IMargin, Context {
         // Update the balance and transfer
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
-        emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
+        emit Withdraw(_msgSender(), _periodId, _pool, _collateral, _borrowed, _amount);
     }
 
     // ======== Liquidate ========
@@ -308,6 +308,6 @@ contract Margin is IMargin, Context {
         _borrowed.safeApprove(address(_pool), depositValue);
         _pool.deposit(_borrowed, depositValue);
 
-        emit FlashLiquidation(_account, periodId, _msgSender(), _collateral, _borrowed, collateral);
+        emit FlashLiquidation(_account, periodId, _pool, _msgSender(), _collateral, _borrowed, collateral);
     }
 }
