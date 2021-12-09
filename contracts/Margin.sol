@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./IMargin.sol";
 import "./IOracle.sol";
 import "./IVPool.sol";
-import "./ILiquidator.sol";
 import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps the Margin will be independent of the pool, and users may choose which pool they wish to use at runtime
