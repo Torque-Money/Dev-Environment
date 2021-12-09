@@ -169,7 +169,7 @@ contract Margin is IMargin, Context {
 
         uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
-            // **** Give the user back their deposited amount in terms of the deposited token
+            // Convert the accounts tokens back to the deposited asset
 
         } else {
             uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
@@ -180,7 +180,7 @@ contract Margin is IMargin, Context {
             borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
             borrowAccount.borrowed = 0;
 
-            // Swap the repay value back for the borrowed asset and return it back to the pool
+            // Swap the repay value back for the borrowed asset
             UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
             address[] memory path = new address[](2);
             path[0] = address(_collateral);
@@ -194,7 +194,11 @@ contract Margin is IMargin, Context {
                 reward = amountOut.mul(automatorReward).div(100);
                 _borrow.safeTransfer(_msgSender(), reward);
             }
-            vPool.deposit(_borrow, amountOut.sub(reward));
+
+            // Return the assets back to the pool
+            uint256 depositValue = amountOut.sub(reward);
+            _borrow.safeApprove(address(vPool), depositValue);
+            vPool.deposit(_borrow, depositValue);
         }
     }
 
