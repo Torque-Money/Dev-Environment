@@ -252,9 +252,9 @@ contract Margin is IMargin, Context {
 
     // ======== Events ========
 
-    event Deposit(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account, uint256 amount);
-    event Borrow(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account, uint256 amount);
-    event Repay(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account);
-    event Withdraw(uint256 indexed periodId, IERC20 indexed borrowed, IERC20 indexed collateral, address account);
+    event Deposit(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
+    event Borrow(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral, uint256 amount);
+    event Repay(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral);
+    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 borrowed, IERC20 collateral);
     event FlashLiquidation();
 }

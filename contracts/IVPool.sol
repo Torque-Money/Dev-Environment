@@ -122,9 +122,9 @@ interface IVPool {
 
     // ======== Events ========
 
-    event Stake(address indexed account, IERC20 indexed token, uint256 indexed periodId, uint256 amount);
-    event Redeem(address indexed account, IERC20 indexed token, uint256 indexed periodId, uint256 amount, uint256 liquidity);
+    event Stake(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
+    event Redeem(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount, uint256 liquidity);
 
-    event Deposit(IERC20 indexed token, uint256 indexed periodId, uint256 amount);
-    event Withdraw(IERC20 indexed token, uint256 indexed periodId, uint256 amount);
+    event Deposit(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
+    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
 }
