@@ -11,7 +11,7 @@ import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps, users should be able to choose between different pools for their margin to trade against - this way I can use the same margin protocol for everything and just switch pools (best idea)
-// **** Also add in the auto reborrowing and auto redepositing requirements
+// **** Also add in the auto reborrowing and auto redepositing requirements FOR the pool and the margin
 
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
