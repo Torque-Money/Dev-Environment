@@ -165,16 +165,18 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrow];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
+        require(borrowAccount.borrowed > 0, "No debt to repay");
+
         UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
         address[] memory path = new address[](2);
         uint256 deadline = block.timestamp + 1 hours;
-
-        require(borrowAccount.borrowed > 0, "No debt to repay");
 
         uint256 balAfterRepay = balance(_account, _collateral, _borrow, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
             uint256 repayAmount = balAfterRepay.sub(borrowAccount.collateral);
+
+            // **** Hangon, in this case we dont even have to do a conversion - we are just straight repaying the contract using the funds from the pool ?
 
             // Swap and pay the user in terms of the deposited asset
             path[0] = address(_borrow);
