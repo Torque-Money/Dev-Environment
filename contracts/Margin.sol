@@ -158,6 +158,8 @@ contract Margin is IMargin, Context {
     }
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrow, uint256 _periodId) public approvedOnly(_collateral) approvedOnly(_borrow) {
+        // **** THIS SHOULDNT BE ALLOWED TO KEEP BORROWING DURING THE END OF THE COOLDOWN - PERHAPS JUST NOT ALLOW IT AT ALL OF IT IT IS DONE JUST SET THEIR BALANCE TO 0
+
         // If the period has entered the epilogue phase, then anyone may repay the account
         require(_account == _msgSender() || vPool.isEpilogue(_periodId) || !vPool.isCurrentPeriod(_periodId), "Only the owner may call repay before the epilogue and end of period");
 
