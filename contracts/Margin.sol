@@ -12,6 +12,7 @@ import "./lib/UniswapV2Router02.sol";
 
 // **** Perhaps, users should be able to choose between different pools for their margin to trade against - this way I can use the same margin protocol for everything and just switch pools (best idea)
 // **** Also add in the auto reborrowing and auto redepositing requirements
+// **** This concept of no interest rate is stupid - fix this up by always just using the initial time invested and then tracking sepereately the time borrowed for min staking period
 
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
@@ -127,7 +128,7 @@ contract Margin is IMargin, Context {
         require(_amount > 0, "Amount must be greater than 0");
         require(!vPool.isPrologue(periodId), "Cannot borrow during prologue");
         (uint256 epilogueStart,) = vPool.getEpilogueTimes(periodId);
-        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue"); // **** PLEASE CHECK THIS AGAIN !!!!
+        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
