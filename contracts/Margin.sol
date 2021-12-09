@@ -127,7 +127,7 @@ contract Margin is IMargin, Context {
         require(_amount > 0, "Amount must be greater than 0");
         require(!vPool.isPrologue(periodId), "Cannot borrow during prologue");
         (uint256 epilogueStart,) = vPool.getEpilogueTimes(periodId);
-        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
+        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue"); // **** PLEASE CHECK THIS AGAIN !!!!
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
@@ -135,6 +135,7 @@ contract Margin is IMargin, Context {
 
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
+        // **** THIS NEEDS TO CONSIDER THE TOTAL BORROW INITIAL PRICE AND THE TOTAL MARGIN / INTEREST TOO OF COURSE =================
         require(calculateMarginLevel(borrowAccount.collateral, borrowInitialPrice, _amount, _borrowed, _collateral) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
@@ -153,6 +154,8 @@ contract Margin is IMargin, Context {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        // **** IN ADDITION TO THIS, I NEED TO MAKE SURE IF THE PERIOD ID IS OVER TO JUST RETURN THE REGULAR AMOUNT OF COLLATERAL =========================
 
         uint256 collateral = borrowAccount.collateral;
         uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice);
