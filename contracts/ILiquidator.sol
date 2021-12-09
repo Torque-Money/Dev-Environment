@@ -10,5 +10,5 @@ interface ILiquidator {
      *  @param _owing The amount required to be returned to the pool
      *  @param _data Data to be passed to the callback
      */
-    function onFlashLiquidate(address _initiator, address _token, uint256 _amount, uint256 _owing, bytes memory _data) external returns (bool);
+    function onFlashLiquidate(address _initiator, address _collateral, uint256 _amount, address _borrow, uint256 _owing, bytes memory _data) external returns (bool);
 }
