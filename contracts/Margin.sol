@@ -175,13 +175,15 @@ contract Margin is IMargin, Context {
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
             uint256 repayAmount = balAfterRepay.sub(borrowAccount.collateral);
+            uint256 borrowedRepay = oracle.pairPrice(_collateral, _borrow).mul(repayAmount).div(oracle.getDecimals());
 
-            // **** Hangon, in this case we dont even have to do a conversion - we are just straight repaying the contract using the funds from the pool ?
-
-            // Swap and pay the user in terms of the deposited asset
+            // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
+            vPool.withdraw(_borrow, borrowedRepay);
             path[0] = address(_borrow);
             path[1] = address(_collateral);
-            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), deadline)[1]; // **** Perhaps in this case we want to use tokensForExact ???
+            uint256 amountOut = router.swapExactTokensForTokens(borrowedRepay, 0, path, address(this), deadline)[1];
+
+            // **** Make sure that we did indeed swap the correct amount of collateral - the swap will NOT get us the same amount - we have to fix this up as the recollateralized amount
 
             // Update the balance of the user
             borrowAccount.collateral = balAfterRepay;

@@ -117,9 +117,8 @@ interface IVPool {
      *  @dev Withdraw tokens from the pool and decrease the liquidity of the pool
      *  @param _token The token to withdraw
      *  @param _amount The amount of the token to withdraw
-     *  @param _to The address to withdraw to
      */
-    function withdraw(IERC20 _token, uint256 _amount, address _to) external;
+    function withdraw(IERC20 _token, uint256 _amount) external;
 
     // ======== Events ========
 
@@ -127,5 +126,5 @@ interface IVPool {
     event Redeem(address indexed sender, IERC20 indexed token, uint256 indexed periodId, uint256 amount, uint256 liquidity);
 
     event Deposit(IERC20 indexed token, uint256 indexed periodId, uint256 amount);
-    event Withdraw(IERC20 indexed token, uint256 indexed periodId, address indexed to, uint256 amount);
+    event Withdraw(IERC20 indexed token, uint256 indexed periodId, uint256 amount);
 }

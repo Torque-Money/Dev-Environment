@@ -177,7 +177,7 @@ contract VPool is IVPool, AccessControl {
         emit Deposit(_token, periodId, _amount);
     }
 
-    function withdraw(IERC20 _token, uint256 _amount, address _to) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
+    function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
         // Make sure no withdraws during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
@@ -186,7 +186,7 @@ contract VPool is IVPool, AccessControl {
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
-        _token.safeTransfer(_to, _amount);
-        emit Withdraw(_token, periodId, _to, _amount);
+        _token.safeTransfer(_msgSender(), _amount);
+        emit Withdraw(_token, periodId, _amount);
     }
 }
