@@ -23,6 +23,7 @@ contract Margin is IMargin, Context {
         uint256 collateral;
         uint256 borrowed;
         uint256 initialPrice;
+        uint256 borrowTime;
     }
     struct BorrowPeriod {
         uint256 totalBorrowed;
@@ -30,20 +31,17 @@ contract Margin is IMargin, Context {
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowPeriod;
-                                    // **** BIG ALERT HERE =====================
-    uint256 private minMarginLevel; // **** Hangon, this is actually the same thing that should control the amount that the others get rewarded too - we will take just enough to make profit off of liquidators and the rest to stakers
+
+    uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
 
     uint256 private maxInterestPercent;
 
-    uint256 private automatorReward;
-
-    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_, uint256 automatorReward_) {
+    constructor(IVPool vPool_, IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         vPool = vPool_;
         oracle = oracle_;
         minBorrowPeriod = minBorrowPeriod_;
         maxInterestPercent = maxInterestPercent_;
         minMarginLevel = minMarginLevel_;
-        automatorReward = automatorReward_;
     }
 
     // ======== Modifiers ========
@@ -139,6 +137,7 @@ contract Margin is IMargin, Context {
 
         borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
         borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
+        borrowAccount.borrowTime = block.timestamp;
 
         emit Borrow(_msgSender(), periodId, _borrow, _collateral, _amount);
     }
@@ -158,8 +157,6 @@ contract Margin is IMargin, Context {
     }
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrow) public approvedOnly(_collateral) approvedOnly(_borrow) {
-        // **** YOU FORGOT THE MINIMUM AMOUNT OF TIME BORROWED FOR
-
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = vPool.currentPeriodId();
         require(_account == _msgSender() || vPool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
@@ -169,6 +166,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
+        require(block.timestamp > borrowAccount.borrowTime + minBorrowPeriod, "Cannot repay untilminimum borrow period is over");
 
         UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
         address[] memory path = new address[](2);
@@ -189,7 +187,7 @@ contract Margin is IMargin, Context {
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
             if (_account != _msgSender()) {
-                reward = amountOut.mul(automatorReward).div(100);
+                reward = amountOut.mul(minMarginLevel).div(200);
                 _collateral.safeTransfer(_msgSender(), reward);
             }
 
@@ -209,7 +207,7 @@ contract Margin is IMargin, Context {
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
             if (_account != _msgSender()) {
-                reward = amountOut.mul(automatorReward).div(100);
+                reward = amountOut.mul(minMarginLevel).div(200);
                 _borrow.safeTransfer(_msgSender(), reward);
             }
 
