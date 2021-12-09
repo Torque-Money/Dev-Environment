@@ -135,8 +135,7 @@ contract Margin is IMargin, Context {
 
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        // **** THIS NEEDS TO CONSIDER THE TOTAL BORROW INITIAL PRICE AND THE TOTAL MARGIN / INTEREST TOO OF COURSE =================
-        require(calculateMarginLevel(borrowAccount.collateral, borrowInitialPrice, _amount, _borrowed, _collateral) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
@@ -155,9 +154,8 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
-        // **** IN ADDITION TO THIS, I NEED TO MAKE SURE IF THE PERIOD ID IS OVER TO JUST RETURN THE REGULAR AMOUNT OF COLLATERAL =========================
-
         uint256 collateral = borrowAccount.collateral;
+        if (!vPool.isCurrentPeriod(_periodId)) return collateral;
         uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
