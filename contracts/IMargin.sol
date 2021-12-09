@@ -87,16 +87,36 @@ interface IMargin {
 
     /**
      *  @dev Repay the borrowed amount for the given asset and collateral for the callers account
-     *  @param 
+     *  @param _collateral The asset to be used as collateral
+     *  @param _borrowed The asset to borrow
      */
     function repay(IERC20 _collateral, IERC20 _borrowed) external;
 
+    /**
+     *  @dev Withdraw collateral from the account if the account has no debt
+     *  @param _collateral The asset to be used as collateral
+     *  @param _borrowed The asset to borrow
+     *  @param _periodId The id of the period to withdraw from
+     *  @param _amount The amount of the asset to withdraw
+     */
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount) external;
 
     // ======== Liquidate ========
 
+    /**
+     *  @dev Check if an account is liquidatable
+     *  @param _account The account to check if liquidatable
+     *  @param _collateral The asset to be used as collateral
+     *  @param _borrowed The asset to borrow
+     */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (bool);
 
+    /**
+     *  @dev Liquidates a users account that is liquidatable / below the minimum margin level
+     *  @param _account The account to be liquidated
+     *  @param _collateral The asset to be used as collateral
+     *  @param _borrowed The asset to borrow
+     */
     function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external;
 
     // ======== Events ========
