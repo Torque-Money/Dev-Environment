@@ -143,7 +143,7 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.liquidity = stakingPeriod.liquidity.add(_amount);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(_amount);
 
-        emit Stake(_msgSender(), _token, periodId, _amount);
+        emit Stake(_msgSender(), periodId, _token, _amount);
     }
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
@@ -161,7 +161,7 @@ contract VPool is IVPool, AccessControl {
         uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(tokensRedeemed);
         _token.safeTransfer(_msgSender(), tokensRedeemed);
-        emit Redeem(_msgSender(), _token, _periodId, _amount, tokensRedeemed);
+        emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
     function deposit(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
@@ -174,7 +174,7 @@ contract VPool is IVPool, AccessControl {
         // Receive a given number of funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
         stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
-        emit Deposit(_token, periodId, _amount);
+        emit Deposit(_msgSender(), periodId, _token, _amount);
     }
 
     function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -187,6 +187,6 @@ contract VPool is IVPool, AccessControl {
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
-        emit Withdraw(_token, periodId, _amount);
+        emit Withdraw(_msgSender(), periodId, _token, _amount);
     }
 }
