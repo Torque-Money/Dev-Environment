@@ -3,11 +3,9 @@ import config from "../config.json";
 import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 async function main() {
-    // Compile contracts
-    await hre.run("compile");
-
     // Account to fund with tokens
     const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
 
     // Fund the account with DAI
     await hre.network.provider.request({
@@ -18,7 +16,7 @@ async function main() {
     const dai = new hre.ethers.Contract(config.daiAddress, ERC20Abi.abi, daiSigner);
 
     const daiBalance = await dai.balanceOf(daiSigner.address);
-    await dai.transfer(signer._address, daiBalance);
+    await dai.transfer(signerAddress, daiBalance);
 
     console.log(`Transferred ${daiBalance.toString()} DAI to signer ${signer._address}`);
 
@@ -31,7 +29,7 @@ async function main() {
     const boo = new hre.ethers.Contract(config.booAddress, ERC20Abi.abi, booSigner);
 
     const booBalance = await boo.balanceOf(booSigner.address);
-    await boo.transfer(signer._address, booBalance);
+    await boo.transfer(signerAddress, booBalance);
 
     console.log(`Transferred ${booBalance.toString()} BOO to signer ${signer._address}`);
 
