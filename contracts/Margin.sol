@@ -71,7 +71,10 @@ contract Margin is IMargin, Context {
 
         uint256 calcPart1;
         {
-            calcPart1 = oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)); 
+            calcPart1 = oracle.getDecimals(); 
+        }
+        {
+            calcPart1 = calcPart1.mul(_deposited.add(currentBorrowPrice));
         }
 
         return calcPart1.div(_initialBorrowPrice.add(interest));
