@@ -31,6 +31,8 @@ contract VPool is IVPool, AccessControl {
     uint256 private stakingTimeframe;
     uint256 private cooldownTimeframe;
 
+    mapping(address => mapping(IERC20 => bool)) private autoRestake;
+
     constructor(uint256 stakingTimeframe_, uint256 cooldownTimeframe_) {
         stakingTimeframe = stakingTimeframe_;
         cooldownTimeframe = cooldownTimeframe_;
@@ -148,6 +150,30 @@ contract VPool is IVPool, AccessControl {
         emit Stake(_msgSender(), periodId, _token, _amount);
     }
 
+    function setAutoRestake(IERC20 _token, bool _option) external approvedOnly(_token) {
+        // Approve auto restakes or not
+        autoRestake[_msgSender()][_token] = _option;
+        emit AutoRestake(_msgSender(), _token);
+    }
+
+    function restake(address _account, IERC20 _token, uint256 _periodId) public approvedOnly(_token) {
+        // Redeposit existing deposited amount from a previous period into the current period for a given user
+        uint256 periodId = currentPeriodId();
+        require(periodId != _periodId, "Cannot restake into the same period");
+
+        StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodId][_token];
+        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
+
+        require(oldStakingPeriod.deposits[_account] > 0, "Nothing to restake from this period");
+        require(_account == _msgSender() || autoRestake[_account][_token], "You are not authorized to restake for this account");
+
+        // Restake the deposit
+    }
+
+    function restake(IERC20 _token, uint256 _periodId) external {
+        // Redeposit existing deposited amount from a previous period into the current period for the current user
+    }
+
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during prologue period or once period has ended");
@@ -190,11 +216,5 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
         emit Withdraw(_msgSender(), periodId, _token, _amount);
-    }
-
-    // **** Dont forget the function to approve whether or not to auto redeposit - add this to the margin system as well
-
-    function restake(address account, IERC20 _token, uint256 _periodId) public {
-        // Redeposit existing deposited amount from a previous period into the current period
     }
 }
