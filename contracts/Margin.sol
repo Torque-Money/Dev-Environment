@@ -64,21 +64,25 @@ contract Margin is IMargin, Context {
         return liquidity - borrowed;
     }
 
+    function _calculateMarginLevelHelper(uint256 _deposited, uint256 currentBorrowPrice, uint256 _initialBorrowPrice, uint256 interest) private view returns (uint256) {
+        uint256 retValue;
+        { retValue = oracle.getDecimals(); }
+        { retValue = retValue.mul(_deposited.add(currentBorrowPrice)); }
+        { retValue = retValue.div(_initialBorrowPrice.add(interest)); }
+        
+        return retValue;
+    }
+
     function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
 
         uint256 currentBorrowPrice;
         { currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals()); }
 
-        uint256 retValue;
-        { retValue = oracle.getDecimals(); }
-        { retValue = retValue.mul(_deposited.add(currentBorrowPrice)); }
-
         uint256 interest;
         { interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime, _pool); }
-        { retValue = retValue.div(_initialBorrowPrice.add(interest)); }
         
-        return retValue;
+        return _calculateMarginLevelHelper(_deposited, currentBorrowPrice, _initialBorrowPrice, interest);
     }
 
     function getMinMarginLevel() public view override returns (uint256) {
@@ -174,17 +178,21 @@ contract Margin is IMargin, Context {
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Requirements for borrowing
         uint256 periodId = _pool.currentPeriodId();
-        require(_amount > 0, "Amount must be greater than 0");
-        require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
-        (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
-        require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
-        require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
+        {
+            require(_amount > 0, "Amount must be greater than 0");
+            require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
+            require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
+            require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
+        }
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
-        if (borrowAccount.borrowed == 0) {
-            borrowAccount.initialBorrowTime = block.timestamp;
+        {
+            if (borrowAccount.borrowed == 0) {
+                borrowAccount.initialBorrowTime = block.timestamp;
+            }
         }
 
         // Require that the borrowed amount will be above the required margin level
