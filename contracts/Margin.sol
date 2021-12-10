@@ -223,8 +223,7 @@ contract Margin is IMargin, Context {
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId, _pool);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
-            uint256 payoutAmount = balAfterRepay.sub(borrowAccount.collateral);
-            uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(payoutAmount).div(oracle.getDecimals());
+            uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(balAfterRepay.sub(borrowAccount.collateral)).div(oracle.getDecimals());
 
             // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
             _pool.withdraw(_borrowed, payout);
@@ -234,14 +233,13 @@ contract Margin is IMargin, Context {
             uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
 
             // Provide a reward to the user who repayed the account if they are not the account owner
-            uint256 reward = 0;
+            borrowAccount.collateral = borrowAccount.collateral.add(amountOut);
             if (_account != _msgSender()) {
-                reward = amountOut.mul(compensationPercentage()).div(100);
+                uint256 reward = amountOut.mul(compensationPercentage()).div(100);
                 _collateral.safeTransfer(_msgSender(), reward);
-            }
 
-            // Update the balance of the user
-            borrowAccount.collateral = borrowAccount.collateral.add(amountOut.sub(reward));
+                borrowAccount.collateral = borrowAccount.collateral.sub(reward);
+            }
 
         } else {
             // Amount the user has to repay the protocol
