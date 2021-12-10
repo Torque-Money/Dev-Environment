@@ -160,6 +160,7 @@ contract VPool is IVPool, AccessControl {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
         require(_account == _msgSender() || autoRestake[_account][_token], "You are not authorized to restake for this account");
         uint256 periodId = currentPeriodId();
+        require(isPrologue(periodId), "Staking is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot restake into the same period");
 
         StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodId][_token];
@@ -167,7 +168,21 @@ contract VPool is IVPool, AccessControl {
 
         require(oldStakingPeriod.deposits[_account] > 0, "Nothing to restake from this period");
 
-        // Restake the deposit
+        // Remove the stake from the old period
+        uint256 oldDeposit = oldStakingPeriod.deposits[_account];
+
+        uint256 tokensRedeemed = redeemValue(_token, _periodId, oldDeposit);
+        oldStakingPeriod.liquidity = oldStakingPeriod.liquidity.sub(tokensRedeemed);
+
+        oldStakingPeriod.totalDeposited = oldStakingPeriod.totalDeposited.sub(oldDeposit);
+        oldStakingPeriod.deposits[_account] = oldStakingPeriod.deposits[_account].sub(oldDeposit);
+
+        // Update the new period
+        stakingPeriod.deposits[_account] = stakingPeriod.deposits[_account].add(tokensRedeemed);
+        stakingPeriod.liquidity = stakingPeriod.liquidity.add(tokensRedeemed);
+        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(tokensRedeemed);
+
+        emit Restake(_account, periodId, _token, _msgSender());
     }
 
     function restake(IERC20 _token, uint256 _periodId) external {
