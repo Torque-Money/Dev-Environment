@@ -2,7 +2,9 @@
     "name": "wabbit-protocol-v1",
     "version": "1.0.0",
     "scripts": {
-        "test": "npx hardhat test"
+        "test": "npx hardhat test",
+        "fork": "npx hardhat node",
+        "deploy": "npx hardhat run --network localhost scripts/deploy.ts"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.3",

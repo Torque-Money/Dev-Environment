@@ -28,14 +28,14 @@ contract VPool is IVPool, AccessControl {
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
-    uint256 private stakingTimeframe;
-    uint256 private cooldownTimeframe;
+    uint256 private periodLength;
+    uint256 private cooldownLength;
 
     uint256 private restakeReward; // Percentage of amount restaked
 
-    constructor(uint256 stakingTimeframe_, uint256 cooldownTimeframe_, uint256 restakeReward_) {
-        stakingTimeframe = stakingTimeframe_;
-        cooldownTimeframe = cooldownTimeframe_;
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 restakeReward_) {
+        periodLength = periodLength_;
+        cooldownLength = cooldownLength_;
         restakeReward = restakeReward_;
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
@@ -44,8 +44,8 @@ contract VPool is IVPool, AccessControl {
 
     function getPrologueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the prologue is between
-        uint256 prologueStart = _periodId.mul(stakingTimeframe);
-        uint256 prologueEnd = prologueStart.add(cooldownTimeframe);
+        uint256 prologueStart = _periodId.mul(periodLength);
+        uint256 prologueEnd = prologueStart.add(cooldownLength);
         return (prologueStart, prologueEnd);
     }
 
@@ -59,8 +59,8 @@ contract VPool is IVPool, AccessControl {
 
     function getEpilogueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the epilogue is between
-        uint256 epilogueEnd = _periodId.mul(stakingTimeframe);
-        uint256 epilogueStart = epilogueEnd.sub(cooldownTimeframe);
+        uint256 epilogueEnd = _periodId.mul(periodLength);
+        uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
         return (epilogueStart, epilogueEnd);
     }
 
@@ -77,7 +77,7 @@ contract VPool is IVPool, AccessControl {
     }
 
     function currentPeriodId() public view override returns (uint256) {
-        return uint256(block.timestamp).div(stakingTimeframe);
+        return uint256(block.timestamp).div(periodLength);
     }
 
     // ======== Approved tokens ========
