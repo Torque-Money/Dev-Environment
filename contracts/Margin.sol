@@ -136,25 +136,27 @@ contract Margin is IMargin, Context {
         require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot redeposit into the same period");
 
-        BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
-        BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
+        {
+            BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
+            BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
 
-        require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
+            require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
 
-        // Remove the funds from the old period
-        uint256 collateral = oldBorrowAccount.collateral;
-        oldBorrowAccount.collateral = 0;
+            // Remove the funds from the old period
+            uint256 collateral = oldBorrowAccount.collateral;
+            oldBorrowAccount.collateral = 0;
 
-        // Reward the account who restaked
-        uint256 reward = 0;
-        if (_account != _msgSender()) {
-            reward = compensationPercentage().mul(collateral).div(100);
-            _collateral.safeTransfer(_msgSender(), reward);
+            // Reward the account who restaked
+            uint256 reward = 0;
+            if (_account != _msgSender()) {
+                reward = compensationPercentage().mul(collateral).div(100);
+                _collateral.safeTransfer(_msgSender(), reward);
+            }
+
+            // Move the funds to the new period
+            uint256 redepositCollateral = collateral.sub(reward);
+            borrowAccount.collateral = borrowAccount.collateral.add(redepositCollateral);
         }
-
-        // Move the funds to the new period
-        uint256 redepositCollateral = collateral.sub(reward);
-        borrowAccount.collateral = borrowAccount.collateral.add(redepositCollateral);
 
         emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodId);
     }
@@ -317,27 +319,29 @@ contract Margin is IMargin, Context {
         // Update the users account
         uint256 collateral = borrowAccount.collateral;
 
-        borrowAccount.collateral = 0;
-        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
-        borrowAccount.borrowed = 0;
-        borrowAccount.initialPrice = 0;
+        {
+            borrowAccount.collateral = 0;
+            borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+            borrowAccount.borrowed = 0;
+            borrowAccount.initialPrice = 0;
 
-        // Swap the users collateral for assets
-        UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
-        address[] memory path = new address[](2);
-        uint256 deadline = block.timestamp + 1 hours;
+            // Swap the users collateral for assets
+            UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
+            address[] memory path = new address[](2);
+            uint256 deadline = block.timestamp + 1 hours;
 
-        path[0] = address(_collateral);
-        path[1] = address(_borrowed);
+            path[0] = address(_collateral);
+            path[1] = address(_borrowed);
 
-        uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
+            uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
 
-        // Compensate the liquidator
-        uint256 reward = amountOut.mul(compensationPercentage()).div(100);
-        _borrowed.safeTransfer(_msgSender(), reward);
-        uint256 depositValue = amountOut.sub(reward);
-        _borrowed.safeApprove(address(_pool), depositValue);
-        _pool.deposit(_borrowed, depositValue);
+            // Compensate the liquidator
+            uint256 reward = amountOut.mul(compensationPercentage()).div(100);
+            _borrowed.safeTransfer(_msgSender(), reward);
+            uint256 depositValue = amountOut.sub(reward);
+            _borrowed.safeApprove(address(_pool), depositValue);
+            _pool.deposit(_borrowed, depositValue);
+        }
 
         emit FlashLiquidation(_account, periodId, _pool, _msgSender(), _collateral, _borrowed, collateral);
     }
