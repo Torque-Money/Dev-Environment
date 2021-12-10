@@ -31,11 +31,12 @@ contract VPool is IVPool, AccessControl {
     uint256 private stakingTimeframe;
     uint256 private cooldownTimeframe;
 
-    mapping(address => mapping(IERC20 => bool)) private autoRestake;
+    uint256 private restakeReward; // Percentage of amount restaked
 
-    constructor(uint256 stakingTimeframe_, uint256 cooldownTimeframe_) {
+    constructor(uint256 stakingTimeframe_, uint256 cooldownTimeframe_, uint256 restakeReward_) {
         stakingTimeframe = stakingTimeframe_;
         cooldownTimeframe = cooldownTimeframe_;
+        restakeReward = restakeReward_;
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
     }
 
@@ -150,15 +151,8 @@ contract VPool is IVPool, AccessControl {
         emit Stake(_msgSender(), periodId, _token, _amount);
     }
 
-    function setAutoRestake(IERC20 _token, bool _option) external approvedOnly(_token) {
-        // Approve auto restakes or not
-        autoRestake[_msgSender()][_token] = _option;
-        emit AutoRestake(_msgSender(), _token);
-    }
-
     function restake(address _account, IERC20 _token, uint256 _periodId) public approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
-        require(_account == _msgSender() || autoRestake[_account][_token], "You are not authorized to restake for this account");
         uint256 periodId = currentPeriodId();
         require(isPrologue(periodId), "Staking is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot restake into the same period");
@@ -177,10 +171,19 @@ contract VPool is IVPool, AccessControl {
         oldStakingPeriod.totalDeposited = oldStakingPeriod.totalDeposited.sub(oldDeposit);
         oldStakingPeriod.deposits[_account] = oldStakingPeriod.deposits[_account].sub(oldDeposit);
 
+        // If the restake was not called by the user then issue a reward
+        uint256 reward = 0;
+        if (_account != _msgSender()) {
+            reward = tokensRedeemed.mul(restakeReward).div(100);
+            _token.safeTransfer(_msgSender(), reward);
+        }
+
         // Update the new period
-        stakingPeriod.deposits[_account] = stakingPeriod.deposits[_account].add(tokensRedeemed);
-        stakingPeriod.liquidity = stakingPeriod.liquidity.add(tokensRedeemed);
-        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(tokensRedeemed);
+        uint256 newDeposit = tokensRedeemed.sub(reward);
+
+        stakingPeriod.deposits[_account] = stakingPeriod.deposits[_account].add(newDeposit);
+        stakingPeriod.liquidity = stakingPeriod.liquidity.add(newDeposit);
+        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(newDeposit);
 
         emit Restake(_account, periodId, _token, _msgSender());
     }
