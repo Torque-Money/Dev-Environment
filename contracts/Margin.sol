@@ -103,7 +103,12 @@ contract Margin is IMargin, Context {
             timeFrame = epilogueStart - prologueEnd;
         }
 
-        return _initialBorrow.mul(maxInterestPercent).mul(calculateInterestRate(_borrowed, _pool)).mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
+        uint256 calcPart1;
+        {
+            calcPart1 = _initialBorrow.mul(maxInterestPercent).mul(calculateInterestRate(_borrowed, _pool));
+        }
+
+        return calcPart1.mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
     }
 
     // ======== Deposit ========
