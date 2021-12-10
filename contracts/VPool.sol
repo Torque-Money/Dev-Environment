@@ -185,7 +185,7 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.liquidity = stakingPeriod.liquidity.add(newDeposit);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(newDeposit);
 
-        emit Restake(_account, periodId, _token, _msgSender());
+        emit Restake(_account, periodId, _token, _msgSender(), _periodId);
     }
 
     function restake(IERC20 _token, uint256 _periodId) external override {
