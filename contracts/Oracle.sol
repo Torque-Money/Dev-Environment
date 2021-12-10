@@ -25,7 +25,7 @@ contract Oracle is IOracle, Context {
         return decimals;
     }
 
-    function addRouter(UniswapV2Router02 _router) external {
+    function addRouter(UniswapV2Router02 _router) external override {
         require(storedRouters[_router] != true, "This router has already been added");
         routers.push(_router);
         storedRouters[_router] = true;

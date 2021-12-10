@@ -136,11 +136,8 @@ contract Margin is IMargin, Context {
         require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot redeposit into the same period");
 
-        BorrowPeriod storage oldBorrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
-        BorrowAccount storage oldBorrowAccount = oldBorrowPeriod.collateral[_account][_collateral];
-
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+        BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
+        BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
 
         require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
 

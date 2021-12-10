@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "scripts": {
         "fork": "npx hardhat node",
-        "deploy": "npx hardhat run --network localhost scripts/deploy.ts"
+        "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
+        "fund": "npx hardhat run --network localhost scripts/fund.ts"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.3",
