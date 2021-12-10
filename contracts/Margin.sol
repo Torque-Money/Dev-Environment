@@ -99,12 +99,14 @@ contract Margin is IMargin, Context {
 
         uint256 interestRate = calculateInterestRate(_borrowed, _pool);
 
-        uint256 current = block.timestamp;
-        (,uint256 prologueEnd) = _pool.getPrologueTimes(periodId);
-        (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
-        uint256 timeFrame = epilogueStart - prologueEnd;
+        uint256 timeFrame;
+        {
+            (,uint256 prologueEnd) = _pool.getPrologueTimes(periodId);
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
+            timeFrame = epilogueStart - prologueEnd;
+        }
 
-        return _initialBorrow.mul(maxInterestPercent).mul(interestRate).mul(current.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
+        return _initialBorrow.mul(maxInterestPercent).mul(interestRate).mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
     }
 
     // ======== Deposit ========
@@ -189,18 +191,23 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
+    function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, IVPool _pool, BorrowAccount memory borrowAccount) private view returns (uint256, uint256) {
+        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, _pool);
+        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
+        return (interest, borrowedCurrentPrice);
+    }
+
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
         if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral;
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, _pool);
-        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
+        (uint256 interest, uint256 borrowedCurrentPrice) = _balanceHelper(_collateral, _borrowed, _pool, borrowAccount);
 
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+    function _repayGreaterHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
         // Convert the accounts tokens back to the deposited asset
         uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(balAfterRepay.sub(borrowAccount.collateral)).div(oracle.getDecimals());
 
@@ -222,7 +229,7 @@ contract Margin is IMargin, Context {
 
     }
 
-    function _repayLessEqual(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+    function _repayLessEqualHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
         // Amount the user has to repay the protocol
         uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
         borrowAccount.collateral = balAfterRepay;
@@ -260,9 +267,9 @@ contract Margin is IMargin, Context {
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId, _pool);
         if (balAfterRepay > borrowAccount.collateral) {
-            _repayGreater(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
+            _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
         } else {
-            _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
+            _repayLessEqualHelper(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
         }
 
         // Update the borrowed
