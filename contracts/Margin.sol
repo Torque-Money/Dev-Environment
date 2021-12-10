@@ -186,8 +186,12 @@ contract Margin is IMargin, Context {
             require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
         }
 
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+        BorrowPeriod storage borrowPeriod;
+        BorrowAccount storage borrowAccount;
+        {
+            borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
+            borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+        }
 
         {
             if (borrowAccount.borrowed == 0) {
@@ -200,11 +204,13 @@ contract Margin is IMargin, Context {
         require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
-        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+        {
+            borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
 
-        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
-        borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
-        borrowAccount.borrowTime = block.timestamp;
+            borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
+            borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
+            borrowAccount.borrowTime = block.timestamp;
+        }
 
         emit Borrow(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
