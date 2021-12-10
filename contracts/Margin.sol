@@ -68,7 +68,13 @@ contract Margin is IMargin, Context {
         uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
         uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime, _pool);
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
-        return oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)).div(_initialBorrowPrice.add(interest));
+
+        uint256 calcPart1;
+        {
+            calcPart1 = oracle.getDecimals().mul(_deposited.add(currentBorrowPrice)); 
+        }
+
+        return calcPart1.div(_initialBorrowPrice.add(interest));
     }
 
     function getMinMarginLevel() public view override returns (uint256) {
