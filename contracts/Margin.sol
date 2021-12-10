@@ -175,13 +175,28 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
+    function _borrowHelper(BorrowAccount storage borrowAccount, BorrowPeriod storage borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
+        // Require that the borrowed amount will be above the required margin level
+        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
+        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+
+        // Update the balances of the borrowed value
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+
+        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
+        borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
+        borrowAccount.borrowTime = block.timestamp;
+    }
+
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Requirements for borrowing
         uint256 periodId = _pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
-        (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
-        require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
+        {
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
+            require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
+        }
         require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
@@ -191,18 +206,7 @@ contract Margin is IMargin, Context {
             borrowAccount.initialBorrowTime = block.timestamp;
         }
 
-        // Require that the borrowed amount will be above the required margin level
-        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
-
-        // Update the balances of the borrowed value
-        {
-            borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
-
-            borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
-            borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
-            borrowAccount.borrowTime = block.timestamp;
-        }
+        _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
 
         emit Borrow(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
