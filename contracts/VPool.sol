@@ -154,7 +154,7 @@ contract VPool is IVPool, AccessControl {
     function restake(address _account, IERC20 _token, uint256 _periodId) public override approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
         uint256 periodId = currentPeriodId();
-        require(isPrologue(periodId), "Staking is only allowed during the prologue period");
+        require(isPrologue(periodId), "Restaking is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot restake into the same period");
 
         StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodId][_token];

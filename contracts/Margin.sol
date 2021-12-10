@@ -130,15 +130,22 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
+        uint256 periodId = _pool.currentPeriodId();
+        require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
+        require(periodId != _periodId, "Cannot redeposit into the same period");
 
-        // **** Implement the logic here
+        BorrowPeriod storage oldBorrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
+        BorrowAccount storage oldBorrowAccount = oldBorrowPeriod.collateral[_account][_collateral];
+
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
     }
 
-    function redeposit(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override {
+    function redeposit(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external override {
         // Call redeposit for the callers account
-        redeposit(_msgSender(), _collateral, _borrowed, _pool);
+        redeposit(_msgSender(), _collateral, _borrowed, _periodId, _pool);
     }
 
     // ======== Borrow ========
