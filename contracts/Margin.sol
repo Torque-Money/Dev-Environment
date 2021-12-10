@@ -130,7 +130,7 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
-    function redeposit(address _account) public {
+    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
     }
 
