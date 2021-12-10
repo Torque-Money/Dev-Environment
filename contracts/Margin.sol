@@ -132,6 +132,8 @@ contract Margin is IMargin, Context {
 
     function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
+
+        // **** Implement the logic here
     }
 
     function redeposit(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override {
