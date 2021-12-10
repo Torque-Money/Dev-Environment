@@ -220,10 +220,6 @@ contract Margin is IMargin, Context {
         require(borrowAccount.borrowed > 0, "No debt to repay");
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength, "Cannot repay until minimum borrow period is over");
 
-        UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
-        address[] memory path = new address[](2);
-        uint256 deadline = block.timestamp + 1 hours;
-
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId, _pool);
         if (balAfterRepay > borrowAccount.collateral) {
             // Convert the accounts tokens back to the deposited asset
@@ -232,9 +228,10 @@ contract Margin is IMargin, Context {
 
             // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
             _pool.withdraw(_borrowed, payout);
+            address[] memory path = new address[](2);
             path[0] = address(_borrowed);
             path[1] = address(_collateral);
-            uint256 amountOut = router.swapExactTokensForTokens(payout, 0, path, address(this), deadline)[1];
+            uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
 
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
@@ -252,9 +249,10 @@ contract Margin is IMargin, Context {
             borrowAccount.collateral = balAfterRepay;
 
             // Swap the repay value back for the borrowed asset
+            address[] memory path = new address[](2);
             path[0] = address(_collateral);
             path[1] = address(_borrowed);
-            uint256 amountOut = router.swapExactTokensForTokens(repayAmount, 0, path, address(this), deadline)[1];
+            uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
 
             // Provide a reward to the user who repayed the account if they are not the account owner
             uint256 reward = 0;
