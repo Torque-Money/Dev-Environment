@@ -130,6 +130,14 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
+    function redeposit(address _account) public {
+
+    }
+
+    function redeposit() external {
+
+    }
+
     // ======== Borrow ========
 
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
