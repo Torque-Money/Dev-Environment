@@ -134,8 +134,9 @@ contract Margin is IMargin, Context {
         // Redeposit the margin balance from one period to the next
     }
 
-    function redeposit() external {
-
+    function redeposit(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override {
+        // Call redeposit for the callers account
+        redeposit(_msgSender(), _collateral, _borrowed, _pool);
     }
 
     // ======== Borrow ========
