@@ -65,19 +65,20 @@ contract Margin is IMargin, Context {
     }
 
     function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
-        uint256 currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals());
-        uint256 interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime, _pool);
         if (_amountBorrowed == 0) return 2 ** 256 - 1;
 
-        uint256 calcPart1;
-        {
-            calcPart1 = oracle.getDecimals(); 
-        }
-        {
-            calcPart1 = calcPart1.mul(_deposited.add(currentBorrowPrice));
-        }
+        uint256 currentBorrowPrice;
+        { currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.getDecimals()); }
 
-        return calcPart1.div(_initialBorrowPrice.add(interest));
+        uint256 retValue;
+        { retValue = oracle.getDecimals(); }
+        { retValue = retValue.mul(_deposited.add(currentBorrowPrice)); }
+
+        uint256 interest;
+        { interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime, _pool); }
+        { retValue = retValue.div(_initialBorrowPrice.add(interest)); }
+        
+        return retValue;
     }
 
     function getMinMarginLevel() public view override returns (uint256) {
