@@ -208,6 +208,52 @@ contract Margin is IMargin, Context {
         return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
+    function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+        // Convert the accounts tokens back to the deposited asset
+        uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(balAfterRepay.sub(borrowAccount.collateral)).div(oracle.getDecimals());
+
+        // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
+        _pool.withdraw(_borrowed, payout);
+        address[] memory path = new address[](2);
+        path[0] = address(_borrowed);
+        path[1] = address(_collateral);
+        uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
+
+        // Provide a reward to the user who repayed the account if they are not the account owner
+        borrowAccount.collateral = borrowAccount.collateral.add(amountOut);
+        if (_account != _msgSender()) {
+            uint256 reward = amountOut.mul(compensationPercentage()).div(100);
+            _collateral.safeTransfer(_msgSender(), reward);
+
+            borrowAccount.collateral = borrowAccount.collateral.sub(reward);
+        }
+
+    }
+
+    function _repayLessEqual(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+        // Amount the user has to repay the protocol
+        uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
+        borrowAccount.collateral = balAfterRepay;
+
+        // Swap the repay value back for the borrowed asset
+        address[] memory path = new address[](2);
+        path[0] = address(_collateral);
+        path[1] = address(_borrowed);
+        uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
+
+        // Provide a reward to the user who repayed the account if they are not the account owner
+        uint256 reward = 0;
+        if (_account != _msgSender()) {
+            reward = amountOut.mul(compensationPercentage()).div(100);
+            _borrowed.safeTransfer(_msgSender(), reward);
+        }
+
+        // Return the assets back to the pool
+        uint256 depositValue = amountOut.sub(reward);
+        _borrowed.safeApprove(address(_pool), depositValue);
+        _pool.deposit(_borrowed, depositValue);
+    }
+
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
@@ -222,47 +268,9 @@ contract Margin is IMargin, Context {
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId, _pool);
         if (balAfterRepay > borrowAccount.collateral) {
-            // Convert the accounts tokens back to the deposited asset
-            uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(balAfterRepay.sub(borrowAccount.collateral)).div(oracle.getDecimals());
-
-            // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
-            _pool.withdraw(_borrowed, payout);
-            address[] memory path = new address[](2);
-            path[0] = address(_borrowed);
-            path[1] = address(_collateral);
-            uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
-
-            // Provide a reward to the user who repayed the account if they are not the account owner
-            borrowAccount.collateral = borrowAccount.collateral.add(amountOut);
-            if (_account != _msgSender()) {
-                uint256 reward = amountOut.mul(compensationPercentage()).div(100);
-                _collateral.safeTransfer(_msgSender(), reward);
-
-                borrowAccount.collateral = borrowAccount.collateral.sub(reward);
-            }
-
+            _repayGreater(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
         } else {
-            // Amount the user has to repay the protocol
-            uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
-            borrowAccount.collateral = balAfterRepay;
-
-            // Swap the repay value back for the borrowed asset
-            address[] memory path = new address[](2);
-            path[0] = address(_collateral);
-            path[1] = address(_borrowed);
-            uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
-
-            // Provide a reward to the user who repayed the account if they are not the account owner
-            uint256 reward = 0;
-            if (_account != _msgSender()) {
-                reward = amountOut.mul(compensationPercentage()).div(100);
-                _borrowed.safeTransfer(_msgSender(), reward);
-            }
-
-            // Return the assets back to the pool
-            uint256 depositValue = amountOut.sub(reward);
-            _borrowed.safeApprove(address(_pool), depositValue);
-            _pool.deposit(_borrowed, depositValue);
+            _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
         }
 
         // Update the borrowed
