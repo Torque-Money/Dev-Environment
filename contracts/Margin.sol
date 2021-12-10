@@ -131,7 +131,7 @@ contract Margin is IMargin, Context {
     }
 
     function redeposit(address _account) public {
-
+        // Redeposit the margin balance from one period to the next
     }
 
     function redeposit() external {
