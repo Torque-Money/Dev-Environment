@@ -187,6 +187,7 @@ contract VPool is IVPool, AccessControl {
 
     function restake(IERC20 _token, uint256 _periodId) external {
         // Redeposit existing deposited amount from a previous period into the current period for the current user
+        restake(_msgSender(), _token, _periodId);
     }
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
