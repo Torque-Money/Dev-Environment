@@ -175,7 +175,7 @@ contract Margin is IMargin, Context {
 
     // ======== Borrow ========
 
-    function _borrowHelper(BorrowAccount storage borrowAccount, BorrowPeriod storage borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
+    function _borrowHelper(BorrowAccount storage borrowAccount, BorrowPeriod storage borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
         require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
@@ -206,7 +206,7 @@ contract Margin is IMargin, Context {
             borrowAccount.initialBorrowTime = block.timestamp;
         }
 
-        _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
+        _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount, _pool);
 
         emit Borrow(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
