@@ -28,15 +28,15 @@ contract Margin is IMargin, Context {
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - this way the same account can have different borrows with different collaterals independently
     }
     mapping(IVPool => mapping(uint256 => mapping(IERC20 => BorrowPeriod))) private borrowPeriods;
-    uint256 private minBorrowPeriod;
+    uint256 private minBorrowLength;
 
     uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
 
     uint256 private maxInterestPercent;
 
-    constructor(IOracle oracle_, uint256 minBorrowPeriod_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
+    constructor(IOracle oracle_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         oracle = oracle_;
-        minBorrowPeriod = minBorrowPeriod_;
+        minBorrowLength = minBorrowLength_;
         maxInterestPercent = maxInterestPercent_;
         minMarginLevel = minMarginLevel_;
     }
@@ -175,7 +175,7 @@ contract Margin is IMargin, Context {
         require(_amount > 0, "Amount must be greater than 0");
         require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
         (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
-        require(block.timestamp < epilogueStart.sub(minBorrowPeriod), "Minimum borrow period may not overlap with epilogue");
+        require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
         require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
@@ -224,7 +224,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
-        require(block.timestamp > borrowAccount.borrowTime + minBorrowPeriod, "Cannot repay until minimum borrow period is over");
+        require(block.timestamp > borrowAccount.borrowTime + minBorrowLength, "Cannot repay until minimum borrow period is over");
 
         UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
         address[] memory path = new address[](2);
