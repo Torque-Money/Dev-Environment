@@ -158,6 +158,7 @@ contract VPool is IVPool, AccessControl {
 
     function restake(address _account, IERC20 _token, uint256 _periodId) public approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
+        require(_account == _msgSender() || autoRestake[_account][_token], "You are not authorized to restake for this account");
         uint256 periodId = currentPeriodId();
         require(periodId != _periodId, "Cannot restake into the same period");
 
@@ -165,7 +166,6 @@ contract VPool is IVPool, AccessControl {
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
 
         require(oldStakingPeriod.deposits[_account] > 0, "Nothing to restake from this period");
-        require(_account == _msgSender() || autoRestake[_account][_token], "You are not authorized to restake for this account");
 
         // Restake the deposit
     }
