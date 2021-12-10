@@ -95,18 +95,15 @@ contract Margin is IMargin, Context {
 
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
-        uint256 periodId = _pool.currentPeriodId();
-
-        uint256 interestRate = calculateInterestRate(_borrowed, _pool);
-
         uint256 timeFrame;
         {
+            uint256 periodId = _pool.currentPeriodId();
             (,uint256 prologueEnd) = _pool.getPrologueTimes(periodId);
             (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
             timeFrame = epilogueStart - prologueEnd;
         }
 
-        return _initialBorrow.mul(maxInterestPercent).mul(interestRate).mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
+        return _initialBorrow.mul(maxInterestPercent).mul(calculateInterestRate(_borrowed, _pool)).mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
     }
 
     // ======== Deposit ========
