@@ -311,23 +311,11 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
-        // Update the users account
-        uint256 collateral = borrowAccount.collateral;
-
-        borrowAccount.collateral = 0;
-        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
-        borrowAccount.borrowed = 0;
-        borrowAccount.initialPrice = 0;
-
         // Swap the users collateral for assets
-        UniswapV2Router02 router = UniswapV2Router02(oracle.getRouter());
         address[] memory path = new address[](2);
-        uint256 deadline = block.timestamp + 1 hours;
-
         path[0] = address(_collateral);
         path[1] = address(_borrowed);
-
-        uint256 amountOut = router.swapExactTokensForTokens(collateral, 0, path, address(this), deadline)[1];
+        uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(borrowAccount.collateral, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         // Compensate the liquidator
         uint256 reward = amountOut.mul(compensationPercentage()).div(100);
@@ -336,6 +324,12 @@ contract Margin is IMargin, Context {
         _borrowed.safeApprove(address(_pool), depositValue);
         _pool.deposit(_borrowed, depositValue);
 
-        emit FlashLiquidation(_account, periodId, _pool, _msgSender(), _collateral, _borrowed, collateral);
+        emit FlashLiquidation(_account, periodId, _pool, _msgSender(), _collateral, _borrowed, borrowAccount.collateral);
+
+        // Update the users account
+        borrowAccount.collateral = 0;
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+        borrowAccount.borrowed = 0;
+        borrowAccount.initialPrice = 0;
     }
 }
