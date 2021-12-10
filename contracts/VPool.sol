@@ -151,7 +151,7 @@ contract VPool is IVPool, AccessControl {
         emit Stake(_msgSender(), periodId, _token, _amount);
     }
 
-    function restake(address _account, IERC20 _token, uint256 _periodId) public approvedOnly(_token) {
+    function restake(address _account, IERC20 _token, uint256 _periodId) public override approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
         uint256 periodId = currentPeriodId();
         require(isPrologue(periodId), "Staking is only allowed during the prologue period");
@@ -188,7 +188,7 @@ contract VPool is IVPool, AccessControl {
         emit Restake(_account, periodId, _token, _msgSender());
     }
 
-    function restake(IERC20 _token, uint256 _periodId) external {
+    function restake(IERC20 _token, uint256 _periodId) external override {
         // Redeposit existing deposited amount from a previous period into the current period for the current user
         restake(_msgSender(), _token, _periodId);
     }
