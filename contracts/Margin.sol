@@ -191,15 +191,13 @@ contract Margin is IMargin, Context {
 
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+        BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
-        uint256 collateral = borrowAccount.collateral;
-        if (!_pool.isCurrentPeriod(_periodId)) return collateral;
+        if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral;
         uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, _pool);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
 
-        return collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
+        return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
     function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
