@@ -141,20 +141,17 @@ contract Margin is IMargin, Context {
 
         require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
 
-        // Remove the funds from the old period
-        uint256 collateral = oldBorrowAccount.collateral;
-        oldBorrowAccount.collateral = 0;
-
         // Reward the account who restaked
-        uint256 reward = 0;
+        borrowAccount.collateral = borrowAccount.collateral.add(oldBorrowAccount.collateral);
         if (_account != _msgSender()) {
-            reward = compensationPercentage().mul(collateral).div(100);
+            uint256 reward = compensationPercentage().mul(borrowAccount.collateral).div(100);
             _collateral.safeTransfer(_msgSender(), reward);
+
+            borrowAccount.collateral = borrowAccount.collateral.sub(reward);
         }
 
-        // Move the funds to the new period
-        uint256 redepositCollateral = collateral.sub(reward);
-        borrowAccount.collateral = borrowAccount.collateral.add(redepositCollateral);
+        // Update old account
+        oldBorrowAccount.collateral = 0;
 
         emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodId);
     }
