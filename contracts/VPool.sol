@@ -33,11 +33,23 @@ contract VPool is IVPool, AccessControl {
 
     uint256 private restakeReward; // Percentage of amount restaked
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 restakeReward_) {
+    address private taxAccount;
+    uint256 private taxPercent;
+
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 restakeReward_, uint256 taxPercent_) {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
         restakeReward = restakeReward_;
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+
+        taxPercent = taxPercent_;
+    }
+
+    // ======== Tax payouts ========
+
+    function setTaxAccount(address _taxAccount) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+        taxAccount = _taxAccount;
+        emit TaxAccountChange(_taxAccount);
     }
 
     // ======== Check the staking period and cooldown periods ========
@@ -217,6 +229,9 @@ contract VPool is IVPool, AccessControl {
         require(!isPrologue(periodId), "Cannot deposit during prologue");
 
         // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
+        if (taxAccount != address(0)) {
+            // **** ADD IN THE TAX HERE
+        }
 
         // Receive a given number of funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), _amount);

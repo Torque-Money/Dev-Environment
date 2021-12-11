@@ -4,6 +4,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IVPool {
+    // ======== Tax payouts ========
+
+    function setTaxAccount(address _taxAccount) external;
+
     // ======== Check the staking period and cooldown periods ========
 
     /**
@@ -136,6 +140,8 @@ interface IVPool {
     function withdraw(IERC20 _token, uint256 _amount) external;
 
     // ======== Events ========
+
+    event TaxAccountChange(address indexed newTaxAccount);
 
     event Stake(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
     event Redeem(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount, uint256 liquidity);
