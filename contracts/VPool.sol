@@ -228,15 +228,18 @@ contract VPool is IVPool, AccessControl {
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
 
-        // **** If I wanted to add some sort of reward payout distributor, it would be best to do it here and then pay the remainder to the pool
+        // Pay a tax to the tax account
+        uint256 amount = _amount;
         if (taxAccount != address(0)) {
-            // **** ADD IN THE TAX HERE
+            uint256 tax = _amount.mul(taxPercent).div(100);
+            amount = amount.sub(tax);
+            _token.safeTransferFrom(_msgSender(), address(this), tax);
         }
 
         // Receive a given number of funds to the current pool
-        _token.safeTransferFrom(_msgSender(), address(this), _amount);
-        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(_amount);
-        emit Deposit(_msgSender(), periodId, _token, _amount);
+        _token.safeTransferFrom(_msgSender(), address(this), amount);
+        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(amount);
+        emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
     function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
