@@ -2,6 +2,7 @@
     "name": "wabbit-protocol-v1",
     "version": "1.0.0",
     "scripts": {
+        "build": "npx hardhat build",
         "fork": "npx hardhat node",
         "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts"
