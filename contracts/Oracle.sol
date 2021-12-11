@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./IOracle.sol";
 import "./lib/UniswapV2Router02.sol";
 
-contract Oracle is IOracle, Context {
+library Oracle is IOracle, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
