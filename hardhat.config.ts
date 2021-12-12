@@ -1,4 +1,6 @@
 import "@nomiclabs/hardhat-waffle";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Fork from mainnet to local environment
 const NETWORK_URL = "https://rpc.ftm.tools/";
@@ -15,5 +17,8 @@ export default {
                 blockNUmber: BLOCK_NUMBER,
             },
         },
+    },
+    etherscan: {
+        apiKey: process.env.ETHERSCAN_API_KEY,
     },
 };
