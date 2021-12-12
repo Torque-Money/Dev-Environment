@@ -198,9 +198,7 @@ contract Margin is IMargin, Context {
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
-        if (borrowAccount.borrowed == 0) {
-            borrowAccount.initialBorrowTime = block.timestamp;
-        }
+        if (borrowAccount.borrowed == 0) borrowAccount.initialBorrowTime = block.timestamp;
 
         _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount, _pool);
 
