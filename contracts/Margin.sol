@@ -51,7 +51,7 @@ contract Margin is IMargin, Context {
     // ======== Calculations ========
 
     function compensationPercentage() public view override returns (uint256) {
-        return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(2);
+        return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10);
     }
 
     function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token, _pool) returns (uint256) {
