@@ -1,5 +1,4 @@
 import "@nomiclabs/hardhat-waffle";
-import "@nomiclabs/hardhat-etherscan";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -22,8 +21,5 @@ export default {
             url: NETWORK_URL,
             accounts: [process.env.PRIVATE_KEY],
         },
-    },
-    etherscan: {
-        apiKey: process.env.ETHERSCAN_API_KEY,
     },
 };
