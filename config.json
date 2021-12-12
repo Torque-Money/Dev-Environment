@@ -1,1 +1,11 @@
-{"scannerUrl":"https://ftmscan.com/address/","routerAddresses":["0xf491e7b69e4244ad4002bc14e878a34207e38c29"],"daiAddress":"0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E","daiWhale":"0x598c5e19a132a5c433a80c908f05d87bfdaac4ae","booAddress":"0x841fad6eae12c286d1fd18d1d525dffa75c7effe","booWhale":"0x95478c4f7d22d1048f46100001c2c69d2ba57380","poolAddress":"0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD","oracleAddress":"0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7","marginAddress":"0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB"}
+{
+    "scannerUrl": "https://ftmscan.com/address/",
+    "routerAddresses": ["0xf491e7b69e4244ad4002bc14e878a34207e38c29"],
+    "daiAddress": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
+    "daiWhale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae",
+    "booAddress": "0x841fad6eae12c286d1fd18d1d525dffa75c7effe",
+    "booWhale": "0x95478c4f7d22d1048f46100001c2c69d2ba57380",
+    "poolAddress": "0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD",
+    "oracleAddress": "0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7",
+    "marginAddress": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB"
+}
