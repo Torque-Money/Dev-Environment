@@ -15,9 +15,14 @@ export default {
         hardhat: {
             forking: {
                 url: NETWORK_URL,
-                blockNUmber: BLOCK_NUMBER,
+                blockNumber: BLOCK_NUMBER,
             },
         },
+        fantomTestnet: {
+            url: NETWORK_URL,
+            accounts: [process.env.PRIVATE_KEY],
+        },
+        fantom: {},
     },
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY,
