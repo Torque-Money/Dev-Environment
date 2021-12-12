@@ -118,9 +118,7 @@ contract Margin is IMargin, Context {
         }
 
         uint256 calcPart1;
-        {
-            calcPart1 = _initialBorrow.mul(maxInterestPercent).mul(calculateInterestRate(_borrowed, _pool));
-        }
+        { calcPart1 = _initialBorrow.mul(maxInterestPercent).mul(calculateInterestRate(_borrowed, _pool)); }
 
         return calcPart1.mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()).div(100);
     }
@@ -153,17 +151,15 @@ contract Margin is IMargin, Context {
 
         require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
 
-        // Reward the account who restaked
+        // Reward the account who restaked and update old account
         borrowAccount.collateral = borrowAccount.collateral.add(oldBorrowAccount.collateral);
+        oldBorrowAccount.collateral = 0;
         if (_account != _msgSender()) {
             uint256 reward = compensationPercentage().mul(borrowAccount.collateral).div(100);
             _collateral.safeTransfer(_msgSender(), reward);
 
             borrowAccount.collateral = borrowAccount.collateral.sub(reward);
         }
-
-        // Update old account
-        oldBorrowAccount.collateral = 0;
 
         emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodId);
     }
