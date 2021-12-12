@@ -18,11 +18,10 @@ export default {
                 blockNumber: BLOCK_NUMBER,
             },
         },
-        fantomTestnet: {
+        fantom: {
             url: NETWORK_URL,
             accounts: [process.env.PRIVATE_KEY],
         },
-        fantom: {},
     },
     etherscan: {
         apiKey: process.env.ETHERSCAN_API_KEY,
