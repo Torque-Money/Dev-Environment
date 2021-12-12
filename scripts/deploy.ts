@@ -52,7 +52,7 @@ async function main() {
     config.marginAddress = margin.address;
 
     // Approve the margin as an admin for the pool
-    await pool.grantRole(0, margin.address);
+    await pool.grantRole(hre.ethers.utils.toUtf8Bytes("0"), margin.address);
     console.log("Granted margin access to pool");
 
     // Save the data to the config
