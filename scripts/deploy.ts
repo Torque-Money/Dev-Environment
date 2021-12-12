@@ -10,7 +10,8 @@ async function main() {
     const poolConfig = {
         periodLength: 60 * 60,
         cooldownLength: 20 * 60,
-        restakeReward: 1,
+        restakeReward: 2,
+        taxPercent: 2,
     };
     const Pool = await hre.ethers.getContractFactory("VPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));
@@ -49,6 +50,9 @@ async function main() {
     await margin.deployed();
     console.log(`Margin deployed to ${config.scannerUrl}${margin.address}`);
     config.marginAddress = margin.address;
+
+    // Approve the margin as an admin for the pool
+    await pool.grantRole(0, margin.address);
 
     // Save the data to the config
     fs.writeFileSync("config.json", JSON.stringify(config));
