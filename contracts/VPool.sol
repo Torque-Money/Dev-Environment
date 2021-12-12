@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-// **** Add some way to deposit into the next period Id and then have the amount automatically transferred over when the new period starts
-
 contract VPool is IVPool, AccessControl {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
@@ -142,7 +140,7 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Liquidity manipulation ========
 
-    function stakeNext(IERC20 _token, uint256 _amount) external approvedOnly(_token) {
+    function stakeNext(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
         // Make sure they cant stake into the next period during a prologue
         require(!isPrologue(currentPeriodId()), "Cannot stake into the next period during the prologue phase of the current staking period");
         

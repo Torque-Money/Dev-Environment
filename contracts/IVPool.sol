@@ -96,6 +96,13 @@ interface IVPool {
     // ======== Liquidity manipulation ========
 
     /**
+     *  @dev Stakes a given amount of specified tokens into the next staking pool to allow users to stake even when not during staking period
+     *  @param _token The token to stake
+     *  @param _amount The amount of the token to stake
+     */
+    function stakeNext(IERC20 _token, uint256 _amount) external;
+
+    /**
      *  @dev Stakes a given amount of specified tokens in the pool
      *  @param _token The token to stake
      *  @param _amount The amount of the token to stake
