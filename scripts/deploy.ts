@@ -16,7 +16,7 @@ async function main() {
     const Pool = await hre.ethers.getContractFactory("VPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));
     await pool.deployed();
-    console.log(`Value pool deployed to ${config.scannerUrl}${pool.address}`);
+    console.log(`Value pool deployed to ${pool.address}`);
     config.poolAddress = pool.address;
 
     await pool.approveToken(config.daiAddress);
@@ -30,7 +30,7 @@ async function main() {
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(oracleConfig));
     await oracle.deployed();
-    console.log(`Oracle deployed to ${config.scannerUrl}${oracle.address}`);
+    console.log(`Oracle deployed to ${oracle.address}`);
     config.oracleAddress = oracle.address;
 
     for (const address of config.routerAddresses) {
@@ -48,7 +48,7 @@ async function main() {
     const Margin = await hre.ethers.getContractFactory("Margin");
     const margin = await Margin.deploy(...Object.values(marginConfig));
     await margin.deployed();
-    console.log(`Margin deployed to ${config.scannerUrl}${margin.address}`);
+    console.log(`Margin deployed to ${margin.address}`);
     config.marginAddress = margin.address;
 
     // Approve the margin as an admin for the pool

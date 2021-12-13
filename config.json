@@ -1,10 +1,23 @@
 {
-    "scannerUrl": "https://ftmscan.com/address/",
     "routerAddresses": ["0xf491e7b69e4244ad4002bc14e878a34207e38c29"],
-    "daiAddress": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
-    "daiWhale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae",
-    "booAddress": "0x841fad6eae12c286d1fd18d1d525dffa75c7effe",
-    "booWhale": "0x95478c4f7d22d1048f46100001c2c69d2ba57380",
+    "approved": [
+        {
+            "address": "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E",
+            "whale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae"
+        },
+        {
+            "address": "0x841fad6eae12c286d1fd18d1d525dffa75c7effe",
+            "whale": "0x95478c4f7d22d1048f46100001c2c69d2ba57380"
+        },
+        {
+            "address": "0x5602df4a94eb6c680190accfa2a475621e0ddbdc",
+            "whale": "0x3aa69f6360806ab5da9f9f77f6cc09f9092b255b"
+        },
+        {
+            "address": "0xf16e81dce15b08f326220742020379b855b87df9",
+            "whale": "0xf16e81dce15B08F326220742020379B855B87DF9"
+        }
+    ],
     "poolAddress": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
     "oracleAddress": "0xD84379CEae14AA33C123Af12424A37803F885889",
     "marginAddress": "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d"
