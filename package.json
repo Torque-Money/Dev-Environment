@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "scripts": {
         "build": "npx hardhat compile",
-        "fork": "npx hardhat node",
+        "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
         "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts"
     },
