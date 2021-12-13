@@ -55,6 +55,11 @@ async function main() {
     await pool.grantRole(hre.ethers.utils.zeroPad(hre.ethers.utils.toUtf8Bytes("0"), 32), margin.address);
     console.log("Granted margin access to pool");
 
+    // Add deployer as tax collector
+    const ownerAddress = await hre.ethers.provider.getSigner().getAddress();
+    await pool.setTaxAccount(ownerAddress);
+    console.log(`Added ${ownerAddress} as pool tax account`);
+
     // Save the data to the config
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
