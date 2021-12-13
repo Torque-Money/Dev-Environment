@@ -21,7 +21,6 @@ async function main() {
 
     for (const approved of config.approved) {
         await pool.approveToken(approved.address);
-        await pool.approveToken(approved.address);
     }
     console.log("Approved tokens for use with the pool");
 
