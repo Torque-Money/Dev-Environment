@@ -19,9 +19,11 @@ async function main() {
     console.log(`Value pool deployed to ${pool.address}`);
     config.poolAddress = pool.address;
 
-    await pool.approveToken(config.daiAddress);
-    await pool.approveToken(config.booAddress);
-    console.log("Approved both DAI and BOO for use with the pool");
+    for (const approved of config.approved) {
+        await pool.approveToken(approved.address);
+        await pool.approveToken(approved.address);
+    }
+    console.log("Approved tokens for use with the pool");
 
     // Deploy and setup the oracle contract
     const oracleConfig = {
