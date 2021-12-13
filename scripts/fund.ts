@@ -7,42 +7,26 @@ async function main() {
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    // Fund the account with DAI
-    await hre.network.provider.request({
-        method: "hardhat_impersonateAccount",
-        params: [config.daiWhale],
-    });
-    const daiSigner = await hre.ethers.getSigner(config.daiWhale);
-    const dai = new hre.ethers.Contract(config.daiAddress, ERC20Abi.abi, daiSigner);
+    // Fund the accounts and approve pool and margin protocols to spend
+    for (const approved of config.approved) {
+        // Fund account with tokens
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [approved.whale],
+        });
+        const tokenSigner = await hre.ethers.getSigner(approved.whale);
+        const token = new hre.ethers.Contract(approved.address, ERC20Abi.abi, tokenSigner);
 
-    const daiBalance = await dai.balanceOf(daiSigner.address);
-    await dai.transfer(signerAddress, daiBalance);
+        const tokenBalance = await token.balanceOf(tokenSigner.address);
+        await token.transfer(signerAddress, tokenBalance);
 
-    console.log(`Transferred ${daiBalance.toString()} DAI to signer ${signer._address}`);
+        // Approve pools to use tokens
+        const signerToken = token.connect(signer);
+        await signerToken.approve(config.poolAddress, tokenBalance);
+        await signerToken.approve(config.marginAddress, tokenBalance);
+    }
 
-    // Fund the account with BOO
-    await hre.network.provider.request({
-        method: "hardhat_impersonateAccount",
-        params: [config.booWhale],
-    });
-    const booSigner = await hre.ethers.getSigner(config.booWhale);
-    const boo = new hre.ethers.Contract(config.booAddress, ERC20Abi.abi, booSigner);
-
-    const booBalance = await boo.balanceOf(booSigner.address);
-    await boo.transfer(signerAddress, booBalance);
-
-    console.log(`Transferred ${booBalance.toString()} BOO to signer ${signer._address}`);
-
-    // Approve the contracts to spend DAI and BOO
-    const signerDai = dai.connect(signer);
-    await signerDai.approve(config.poolAddress, daiBalance);
-    await signerDai.approve(config.marginAddress, daiBalance);
-    console.log(`Approved contracts to spend DAI`);
-
-    const signerBoo = boo.connect(signer);
-    await signerBoo.approve(config.poolAddress, booBalance);
-    await signerBoo.approve(config.marginAddress, booBalance);
-    console.log(`Approved contracts to spend BOO`);
+    console.log(`Transferred tokens to ${signerAddress} and approved contracts to spend them`);
 }
 
 main()
