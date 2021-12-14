@@ -4,7 +4,6 @@ dotenv.config();
 
 // Fork from mainnet to local environment
 const NETWORK_URL = "https://rpc.ftm.tools/";
-const BLOCK_NUMBER = 24017532;
 
 export default {
     solidity: {
@@ -14,7 +13,6 @@ export default {
         hardhat: {
             forking: {
                 url: NETWORK_URL,
-                // blockNumber: BLOCK_NUMBER,
             },
         },
         fantom: {

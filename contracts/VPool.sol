@@ -74,7 +74,7 @@ contract VPool is IVPool, AccessControl {
 
     function getEpilogueTimes() public view override returns (uint256, uint256) {
         // Return the times of when the epilogue is between
-        uint256 periodId = currentPeriodId();
+        uint256 periodId = currentPeriodId().add(1);
         uint256 epilogueEnd = periodId.mul(periodLength);
         uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
         return (epilogueStart, epilogueEnd);
