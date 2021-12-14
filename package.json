@@ -6,7 +6,8 @@
         "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
         "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts",
-        "update-abi": "cp config.json artifacts/contracts/IMargin.sol/IMargin.json artifacts/contracts/IOracle.sol/IOracle.json artifacts/contracts/IVPool.sol/IVPool.json ../Wabbit-Frontend/src/config"
+        "update": "cp config.json artifacts/contracts/IMargin.sol/IMargin.json artifacts/contracts/IOracle.sol/IOracle.json artifacts/contracts/IVPool.sol/IVPool.json ../Wabbit-Frontend/src/config",
+        "all": "npm run deploy && npm run fund && npm run update"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.3",
