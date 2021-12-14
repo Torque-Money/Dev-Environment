@@ -62,9 +62,7 @@ contract Margin is IMargin, Context {
 
     function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token, _pool) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
-        uint256 periodId = _pool.currentPeriodId();
-
-        uint256 liquidity = _pool.getLiquidity(_token, periodId);
+        uint256 liquidity = _pool.getLiquidity(_token);
         uint256 borrowed = totalBorrowed(_token, _pool);
 
         return liquidity - borrowed;
