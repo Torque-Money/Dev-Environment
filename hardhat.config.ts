@@ -14,7 +14,7 @@ export default {
         hardhat: {
             forking: {
                 url: NETWORK_URL,
-                blockNumber: BLOCK_NUMBER,
+                // blockNumber: BLOCK_NUMBER,
             },
         },
         fantom: {
