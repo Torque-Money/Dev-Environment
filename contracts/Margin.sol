@@ -54,6 +54,12 @@ contract Margin is IMargin, Context {
         return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10);
     }
 
+    function totalBorrowed(IERC20 _token, IVPool _pool) public view override returns (uint256) {
+        // Calculate the amount borrowed for the current token for the given pool for the given period
+        uint256 periodId = _pool.currentPeriodId();
+        return borrowPeriods[_pool][periodId][_token].totalBorrowed;
+    }
+
     function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token, _pool) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 periodId = _pool.currentPeriodId();
