@@ -113,9 +113,8 @@ contract Margin is IMargin, Context {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
         uint256 timeFrame;
         {
-            uint256 periodId = _pool.currentPeriodId();
-            (,uint256 prologueEnd) = _pool.getPrologueTimes(periodId);
-            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
+            (,uint256 prologueEnd) = _pool.getPrologueTimes();
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes();
             timeFrame = epilogueStart - prologueEnd;
         }
 
@@ -145,8 +144,8 @@ contract Margin is IMargin, Context {
 
     function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
+        require(_pool.isPrologue(), "Redepositing is only allowed during the prologue period");
         uint256 periodId = _pool.currentPeriodId();
-        require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
         require(periodId != _periodId, "Cannot redeposit into the same period");
 
         BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
@@ -191,9 +190,9 @@ contract Margin is IMargin, Context {
         // Requirements for borrowing
         uint256 periodId = _pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
-        require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
+        require(!_pool.isPrologue(), "Cannot borrow during prologue");
         {
-            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes();
             require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
         }
         require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
@@ -275,7 +274,7 @@ contract Margin is IMargin, Context {
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
-        require(_account == _msgSender() || _pool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
+        require(_account == _msgSender() || _pool.isEpilogue(), "Only the owner may repay before the epilogue period");
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
