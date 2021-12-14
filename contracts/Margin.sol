@@ -166,11 +166,6 @@ contract Margin is IMargin, Context {
         emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodId);
     }
 
-    function redeposit(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external override {
-        // Call redeposit for the callers account
-        redeposit(_msgSender(), _collateral, _borrowed, _periodId, _pool);
-    }
-
     // ======== Borrow ========
 
     function _borrowHelper(BorrowAccount storage borrowAccount, BorrowPeriod storage borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
@@ -295,11 +290,6 @@ contract Margin is IMargin, Context {
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
         emit Repay(_msgSender(), periodId, _pool, _collateral, _borrowed, balAfterRepay);
-    }
-
-    function repay(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override {
-        // Repay off the loan for the caller
-        repay(_msgSender(), _collateral, _borrowed, _pool);
     }
 
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {

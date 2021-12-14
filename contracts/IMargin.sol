@@ -88,15 +88,6 @@ interface IMargin {
      */
     function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external;
 
-    /**
-     *  @dev Redeposit the collateral of the callers account from one period to another
-     *  @param _collateral The asset to use as collateral
-     *  @param _borrowed The asset to be borrowed
-     *  @param _periodId The period to redeposit from
-     *  @param _pool The pool to use
-     */
-    function redeposit(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external;
-
     // ======== Borrow ========
 
     /**
@@ -128,14 +119,6 @@ interface IMargin {
      *  @param _pool The pool to use
      */
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external;
-
-    /**
-     *  @dev Repay the borrowed amount for the given asset and collateral for the callers account
-     *  @param _collateral The asset to be used as collateral
-     *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
-     */
-    function repay(IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external;
 
     /**
      *  @dev Withdraw collateral from the account if the account has no debt

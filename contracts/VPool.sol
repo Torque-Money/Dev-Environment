@@ -133,11 +133,6 @@ contract VPool is IVPool, AccessControl {
         return stakingPeriods[_periodId][_token].deposits[_account];
     }
 
-    function balanceOf(address _account, IERC20 _token) external view override approvedOnly(_token) returns (uint256) {
-        // Get the amount of tokens the account deposited into the current period
-        return balanceOf(_account, _token, currentPeriodId());
-    }
-
     function redeemValue(IERC20 _token, uint256 _periodId, uint256 _amount) public view override approvedOnly(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = stakingPeriods[_periodId][_token];
@@ -223,11 +218,6 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(newDeposit);
 
         emit Restake(_account, periodId, _token, _msgSender(), _periodId);
-    }
-
-    function restake(IERC20 _token, uint256 _periodId) external override {
-        // Redeposit existing deposited amount from a previous period into the current period for the current user
-        restake(_msgSender(), _token, _periodId);
     }
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {

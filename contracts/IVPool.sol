@@ -89,13 +89,6 @@ interface IVPool {
     function balanceOf(address _account, IERC20 _token, uint256 _periodId) external view returns (uint256);
 
     /**
-     *  @dev Returns the deposited balance of a given account for a given token at the current period
-     *  @param _account The account to check the deposited balance of
-     *  @param _token The token to check the deposited balance of
-     */
-    function balanceOf(address _account, IERC20 _token) external view returns (uint256);
-
-    /**
      *  @dev Returns the value of the tokens for a given period for a given token once they are redeemed
      *  @param _token The token that will be received on redemption
      *  @param _periodId The id of the period of which the redeem will occur
@@ -126,13 +119,6 @@ interface IVPool {
      *  @param _periodId The period to move the deposit from
      */
     function restake(address _account, IERC20 _token, uint256 _periodId) external;
-
-    /**
-     *  @dev Restake the callers deposited collateral from a different period to the current period
-     *  @param _token The token to restake
-     *  @param _periodId The period to move the deposit from
-     */
-    function restake(IERC20 _token, uint256 _periodId) external;
 
     /**
      *  @dev Redeems the staked amount of tokens in a given pool
