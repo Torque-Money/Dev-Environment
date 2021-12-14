@@ -66,7 +66,11 @@ interface IVPool {
 
     // ======== Helper functions ========
 
-    function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256);
+    /**
+     *  @dev Returns the total locked liquidity for the current period
+     *  @param _token The token to check the liquidity of
+     */
+    function getLiquidity(IERC20 _token) external view returns (uint256);
 
     // ======== Balance management ========
 
