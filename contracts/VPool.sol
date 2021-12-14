@@ -48,6 +48,14 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Check the staking period and cooldown periods ========
 
+    function getPeriodLength() external view override returns (uint256) {
+        return periodLength;
+    }
+
+    function getCooldownLength() external view override returns (uint256) {
+        return cooldownLength;
+    }
+
     function getPrologueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the prologue is between
         uint256 prologueStart = _periodId.mul(periodLength);

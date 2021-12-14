@@ -11,6 +11,16 @@ interface IVPool {
     // ======== Check the staking period and cooldown periods ========
 
     /**
+     *  @dev Get the period length
+     */
+    function getPeriodLength() external view returns (uint256);
+
+    /**
+     *  @dev Get the cooldown period length
+     */
+    function getCooldownLength() external view returns (uint256);
+
+    /**
      *  @dev Get the times at which the prologue of the given period occurs
      *  @param _periodId The id of the period to get the prologue times
      */
