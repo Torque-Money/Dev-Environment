@@ -69,7 +69,7 @@ contract VPool is IVPool, AccessControl {
         (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes();
 
         uint256 current = block.timestamp;
-        return current >= prologueStart && current < prologueEnd;
+        return (current >= prologueStart && current < prologueEnd);
     }
 
     function getEpilogueTimes() public view override returns (uint256, uint256) {
@@ -85,7 +85,7 @@ contract VPool is IVPool, AccessControl {
         (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes();
 
         uint256 current = block.timestamp;
-        return current >= epilogueStart && current < epilogueEnd;
+        return (current >= epilogueStart && current < epilogueEnd);
     }
 
     function isCurrentPeriod(uint256 _periodId) public view override returns (bool) {
