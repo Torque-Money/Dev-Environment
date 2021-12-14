@@ -21,28 +21,24 @@ interface IVPool {
     function getCooldownLength() external view returns (uint256);
 
     /**
-     *  @dev Get the times at which the prologue of the given period occurs
-     *  @param _periodId The id of the period to get the prologue times
+     *  @dev Get the times at which the prologue of the current period occurs
      */
-    function getPrologueTimes(uint256 _periodId) external view returns (uint256, uint256);
+    function getPrologueTimes() external view returns (uint256, uint256);
 
     /**
-     *  @dev Checks if the period Id is the prologue phase
-     *  @param _periodId The id of the period to check if it is in prologue phase
+     *  @dev Checks if the current period Id is the prologue phase
      */
-    function isPrologue(uint256 _periodId) external view returns (bool);
+    function isPrologue() external view returns (bool);
 
     /**
-     *  @dev Get the times at which the epilogue of the given period occurs
-     *  @param _periodId The id of the period to get the epilogue times
+     *  @dev Get the times at which the epilogue of the current period occurs
      */
-    function getEpilogueTimes(uint256 _periodId) external view returns (uint256, uint256);
+    function getEpilogueTimes() external view returns (uint256, uint256);
 
     /**
-     *  @dev Checks if the period Id is in the epilogue phase
-     *  @param _periodId The id of the period to check if it is in epilogue phase
+     *  @dev Checks if the current period Id is in the epilogue phase
      */
-    function isEpilogue(uint256 _periodId) external view returns (bool);
+    function isEpilogue() external view returns (bool);
 
     /**
      *  @dev Checks if the specified period is the current period
