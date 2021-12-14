@@ -13,6 +13,13 @@ interface IMargin {
     function compensationPercentage() external view returns (uint256);
 
     /**
+     *  @dev Return the total amount of a given asset borrowed
+     *  @param _token The token to get the borrowed amount of
+     *  @param _pool The pool to use
+     */
+    function totalBorrowed(IERC20 _token, IVPool _pool) external view returns (uint256);
+
+    /**
      *  @dev Return the amount of liquidity available to be borrowed for a given asset
      *  @param _token The token to get the liquidity available
      *  @param _pool The pool to use

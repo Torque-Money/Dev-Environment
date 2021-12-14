@@ -65,7 +65,7 @@ contract Margin is IMargin, Context {
         uint256 periodId = _pool.currentPeriodId();
 
         uint256 liquidity = _pool.getLiquidity(_token, periodId);
-        uint256 borrowed = borrowPeriods[_pool][periodId][_token].totalBorrowed;
+        uint256 borrowed = totalBorrowed(_token, _pool);
 
         return liquidity - borrowed;
     }
@@ -105,12 +105,10 @@ contract Margin is IMargin, Context {
     function calculateInterestRate(IERC20 _borrowed, IVPool _pool) public view override approvedOnly(_borrowed, _pool) returns (uint256) {
         // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
-        uint256 periodId = _pool.currentPeriodId();
-
-        uint256 totalBorrowed = borrowPeriods[_pool][periodId][_borrowed].totalBorrowed;
+        uint256 _totalBorrowed = totalBorrowed(_borrowed, _pool);
         uint256 liquidity = liquidityAvailable(_borrowed, _pool);
 
-        return totalBorrowed.mul(oracle.getDecimals()).div(liquidity.add(totalBorrowed));
+        return _totalBorrowed.mul(oracle.getDecimals()).div(liquidity.add(_totalBorrowed));
     }
 
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override returns (uint256) {
