@@ -56,33 +56,32 @@ contract VPool is IVPool, AccessControl {
         return cooldownLength;
     }
 
-    function getPrologueTimes() public view override returns (uint256, uint256) {
+    function getPrologueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the prologue is between
-        uint256 periodId = currentPeriodId();
-        uint256 prologueStart = periodId.mul(periodLength);
+        uint256 prologueStart = _periodId.mul(periodLength);
         uint256 prologueEnd = prologueStart.add(cooldownLength);
         return (prologueStart, prologueEnd);
     }
 
-    function isPrologue() public view override returns (bool) {
+    function isPrologue(uint256 _periodId) public view override returns (bool) {
         // Check if the prologue period of the specified period is present
-        (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes();
+        (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return (current >= prologueStart && current < prologueEnd);
     }
 
-    function getEpilogueTimes() public view override returns (uint256, uint256) {
+    function getEpilogueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
         // Return the times of when the epilogue is between
-        uint256 periodId = currentPeriodId().add(1);
+        uint256 periodId = _periodId.add(1);
         uint256 epilogueEnd = periodId.mul(periodLength);
         uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
         return (epilogueStart, epilogueEnd);
     }
 
-    function isEpilogue() public view override returns (bool) {
+    function isEpilogue(uint256 _periodId) public view override returns (bool) {
         // Check if the epilogue period of the specified period is present
-        (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes();
+        (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return (current >= epilogueStart && current < epilogueEnd);
@@ -122,8 +121,8 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Helper functions ========
 
-    function getLiquidity(IERC20 _token) external view override approvedOnly(_token) returns (uint256) {
-        return stakingPeriods[currentPeriodId()][_token].liquidity;
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view override approvedOnly(_token) returns (uint256) {
+        return stakingPeriods[_periodId][_token].liquidity;
     }
 
     // ======== Balance management ========
@@ -133,7 +132,7 @@ contract VPool is IVPool, AccessControl {
         return stakingPeriods[_periodId][_token].deposits[_account];
     }
 
-    function redeemValue(IERC20 _token, uint256 _periodId, uint256 _amount) public view override approvedOnly(_token) returns (uint256) {
+    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view override approvedOnly(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = stakingPeriods[_periodId][_token];
 
@@ -145,59 +144,38 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Liquidity manipulation ========
 
-    function stakeNext(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
-        // Make sure they cant stake into the next period during a prologue
-        require(!isPrologue(), "Cannot stake into the next period during the prologue phase of the current staking period");
-        
-        // Set the period ID as the next period id
-        uint256 periodId = currentPeriodId().add(1);
-
-        // Move the tokens to the pool and update the users deposit amount
-        _token.safeTransferFrom(_msgSender(), address(this), _amount);
-
-        // Update the balances
-        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
-
-        stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].add(_amount);
-        stakingPeriod.liquidity = stakingPeriod.liquidity.add(_amount);
-        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(_amount);
-
-        emit Stake(_msgSender(), periodId, _token, _amount);
-    }
-
-    function stake(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
+    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
-        require(isPrologue(), "Staking is only allowed during the prologue period");
-
-        uint256 periodId = currentPeriodId();
+        require(_periodId >= currentPeriodId(), "May only stake into current or future periods");
+        require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Staking is only allowed during the prologue period or for a future period");
 
         // Move the tokens to the pool and update the users deposit amount
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
 
-        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
+        StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
 
         stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].add(_amount);
         stakingPeriod.liquidity = stakingPeriod.liquidity.add(_amount);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(_amount);
 
-        emit Stake(_msgSender(), periodId, _token, _amount);
+        emit Stake(_msgSender(), _periodId, _token, _amount);
     }
 
-    function restake(address _account, IERC20 _token, uint256 _periodId) public override approvedOnly(_token) {
+    function restake(address _account, IERC20 _token, uint256 _periodIdFrom) public override approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
-        require(isPrologue(), "Restaking is only allowed during the prologue period");
-        uint256 periodId = currentPeriodId();
-        require(periodId != _periodId, "Cannot restake into the same period");
+        uint256 periodIdTo = currentPeriodId();
+        require(_periodIdFrom != periodIdTo, "Cannot restake into the same period");
+        require(isPrologue(periodIdTo), "Restaking is only allowed during the prologue period");
 
-        StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodId][_token];
-        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token];
+        StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodIdFrom][_token];
+        StakingPeriod storage stakingPeriod = stakingPeriods[periodIdTo][_token];
 
         require(oldStakingPeriod.deposits[_account] > 0, "Nothing to restake from this period");
 
         // Remove the stake from the old period
         uint256 oldDeposit = oldStakingPeriod.deposits[_account];
 
-        uint256 tokensRedeemed = redeemValue(_token, _periodId, oldDeposit);
+        uint256 tokensRedeemed = redeemValue(_token, _periodIdFrom, oldDeposit);
         oldStakingPeriod.liquidity = oldStakingPeriod.liquidity.sub(tokensRedeemed);
 
         oldStakingPeriod.totalDeposited = oldStakingPeriod.totalDeposited.sub(oldDeposit);
@@ -217,12 +195,12 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.liquidity = stakingPeriod.liquidity.add(newDeposit);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(newDeposit);
 
-        emit Restake(_account, periodId, _token, _msgSender(), _periodId);
+        emit Restake(_account, _periodIdFrom, _token, _msgSender(), periodIdTo);
     }
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
-        require(isPrologue() || !isCurrentPeriod(_periodId), "Withdraw is only allowed during prologue period or once period has ended");
+        require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during prologue period or once period has ended");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
@@ -240,9 +218,8 @@ contract VPool is IVPool, AccessControl {
 
     function deposit(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
         // Make sure no deposits during cooldown period
-        require(!isPrologue(), "Cannot deposit during prologue");
-
         uint256 periodId = currentPeriodId();
+        require(!isPrologue(periodId), "Cannot deposit during prologue");
 
         // Pay a tax to the tax account
         uint256 amount = _amount;
@@ -260,9 +237,8 @@ contract VPool is IVPool, AccessControl {
 
     function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
         // Make sure no withdraws during cooldown period
-        require(!isPrologue(), "Cannot withdraw during prologue");
-
         uint256 periodId = currentPeriodId();
+        require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
