@@ -206,13 +206,15 @@ contract VPool is IVPool, AccessControl {
         // Update the balances of the period
         StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
 
+        // Withdraw the allocated amount from the pool and return it to the user
+        uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
+
         stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].sub(_amount);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.sub(_amount);
 
-        // Withdraw the allocated amount from the pool and return it to the user
-        uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(tokensRedeemed);
         _token.safeTransfer(_msgSender(), tokensRedeemed);
+
         emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
