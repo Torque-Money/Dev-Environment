@@ -21,24 +21,28 @@ interface IVPool {
     function getCooldownLength() external view returns (uint256);
 
     /**
-     *  @dev Get the times at which the prologue of the current period occurs
+     *  @dev Get the times at which the prologue of the given period occurs
+     *  @param _periodId The period to get the times of
      */
-    function getPrologueTimes() external view returns (uint256, uint256);
+    function getPrologueTimes(uint256 _periodId) external view returns (uint256, uint256);
 
     /**
-     *  @dev Checks if the current period Id is the prologue phase
+     *  @dev Checks if the given period is in the prologue phase
+     *  @param _periodId The period to check if it is the prologue
      */
-    function isPrologue() external view returns (bool);
+    function isPrologue(uint256 _periodId) external view returns (bool);
 
     /**
-     *  @dev Get the times at which the epilogue of the current period occurs
+     *  @dev Get the times at which the epilogue of the given period occurs
+     *  @param _periodId The period to get the times of
      */
-    function getEpilogueTimes() external view returns (uint256, uint256);
+    function getEpilogueTimes(uint256 _periodId) external view returns (uint256, uint256);
 
     /**
      *  @dev Checks if the current period Id is in the epilogue phase
+     *  @param _periodId The period to check if it is the epilogue
      */
-    function isEpilogue() external view returns (bool);
+    function isEpilogue(uint256 _periodId) external view returns (bool);
 
     /**
      *  @dev Checks if the specified period is the current period
@@ -75,8 +79,9 @@ interface IVPool {
     /**
      *  @dev Returns the total locked liquidity for the current period
      *  @param _token The token to check the liquidity of
+     *  @param _periodId The period to get the liquidity from
      */
-    function getLiquidity(IERC20 _token) external view returns (uint256);
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256);
 
     // ======== Balance management ========
 
@@ -91,34 +96,28 @@ interface IVPool {
     /**
      *  @dev Returns the value of the tokens for a given period for a given token once they are redeemed
      *  @param _token The token that will be received on redemption
-     *  @param _periodId The id of the period of which the redeem will occur
      *  @param _amount The amount of tokens to redeem
+     *  @param _periodId The id of the period of which the redeem will occur
      */
-    function redeemValue(IERC20 _token, uint256 _periodId, uint256 _amount) external view returns (uint256);
+    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) external view returns (uint256);
 
     // ======== Liquidity manipulation ========
-
-    /**
-     *  @dev Stakes a given amount of specified tokens into the next staking pool to allow users to stake even when not during staking period
-     *  @param _token The token to stake
-     *  @param _amount The amount of the token to stake
-     */
-    function stakeNext(IERC20 _token, uint256 _amount) external;
 
     /**
      *  @dev Stakes a given amount of specified tokens in the pool
      *  @param _token The token to stake
      *  @param _amount The amount of the token to stake
+     *  @param _periodId The period to stake the tokens into
      */
-    function stake(IERC20 _token, uint256 _amount) external;
+    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external;
 
     /**
      *  @dev Restake an accounts deposited collateral from a different period to the current period
      *  @param _account The account to have its tokens restaked
      *  @param _token The token to restake
-     *  @param _periodId The period to move the deposit from
+     *  @param _periodIdFrom The period to move the deposit from
      */
-    function restake(address _account, IERC20 _token, uint256 _periodId) external;
+    function restake(address _account, IERC20 _token, uint256 _periodIdFrom) external;
 
     /**
      *  @dev Redeems the staked amount of tokens in a given pool
