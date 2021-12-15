@@ -106,14 +106,14 @@ contract Margin is IMargin, Context {
         uint256 _totalBorrowed = totalBorrowed(_borrowed, _pool);
         uint256 liquidity = liquidityAvailable(_borrowed, _pool);
 
-        return _totalBorrowed.mul(maxInterestPercent).mul(oracle.getDecimals()).div(liquidity.add(_totalBorrowed)).div(100);
+        return _totalBorrowed.mul(maxInterestPercent).mul(oracle.getDecimals()).div(liquidity.add(_totalBorrowed)).div(100).div(_pool.getPeriodLength());
     }
 
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
         uint256 retValue;
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed, _pool)); }
-        { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(_pool.getPeriodLength()).div(oracle.getDecimals()); }
+        { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.getDecimals()); }
 
         return retValue;
     }
