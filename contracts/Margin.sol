@@ -208,7 +208,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
         // **** However this still does not consider the debt - we need to make sure that this has been taken into consideration where after expiration we will just charge what they owed up to the end
-        // =================== Implement this ========================
+        // =================== Implement this ======================== (Probably implement it in the bit above to be honest, or just implement in the bit above ?)
 
         if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral;
         (uint256 interest, uint256 borrowedCurrentPrice) = _balanceHelper(_collateral, _borrowed, _pool, borrowAccount);
