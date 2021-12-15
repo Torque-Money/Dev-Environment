@@ -62,17 +62,17 @@ contract Margin is IMargin, Context {
 
     function liquidityAvailable(IERC20 _token, IVPool _pool) public view override approvedOnly(_token, _pool) returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
-        uint256 liquidity = _pool.getLiquidity(_token);
+        uint256 liquidity = _pool.getLiquidity(_token, _pool.currentPeriodId());
         uint256 borrowed = totalBorrowed(_token, _pool);
 
         return liquidity - borrowed;
     }
 
-    function _calculateMarginLevelHelper(uint256 _deposited, uint256 currentBorrowPrice, uint256 _initialBorrowPrice, uint256 interest) private view returns (uint256) {
+    function _calculateMarginLevelHelper(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) private view returns (uint256) {
         uint256 retValue;
         { retValue = oracle.getDecimals(); }
-        { retValue = retValue.mul(_deposited.add(currentBorrowPrice)); }
-        { retValue = retValue.div(_initialBorrowPrice.add(interest)); }
+        { retValue = retValue.mul(_deposited.add(_currentBorrowPrice)); }
+        { retValue = retValue.div(_initialBorrowPrice.add(_interest)); }
         
         return retValue;
     }
@@ -111,44 +111,37 @@ contract Margin is IMargin, Context {
 
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) public view override returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
-        uint256 timeFrame;
-        {
-            (,uint256 prologueEnd) = _pool.getPrologueTimes();
-            (uint256 epilogueStart,) = _pool.getEpilogueTimes();
-            timeFrame = epilogueStart - prologueEnd;
-        }
-
         uint256 retValue;
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed, _pool)); }
-        { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(timeFrame).div(oracle.getDecimals()); }
+        { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(_pool.getPeriodLength()).div(oracle.getDecimals()); }
 
         return retValue;
     }
 
     // ======== Deposit ========
 
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
+        require(_periodId >= _pool.currentPeriodId(), "Can only deposit into the current pool or a future pool");
 
         // Store funds in the account for the given asset they wish to borrow
         _collateral.safeTransferFrom(_msgSender(), address(this), _amount);
-        uint256 periodId = _pool.currentPeriodId();
 
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
+        emit Deposit(_msgSender(), _periodId, _pool, _collateral, _borrowed, _amount);
     }
 
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodIdFrom) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
-        require(_pool.isPrologue(), "Redepositing is only allowed during the prologue period");
         uint256 periodId = _pool.currentPeriodId();
-        require(periodId != _periodId, "Cannot redeposit into the same period");
+        require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
+        require(periodId != _periodIdFrom, "Cannot redeposit into the same period");
 
-        BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
+        BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodIdFrom][_borrowed].collateral[_account][_collateral];
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
 
         require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
@@ -163,31 +156,31 @@ contract Margin is IMargin, Context {
             borrowAccount.collateral = borrowAccount.collateral.sub(reward);
         }
 
-        emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodId);
+        emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodIdFrom);
     }
 
     // ======== Borrow ========
 
-    function _borrowHelper(BorrowAccount storage borrowAccount, BorrowPeriod storage borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
+    function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        require(calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice.add(borrowInitialPrice), borrowAccount.initialBorrowTime, borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+        require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _pool) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
-        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.add(_amount);
+        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
 
-        borrowAccount.initialPrice = borrowAccount.initialPrice.add(borrowInitialPrice);
-        borrowAccount.borrowed = borrowAccount.borrowed.add(_amount);
-        borrowAccount.borrowTime = block.timestamp;
+        _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
+        _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
+        _borrowAccount.borrowTime = block.timestamp;
     }
 
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Requirements for borrowing
-        uint256 periodId = _pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
-        require(!_pool.isPrologue(), "Cannot borrow during prologue");
+        uint256 periodId = _pool.currentPeriodId();
+        require(!_pool.isPrologue(periodId), "Cannot borrow during prologue");
         {
-            (uint256 epilogueStart,) = _pool.getEpilogueTimes();
+            (uint256 epilogueStart,) = _pool.getEpilogueTimes(periodId);
             require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
         }
         require(liquidityAvailable(_borrowed, _pool) >= _amount, "Amount to borrow exceeds available liquidity");
@@ -204,13 +197,13 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
-    function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, IVPool _pool, BorrowAccount memory borrowAccount) private view returns (uint256, uint256) {
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, _pool);
-        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(borrowAccount.borrowed).div(oracle.getDecimals());
+    function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, IVPool _pool, BorrowAccount memory _borrowAccount) private view returns (uint256, uint256) {
+        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime, _pool);
+        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.getDecimals());
         return (interest, borrowedCurrentPrice);
     }
 
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) public view override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
@@ -220,9 +213,9 @@ contract Margin is IMargin, Context {
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function _repayGreaterHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+    function _repayGreaterHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, IVPool _pool, BorrowAccount storage _borrowAccount) private {
         // Convert the accounts tokens back to the deposited asset
-        uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(balAfterRepay.sub(borrowAccount.collateral)).div(oracle.getDecimals());
+        uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.getDecimals());
 
         // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
         _pool.withdraw(_borrowed, payout);
@@ -232,20 +225,20 @@ contract Margin is IMargin, Context {
         uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         // Provide a reward to the user who repayed the account if they are not the account owner
-        borrowAccount.collateral = borrowAccount.collateral.add(amountOut);
+        _borrowAccount.collateral = _borrowAccount.collateral.add(amountOut);
         if (_account != _msgSender()) {
             uint256 reward = amountOut.mul(compensationPercentage()).div(100);
             _collateral.safeTransfer(_msgSender(), reward);
 
-            borrowAccount.collateral = borrowAccount.collateral.sub(reward);
+            _borrowAccount.collateral = _borrowAccount.collateral.sub(reward);
         }
 
     }
 
-    function _repayLessEqualHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 balAfterRepay, IVPool _pool, BorrowAccount storage borrowAccount) private {
+    function _repayLessEqualHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, IVPool _pool, BorrowAccount storage _borrowAccount) private {
         // Amount the user has to repay the protocol
-        uint256 repayAmount = borrowAccount.collateral.sub(balAfterRepay);
-        borrowAccount.collateral = balAfterRepay;
+        uint256 repayAmount = _borrowAccount.collateral.sub(_balAfterRepay);
+        _borrowAccount.collateral = _balAfterRepay;
 
         // Swap the repay value back for the borrowed asset
         address[] memory path = new address[](2);
@@ -266,10 +259,11 @@ contract Margin is IMargin, Context {
         _pool.deposit(_borrowed, depositValue);
     }
 
+    // **** But what happens in the case of a repayment AFTER the fact - we still want the balance to be updated - perhaps this should be necessary regardless and we integrate an == balance.collateral ?
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
-        require(_account == _msgSender() || _pool.isEpilogue(), "Only the owner may repay before the epilogue period");
+        require(_account == _msgSender() || _pool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
@@ -292,7 +286,8 @@ contract Margin is IMargin, Context {
         emit Repay(_msgSender(), periodId, _pool, _collateral, _borrowed, balAfterRepay);
     }
 
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    // **** This also considers the repayment problem ?
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
