@@ -1,1 +1,40 @@
-{"routerAddresses":["0xf491e7b69e4244ad4002bc14e878a34207e38c29"],"approved":[{"name":"Dai","symbol":"DAI","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png","address":"0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e","whale":"0x598c5e19a132a5c433a80c908f05d87bfdaac4ae","decimals":18},{"name":"Spookyswap","symbol":"BOO","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png","address":"0x841fad6eae12c286d1fd18d1d525dffa75c7effe","whale":"0x95478c4f7d22d1048f46100001c2c69d2ba57380","decimals":18},{"name":"Spartacus","symbol":"SPA","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/13748.png","address":"0x5602df4a94eb6c680190accfa2a475621e0ddbdc","whale":"0x3aa69f6360806ab5da9f9f77f6cc09f9092b255b","decimals":18},{"name":"Popsicle Finance","symbol":"ICE","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/9073.png","address":"0xf16e81dce15b08f326220742020379b855b87df9","whale":"0xa1696fec3b2806a850373d91082aa6ad4759db60","decimals":18}],"poolAddress":"0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07","oracleAddress":"0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6","marginAddress":"0x4C4a2f8c81640e47606d3fd77B353E87Ba015584"}
+{
+    "routerAddresses": ["0xf491e7b69e4244ad4002bc14e878a34207e38c29"],
+    "approved": [
+        {
+            "name": "Dai",
+            "symbol": "DAI",
+            "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+            "address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+            "whale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae",
+            "decimals": 18
+        },
+        {
+            "name": "Spookyswap",
+            "symbol": "BOO",
+            "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/9608.png",
+            "address": "0x841fad6eae12c286d1fd18d1d525dffa75c7effe",
+            "whale": "0x95478c4f7d22d1048f46100001c2c69d2ba57380",
+            "decimals": 18
+        },
+        {
+            "name": "Spartacus",
+            "symbol": "SPA",
+            "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/13748.png",
+            "address": "0x5602df4a94eb6c680190accfa2a475621e0ddbdc",
+            "whale": "0x3aa69f6360806ab5da9f9f77f6cc09f9092b255b",
+            "decimals": 9
+        },
+        {
+            "name": "Popsicle Finance",
+            "symbol": "ICE",
+            "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/9073.png",
+            "address": "0xf16e81dce15b08f326220742020379b855b87df9",
+            "whale": "0xa1696fec3b2806a850373d91082aa6ad4759db60",
+            "decimals": 18
+        }
+    ],
+    "poolAddress": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+    "oracleAddress": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
+    "marginAddress": "0x4C4a2f8c81640e47606d3fd77B353E87Ba015584"
+}
