@@ -83,10 +83,10 @@ interface IMargin {
      *  @param _account The account whose collateral will be redeposited
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to be borrowed
-     *  @param _periodId The period to redeposit from
      *  @param _pool The pool to use
+     *  @param _periodId The period to redeposit from
      */
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external;
+    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external;
 
     // ======== Borrow ========
 
@@ -106,10 +106,10 @@ interface IMargin {
      *  @param _account The account to get the balance of
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _periodId The id of the period to check the accounts balance
      *  @param _pool The pool to use
+     *  @param _periodId The id of the period to check the accounts balance
      */
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, IVPool _pool) external view returns (uint256);
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
 
     /**
      *  @dev Repay the borrowed amount for the given asset and collateral
@@ -124,11 +124,11 @@ interface IMargin {
      *  @dev Withdraw collateral from the account if the account has no debt
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _periodId The id of the period to withdraw from
      *  @param _amount The amount of the asset to withdraw
      *  @param _pool The pool to use
+     *  @param _periodId The id of the period to withdraw from
      */
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _periodId, uint256 _amount, IVPool _pool) external;
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external;
 
     // ======== Liquidate ========
 

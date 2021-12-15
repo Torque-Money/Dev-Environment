@@ -120,19 +120,19 @@ contract Margin is IMargin, Context {
 
     // ======== Deposit ========
 
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
-        require(_periodId >= _pool.currentPeriodId(), "Can only deposit into the current pool or a future pool");
+        uint256 periodId = _pool.currentPeriodId();
 
         // Store funds in the account for the given asset they wish to borrow
         _collateral.safeTransferFrom(_msgSender(), address(this), _amount);
 
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
         borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), _periodId, _pool, _collateral, _borrowed, _amount);
+        emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
     function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodIdFrom) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
@@ -207,6 +207,9 @@ contract Margin is IMargin, Context {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
+        // **** However this still does not consider the debt - we need to make sure that this has been taken into consideration where after expiration we will just charge what they owed up to the end
+        // =================== Implement this ========================
+
         if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral;
         (uint256 interest, uint256 borrowedCurrentPrice) = _balanceHelper(_collateral, _borrowed, _pool, borrowAccount);
 
@@ -259,7 +262,6 @@ contract Margin is IMargin, Context {
         _pool.deposit(_borrowed, depositValue);
     }
 
-    // **** But what happens in the case of a repayment AFTER the fact - we still want the balance to be updated - perhaps this should be necessary regardless and we integrate an == balance.collateral ?
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
@@ -272,7 +274,7 @@ contract Margin is IMargin, Context {
         require(borrowAccount.borrowed > 0, "No debt to repay");
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength, "Cannot repay until minimum borrow period is over");
 
-        uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId, _pool);
+        uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _pool, periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, _pool, borrowAccount);
         } else {
@@ -286,7 +288,6 @@ contract Margin is IMargin, Context {
         emit Repay(_msgSender(), periodId, _pool, _collateral, _borrowed, balAfterRepay);
     }
 
-    // **** This also considers the repayment problem ?
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
