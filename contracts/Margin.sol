@@ -207,11 +207,8 @@ contract Margin is IMargin, Context {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][_periodId][_borrowed].collateral[_account][_collateral];
 
-        // **** However this still does not consider the debt - we need to make sure that this has been taken into consideration where after expiration we will just charge what they owed up to the end
-        // =================== Implement this ======================== (Probably implement it in the bit above to be honest, or just implement in the bit above ?)
-
-        if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral;
         (uint256 interest, uint256 borrowedCurrentPrice) = _balanceHelper(_collateral, _borrowed, _pool, borrowAccount);
+        if (!_pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral.sub(interest);
 
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
@@ -265,7 +262,7 @@ contract Margin is IMargin, Context {
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
-        require(_account == _msgSender() || _pool.isEpilogue(periodId), "Only the owner may repay before the epilogue period");
+        require(_account == _msgSender() || _pool.isEpilogue(periodId) || !_pool.isCurrentPeriod(periodId), "Only the owner may repay before the epilogue period has started");
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][periodId][_borrowed];
