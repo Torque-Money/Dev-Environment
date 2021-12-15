@@ -144,6 +144,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodIdFrom][_borrowed].collateral[_account][_collateral];
         BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
 
+        require(oldBorrowAccount.borrowed == 0, "Must repay before being able to redeposit");
         require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
 
         // Reward the account who restaked and update old account
