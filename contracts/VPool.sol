@@ -161,7 +161,7 @@ contract VPool is IVPool, AccessControl {
         emit Stake(_msgSender(), _periodId, _token, _amount);
     }
 
-    function restake(address _account, IERC20 _token, uint256 _periodIdFrom) public override approvedOnly(_token) {
+    function restake(address _account, IERC20 _token, uint256 _periodIdFrom) external override approvedOnly(_token) {
         // Redeposit existing deposited amount from a previous period into the current period for a given user
         uint256 periodIdTo = currentPeriodId();
         require(_periodIdFrom != periodIdTo, "Cannot restake into the same period");
@@ -175,7 +175,7 @@ contract VPool is IVPool, AccessControl {
         // Remove the stake from the old period
         uint256 oldDeposit = oldStakingPeriod.deposits[_account];
 
-        uint256 tokensRedeemed = redeemValue(_token, _periodIdFrom, oldDeposit);
+        uint256 tokensRedeemed = redeemValue(_token, oldDeposit, _periodIdFrom);
         oldStakingPeriod.liquidity = oldStakingPeriod.liquidity.sub(tokensRedeemed);
 
         oldStakingPeriod.totalDeposited = oldStakingPeriod.totalDeposited.sub(oldDeposit);
@@ -207,7 +207,7 @@ contract VPool is IVPool, AccessControl {
         StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
 
         // Withdraw the allocated amount from the pool and return it to the user
-        uint256 tokensRedeemed = redeemValue(_token, _periodId, _amount);
+        uint256 tokensRedeemed = redeemValue(_token, _amount, _periodId);
 
         stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].sub(_amount);
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.sub(_amount);
