@@ -78,16 +78,6 @@ interface IMargin {
      */
     function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external;
 
-    /**
-     *  @dev Redeposit the collateral of an account from one period to another
-     *  @param _account The account whose collateral will be redeposited
-     *  @param _collateral The asset to use as collateral
-     *  @param _borrowed The asset to be borrowed
-     *  @param _pool The pool to use
-     *  @param _periodId The period to redeposit from
-     */
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external;
-
     // ======== Borrow ========
 
     /**
@@ -154,7 +144,6 @@ interface IMargin {
 
     event Deposit(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
     event Withdraw(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
-    event Redeposit(address indexed account, uint256 indexed periodIdTo, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, address caller, uint256 periodIdFrom);
 
     event Borrow(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
     event Repay(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 balance);

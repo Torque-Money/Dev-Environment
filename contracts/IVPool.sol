@@ -140,8 +140,6 @@ interface IVPool {
     event Stake(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
     event Redeem(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount, uint256 liquidity);
 
-    event Restake(address indexed account, uint256 indexed periodId, IERC20 token, address caller, uint256 periodIdFrom);
-
     event Deposit(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
     event Withdraw(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
 }

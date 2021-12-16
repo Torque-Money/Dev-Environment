@@ -135,31 +135,6 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodIdFrom) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
-        // Redeposit the margin balance from one period to the next
-        uint256 periodId = _pool.currentPeriodId();
-        require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
-        require(periodId != _periodIdFrom, "Cannot redeposit into the same period");
-
-        BorrowAccount storage oldBorrowAccount = borrowPeriods[_pool][_periodIdFrom][_borrowed].collateral[_account][_collateral];
-        BorrowAccount storage borrowAccount = borrowPeriods[_pool][periodId][_borrowed].collateral[_account][_collateral];
-
-        require(oldBorrowAccount.borrowed == 0, "Must repay before being able to redeposit");
-        require(oldBorrowAccount.collateral > 0, "Nothing to restake from this period");
-
-        // Reward the account who restaked and update old account
-        borrowAccount.collateral = borrowAccount.collateral.add(oldBorrowAccount.collateral);
-        oldBorrowAccount.collateral = 0;
-        if (_account != _msgSender()) {
-            uint256 reward = compensationPercentage().mul(borrowAccount.collateral).div(100);
-            _collateral.safeTransfer(_msgSender(), reward);
-
-            borrowAccount.collateral = borrowAccount.collateral.sub(reward);
-        }
-
-        emit Redeposit(_account, periodId, _pool, _collateral, _borrowed, _msgSender(), _periodIdFrom);
-    }
-
     // ======== Borrow ========
 
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
