@@ -265,19 +265,18 @@ contract Margin is IMargin, Context {
         pool.deposit(_borrowed, depositValue);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
         // If the period has entered the epilogue phase, then anyone may repay the account
-        uint256 periodId = pool.currentPeriodId();
-        require(_account == _msgSender() || pool.isEpilogue(periodId) || !pool.isCurrentPeriod(periodId), "Only the owner may repay before the epilogue period has started");
+        require(_account == _msgSender() || pool.isEpilogue(_periodId) || !pool.isCurrentPeriod(_periodId), "Only the owner may repay before the epilogue period has started");
 
         // Repay off the margin and update the users collateral to reflect it
-        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength, "Cannot repay until minimum borrow period is over");
 
-        uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, periodId);
+        uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
             _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
         } else {
@@ -288,7 +287,7 @@ contract Margin is IMargin, Context {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
-        emit Repay(_msgSender(), periodId, _collateral, _borrowed, balAfterRepay);
+        emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
 
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external override approvedOnly(_collateral) approvedOnly(_borrowed) {

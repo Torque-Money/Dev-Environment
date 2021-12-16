@@ -128,8 +128,9 @@ interface IMargin {
      *  @param _account The account to repay - if in the epilogue period anyone may repay the account
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
+     *  @param _periodId THe id of the period to redeposit for
      */
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed) external;
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external;
 
     /**
      *  @dev Withdraw collateral from the account if the account has no debt
