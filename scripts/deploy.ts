@@ -25,7 +25,7 @@ async function main() {
 
     // Deploy and setup the oracle contract
     const oracleConfig = {
-        decimals: (1e6).toString(),
+        decimals: (1).toString(),
     };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(oracleConfig));
