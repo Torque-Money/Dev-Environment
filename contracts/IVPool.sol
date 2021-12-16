@@ -112,14 +112,6 @@ interface IVPool {
     function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external;
 
     /**
-     *  @dev Restake the accounts deposited collateral from a different period to a future period
-     *  @param _token The token to restake
-     *  @param _periodIdFrom The period to move the deposit from
-     *  @param _periodIdTo The period to move the deposit to
-     */
-    function restake(IERC20 _token, uint256 _periodIdFrom, uint256 _periodIdTo) external;
-
-    /**
      *  @dev Redeems the staked amount of tokens in a given pool
      *  @param _token Token to redeem for
      *  @param _amount Amount of the token to redeem

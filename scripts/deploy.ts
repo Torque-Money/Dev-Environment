@@ -10,7 +10,6 @@ async function main() {
     const poolConfig = {
         periodLength: 60 * 60,
         cooldownLength: 20 * 60,
-        restakeReward: 2,
         taxPercent: 2,
     };
     const Pool = await hre.ethers.getContractFactory("VPool");

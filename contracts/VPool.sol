@@ -25,15 +25,12 @@ contract VPool is IVPool, AccessControl {
     uint256 private periodLength;
     uint256 private cooldownLength;
 
-    uint256 private restakeReward; // Percentage of amount restaked
-
     address private taxAccount;
     uint256 private taxPercent;
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 restakeReward_, uint256 taxPercent_) {
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
-        restakeReward = restakeReward_;
         _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
 
         taxPercent = taxPercent_;
@@ -159,34 +156,6 @@ contract VPool is IVPool, AccessControl {
         stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(_amount);
 
         emit Stake(_msgSender(), _periodId, _token, _amount);
-    }
-
-    function restake(IERC20 _token, uint256 _periodIdFrom, uint256 _periodIdTo) external override approvedOnly(_token) {
-        // Redeposit existing deposited amount from a previous period into the current period for a given user
-        require(_periodIdFrom != _periodIdTo, "Cannot restake into the same period");
-        require(_periodIdTo >= currentPeriodId(), "Can only restake into the current or future period");
-        require((isPrologue(_periodIdFrom) || !isCurrentPeriod(_periodIdFrom)) && (isPrologue(_periodIdTo) || !isCurrentPeriod(_periodIdTo)), "Restaking is only allowed during the prologue period");
-
-        StakingPeriod storage oldStakingPeriod = stakingPeriods[_periodIdFrom][_token];
-        StakingPeriod storage stakingPeriod = stakingPeriods[_periodIdTo][_token];
-
-        require(oldStakingPeriod.deposits[_msgSender()] > 0, "Nothing to restake from this period");
-
-        // Remove the stake from the old period
-        uint256 oldDeposit = oldStakingPeriod.deposits[_msgSender()];
-
-        uint256 tokensRedeemed = redeemValue(_token, oldDeposit, _periodIdFrom);
-        oldStakingPeriod.liquidity = oldStakingPeriod.liquidity.sub(tokensRedeemed);
-
-        oldStakingPeriod.totalDeposited = oldStakingPeriod.totalDeposited.sub(oldDeposit);
-        oldStakingPeriod.deposits[_msgSender()] = oldStakingPeriod.deposits[_msgSender()].sub(oldDeposit);
-
-        // Update the new period
-        stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].add(tokensRedeemed);
-        stakingPeriod.liquidity = stakingPeriod.liquidity.add(tokensRedeemed);
-        stakingPeriod.totalDeposited = stakingPeriod.totalDeposited.add(tokensRedeemed);
-
-        emit Restake(_msgSender(), _periodIdFrom, _token, _msgSender(), _periodIdTo);
     }
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
