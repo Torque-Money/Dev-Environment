@@ -7,7 +7,8 @@
         "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts",
         "update": "cp config.json artifacts/contracts/IMargin.sol/IMargin.json artifacts/contracts/IOracle.sol/IOracle.json artifacts/contracts/IVPool.sol/IVPool.json ../Wabbit-Frontend/src/config",
-        "all": "npm run deploy && npm run fund && npm run update"
+        "all": "npm run deploy && npm run fund && npm run update",
+        "travel": "npm run --network localhost scripts/travel.ts"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.3",
