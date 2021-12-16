@@ -141,7 +141,7 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
-    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Return the collateral of the account
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
