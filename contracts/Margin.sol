@@ -135,7 +135,7 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
-    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodIdFrom) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function redeposit(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodIdFrom) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // Redeposit the margin balance from one period to the next
         uint256 periodId = _pool.currentPeriodId();
         require(_pool.isPrologue(periodId), "Redepositing is only allowed during the prologue period");
@@ -260,7 +260,7 @@ contract Margin is IMargin, Context {
         _pool.deposit(_borrowed, depositValue);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) public override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         uint256 periodId = _pool.currentPeriodId();
         require(_account == _msgSender() || _pool.isEpilogue(periodId) || !_pool.isCurrentPeriod(periodId), "Only the owner may repay before the epilogue period has started");
