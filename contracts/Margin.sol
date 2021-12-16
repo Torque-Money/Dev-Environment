@@ -193,8 +193,6 @@ contract Margin is IMargin, Context {
         return borrowAccount.borrowed;
     }
 
-    // **** Add total debt and total borrowed as extra stats too and add them to the interface
-
     function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Return the collateral of the account
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
