@@ -8,6 +8,11 @@ interface IMargin {
     // ======== Calculations ========
 
     /**
+     *  @dev Get the minimum borrow length
+     */
+    function getMinBorrowLength() external view returns (uint256);
+
+    /**
      *  @dev Get the percentage rewarded to a user who performed an autonomous operation
      */
     function compensationPercentage() external view returns (uint256);
@@ -107,7 +112,7 @@ interface IMargin {
      *  @param _pool The pool to use
      *  @param _periodId The period to check the debt of
      */
-    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external returns (uint256);
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
 
     /**
      *  @dev Get the most recent borrow time for a given account
@@ -117,7 +122,7 @@ interface IMargin {
      *  @param _pool The pool to use
      *  @param _periodId The period to check the time of the most recent borrow
      */
-    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external returns (uint256);
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
 
     // ======== Repay and withdraw ========
 
