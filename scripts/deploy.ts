@@ -41,6 +41,7 @@ async function main() {
     // Deploy and setup the margin contract
     const marginConfig = {
         oracle: oracle.address,
+        pool: pool.address,
         minBorrowPeriod: 5 * 60,
         maxInterestPercent: 5,
         minMarginLevel: 5,

@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./IVPool.sol";
 
 interface IMargin {
     // ======== Calculations ========
@@ -20,16 +19,14 @@ interface IMargin {
     /**
      *  @dev Return the total amount of a given asset borrowed
      *  @param _token The token to get the borrowed amount of
-     *  @param _pool The pool to use
      */
-    function totalBorrowed(IERC20 _token, IVPool _pool) external view returns (uint256);
+    function totalBorrowed(IERC20 _token) external view returns (uint256);
 
     /**
      *  @dev Return the amount of liquidity available to be borrowed for a given asset
      *  @param _token The token to get the liquidity available
-     *  @param _pool The pool to use
      */
-    function liquidityAvailable(IERC20 _token, IVPool _pool) external view returns (uint256);
+    function liquidityAvailable(IERC20 _token) external view returns (uint256);
 
     /**
      *  @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals
@@ -39,9 +36,8 @@ interface IMargin {
      *  @param _amountBorrowed The amount of the asset borrowed
      *  @param _collateral The asset used as collateral
      *  @param _borrowed The asset borrowed
-     *  @param _pool The pool to use
      */
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external view returns (uint256);
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);
 
     /**
      *  @dev Return the minimum margin level in terms of decimals
@@ -52,25 +48,22 @@ interface IMargin {
      *  @dev Get the margin level of the given account
      *  @param _collateral The asset used as collateral
      *  @param _borrowed The asset borrowed
-     *  @param _pool The pool to use
      */
-    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external view returns (uint256);
+    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256);
 
     /**
      *  @dev Get the interest rate for a given asset
      *  @param _borrowed The asset to calculate the interest rate of
-     *  @param _pool The pool to use
      */
-    function calculateInterestRate(IERC20 _borrowed, IVPool _pool) external view returns (uint256);
+    function calculateInterestRate(IERC20 _borrowed) external view returns (uint256);
 
     /**
      *  @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
      *  @param _borrowed The asset borrowed
      *  @param _initialBorrow The amount of the asset borrowed initially
      *  @param _borrowTime The time at which the first borrow was made
-     *  @param _pool The pool to use
      */
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime, IVPool _pool) external view returns (uint256);
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) external view returns (uint256);
 
     // ======== Deposit ========
 
@@ -79,19 +72,17 @@ interface IMargin {
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to be borrowed
      *  @param _amount The amount of collateral to deposit
-     *  @param _pool The pool to use
      */
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external;
+    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external;
 
     /**
      *  @dev Get the collateral of an account for a given pool and period id
      *  @param _account The account to check the collateral of
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      *  @param _periodId The id of the period to check the accounts collateral
      */
-    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
+    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
 
     // ======== Borrow ========
 
@@ -100,29 +91,26 @@ interface IMargin {
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to borrow
      *  @param _amount The amount of the asset to borrow
-     *  @param _pool The pool to use
      */
-    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external;
+    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external;
 
     /**
      *  @dev Get the debt of a given account
      *  @param _account The account to check the debt of
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      *  @param _periodId The period to check the debt of
      */
-    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
 
     /**
      *  @dev Get the most recent borrow time for a given account
      *  @param _account The account to check the time of the most recent borrow
      *  @param _collateral The asset to use as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      *  @param _periodId The period to check the time of the most recent borrow
      */
-    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
 
     // ======== Repay and withdraw ========
 
@@ -131,29 +119,26 @@ interface IMargin {
      *  @param _account The account to get the balance of
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      *  @param _periodId The id of the period to check the accounts balance
      */
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256);
 
     /**
      *  @dev Repay the borrowed amount for the given asset and collateral
      *  @param _account The account to repay - if in the epilogue period anyone may repay the account
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      */
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external;
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed) external;
 
     /**
      *  @dev Withdraw collateral from the account if the account has no debt
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
      *  @param _amount The amount of the asset to withdraw
-     *  @param _pool The pool to use
      *  @param _periodId The id of the period to withdraw from
      */
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool, uint256 _periodId) external;
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external;
 
     // ======== Liquidate ========
 
@@ -162,26 +147,24 @@ interface IMargin {
      *  @param _account The account to check if liquidatable
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      */
-    function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external view returns (bool);
+    function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (bool);
 
     /**
      *  @dev Liquidates a users account that is liquidatable / below the minimum margin level
      *  @param _account The account to be liquidated
      *  @param _collateral The asset to be used as collateral
      *  @param _borrowed The asset to borrow
-     *  @param _pool The pool to use
      */
-    function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool) external;
+    function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external;
 
     // ======== Events ========
 
-    event Deposit(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
-    event Withdraw(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Deposit(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
 
-    event Borrow(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 amount);
-    event Repay(address indexed account, uint256 indexed periodId, IVPool indexed pool, IERC20 collateral, IERC20 borrowed, uint256 balance);
+    event Borrow(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event Repay(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 balance);
 
-    event FlashLiquidation(address indexed account, uint256 indexed periodId, IVPool indexed pool, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
+    event FlashLiquidation(address indexed account, uint256 indexed periodId, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
 }
