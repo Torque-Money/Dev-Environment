@@ -78,6 +78,16 @@ interface IMargin {
      */
     function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external;
 
+    /**
+     *  @dev Get the collateral of an account for a given pool and period id
+     *  @param _account The account to check the collateral of
+     *  @param _collateral The asset to use as collateral
+     *  @param _borrowed The asset to borrow
+     *  @param _pool The pool to use
+     *  @param _periodId The id of the period to check the accounts collateral
+     */
+    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view returns (uint256);
+
     // ======== Borrow ========
 
     /**
@@ -88,6 +98,26 @@ interface IMargin {
      *  @param _pool The pool to use
      */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) external;
+
+    /**
+     *  @dev Get the debt of a given account
+     *  @param _account The account to check the debt of
+     *  @param _collateral The asset to use as collateral
+     *  @param _borrowed The asset to borrow
+     *  @param _pool The pool to use
+     *  @param _periodId The period to check the debt of
+     */
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external returns (uint256);
+
+    /**
+     *  @dev Get the most recent borrow time for a given account
+     *  @param _account The account to check the time of the most recent borrow
+     *  @param _collateral The asset to use as collateral
+     *  @param _borrowed The asset to borrow
+     *  @param _pool The pool to use
+     *  @param _periodId The period to check the time of the most recent borrow
+     */
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external returns (uint256);
 
     // ======== Repay and withdraw ========
 

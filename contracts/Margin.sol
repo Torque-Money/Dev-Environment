@@ -50,6 +50,11 @@ contract Margin is IMargin, Context {
 
     // ======== Calculations ========
 
+    // **** Add this to the interface also
+    function getMinBorrowLength() public view override returns (uint256) {
+        return minBorrowLength;
+    }
+
     function compensationPercentage() public view override returns (uint256) {
         return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10);
     }
@@ -135,6 +140,14 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
     }
 
+    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external view approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
+        // Return the collateral of the account
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        return borrowAccount.collateral;
+    }
+
     // ======== Borrow ========
 
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount, IVPool _pool) private {
@@ -169,6 +182,23 @@ contract Margin is IMargin, Context {
         _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount, _pool);
 
         emit Borrow(_msgSender(), periodId, _pool, _collateral, _borrowed, _amount);
+    }
+
+    // **** ADD THESE TO THE INTERFACE
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
+        // Return the collateral of the account
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        return borrowAccount.borrowed;
+    }
+
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, IVPool _pool, uint256 _periodId) external override approvedOnly(_collateral, _pool) approvedOnly(_borrowed, _pool) returns (uint256) {
+        // Return the collateral of the account
+        BorrowPeriod storage borrowPeriod = borrowPeriods[_pool][_periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        return borrowAccount.borrowTime;
     }
 
     // ======== Repay and withdraw ========
