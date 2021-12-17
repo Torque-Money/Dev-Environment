@@ -23,14 +23,14 @@ describe("Borrow", async () => {
 
         // Stake into the pool
         const stakeAsset = config.approved[0];
-        const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
+        const stakeAmount = ethers.BigNumber.from(10000).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
 
         expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
 
         // Deposit into the pool
         const depositAsset = config.approved[1];
-        const depositAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
+        const depositAmount = ethers.BigNumber.from(10000).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await margin.deposit(depositAsset.address, stakeAsset.address, depositAmount);
 
         expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(depositAmount);
