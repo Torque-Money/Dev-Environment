@@ -103,7 +103,7 @@ contract Margin is IMargin, Context {
     function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Get the borrowed period and and borrowed asset data and calculate and return accounts margin level
         BorrowAccount storage borrowAccount = borrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
-        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _borrowed, _collateral);
+        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _collateral, _borrowed);
     }
 
     function calculateInterestRate(IERC20 _borrowed) public view override approvedOnly(_borrowed) returns (uint256) {
