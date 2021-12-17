@@ -2,6 +2,7 @@ import { ethers, network } from "hardhat";
 import config from "../config.json";
 import VPool from "../artifacts/contracts/IVPool.sol/IVPool.json";
 import Margin from "../artifacts/contracts/IMargin.sol/IMargin.json";
+import { expect } from "chai";
 
 describe("Borrow", async () => {
     it("should stake, deposit, borrow, repay, withdraw, unstake", async () => {
@@ -18,8 +19,10 @@ describe("Borrow", async () => {
 
         // Stake into the pool and verify it was correct
         const periodId = await pool.currentPeriodId();
-        // const stakeAsset = config.approved[0];
-        // const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
-        // await pool.stake(stakeAsset.address, stakeAmount, periodId);
+        const stakeAsset = config.approved[0];
+        const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
+        await pool.stake(stakeAsset.address, stakeAmount, periodId);
+
+        expect(await pool.getLiquidity(periodId)).to.equal(stakeAmount);
     });
 });
