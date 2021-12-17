@@ -8,6 +8,7 @@ describe("Borrow", async () => {
     it("should stake, deposit, borrow, repay, withdraw, unstake", async () => {
         // Initialize the contracts
         const signer = ethers.provider.getSigner();
+        const signerAddress = await signer.getAddress();
         const pool = new ethers.Contract(config.poolAddress, VPool.abi, signer);
         const margin = new ethers.Contract(config.marginAddress, Margin.abi, signer);
 
@@ -32,6 +33,6 @@ describe("Borrow", async () => {
         const depositAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await margin.deposit(depositAsset.address, stakeAsset.address, depositAmount);
 
-        // expect();
+        expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(depositAmount);
     });
 });
