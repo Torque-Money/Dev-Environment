@@ -243,7 +243,6 @@ contract Margin is IMargin, Context {
 
             _borrowAccount.collateral = _borrowAccount.collateral.sub(reward);
         }
-
     }
 
     function _repayLessEqualHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) private {
