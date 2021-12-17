@@ -42,9 +42,19 @@ describe("Borrow", async () => {
         expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(stakeAmount);
 
         // Repay the debt
+        await margin.repay(signerAddress, depositAsset.address, stakeAsset.address, periodId);
+
+        expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(0);
 
         // Withdraw collateral
+        await margin.withdraw(depositAsset.address, stakeAsset.address, depositAmount, periodId);
+
+        expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(0);
 
         // Unstake
+        await network.provider.send("evm_increaseTime", [30 * 3600]);
+        await pool.redeem(stakeAsset.address, stakeAmount, periodId);
+
+        expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(0);
     });
 });
