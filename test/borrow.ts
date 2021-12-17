@@ -36,7 +36,7 @@ describe("Borrow", async () => {
         expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(depositAmount);
 
         // Borrow against the collateral
-        await network.provider.send("evm_increaseTime", [20 * 3600]);
+        await network.provider.send("evm_increaseTime", [20 * 60]);
         await network.provider.send("evm_mine");
         await margin.borrow(depositAsset.address, stakeAsset.address, stakeAmount);
 
@@ -53,7 +53,7 @@ describe("Borrow", async () => {
         expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(0);
 
         // Unstake
-        await network.provider.send("evm_increaseTime", [30 * 3600]);
+        await network.provider.send("evm_increaseTime", [30 * 60]);
         await network.provider.send("evm_mine");
         await pool.redeem(stakeAsset.address, stakeAmount, periodId);
 
