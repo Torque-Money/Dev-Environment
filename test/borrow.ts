@@ -12,8 +12,9 @@ describe("Borrow", async () => {
         const margin = new ethers.Contract(config.marginAddress, Margin.abi, signer);
 
         // Set the time of the network to be at the start of the next hour
-        const timeSeconds = Math.floor(Date.now() / 1000);
-        const startTime = timeSeconds - (timeSeconds % 3600) + 3600;
+        const blockNumber = ethers.provider.blockNumber;
+        const timeStamp = (await ethers.provider.getBlock(blockNumber)).timestamp;
+        const startTime = timeStamp - (timeStamp % 3600) + 3600;
         await network.provider.send("evm_setNextBlockTimestamp", [startTime]);
         await network.provider.send("evm_mine");
 
@@ -23,6 +24,6 @@ describe("Borrow", async () => {
         const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
 
-        console.log(await pool.getLiquidity(periodId));
+        console.log(await pool.getLiquidity(stakeAsset.address, periodId));
     });
 });
