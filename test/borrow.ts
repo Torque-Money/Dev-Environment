@@ -43,6 +43,8 @@ describe("Borrow", async () => {
         expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(stakeAmount);
 
         // Repay the debt
+        await network.provider.send("evm_increaseTime", [5 * 60]);
+        await network.provider.send("evm_mine");
         await margin.repay(signerAddress, depositAsset.address, stakeAsset.address, periodId);
 
         expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(0);
