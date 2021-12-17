@@ -10,6 +10,8 @@ import "./IOracle.sol";
 import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
+import "hardhat/console.sol";
+
 contract Margin is IMargin, Context {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
@@ -253,6 +255,7 @@ contract Margin is IMargin, Context {
         path[0] = address(_collateral);
         path[1] = address(_borrowed);
         // **** I believe it is to do with these uniswap swaps - however it is not clear why it worked on the other one ? - could be to do with the amount to swap being zero ?
+        console.log(repayAmount);
         uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         // Provide a reward to the user who repayed the account if they are not the account owner
