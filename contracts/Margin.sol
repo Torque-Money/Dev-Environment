@@ -252,7 +252,7 @@ contract Margin is IMargin, Context {
         address[] memory path = new address[](2);
         path[0] = address(_collateral);
         path[1] = address(_borrowed);
-        // **** I believe it is to do with these uniswap swaps - however it is not clear why it worked on the other one ?
+        // **** I believe it is to do with these uniswap swaps - however it is not clear why it worked on the other one ? - could be to do with the amount to swap being zero ?
         uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         // Provide a reward to the user who repayed the account if they are not the account owner
