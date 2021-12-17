@@ -39,8 +39,7 @@ describe("Borrow", async () => {
         await network.provider.send("evm_increaseTime", [20 * 3600]);
         await margin.borrow(depositAsset.address, stakeAsset.address, stakeAmount);
 
-        // **** Does it actually make sense to have a period id here ??? debt doesnt matter once the period ends
-        expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address, periodId));
+        expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(stakeAmount);
 
         // Repay the debt
 
