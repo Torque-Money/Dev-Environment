@@ -160,7 +160,7 @@ contract VPool is IVPool, AccessControl {
 
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
         // Make sure the requirements are satisfied
-        require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Withdraw is only allowed during prologue period or once period has ended");
+        require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Redeem is only allowed during prologue period or once period has ended");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
