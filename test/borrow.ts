@@ -36,8 +36,7 @@ describe("Borrow", async () => {
         expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(depositAmount);
 
         // Borrow against the collateral
-
-        // **** Dont forget to go forward in time to do this
+        await network.provider.send("evm_increaseTime", [20 * 3600]);
         await margin.borrow(depositAsset.address, stakeAsset.address, stakeAmount);
 
         // **** Does it actually make sense to have a period id here ??? debt doesnt matter once the period ends

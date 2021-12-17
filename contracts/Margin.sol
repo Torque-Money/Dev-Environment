@@ -37,7 +37,7 @@ contract Margin is IMargin, Context {
 
     constructor(IOracle oracle_, IVPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         oracle = oracle_;
-        pool = pool_; // **** Start by fixing up the mapping
+        pool = pool_;
         minBorrowLength = minBorrowLength_;
         maxInterestPercent = maxInterestPercent_;
         minMarginLevel = minMarginLevel_;
@@ -185,17 +185,19 @@ contract Margin is IMargin, Context {
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
-    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Return the collateral of the account
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
+        uint256 periodId = pool.currentPeriodId();
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         return borrowAccount.borrowed;
     }
 
-    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
         // Return the collateral of the account
-        BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
+        uint256 periodId = pool.currentPeriodId();
+        BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         return borrowAccount.borrowTime;
