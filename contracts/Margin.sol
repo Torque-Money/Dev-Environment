@@ -230,7 +230,10 @@ contract Margin is IMargin, Context {
         address[] memory path = new address[](2);
         path[0] = address(_borrowed);
         path[1] = address(_collateral);
-        uint256 amountOut = UniswapV2Router02(oracle.getRouter()).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
+
+        address router = address(oracle.getRouter());
+        _collateral.safeApprove(address(router), payout);
+        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         // Provide a reward to the user who repayed the account if they are not the account owner
         _borrowAccount.collateral = _borrowAccount.collateral.add(amountOut);
