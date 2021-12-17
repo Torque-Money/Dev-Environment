@@ -50,7 +50,8 @@ describe("Borrow", async () => {
         expect(await margin.debtOf(signerAddress, depositAsset.address, stakeAsset.address)).to.equal(0);
 
         // Withdraw collateral
-        await margin.withdraw(depositAsset.address, stakeAsset.address, depositAmount, periodId);
+        const remainingCollateral = await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId);
+        await margin.withdraw(depositAsset.address, stakeAsset.address, remainingCollateral, periodId);
 
         expect(await margin.collateralOf(signerAddress, depositAsset.address, stakeAsset.address, periodId)).to.equal(0);
 
