@@ -24,6 +24,6 @@ describe("Borrow", async () => {
         const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
 
-        console.log(await pool.getLiquidity(stakeAsset.address, periodId));
+        expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
     });
 });
