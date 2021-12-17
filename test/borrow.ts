@@ -18,12 +18,20 @@ describe("Borrow", async () => {
         await network.provider.send("evm_setNextBlockTimestamp", [startTime]);
         await network.provider.send("evm_mine");
 
-        // Stake into the pool and verify it was correct
         const periodId = await pool.currentPeriodId();
+
+        // Stake into the pool
         const stakeAsset = config.approved[0];
         const stakeAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
 
         expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
+
+        // Deposit into the pool
+        const depositAsset = config.approved[1];
+        const depositAmount = ethers.BigNumber.from(10).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
+        await margin.deposit(depositAsset.address, stakeAsset.address, depositAmount);
+
+        // expect();
     });
 });
