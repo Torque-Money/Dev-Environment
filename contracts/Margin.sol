@@ -169,10 +169,6 @@ contract Margin is IMargin, Context {
         require(_amount > 0, "Amount must be greater than 0");
         uint256 periodId = pool.currentPeriodId();
         require(!pool.isPrologue(periodId), "Cannot borrow during prologue");
-        {
-            (uint256 epilogueStart,) = pool.getEpilogueTimes(periodId);
-            require(block.timestamp < epilogueStart.sub(minBorrowLength), "Minimum borrow period may not overlap with epilogue");
-        }
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
@@ -281,7 +277,7 @@ contract Margin is IMargin, Context {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
-        require(block.timestamp > borrowAccount.borrowTime + minBorrowLength, "Cannot repay until minimum borrow period is over");
+        require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId), "Cannot repay until minimum borrow period is over");
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
