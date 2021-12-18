@@ -46,13 +46,12 @@ contract Margin is IMargin, Ownable {
 
     // ======== Modifiers ========
 
-    // **** Maybe change the name to fit the scheme ? (and in the other contract)
-    modifier approvedOnly(IERC20 _token) {
+    modifier onlyApproved(IERC20 _token) {
         require(pool.isApproved(_token), "This token has not been approved");
         _;
     }
 
-    function setMinCollateral(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyOwner {
+    function setMinCollateral(IERC20 _token, uint256 _amount) external override onlyApproved(_token) onlyOwner {
         minCollateral[_token] = _amount;
     }
 
@@ -137,7 +136,7 @@ contract Margin is IMargin, Ownable {
 
     // ======== Deposit ========
 
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
         uint256 periodId = pool.currentPeriodId();
@@ -177,7 +176,7 @@ contract Margin is IMargin, Ownable {
         _borrowAccount.borrowTime = block.timestamp;
     }
 
-    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Requirements for borrowing
         require(_amount > 0, "Amount must be greater than 0");
         uint256 periodId = pool.currentPeriodId();
@@ -282,7 +281,7 @@ contract Margin is IMargin, Ownable {
         pool.deposit(_borrowed, depositValue);
     }
 
-    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         require(_account == _msgSender() || pool.isEpilogue(_periodId) || !pool.isCurrentPeriod(_periodId), "Only the owner may repay before the epilogue period has started");
 
@@ -307,7 +306,7 @@ contract Margin is IMargin, Ownable {
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
 
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
@@ -329,7 +328,7 @@ contract Margin is IMargin, Ownable {
         return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel(); 
     }
 
-    function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
+    function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Liquidate an at risk account
         uint256 periodId = pool.currentPeriodId();
         require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
