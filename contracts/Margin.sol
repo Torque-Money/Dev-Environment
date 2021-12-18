@@ -26,7 +26,7 @@ contract Margin is IMargin, Context {
     }
     struct BorrowPeriod {
         uint256 totalBorrowed;
-        mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - this way the same account can have different borrows with different collaterals independently
+        mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     uint256 private minBorrowLength;
@@ -83,7 +83,8 @@ contract Margin is IMargin, Context {
         return retValue;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, 
+                                    uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override returns (uint256) {
         if (_amountBorrowed == 0) return oracle.getDecimals().mul(999);
 
         uint256 currentBorrowPrice;
@@ -154,7 +155,9 @@ contract Margin is IMargin, Context {
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(), "This deposited amount is not enough to exceed minimum margin level");
+        require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
+                                    _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(),
+                                    "This deposited amount is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
