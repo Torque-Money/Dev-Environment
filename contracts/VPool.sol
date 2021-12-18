@@ -31,21 +31,11 @@ contract VPool is IVPool, Ownable {
 
     IMargin private margin;
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) {
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, IMargin margin_) {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
         taxPercent = taxPercent_;
-    }
-
-    function setMargin(IMargin _margin) external override onlyOwner {
-        // Set the margin to use initially
-        require(address(margin) == address(0), "Margin has already been set");
-        margin = _margin;
-    }
-
-    modifier onlyMargin {
-        require(_msgSender() == address(margin), "Only the margin may call this function");
-        _;
+        margin = margin_;
     }
 
     // ======== Tax payouts ========
@@ -209,8 +199,9 @@ contract VPool is IVPool, Ownable {
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
-    function withdraw(IERC20 _token, uint256 _amount) external override onlyApproved(_token) onlyMargin {
-        // Make sure no withdraws during cooldown period
+    function withdraw(IERC20 _token, uint256 _amount) external override onlyApproved(_token) {
+        // Only margin may call this and make sure no withdraws during cooldown period
+        require(_msgSender() == address(margin), "Only the margin may call this function");
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
