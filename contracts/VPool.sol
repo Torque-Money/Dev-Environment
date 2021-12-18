@@ -123,7 +123,7 @@ contract VPool is IVPool, Ownable {
         return approvedList;
     }
 
-    modifier approvedOnly(IERC20 _token) {
+    modifier onlyApproved(IERC20 _token) {
         require(isApproved(_token), "This token has not been approved");
         _;
     }
@@ -141,7 +141,7 @@ contract VPool is IVPool, Ownable {
         return stakingPeriods[_periodId][_token].deposits[_account];
     }
 
-    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view override approvedOnly(_token) returns (uint256) {
+    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view override onlyApproved(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = stakingPeriods[_periodId][_token];
 
@@ -153,7 +153,7 @@ contract VPool is IVPool, Ownable {
 
     // ======== Liquidity manipulation ========
 
-    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
+    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external override onlyApproved(_token) {
         // Make sure the requirements are satisfied
         require(_periodId >= currentPeriodId(), "May only stake into current or future periods");
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Staking is only allowed during the prologue period or for a future period");
@@ -190,7 +190,7 @@ contract VPool is IVPool, Ownable {
         emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
-    function deposit(IERC20 _token, uint256 _amount) external override approvedOnly(_token) {
+    function deposit(IERC20 _token, uint256 _amount) external override onlyApproved(_token) {
         // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
@@ -209,7 +209,7 @@ contract VPool is IVPool, Ownable {
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
-    function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyMargin {
+    function withdraw(IERC20 _token, uint256 _amount) external override onlyApproved(_token) onlyMargin {
         // Make sure no withdraws during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
