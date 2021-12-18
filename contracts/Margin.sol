@@ -181,7 +181,7 @@ contract Margin is IMargin, Ownable {
         // Requirements for borrowing
         uint256 periodId = pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
-        require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId);, "Cannot borrow during the prologue or epilogue");
+        require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
         require(_collateral != _borrowed, "Cannot borrow against the same asset");
 
