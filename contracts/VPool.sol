@@ -130,13 +130,13 @@ contract VPool is IVPool, Ownable {
 
     // ======== Helper functions ========
 
-    function getLiquidity(IERC20 _token, uint256 _periodId) external view override approvedOnly(_token) returns (uint256) {
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view override returns (uint256) {
         return stakingPeriods[_periodId][_token].liquidity;
     }
 
     // ======== Balance management ========
 
-    function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view override approvedOnly(_token) returns (uint256) {
+    function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view override returns (uint256) {
         // Get the amount of tokens the account deposited into a given period
         return stakingPeriods[_periodId][_token].deposits[_account];
     }
@@ -170,7 +170,7 @@ contract VPool is IVPool, Ownable {
         emit Stake(_msgSender(), _periodId, _token, _amount);
     }
 
-    function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override approvedOnly(_token) {
+    function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override {
         // Make sure the requirements are satisfied
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Redeem is only allowed during prologue period or once period has ended");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
