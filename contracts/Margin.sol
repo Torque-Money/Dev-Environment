@@ -66,7 +66,7 @@ contract Margin is IMargin, Context {
         return borrowPeriods[periodId][_token].totalBorrowed;
     }
 
-    function liquidityAvailable(IERC20 _token) public view override approvedOnly(_token) returns (uint256) {
+    function liquidityAvailable(IERC20 _token) public view override returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 liquidity = pool.getLiquidity(_token, pool.currentPeriodId());
         uint256 borrowed = totalBorrowed(_token);
@@ -83,7 +83,7 @@ contract Margin is IMargin, Context {
         return retValue;
     }
 
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view override returns (uint256) {
         if (_amountBorrowed == 0) return oracle.getDecimals().mul(999);
 
         uint256 currentBorrowPrice;
@@ -100,13 +100,13 @@ contract Margin is IMargin, Context {
         return minMarginLevel.add(100).mul(oracle.getDecimals()).div(100);
     }
 
-    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view override returns (uint256) {
         // Get the borrowed period and and borrowed asset data and calculate and return accounts margin level
         BorrowAccount storage borrowAccount = borrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
         return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _collateral, _borrowed);
     }
 
-    function calculateInterestRate(IERC20 _borrowed) public view override approvedOnly(_borrowed) returns (uint256) {
+    function calculateInterestRate(IERC20 _borrowed) public view override returns (uint256) {
         // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
         uint256 _totalBorrowed = totalBorrowed(_borrowed);
@@ -141,7 +141,7 @@ contract Margin is IMargin, Context {
         emit Deposit(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
-    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view override returns (uint256) {
         // Return the collateral of the account
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
@@ -185,7 +185,7 @@ contract Margin is IMargin, Context {
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
-    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view override returns (uint256) {
         // Return the collateral of the account
         uint256 periodId = pool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
@@ -194,7 +194,7 @@ contract Margin is IMargin, Context {
         return borrowAccount.borrowed;
     }
 
-    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view override returns (uint256) {
         // Return the collateral of the account
         uint256 periodId = pool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
@@ -211,7 +211,7 @@ contract Margin is IMargin, Context {
         return (interest, borrowedCurrentPrice);
     }
 
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view override approvedOnly(_collateral) approvedOnly(_borrowed) returns (uint256) {
+    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view override returns (uint256) {
         // The value returned from repaying a margin in terms of the deposited asset
         BorrowAccount storage borrowAccount = borrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
 
@@ -314,12 +314,12 @@ contract Margin is IMargin, Context {
 
     // ======== Liquidate ========
 
-    function isLiquidatable(address _account, IERC20 _borrowed, IERC20 _collateral) public view override returns (bool) {
+    function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view override returns (bool) {
         // Return if a given account is liquidatable
         return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel(); 
     }
 
-    function flashLiquidate(address _account, IERC20 _borrowed, IERC20 _collateral) external override {
+    function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external override approvedOnly(_collateral) approvedOnly(_borrowed) {
         // Liquidate an at risk account
         uint256 periodId = pool.currentPeriodId();
         require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
