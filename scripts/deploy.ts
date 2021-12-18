@@ -52,7 +52,7 @@ async function main() {
     console.log(`Margin deployed to ${margin.address}`);
     config.marginAddress = margin.address;
 
-    // Approve the margin as an admin for the pool
+    // Approve the margin to be used with the pool
     await pool.setMargin(margin.address);
     console.log("Set margin to be used with the pool");
 
