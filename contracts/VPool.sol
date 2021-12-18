@@ -2,12 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "./IVPool.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./IMargin.sol";
 
-contract VPool is IVPool, AccessControl {
+contract VPool is IVPool, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -28,17 +29,28 @@ contract VPool is IVPool, AccessControl {
     address private taxAccount;
     uint256 private taxPercent;
 
+    IMargin private margin;
+
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
-        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
-
         taxPercent = taxPercent_;
+    }
+
+    function setMargin(IMargin _margin) external override onlyOwner {
+        // Set the margin to use initially
+        require(address(margin) == address(0), "Margin has already been set");
+        margin = _margin;
+    }
+
+    modifier onlyMargin {
+        require(_msgSender() == address(margin), "Only the margin may call this function");
+        _;
     }
 
     // ======== Tax payouts ========
 
-    function setTaxAccount(address _taxAccount) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setTaxAccount(address _taxAccount) external override onlyOwner {
         taxAccount = _taxAccount;
         emit TaxAccountChange(_taxAccount);
     }
@@ -94,7 +106,7 @@ contract VPool is IVPool, AccessControl {
 
     // ======== Approved tokens ========
 
-    function approveToken(IERC20 _token) external override onlyRole(DEFAULT_ADMIN_ROLE) {
+    function approveToken(IERC20 _token) external override onlyOwner {
         // Satisfy the requirements
         require(!isApproved(_token), "This token has already been approved");
 
@@ -197,7 +209,7 @@ contract VPool is IVPool, AccessControl {
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
-    function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyRole(DEFAULT_ADMIN_ROLE) {
+    function withdraw(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyMargin {
         // Make sure no withdraws during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");

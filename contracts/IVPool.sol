@@ -2,8 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./IMargin.sol";
 
 interface IVPool {
+    function setMargin(IMargin _margin) external;
+
     // ======== Tax payouts ========
 
     function setTaxAccount(address _taxAccount) external;
