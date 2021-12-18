@@ -61,11 +61,6 @@ async function main() {
     console.log(`Margin deployed to ${margin.address}`);
     config.marginAddress = margin.address;
 
-    // Add deployer as tax collector
-    const ownerAddress = await hre.ethers.provider.getSigner().getAddress();
-    await pool.setTaxAccount(ownerAddress);
-    console.log(`Added ${ownerAddress} as pool tax account`);
-
     // Save the data to the config
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
