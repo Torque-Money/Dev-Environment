@@ -53,8 +53,8 @@ async function main() {
     config.marginAddress = margin.address;
 
     // Approve the margin as an admin for the pool
-    await pool.grantRole(hre.ethers.utils.zeroPad(hre.ethers.utils.toUtf8Bytes("0"), 32), margin.address);
-    console.log("Granted margin access to pool");
+    await pool.setMargin(margin.address);
+    console.log("Set margin to be used with the pool");
 
     // Add deployer as tax collector
     const ownerAddress = await hre.ethers.provider.getSigner().getAddress();
