@@ -1,16 +1,25 @@
 import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
+import { getContractAddress } from "ethers/lib/utils";
 
 async function main() {
     // Compile contracts
     await hre.run("compile");
 
-    // Deploy and setup pool contract
+    // Deploy and setup pool contract + find the margin address before deployment
+    const signer = hre.ethers.provider.getSigner();
+    const transactionCount = await signer.getTransactionCount();
+    const preMarginAddress = getContractAddress({
+        from: await signer.getAddress(),
+        nonce: transactionCount + 2,
+    });
+
     const poolConfig = {
         periodLength: 60 * 60,
         cooldownLength: 20 * 60,
         taxPercent: 2,
+        marginAddress: preMarginAddress,
     };
     const Pool = await hre.ethers.getContractFactory("VPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));
@@ -51,10 +60,6 @@ async function main() {
     await margin.deployed();
     console.log(`Margin deployed to ${margin.address}`);
     config.marginAddress = margin.address;
-
-    // Approve the margin to be used with the pool
-    await pool.setMargin(margin.address);
-    console.log("Set margin to be used with the pool");
 
     // Add deployer as tax collector
     const ownerAddress = await hre.ethers.provider.getSigner().getAddress();
