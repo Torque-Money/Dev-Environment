@@ -201,6 +201,16 @@ contract Margin is IMargin, Context {
 
     // ======== Repay and withdraw ========
 
+    function _swap(IERC20 _token1, IERC20 _token2, uint256 _amount) private returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(_token1);
+        path[1] = address(_token2);
+
+        address router = address(oracle.getRouter());
+        _token1.safeApprove(address(router), _amount);
+        return UniswapV2Router02(router).swapExactTokensForTokens(_amount, 0, path, address(this), block.timestamp + 1 hours)[1];
+    }
+
     function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) private view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.getDecimals());
@@ -223,13 +233,7 @@ contract Margin is IMargin, Context {
 
         // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
         pool.withdraw(_borrowed, payout);
-        address[] memory path = new address[](2);
-        path[0] = address(_borrowed);
-        path[1] = address(_collateral);
-
-        address router = address(oracle.getRouter());
-        _collateral.safeApprove(address(router), payout);
-        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForTokens(payout, 0, path, address(this), block.timestamp + 1 hours)[1];
+        uint256 amountOut = _swap(_borrowed, _collateral, payout);
 
         // Provide a reward to the user who repayed the account if they are not the account owner
         _borrowAccount.collateral = _borrowAccount.collateral.add(amountOut);
@@ -247,13 +251,7 @@ contract Margin is IMargin, Context {
         _borrowAccount.collateral = _balAfterRepay;
 
         // Swap the repay value back for the borrowed asset
-        address[] memory path = new address[](2);
-        path[0] = address(_collateral);
-        path[1] = address(_borrowed);
-
-        address router = address(oracle.getRouter());
-        _collateral.safeApprove(address(router), repayAmount);
-        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForTokens(repayAmount, 0, path, address(this), block.timestamp + 1 hours)[1];
+        uint256 amountOut = _swap(_collateral, _borrowed, repayAmount);
 
         // Provide a reward to the user who repayed the account if they are not the account owner
         uint256 reward = 0;
