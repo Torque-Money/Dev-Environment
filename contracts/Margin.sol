@@ -164,6 +164,7 @@ contract Margin is IMargin, Ownable {
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
+        
         require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
                                     _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(),
                                     "This deposited amount is not enough to exceed minimum margin level");
