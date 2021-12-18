@@ -4,7 +4,21 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IMargin {
+    // ======== Modifiers ========
+
+    /**
+     *  @dev Set the minimum amount of collateral for a given token required to borrow against
+     *  @param _token The token to set the minimum collateral of
+     *  @param _amount The minimum amount of collateral
+     */
+    function setMinCollateral(IERC20 _token, uint256 _amount) external;
+
     // ======== Calculations ========
+
+    /**
+     *  @dev Gets the minimum amount of collateral required to borrow a token
+     */
+    function getMinCollateral(IERC20 _token) external view returns (uint256);
 
     /**
      *  @dev Get the minimum borrow length

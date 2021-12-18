@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -10,7 +10,7 @@ import "./IOracle.sol";
 import "./IVPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
-contract Margin is IMargin, Context {
+contract Margin is IMargin, Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -29,6 +29,7 @@ contract Margin is IMargin, Context {
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
+    mapping(IERC20 => uint256) private minCollateral;
     uint256 private minBorrowLength;
 
     uint256 private minMarginLevel; // Stored as the percentage above equilibrium threshold
@@ -45,12 +46,21 @@ contract Margin is IMargin, Context {
 
     // ======== Modifiers ========
 
+    // **** Maybe change the name to fit the scheme ? (and in the other contract)
     modifier approvedOnly(IERC20 _token) {
         require(pool.isApproved(_token), "This token has not been approved");
         _;
     }
 
+    function setMinCollateral(IERC20 _token, uint256 _amount) external override approvedOnly(_token) onlyOwner {
+        minCollateral[_token] = _amount;
+    }
+
     // ======== Calculations ========
+
+    function getMinCollateral(IERC20 _token) public view override returns (uint256) {
+        return minCollateral[_token];
+    }
 
     function getMinBorrowLength() public view override returns (uint256) {
         return minBorrowLength;
@@ -177,6 +187,8 @@ contract Margin is IMargin, Context {
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+
+        require(borrowAccount.collateral > getMinCollateral(_collateral), "Not enough collateral to borrow against");
 
         if (borrowAccount.borrowed == 0) borrowAccount.initialBorrowTime = block.timestamp;
 
