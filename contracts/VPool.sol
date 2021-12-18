@@ -26,7 +26,6 @@ contract VPool is IVPool, Ownable {
     uint256 private periodLength;
     uint256 private cooldownLength;
 
-    address private taxAccount;
     uint256 private taxPercent;
 
     IMargin private margin;
@@ -36,13 +35,6 @@ contract VPool is IVPool, Ownable {
         cooldownLength = cooldownLength_;
         taxPercent = taxPercent_;
         margin = margin_;
-    }
-
-    // ======== Tax payouts ========
-
-    function setTaxAccount(address _taxAccount) external override onlyOwner {
-        taxAccount = _taxAccount;
-        emit TaxAccountChange(_taxAccount);
     }
 
     // ======== Check the staking period and cooldown periods ========
@@ -185,12 +177,12 @@ contract VPool is IVPool, Ownable {
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
 
-        // Pay a tax to the tax account
+        // Pay a tax to the owner
         uint256 amount = _amount;
-        if (taxAccount != address(0)) {
+        {
             uint256 tax = _amount.mul(taxPercent).div(100);
             amount = amount.sub(tax);
-            _token.safeTransferFrom(_msgSender(), address(this), tax);
+            _token.safeTransferFrom(_msgSender(), owner(), tax);
         }
 
         // Receive a given number of funds to the current pool

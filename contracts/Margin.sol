@@ -80,7 +80,7 @@ contract Margin is IMargin, Ownable {
         uint256 liquidity = pool.getLiquidity(_token, pool.currentPeriodId());
         uint256 borrowed = totalBorrowed(_token);
 
-        return liquidity - borrowed;
+        return liquidity.sub(borrowed);
     }
 
     function _calculateMarginLevelHelper(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) private view returns (uint256) {
