@@ -71,9 +71,6 @@ contract Oracle is IOracle, Context {
     }
 
     function pairPrice(IERC20 _token1, IERC20 _token2) public view override returns (uint256) {
-        // If they are the same return 1 to 1 conversion
-        if (_token1 == _token2) return decimals; // **** Depreciation warning
-
         // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
         address[] memory path = new address[](2);
         path[0] = address(_token1);
