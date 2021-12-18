@@ -173,6 +173,7 @@ contract Margin is IMargin, Context {
         uint256 periodId = pool.currentPeriodId();
         require(!pool.isPrologue(periodId), "Cannot borrow during prologue");
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(_collateral != _borrowed, "Cannot borrow against the same asset");
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
