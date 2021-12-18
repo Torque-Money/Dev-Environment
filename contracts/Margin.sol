@@ -164,7 +164,7 @@ contract Margin is IMargin, Ownable {
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.getDecimals());
-        
+
         require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
                                     _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(),
                                     "This deposited amount is not enough to exceed minimum margin level");
@@ -179,9 +179,9 @@ contract Margin is IMargin, Ownable {
 
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Requirements for borrowing
-        require(_amount > 0, "Amount must be greater than 0");
         uint256 periodId = pool.currentPeriodId();
-        require(!pool.isPrologue(periodId), "Cannot borrow during prologue");
+        require(_amount > 0, "Amount must be greater than 0");
+        require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId);, "Cannot borrow during the prologue or epilogue");
         require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
         require(_collateral != _borrowed, "Cannot borrow against the same asset");
 
