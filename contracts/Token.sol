@@ -14,10 +14,10 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     uint256 public yieldSlashRate;
     uint256 public yieldReward;
 
-    constructor(uint256 _initialSupply, uint256 _yieldSlashRate, uint256 _yieldReward) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
-        yieldSlashRate = _yieldSlashRate;
-        yieldReward = _yieldReward;
-        _mint(owner(), _initialSupply);
+    constructor(uint256 initialSupply_, uint256 yieldSlashRate_, uint256 yieldReward_) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
+        yieldSlashRate = yieldSlashRate_;
+        yieldReward = yieldReward_;
+        _mint(owner(), initialSupply_);
     }
 
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
@@ -27,29 +27,31 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function yield(address _account) external onlyOwner {
         uint256 slash = numYields.div(yieldSlashRate);
         if (slash == 0) slash = 1;
+
         uint256 amount = yieldReward.div(slash);
+
         _mint(_account, amount);
         numYields = numYields.add(1);
     }
 
-    function _afterTokenTransfer(address from, address to, uint256 amount)
+    function _afterTokenTransfer(address _from, address _to, uint256 _amount)
         internal
         override(ERC20, ERC20Votes)
     {
-        super._afterTokenTransfer(from, to, amount);
+        super._afterTokenTransfer(_from, _to, _amount);
     }
 
-    function _mint(address to, uint256 amount)
+    function _mint(address _to, uint256 _amount)
         internal
         override(ERC20, ERC20Votes)
     {
-        super._mint(to, amount);
+        super._mint(_to, _amount);
     }
 
-    function _burn(address account, uint256 amount)
+    function _burn(address _account, uint256 _amount)
         internal
         override(ERC20, ERC20Votes)
     {
-        super._burn(account, amount);
+        super._burn(_account, _amount);
     }
 }
