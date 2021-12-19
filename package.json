@@ -1,5 +1,5 @@
 {
-    "name": "wabbit-protocol-v1",
+    "name": "wabbit-protocol",
     "version": "1.0.0",
     "scripts": {
         "build": "npx hardhat compile",
