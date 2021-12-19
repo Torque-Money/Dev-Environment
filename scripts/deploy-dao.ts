@@ -18,7 +18,7 @@ async function main() {
         from: signerAddress,
         nonce: transactionCount + 1,
     });
-    const Governor = await hre.ethers.getContractFactory("MyGovernor");
+    const Governor = await hre.ethers.getContractFactory("DAO");
     const governor = await Governor.deploy(token.address, timelockAddress);
     await governor.deployed();
 
