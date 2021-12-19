@@ -8,11 +8,6 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFractio
 import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
-// Reconfigure the DAO - use the settings module, simple votes, and configure the functions to properly payout the correct amounts, as well as control the supply of tokens + minting rewards
-// Remove the quorum fraction or do a proper implementation of it
-// Custom DAO module to be used with snapshot and some oracle ???
-// Look into the bravo compatibility
-
 contract DAO is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorSettings, GovernorTimelockControl {
     constructor(ERC20Votes _token, TimelockController _timelock, uint256 _initialQuorumFraction, uint256 _initialVotingDelay, uint256 _initialVotingPeriod, uint256 _initialProposalThreshold)
         Governor("WabbitDAO")
