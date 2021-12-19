@@ -2,12 +2,12 @@
     "name": "wabbit-protocol",
     "version": "1.0.0",
     "scripts": {
-        "build": "npx hardhat compile",
         "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
-        "deploy": "npx hardhat run --network localhost scripts/deploy.ts",
+        "deploy:protocol": "npx hardhat run --network localhost scripts/deploy-protocol.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts",
         "update": "cp config.json artifacts/contracts/IMargin.sol/IMargin.json artifacts/contracts/IOracle.sol/IOracle.json artifacts/contracts/IVPool.sol/IVPool.json ../Wabbit-Frontend/src/config",
-        "all": "npm run deploy && npm run fund && npm run update",
+        "all": "npm run deploy:protocol && npm run fund && npm run update",
+        "deploy:dao": "npx hardhat run --network localhost scripts/deploy-dao.ts",
         "time": "npx hardhat time --network localhost",
         "test": "npx hardhat test --network localhost"
     },
