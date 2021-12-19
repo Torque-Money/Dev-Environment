@@ -345,12 +345,12 @@ contract Margin is IMargin, Ownable {
         _borrowed.safeApprove(address(pool), depositValue);
         pool.deposit(_borrowed, depositValue);
 
-        emit FlashLiquidation(_account, periodId, _msgSender(), _collateral, _borrowed, borrowAccount.collateral);
-
         // Update the users account
         borrowAccount.collateral = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
         borrowAccount.initialPrice = 0;
+
+        emit FlashLiquidation(_account, periodId, _msgSender(), _collateral, _borrowed, borrowAccount.collateral);
     }
 }
