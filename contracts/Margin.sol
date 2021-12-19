@@ -294,11 +294,8 @@ contract Margin is IMargin, Ownable {
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId), "Cannot repay until minimum borrow period is over or epilogue has started");
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
-        if (balAfterRepay > borrowAccount.collateral) {
-            _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
-        } else {
-            _repayLessEqualHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
-        }
+        if (balAfterRepay > borrowAccount.collateral) _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
+        else _repayLessEqualHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
 
         // Update the borrowed
         borrowAccount.initialPrice = 0;
