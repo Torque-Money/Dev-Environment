@@ -135,3 +135,4 @@ WIP - a fixed number of governance tokens will be allocated back to stakers that
 ## Future plans and protocol v2
 
 -   Allow leveragers to borrow against multiple types of assets
+-   Add cross margins
