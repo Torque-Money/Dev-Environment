@@ -284,7 +284,7 @@ contract Margin is IMargin, Ownable {
 
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // If the period has entered the epilogue phase, then anyone may repay the account
-        require(_account == _msgSender() || pool.isEpilogue(_periodId) || !pool.isCurrentPeriod(_periodId), "Only the owner may repay before the epilogue period has started");
+        require(_account == _msgSender() || pool.isEpilogue(_periodId) || !pool.isCurrentPeriod(_periodId), "Only the owner may repay before the epilogue period");
 
         // Repay off the margin and update the users collateral to reflect it
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
