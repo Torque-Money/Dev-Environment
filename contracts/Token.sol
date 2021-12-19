@@ -14,7 +14,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     uint256 public yieldSlashRate;
     uint256 public yieldReward;
 
-    constructor(uint256 _initialSupply, uint256 _yieldSlashRate, uint256 _yieldReward) ERC20("Wabbit", "WBT") ERC20Permit("TKN") {
+    constructor(uint256 _initialSupply, uint256 _yieldSlashRate, uint256 _yieldReward) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
         yieldSlashRate = _yieldSlashRate;
         yieldReward = _yieldReward;
         _mint(owner(), _initialSupply);
