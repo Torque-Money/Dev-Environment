@@ -15,6 +15,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
 
     function yield(address to, uint256 value) external {
         // **** This function should be responsible for yielding out farm tokens to users, however it is not clear how they should be distributed ???
+        // **** Perhaps use the oracle and look at the value that should be received for each deposit amount in regard to the entire allowed block ?
     }
 
     function _afterTokenTransfer(address from, address to, uint256 amount)
