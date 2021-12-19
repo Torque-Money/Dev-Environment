@@ -323,25 +323,20 @@ contract Margin is IMargin, Ownable {
 
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view override returns (bool) {
         // Return if a given account is liquidatable
-        return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel(); 
+        return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel();
     }
 
     function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external override onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Liquidate an at risk account
-        uint256 periodId = pool.currentPeriodId();
         require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
+
+        uint256 periodId = pool.currentPeriodId();
 
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         // Swap the users collateral for assets
-        address[] memory path = new address[](2);
-        path[0] = address(_collateral);
-        path[1] = address(_borrowed);
-
-        address router = address(oracle.getRouter());
-        _collateral.safeApprove(address(router), borrowAccount.collateral);
-        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForTokens(borrowAccount.collateral, 0, path, address(this), block.timestamp + 1 hours)[1];
+        uint256 amountOut = _swap(_collateral, _borrowed, borrowAccount.collateral);
 
         // Compensate the liquidator
         uint256 reward = amountOut.mul(compensationPercentage()).div(100);
