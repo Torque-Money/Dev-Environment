@@ -13,8 +13,8 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         _mint(owner(), amount);
     }
 
-    function mint(address to, uint256 amount) external onlyOwner {
-        _mint(to, amount);
+    function yield(address to, uint256 value) external {
+        // **** This function should be responsible for yielding out farm tokens to users, however it is not clear how they should be distributed ???
     }
 
     function _afterTokenTransfer(address from, address to, uint256 amount)
