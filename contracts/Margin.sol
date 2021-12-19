@@ -167,7 +167,7 @@ contract Margin is IMargin, Ownable {
 
         require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
                                     _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > getMinMarginLevel(),
-                                    "This deposited amount is not enough to exceed minimum margin level");
+                                    "This deposited collateral is not enough to exceed minimum margin level");
 
         // Update the balances of the borrowed value
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
