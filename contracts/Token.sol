@@ -5,18 +5,31 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
-    uint256 private cappedAmount;
+    using SafeMath for uint256;
 
-    constructor(uint256 amount) ERC20("Wabbit", "WBT") ERC20Permit("TKN") {
-        _mint(owner(), amount);
+    uint256 public numYields;
+    uint256 public yieldSlashRate;
+    uint256 public yieldReward;
+
+    constructor(uint256 _initialSupply, uint256 _yieldSlashRate, uint256 _yieldReward) ERC20("Wabbit", "WBT") ERC20Permit("TKN") {
+        yieldSlashRate = _yieldSlashRate;
+        yieldReward = _yieldReward;
+        _mint(owner(), _initialSupply);
     }
 
-    function yield(address to, uint256 value) external {
-        // **** This function should be responsible for yielding out farm tokens to users, however it is not clear how they should be distributed ???
-        // **** Perhaps use the oracle and look at the value that should be received for each deposit amount in regard to the entire allowed block ?
-        // **** Perhaps a proportion of tokens will be lent out relative to what was deposited and then this amount will be slashed with time
+    function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
+
+    function setYieldReward(uint256 _yieldReward) external onlyOwner { yieldReward = _yieldReward; }
+
+    function yield(address _account) external onlyOwner {
+        uint256 slash = numYields.div(yieldSlashRate);
+        if (slash == 0) slash = 1;
+        uint256 amount = yieldReward.div(slash);
+        _mint(_account, amount);
+        numYields = numYields.add(1);
     }
 
     function _afterTokenTransfer(address from, address to, uint256 amount)
