@@ -2,7 +2,7 @@
 
 ## Code
 
--   [Protocol V1 repository](https://github.com/Terragonn/Wabbit-Protocol-V1)
+-   [Protocol repository](https://github.com/Terragonn/Wabbit-Protocol-V1)
 -   [Frontend repository](https://github.com/Terragonn/Wabbit-Frontend)
 
 ## Deployed contracts

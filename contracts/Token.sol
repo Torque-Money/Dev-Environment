@@ -7,7 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
-    constructor(uint256 amount) ERC20("Token", "TKN") ERC20Permit("TKN") {
+    uint256 private cappedAmount;
+
+    constructor(uint256 amount) ERC20("Wabbit", "WBT") ERC20Permit("TKN") {
         _mint(owner(), amount);
     }
 
