@@ -234,7 +234,7 @@ contract Margin is IMargin, Ownable {
     }
 
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view override returns (uint256) {
-        // The value returned from repaying a margin in terms of the deposited asset
+        // The value returned from repaying a margin in terms of the collateral asset
         BorrowAccount storage borrowAccount = borrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
 
         (uint256 interest, uint256 borrowedCurrentPrice) = _balanceHelper(_collateral, _borrowed, borrowAccount);
@@ -291,7 +291,7 @@ contract Margin is IMargin, Ownable {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         require(borrowAccount.borrowed > 0, "No debt to repay");
-        require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId), "Cannot repay until minimum borrow period is over");
+        require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId), "Cannot repay until minimum borrow period is over or epilogue has started");
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
         if (balAfterRepay > borrowAccount.collateral) {
