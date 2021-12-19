@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
+import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
 // Reconfigure the DAO - use the settings module, simple votes, and configure the functions to properly payout the correct amounts, as well as control the supply of tokens + minting rewards
@@ -12,24 +13,25 @@ import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.so
 // Custom DAO module to be used with snapshot and some oracle ???
 // Look into the bravo compatibility
 
-contract MyGovernor is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
-    constructor(ERC20Votes _token, TimelockController _timelock)
+contract DAO is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorSettings, GovernorTimelockControl {
+    constructor(ERC20Votes _token, TimelockController _timelock, uint256 _initialVotingDelay, uint256 _initialVotingPeriod, uint256 _initialProposalThreshold)
         Governor("MyGovernor")
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(4)
+        GovernorSettings(_initialVotingDelay, _initialVotingPeriod, _initialProposalThreshold)
         GovernorTimelockControl(_timelock)
     {}
 
-    function votingDelay() public pure override returns (uint256) {
-        return 6575; // 1 day
+    function votingDelay() public view override(IGovernor, GovernorSettings) returns (uint256) {
+        return super.votingDelay();
     }
 
-    function votingPeriod() public pure override returns (uint256) {
-        return 46027; // 1 week
+    function votingPeriod() public view override(IGovernor, GovernorSettings) returns (uint256) {
+        return super.votingPeriod();
     }
 
-    function proposalThreshold() public pure override returns (uint256) {
-        return 0;
+    function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256) {
+        return super.proposalThreshold();
     }
 
     function quorum(uint256 blockNumber)
