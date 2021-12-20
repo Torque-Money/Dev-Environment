@@ -9,7 +9,8 @@ import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
 contract DAO is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorSettings, GovernorTimelockControl {
-    constructor(ERC20Votes _token, TimelockController _timelock, uint256 _initialQuorumFraction, uint256 _initialVotingDelay, uint256 _initialVotingPeriod, uint256 _initialProposalThreshold)
+    constructor(ERC20Votes _token, TimelockController _timelock, uint256 _initialQuorumFraction,
+                uint256 _initialVotingDelay, uint256 _initialVotingPeriod, uint256 _initialProposalThreshold)
         Governor("WabbitDAO")
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(_initialQuorumFraction)
