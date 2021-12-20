@@ -13,7 +13,7 @@ contract LPool is Ownable {
 
     Margin public immutable margin;
 
-    IERC20[] public approvedList;
+    IERC20[] private ApprovedList;
     mapping(IERC20 => bool) private Approved;
 
     // Staking data
@@ -98,8 +98,10 @@ contract LPool is Ownable {
 
         // Approve the token
         Approved[_token] = true;
-        approvedList.push(_token);
+        ApprovedList.push(_token);
     }
+
+    function approvedList() external view returns (IERC20[] memory) { return ApprovedList; }
 
     /** @dev Returns whether or not a token is approved */
     function isApproved(IERC20 _token) public view returns (bool) {

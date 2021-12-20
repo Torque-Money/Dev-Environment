@@ -31,7 +31,7 @@ contract YieldApproved is Ownable, IYieldApproved {
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
 
         // Check if the account has an asset staked that exceeds the amount needed for a reward to be paid out
-        IERC20[] memory approved = pool.approvedList();
+        IERC20[] memory approved = pool.approvedList(); // **** Wait, I think that this returns a pointer to an array of some sort and NOT the actual array ????
         for (uint256 i = 0; i < approved.length; i++) {
             IERC20 asset = approved[i];
             if (pool.balanceOf(_account, asset, periodId) >= MinStakes[asset]) {
