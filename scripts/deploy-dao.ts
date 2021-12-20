@@ -48,7 +48,7 @@ async function main() {
         proposalThreshold: 0,
     };
     const Governor = await hre.ethers.getContractFactory("DAO");
-    const governor = await Governor.deploy(token.address, timelockAddress);
+    const governor = await Governor.deploy(...Object.values(governorConfig));
     await governor.deployed();
 
     console.log(`Deployed governor to ${governor.address}`);
