@@ -1,5 +1,6 @@
 import { getContractAddress } from "ethers/lib/utils";
 import hre from "hardhat";
+import config from "../config.json";
 
 async function main() {
     await hre.run("compile");
@@ -13,6 +14,13 @@ async function main() {
         from: signerAddress,
         nonce: transactionCount + 2,
     });
+
+    // Deploy the yield approval
+    const YieldApproval = await hre.ethers.getContractFactory("YieldApproval");
+    const yieldApproval = await YieldApproval.deploy();
+    await yieldApproval.deployed();
+
+    console.log(`Deployed token to ${yieldApproval.address}`);
 
     // Deploy the token
     const tokenAmount = (1e18).toString();
