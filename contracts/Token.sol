@@ -21,7 +21,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         yieldSlashRate = yieldSlashRate_;
         yieldReward = yieldReward_;
         yieldApproved = yieldApproved_;
-        
+
         _mint(owner(), initialSupply_);
     }
 
