@@ -30,7 +30,6 @@ contract Margin is Ownable {
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     mapping(IERC20 => uint256) private minCollateral;
     uint256 public minBorrowLength;
-
     uint256 public minMarginLevel; // Stored as the percentage above equilibrium threshold
 
     uint256 public maxInterestPercent;
@@ -44,6 +43,15 @@ contract Margin is Ownable {
     }
 
     // ======== Modifiers ========
+
+    /** @dev Set the minimum borrow length */
+    function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner { minBorrowLength = _minBorrowLength; } 
+
+    /** @dev Set the minimum margin level */
+    function setMinMarginLevel(uint256 _minMarginLevel) external onlyOwner { minMarginLevel = _minMarginLevel; }
+
+    /** @dev Set the maximum interest percent */
+    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner { maxInterestPercent = _maxInterestPercent; }
 
     modifier onlyApproved(IERC20 _token) {
         require(pool.isApproved(_token), "This token has not been approved");

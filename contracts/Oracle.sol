@@ -14,7 +14,7 @@ contract Oracle is Ownable {
     UniswapV2Router02[] public routers;
     mapping(UniswapV2Router02 => bool) private storedRouters;
 
-    uint256 public decimals;
+    uint256 public immutable decimals;
 
     constructor(uint256 decimals_) {
         decimals = decimals_;
