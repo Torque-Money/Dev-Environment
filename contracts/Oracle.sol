@@ -11,20 +11,20 @@ contract Oracle is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    UniswapV2Router02[] public Routers;
-    mapping(UniswapV2Router02 => bool) private storedRouters;
+    UniswapV2Router02[] public routers;
+    mapping(UniswapV2Router02 => bool) private StoredRouters;
 
-    uint256 public immutable Decimals;
+    uint256 public immutable decimals;
 
     constructor(uint256 decimals_) {
-        Decimals = decimals_;
+        decimals = decimals_;
     }
 
     /** @dev Adds a new router to be used in price calculation */
     function addRouter(UniswapV2Router02 _router) external onlyOwner {
-        require(storedRouters[_router] != true, "This router has already been added");
-        Routers.push(_router);
-        storedRouters[_router] = true;
+        require(StoredRouters[_router] != true, "This router has already been added");
+        routers.push(_router);
+        StoredRouters[_router] = true;
     }
 
     // ======== Verify price from multiple sources ========
@@ -71,16 +71,16 @@ contract Oracle is Ownable {
         path[1] = address(_token2);
 
         // Get the median price of token2 earned from token1 from the different exchanges
-        uint256[] memory prices = new uint256[](Routers.length);
-        for (uint256 i = 0; i < Routers.length; i++) {
-            prices[i] = Routers[i].getAmountsOut(Decimals, path)[1];
+        uint256[] memory prices = new uint256[](routers.length);
+        for (uint256 i = 0; i < routers.length; i++) {
+            prices[i] = routers[i].getAmountsOut(decimals, path)[1];
         }
         return _median(prices);
     }
 
     /** @dev Returns a pseudo-random router to use */
     function getRouter() external view returns (UniswapV2Router02) {
-        uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(Routers.length);
-        return Routers[index];
+        uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(routers.length);
+        return routers[index];
     }
 }
