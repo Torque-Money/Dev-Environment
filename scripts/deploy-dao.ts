@@ -4,6 +4,17 @@ import hre from "hardhat";
 async function main() {
     await hre.run("compile");
 
+    // Calculate the addresses of the contracts
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+    const transactionCount = await signer.getTransactionCount();
+
+    const timelockAddress = getContractAddress({
+        from: signerAddress,
+        nonce: transactionCount + 2,
+    });
+
+    // Deploy the token
     const tokenAmount = (1e18).toString();
     const Token = await hre.ethers.getContractFactory("Token");
     const token = await Token.deploy(tokenAmount);
@@ -11,25 +22,21 @@ async function main() {
 
     console.log(`Deployed token to ${token.address}`);
 
-    const signer = hre.ethers.provider.getSigner();
-    const signerAddress = await signer.getAddress();
-    const transactionCount = await signer.getTransactionCount();
-    const timelockAddress = getContractAddress({
-        from: signerAddress,
-        nonce: transactionCount + 1,
-    });
+    // Deploy the governor
     const Governor = await hre.ethers.getContractFactory("DAO");
     const governor = await Governor.deploy(token.address, timelockAddress);
     await governor.deployed();
 
     console.log(`Deployed governor to ${governor.address}`);
 
+    // Deploy the timelock
     const Timelock = await hre.ethers.getContractFactory("TimelockController");
     const timelock = await Timelock.deploy(2, [signerAddress], [signerAddress]);
     await timelock.deployed();
 
     console.log(`Deployed timelock to ${timelock.address}`);
 
+    // Test the DAO
     console.log("Attempting to create a proposal...");
 
     const transferCallData = token.interface.encodeFunctionData("transfer", [signerAddress, 0]);
