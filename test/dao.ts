@@ -1,6 +1,5 @@
 import { ethers, network } from "hardhat";
 import config from "../config.json";
-import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
 import DAO from "../artifacts/contracts/Governor.sol/DAO.json";
 
 describe("DAO", async () => {
@@ -8,8 +7,7 @@ describe("DAO", async () => {
         // Initialize the contracts
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
-        const pool = new ethers.Contract(config.poolAddress, LPool.abi, signer);
-        const dao = new ethers.Contract(config.governorAddress);
+        const dao = new ethers.Contract(config.daoAddress, DAO.abi, signer);
 
         // **** Eventually integrate the yield and other tokens into this for a full test
     });
