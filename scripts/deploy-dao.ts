@@ -16,21 +16,21 @@ async function main() {
     });
 
     // Deploy the yield approval
-    const yieldApprovalConfig = {
+    const yieldApprovedConfig = {
         pool: config.poolAddress,
     };
-    const YieldApproval = await hre.ethers.getContractFactory("YieldApproval");
-    const yieldApproval = await YieldApproval.deploy(...Object.values(yieldApprovalConfig));
-    await yieldApproval.deployed();
+    const YieldApproved = await hre.ethers.getContractFactory("YieldApproved");
+    const yieldApproved = await YieldApproved.deploy(...Object.values(yieldApprovedConfig));
+    await yieldApproved.deployed();
 
-    console.log(`Deployed token to ${yieldApproval.address}`);
+    console.log(`Deployed token to ${yieldApproved.address}`);
 
     // Deploy the token
     const tokenConfig = {
         tokenAmount: (1e18).toString(),
         yieldSlashRate: 10000,
         yieldReward: 2e18,
-        yieldApproval: yieldApproval.address,
+        yieldApproval: yieldApproved.address,
     };
     const Token = await hre.ethers.getContractFactory("Token");
     const token = await Token.deploy(...Object.values(tokenConfig));
