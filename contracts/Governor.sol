@@ -19,15 +19,15 @@ contract DAO is Governor, GovernorCompatibilityBravo, GovernorVotes, GovernorVot
     {}
 
     function votingDelay() public view override(IGovernor, GovernorSettings) returns (uint256) {
-        return GovernorSettings.votingDelay();
+        return super.votingDelay();
     }
 
     function votingPeriod() public view override(IGovernor, GovernorSettings) returns (uint256) {
-        return GovernorSettings.votingPeriod();
+        return super.votingPeriod();
     }
 
     function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256) {
-        return GovernorSettings.proposalThreshold();
+        return super.proposalThreshold();
     }
 
     function quorum(uint256 blockNumber)
