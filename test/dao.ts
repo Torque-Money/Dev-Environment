@@ -39,7 +39,7 @@ describe("DAO", async () => {
         console.log(`Initial state of proposal: ${stateInitial}`);
 
         await network.provider.send("evm_mine");
-        await dao.castVote(proposalId, 1);
+        await dao.castVote(proposalId, 1); // **** Why is my vote not casting ????
         console.log("Voted for proposal");
 
         const votes = await dao.proposalVotes(proposalId);
