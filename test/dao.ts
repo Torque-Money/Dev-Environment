@@ -32,7 +32,7 @@ describe("DAO", async () => {
         proposalConfig.description = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(proposalConfig.description));
         const proposalId = await dao["hashProposal(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
-        console.log(`Proposed grant for owner with proposal id: ${proposalId}`);
+        console.log(`Proposed grant for owner with proposal id: ${proposalId.toHexString()}`);
 
         // Vote on proposal
         await dao.castVote(proposalId, 1);
