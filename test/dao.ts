@@ -38,7 +38,12 @@ describe("DAO", async () => {
         await dao.castVote(proposalId, 1);
         console.log("Voted for proposal");
 
+        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this - might also have to add the function with a .super
+        // await dao.queue(...Object.values(proposalConfig));
+        await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
+
         // Execute the proposal
+        // await timelock.
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
