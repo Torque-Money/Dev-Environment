@@ -29,9 +29,9 @@ async function main() {
 
     // Deploy the token
     const tokenConfig = {
-        tokenAmount: ethers.BigNumber.from(1000e18),
+        tokenAmount: ethers.BigNumber.from(10).pow(18).mul(1000),
         yieldSlashRate: 10000,
-        yieldReward: (10e18).toString(),
+        yieldReward: ethers.BigNumber.from(10).pow(18).mul(5),
         yieldApproval: yieldApproved.address,
     };
     const Token = await hre.ethers.getContractFactory("Token");
