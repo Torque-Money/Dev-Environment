@@ -29,7 +29,7 @@ describe("DAO", async () => {
             description: `Proposal #${Date.now()}: Give grant to owner`,
         };
         await dao["propose(address[],uint256[],bytes[],string)"](...Object.values(proposalConfig));
-        proposalConfig.description = ethers.utils.keccak256(proposalConfig.description);
+        proposalConfig.description = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(proposalConfig.description));
         const proposalId = await dao["hashProposal(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
         console.log(`Proposed grant for owner with proposal id: ${proposalId}`);
