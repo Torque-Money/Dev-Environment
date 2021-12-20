@@ -1,5 +1,5 @@
 import { getContractAddress } from "ethers/lib/utils";
-import hre from "hardhat";
+import hre, { ethers } from "hardhat";
 import config from "../config.json";
 import fs from "fs";
 
@@ -29,9 +29,9 @@ async function main() {
 
     // Deploy the token
     const tokenConfig = {
-        tokenAmount: (1e18).toString(),
+        tokenAmount: ethers.BigNumber.from(1000e18),
         yieldSlashRate: 10000,
-        yieldReward: (2e18).toString(),
+        yieldReward: (10e18).toString(),
         yieldApproval: yieldApproved.address,
     };
     const Token = await hre.ethers.getContractFactory("Token");
@@ -45,7 +45,7 @@ async function main() {
     const governorConfig = {
         token: token.address,
         timelock: timelockAddress,
-        quorumFraction: 2,
+        quorumFraction: 0,
         votingDelay: 0,
         votingPeriod: 1,
         proposalThreshold: 0,
