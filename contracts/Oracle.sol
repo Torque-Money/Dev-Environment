@@ -20,6 +20,7 @@ contract Oracle is Ownable {
         decimals = decimals_;
     }
 
+    /** @dev Adds a new router to be used in price calculation */
     function addRouter(UniswapV2Router02 _router) external onlyOwner {
         require(storedRouters[_router] != true, "This router has already been added");
         routers.push(_router);
@@ -62,6 +63,7 @@ contract Oracle is Ownable {
         return length.mod(2) == 0 ? _array[length.div(2).sub(1)].add(_array[length.div(2)]).div(2) : _array[length.div(2)];
     }
 
+    /** @dev Returns the median price of the tokens passed to it over the stored exchanges */
     function pairPrice(IERC20 _token1, IERC20 _token2) public view returns (uint256) {
         // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
         address[] memory path = new address[](2);
@@ -76,6 +78,7 @@ contract Oracle is Ownable {
         return _median(prices);
     }
 
+    /** @dev Returns a pseudo-random router to use */
     function getRouter() external view returns (UniswapV2Router02) {
         uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(routers.length);
         return routers[index];
