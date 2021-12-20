@@ -12,7 +12,7 @@ contract VPool is Ownable {
     using SafeMath for uint256;
 
     // Approved assets of the pool
-    IERC20[] private approvedList;
+    IERC20[] public approvedList;
     mapping(IERC20 => bool) private approved;
 
     // Staking data
@@ -105,11 +105,6 @@ contract VPool is Ownable {
     /** @dev Returns whether or not a token is approved */
     function isApproved(IERC20 _token) public view returns (bool) {
         return approved[_token];
-    }
-
-    /** @dev Returns a list of approved tokens */
-    function getApproved() external view returns (IERC20[] memory) {
-        return approvedList;
     }
 
     modifier onlyApproved(IERC20 _token) {

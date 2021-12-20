@@ -11,7 +11,7 @@ contract Oracle is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    UniswapV2Router02[] private routers;
+    UniswapV2Router02[] public routers;
     mapping(UniswapV2Router02 => bool) private storedRouters;
 
     uint256 public decimals;
