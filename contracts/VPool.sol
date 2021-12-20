@@ -23,8 +23,8 @@ contract VPool is Ownable {
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Stores the data for each approved asset
-    uint256 public periodLength;
-    uint256 public cooldownLength;
+    uint256 public immutable periodLength;
+    uint256 public immutable cooldownLength;
 
     uint256 public taxPercent;
 

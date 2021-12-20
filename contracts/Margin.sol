@@ -30,16 +30,16 @@ contract Margin is Ownable {
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private BorrowPeriods;
     mapping(IERC20 => uint256) private MinCollateral;
     uint256 public minBorrowLength;
-    uint256 public minMarginLevel; // Stored as the percentage above equilibrium threshold - **** CHANGE TO ACTUALLY BE THE MARGIN THRESHOLD
+    uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
 
     uint256 public maxInterestPercent;
 
-    constructor(Oracle oracle_, VPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
+    constructor(Oracle oracle_, VPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
         oracle = oracle_;
         pool = pool_;
         minBorrowLength = minBorrowLength_;
         maxInterestPercent = maxInterestPercent_;
-        minMarginLevel = minMarginLevel_;
+        minMarginThreshold = minMarginThreshold_;
     }
 
     // ======== Modifiers ========
@@ -52,11 +52,11 @@ contract Margin is Ownable {
     /** @dev Set the minimum borrow length */
     function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner { minBorrowLength = _minBorrowLength; } 
 
-    /** @dev Set the minimum margin level */
-    function setMinMarginLevel(uint256 _minMarginLevel) external onlyOwner { minMarginLevel = _minMarginLevel; }
-
     /** @dev Set the maximum interest percent */
     function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner { maxInterestPercent = _maxInterestPercent; }
+
+    /** @dev Set the minimum margin level */
+    function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner { minMarginThreshold = _minMarginThreshold; }
 
     /** @dev Set the minimum amount of collateral for a given token required to borrow against */
     function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
@@ -69,7 +69,7 @@ contract Margin is Ownable {
     function minCollateral(IERC20 _token) public view returns (uint256) { return MinCollateral[_token]; }
 
     /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view returns (uint256) { return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10); }
+    function compensationPercentage() public view returns (uint256) { return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10); }
 
     /** @dev Return the total amount of a given asset borrowed */
     function totalBorrowed(IERC20 _token) public view returns (uint256) {
@@ -111,7 +111,7 @@ contract Margin is Ownable {
     }
 
     /** @dev Return the minimum margin level in terms of decimals */
-    function _minMarginLevel() private view returns (uint256) { return minMarginLevel.add(100).mul(oracle.decimals()).div(100); }
+    function _minMarginLevel() private view returns (uint256) { return minMarginThreshold.add(100).mul(oracle.decimals()).div(100); }
 
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
