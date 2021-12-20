@@ -11,7 +11,7 @@ contract VPool is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    Margin public immutable Margin;
+    Margin public immutable margin;
 
     IERC20[] public ApprovedList;
     mapping(IERC20 => bool) private approved;
@@ -32,7 +32,7 @@ contract VPool is Ownable {
         PeriodLength = periodLength_;
         CooldownLength = cooldownLength_;
         TaxPercent = taxPercent_;
-        Margin = margin_;
+        margin = margin_;
     }
 
     // ======== Contract configuration ========
@@ -201,7 +201,7 @@ contract VPool is Ownable {
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
     function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         // Only margin may call this and make sure no withdraws during cooldown period
-        require(_msgSender() == address(Margin), "Only the margin may call this function");
+        require(_msgSender() == address(margin), "Only the margin may call this function");
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
