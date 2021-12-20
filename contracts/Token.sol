@@ -25,15 +25,20 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         _mint(owner(), initialSupply_);
     }
 
+    /** @dev Set the yield slash rate */
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
 
+    /** @dev Set the yield reward */
     function setYieldReward(uint256 _yieldReward) external onlyOwner { yieldReward = _yieldReward; }
 
+    /** @dev Set the yield approval function */
     function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
 
-    function yield(address _account) external onlyOwner {
+    /** @dev Yield new tokens for the account */
+    function yield() external {
         // Make sure the yield has been approved first
-        require(yieldApproved.yieldApproved(_account), "Account is not approved to yield tokens");
+        address account = _msgSender();
+        require(yieldApproved.yieldApproved(account), "Account is not approved to yield tokens");
 
         // Mint and payout the slashed tokens as farming yield and increment the num of yields
         uint256 slash = numYields.div(yieldSlashRate);
@@ -41,7 +46,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
 
         uint256 amount = yieldReward.div(slash);
 
-        _mint(_account, amount);
+        _mint(account, amount);
         numYields = numYields.add(1);
     }
 
