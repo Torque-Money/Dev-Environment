@@ -188,7 +188,7 @@ contract Margin is IMargin, Ownable {
         BorrowPeriod storage borrowPeriod = borrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
-        require(borrowAccount.collateral > getMinCollateral(_collateral), "Not enough collateral to borrow against");
+        require(borrowAccount.collateral > 0 && borrowAccount.collateral >= getMinCollateral(_collateral), "Not enough collateral to borrow against");
 
         if (borrowAccount.borrowed == 0) borrowAccount.initialBorrowTime = block.timestamp;
 
