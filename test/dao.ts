@@ -31,7 +31,8 @@ describe("DAO", async () => {
         console.log(`Proposed grant for owner with proposal id: ${proposalId}`);
 
         // Vote on proposal
-        await dao.castVote(proposalId, 0);
+        await dao.castVote(proposalId, 1);
+        console.log("Voted for proposal");
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
