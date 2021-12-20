@@ -24,11 +24,11 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         _mint(owner(), initialSupply_);
     }
 
-    function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
-
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
 
     function setYieldReward(uint256 _yieldReward) external onlyOwner { yieldReward = _yieldReward; }
+
+    function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
 
     function yield(address _account) external onlyOwner {
         require(yieldApproved.yieldApproved(_account), "Account is not approved to yield tokens");
