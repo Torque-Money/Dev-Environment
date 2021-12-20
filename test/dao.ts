@@ -29,7 +29,8 @@ describe("DAO", async () => {
             description: `Proposal #${Date.now()}: Give grant to owner`,
         };
         await dao["propose(address[],uint256[],bytes[],string)"](...Object.values(proposalConfig));
-        const proposalId = dao["hashProposal(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
+        proposalConfig.description = ""; // **** Convert to bytes and then run through a keccak ???
+        const proposalId = await dao["hashProposal(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
         console.log(`Proposed grant for owner with proposal id: ${proposalId}`);
 
