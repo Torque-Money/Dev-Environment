@@ -243,7 +243,7 @@ contract Margin is Ownable {
         path[0] = address(_token1);
         path[1] = address(_token2);
 
-        address router = address(oracle.getRouter());
+        address router = address(oracle.router());
         _token1.safeApprove(address(router), _amount);
         return UniswapV2Router02(router).swapExactTokensForTokens(_amount, 0, path, address(this), block.timestamp + 1 hours)[1];
     }
