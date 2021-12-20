@@ -32,8 +32,10 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
 
     function yield(address _account) external onlyOwner {
+        // Make sure the yield has been approved first
         require(yieldApproved.yieldApproved(_account), "Account is not approved to yield tokens");
 
+        // Mint and payout the slashed tokens as farming yield and increment the num of yields
         uint256 slash = numYields.div(yieldSlashRate);
         if (slash == 0) slash = 1;
 
