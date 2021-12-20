@@ -44,7 +44,8 @@ describe("DAO", async () => {
 
         await network.provider.send("evm_mine");
         await dao.castVote(proposalId, 1); // **** Why is my vote not casting ????
-        console.log("Voted for proposal");
+        const hasVoted = await dao.hasVoted(proposalId, signerAddress);
+        console.log(`Voted status: ${hasVoted}`);
 
         const votes = await dao.proposalVotes(proposalId);
         console.log(votes);
