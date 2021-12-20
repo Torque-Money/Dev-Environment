@@ -1,6 +1,7 @@
 import { getContractAddress } from "ethers/lib/utils";
 import hre from "hardhat";
 import config from "../config.json";
+import fs from "fs";
 
 async function main() {
     await hre.run("compile");
@@ -64,12 +65,6 @@ async function main() {
     await timelock.deployed();
 
     console.log(`Deployed timelock to ${timelock.address}`);
-
-    // Test the DAO
-    console.log("Attempting to create a proposal...");
-
-    const transferCallData = token.interface.encodeFunctionData("transfer", [signerAddress, 0]);
-    await governor["propose(address[],uint256[],bytes[],string)"]([token.address], [0], [transferCallData], "Proposal #1: Give grant (worth 0) to owner");
 }
 
 main()
