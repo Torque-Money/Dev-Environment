@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import config from "../config.json";
-import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 async function main() {
     // Account to fund with tokens
@@ -15,7 +15,7 @@ async function main() {
             params: [approved.whale],
         });
         const tokenSigner = await hre.ethers.getSigner(approved.whale);
-        const token = new hre.ethers.Contract(approved.address, ERC20Abi.abi, tokenSigner);
+        const token = new hre.ethers.Contract(approved.address, ERC20.abi, tokenSigner);
 
         const tokenBalance = await token.balanceOf(tokenSigner.address);
         await token.transfer(signerAddress, tokenBalance);
