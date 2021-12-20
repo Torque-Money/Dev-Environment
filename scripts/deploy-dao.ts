@@ -54,8 +54,13 @@ async function main() {
     console.log(`Deployed governor to ${governor.address}`);
 
     // Deploy the timelock
+    const timelockConfig = {
+        minDelay: 2,
+        proposers: [governor.address],
+        executors: [governor.address],
+    };
     const Timelock = await hre.ethers.getContractFactory("TimelockController");
-    const timelock = await Timelock.deploy(2, [signerAddress], [signerAddress]);
+    const timelock = await Timelock.deploy(...Object.values(timelockConfig));
     await timelock.deployed();
 
     console.log(`Deployed timelock to ${timelock.address}`);
