@@ -38,6 +38,8 @@ describe("DAO", async () => {
         await dao.castVote(proposalId, 1);
         console.log("Voted for proposal");
 
+        // Execute the proposal
+
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
 });
