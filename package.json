@@ -5,7 +5,7 @@
         "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
         "deploy:protocol": "npx hardhat run --network localhost scripts/deploy-protocol.ts",
         "fund": "npx hardhat run --network localhost scripts/fund.ts",
-        "update": "cp config.json artifacts/contracts/IMargin.sol/IMargin.json artifacts/contracts/IOracle.sol/IOracle.json artifacts/contracts/IVPool.sol/IVPool.json ../Wabbit-Frontend/src/config",
+        "update": "cp config.json artifacts/contracts/Margin.sol/Margin.json artifacts/contracts/Oracle.sol/Oracle.json artifacts/contracts/LPool.sol/LPool.json ../Wabbit-Frontend/src/config",
         "all": "npm run deploy:protocol && npm run fund && npm run update",
         "deploy:dao": "npx hardhat run --network localhost scripts/deploy-dao.ts",
         "time": "npx hardhat time --network localhost",
