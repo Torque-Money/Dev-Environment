@@ -11,6 +11,8 @@ contract VPool is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
+    Margin public immutable margin;
+
     // Approved assets of the pool
     IERC20[] public approvedList;
     mapping(IERC20 => bool) private approved;
@@ -26,8 +28,6 @@ contract VPool is Ownable {
     uint256 public cooldownLength;
 
     uint256 public taxPercent;
-
-    Margin public margin;
 
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) {
         periodLength = periodLength_;

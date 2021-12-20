@@ -13,8 +13,8 @@ contract Margin is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    Oracle public oracle;
-    VPool public pool;
+    Oracle public immutable oracle;
+    VPool public immutable pool;
 
     struct BorrowAccount {
         uint256 collateral;
