@@ -50,7 +50,7 @@ describe("DAO", async () => {
         const votes = await dao.proposalVotes(proposalId);
         console.log(votes);
 
-        for (let i = 0; i < 3; i++) await network.provider.send("evm_mine");
+        for (let i = 0; i < 5; i++) await network.provider.send("evm_mine");
 
         const stateAfter = await dao.state(proposalId);
         console.log(`Final state of proposal: ${stateAfter}`);
