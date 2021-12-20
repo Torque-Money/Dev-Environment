@@ -22,17 +22,18 @@ describe("DAO", async () => {
 
         // Create a proposal to transfer tokens back to owner
         const transferCallData = testToken.interface.encodeFunctionData("transfer", [signerAddress, tokenAmount]);
-        const { value: proposalId } = await dao["propose(address[],uint256[],bytes[],string)"](
+        const proposalTx = await dao["propose(address[],uint256[],bytes[],string)"](
             [testToken.address],
             [0],
             [transferCallData],
             `Proposal #${Date.now()}: Give grant to owner`
         );
-        console.log(`Proposed grant for owner with proposal id: ${proposalId}`);
+        console.log(proposalTx);
+        console.log(`Proposed grant for owner with proposal id: ${proposalTx.value}`);
 
         // Vote on proposal
-        await dao.castVote(proposalId, 1);
-        console.log("Voted for proposal");
+        // await dao.castVote(proposalTx.value, 1);
+        // console.log("Voted for proposal");
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
