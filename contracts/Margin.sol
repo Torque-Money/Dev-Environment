@@ -50,26 +50,31 @@ contract Margin is Ownable {
         _;
     }
 
+    /** @dev Set the minimum amount of collateral for a given token required to borrow against */
     function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
         minCollateral[_token] = _amount;
     }
 
     // ======== Calculations ========
 
+    /** @dev Gets the minimum amount of collateral required to borrow a token */
     function getMinCollateral(IERC20 _token) public view returns (uint256) {
         return minCollateral[_token];
     }
 
+    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
     function compensationPercentage() public view returns (uint256) {
         return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10);
     }
 
+    /** @dev Return the total amount of a given asset borrowed */
     function totalBorrowed(IERC20 _token) public view returns (uint256) {
         // Calculate the amount borrowed for the current token for the given pool for the given period
         uint256 periodId = pool.currentPeriodId();
         return borrowPeriods[periodId][_token].totalBorrowed;
     }
 
+    /** @dev Return the total amount of a given asset borrowed */
     function liquidityAvailable(IERC20 _token) public view returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
         uint256 liquidity = pool.getLiquidity(_token, pool.currentPeriodId());
@@ -87,6 +92,7 @@ contract Margin is Ownable {
         return retValue;
     }
 
+    /** @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals */
     function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, 
                                     uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         if (_amountBorrowed == 0) return oracle.decimals().mul(999);
@@ -100,17 +106,20 @@ contract Margin is Ownable {
         return _calculateMarginLevelHelper(_deposited, currentBorrowPrice, _initialBorrowPrice, interest);
     }
 
+    /** @dev Return the minimum margin level in terms of decimals */
     function getMinMarginLevel() public view returns (uint256) {
         // Return the minimum margin level before liquidation
         return minMarginLevel.add(100).mul(oracle.decimals()).div(100);
     }
 
+    /** @dev Get the margin level of the given account */
     function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         // Get the borrowed period and and borrowed asset data and calculate and return accounts margin level
         BorrowAccount storage borrowAccount = borrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
         return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _collateral, _borrowed);
     }
 
+    /** @dev Get the interest rate for a given asset */
     function calculateInterestRate(IERC20 _borrowed) public view returns (uint256) {
         // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
@@ -120,6 +129,7 @@ contract Margin is Ownable {
         return _totalBorrowed.mul(maxInterestPercent).mul(oracle.decimals()).div(liquidity.add(_totalBorrowed)).div(100).div(pool.periodLength());
     }
 
+    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view returns (uint256) {
         // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
         uint256 retValue;
@@ -131,6 +141,7 @@ contract Margin is Ownable {
 
     // ======== Deposit ========
 
+    /** @dev Deposit the given amount of collateral to borrow against a specified asset */
     function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
@@ -146,6 +157,7 @@ contract Margin is Ownable {
         emit Deposit(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
+    /** @dev Get the collateral of an account for a given pool and period id */
     function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256) {
         // Return the collateral of the account
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
@@ -172,6 +184,7 @@ contract Margin is Ownable {
         _borrowAccount.borrowTime = block.timestamp;
     }
 
+    /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Requirements for borrowing
         uint256 periodId = pool.currentPeriodId();
@@ -192,6 +205,7 @@ contract Margin is Ownable {
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
+    /** @dev Get the debt of a given account */
     function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         // Return the collateral of the account
         uint256 periodId = pool.currentPeriodId();
@@ -201,6 +215,7 @@ contract Margin is Ownable {
         return borrowAccount.borrowed;
     }
 
+    /** @dev Get the most recent borrow time for a given account */
     function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         // Return the collateral of the account
         uint256 periodId = pool.currentPeriodId();
@@ -228,6 +243,7 @@ contract Margin is Ownable {
         return (interest, borrowedCurrentPrice);
     }
 
+    /** @dev Check the current margin balance of an account */
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view returns (uint256) {
         // The value returned from repaying a margin in terms of the collateral asset
         BorrowAccount storage borrowAccount = borrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
@@ -277,6 +293,7 @@ contract Margin is Ownable {
         pool.deposit(_borrowed, depositValue);
     }
 
+    /** @dev Repay the borrowed amount for the given asset and collateral */
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // If the period has entered the epilogue phase, then anyone may repay the account
         require(_account == _msgSender() || pool.isEpilogue(_periodId) || !pool.isCurrentPeriod(_periodId), "Only the owner may repay before the epilogue period");
@@ -299,6 +316,7 @@ contract Margin is Ownable {
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
 
+    /** @dev Withdraw collateral from the account if the account has no debt */
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = borrowPeriods[_periodId][_borrowed];
@@ -316,11 +334,13 @@ contract Margin is Ownable {
 
     // ======== Liquidate ========
 
+    /** @dev Check if an account is liquidatable */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (bool) {
         // Return if a given account is liquidatable
         return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel();
     }
 
+    /** @dev Liquidates a users account that is liquidatable / below the minimum margin level */
     function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // Liquidate an at risk account
         require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
