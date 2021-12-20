@@ -44,6 +44,11 @@ contract Margin is Ownable {
 
     // ======== Modifiers ========
 
+    modifier onlyApproved(IERC20 _token) {
+        require(pool.isApproved(_token), "This token has not been approved");
+        _;
+    }
+
     /** @dev Set the minimum borrow length */
     function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner { minBorrowLength = _minBorrowLength; } 
 
@@ -53,11 +58,6 @@ contract Margin is Ownable {
     /** @dev Set the maximum interest percent */
     function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner { maxInterestPercent = _maxInterestPercent; }
 
-    modifier onlyApproved(IERC20 _token) {
-        require(pool.isApproved(_token), "This token has not been approved");
-        _;
-    }
-
     /** @dev Set the minimum amount of collateral for a given token required to borrow against */
     function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
         minCollateral[_token] = _amount;
@@ -66,14 +66,10 @@ contract Margin is Ownable {
     // ======== Calculations ========
 
     /** @dev Gets the minimum amount of collateral required to borrow a token */
-    function getMinCollateral(IERC20 _token) public view returns (uint256) {
-        return minCollateral[_token];
-    }
+    function getMinCollateral(IERC20 _token) public view returns (uint256) { return minCollateral[_token]; }
 
     /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view returns (uint256) {
-        return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10);
-    }
+    function compensationPercentage() public view returns (uint256) { return minMarginLevel.mul(100).div(minMarginLevel.add(100)).div(10); }
 
     /** @dev Return the total amount of a given asset borrowed */
     function totalBorrowed(IERC20 _token) public view returns (uint256) {
@@ -115,10 +111,7 @@ contract Margin is Ownable {
     }
 
     /** @dev Return the minimum margin level in terms of decimals */
-    function getMinMarginLevel() public view returns (uint256) {
-        // Return the minimum margin level before liquidation
-        return minMarginLevel.add(100).mul(oracle.decimals()).div(100);
-    }
+    function getMinMarginLevel() public view returns (uint256) { return minMarginLevel.add(100).mul(oracle.decimals()).div(100); }
 
     /** @dev Get the margin level of the given account */
     function getMarginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
@@ -344,7 +337,6 @@ contract Margin is Ownable {
 
     /** @dev Check if an account is liquidatable */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (bool) {
-        // Return if a given account is liquidatable
         return getMarginLevel(_account, _collateral, _borrowed) <= getMinMarginLevel();
     }
 
