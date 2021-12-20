@@ -47,7 +47,7 @@ async function main() {
         timelock: timelockAddress,
         quorumFraction: 0,
         votingDelay: 0,
-        votingPeriod: 5,
+        votingPeriod: 1,
         proposalThreshold: 0,
     };
     const Governor = await hre.ethers.getContractFactory("DAO");
