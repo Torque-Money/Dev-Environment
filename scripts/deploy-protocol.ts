@@ -21,7 +21,7 @@ async function main() {
         taxPercent: 2,
         marginAddress: preMarginAddress,
     };
-    const Pool = await hre.ethers.getContractFactory("VPool");
+    const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));
     await pool.deployed();
     console.log(`Value pool deployed to ${pool.address}`);
