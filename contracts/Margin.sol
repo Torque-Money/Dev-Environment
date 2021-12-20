@@ -226,6 +226,16 @@ contract Margin is Ownable {
         return borrowAccount.borrowTime;
     }
 
+    /** @dev Get the initial borrow time of the account */
+    function initialBorrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
+        // Return the collateral of the account
+        uint256 periodId = pool.currentPeriodId();
+        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+
+        return borrowAccount.initialBorrowTime;
+    }
+
     // ======== Repay and withdraw ========
 
     function _swap(IERC20 _token1, IERC20 _token2, uint256 _amount) private returns (uint256) {
