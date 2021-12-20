@@ -29,10 +29,10 @@ contract Margin is Ownable {
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private borrowPeriods;
     mapping(IERC20 => uint256) private minCollateral;
-    uint256 public minBorrowLength;
-    uint256 public minMarginLevel; // Stored as the percentage above equilibrium threshold
+    uint256 public MinBorrowLength;
+    uint256 public MinMarginLevel; // Stored as the percentage above equilibrium threshold
 
-    uint256 public maxInterestPercent;
+    uint256 public MaxInterestPercent;
 
     constructor(Oracle oracle_, VPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginLevel_) {
         oracle = oracle_;

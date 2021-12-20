@@ -13,8 +13,8 @@ contract VPool is Ownable {
 
     Margin public immutable margin;
 
-    IERC20[] public ApprovedList;
-    mapping(IERC20 => bool) private approved;
+    IERC20[] public approvedList;
+    mapping(IERC20 => bool) private Approved;
 
     // Staking data
     struct StakingPeriod {
@@ -22,16 +22,16 @@ contract VPool is Ownable {
         uint256 liquidity;
         mapping(address => uint256) deposits;
     }
-    mapping(uint256 => mapping(IERC20 => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
-    uint256 public PeriodLength;
-    uint256 public CooldownLength;
+    mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Stores the data for each approved asset
+    uint256 public periodLength;
+    uint256 public cooldownLength;
 
-    uint256 public TaxPercent;
+    uint256 public taxPercent;
 
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) {
-        PeriodLength = periodLength_;
-        CooldownLength = cooldownLength_;
-        TaxPercent = taxPercent_;
+        periodLength = periodLength_;
+        cooldownLength = cooldownLength_;
+        taxPercent = taxPercent_;
         margin = margin_;
     }
 
@@ -39,7 +39,7 @@ contract VPool is Ownable {
 
     /** @dev Set the tax percentage */
     function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
-        TaxPercent = _taxPercent;
+        taxPercent = _taxPercent;
     }
 
     // ======== Check the staking period and cooldown periods ========
@@ -47,8 +47,8 @@ contract VPool is Ownable {
     /** @dev Get the times at which the prologue of the given period occurs */
     function getPrologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the prologue is between
-        uint256 prologueStart = _periodId.mul(PeriodLength);
-        uint256 prologueEnd = prologueStart.add(CooldownLength);
+        uint256 prologueStart = _periodId.mul(periodLength);
+        uint256 prologueEnd = prologueStart.add(cooldownLength);
         return (prologueStart, prologueEnd);
     }
 
@@ -65,8 +65,8 @@ contract VPool is Ownable {
     function getEpilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the epilogue is between
         uint256 periodId = _periodId.add(1);
-        uint256 epilogueEnd = periodId.mul(PeriodLength);
-        uint256 epilogueStart = epilogueEnd.sub(CooldownLength);
+        uint256 epilogueEnd = periodId.mul(periodLength);
+        uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
         return (epilogueStart, epilogueEnd);
     }
 
@@ -86,7 +86,7 @@ contract VPool is Ownable {
 
     /** @dev Returns the id of the current period */
     function currentPeriodId() public view returns (uint256) {
-        return uint256(block.timestamp).div(PeriodLength);
+        return uint256(block.timestamp).div(periodLength);
     }
 
     // ======== Approved tokens ========
@@ -97,13 +97,13 @@ contract VPool is Ownable {
         require(!isApproved(_token), "This token has already been approved");
 
         // Approve the token
-        approved[_token] = true;
-        ApprovedList.push(_token);
+        Approved[_token] = true;
+        approvedList.push(_token);
     }
 
     /** @dev Returns whether or not a token is approved */
     function isApproved(IERC20 _token) public view returns (bool) {
-        return approved[_token];
+        return Approved[_token];
     }
 
     modifier onlyApproved(IERC20 _token) {
@@ -115,7 +115,7 @@ contract VPool is Ownable {
 
     /** @dev Returns the total locked liquidity for the current period */
     function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
-        return stakingPeriods[_periodId][_token].liquidity;
+        return StakingPeriods[_periodId][_token].liquidity;
     }
 
     // ======== Balance management ========
@@ -123,13 +123,13 @@ contract VPool is Ownable {
     /** @dev Returns the deposited balance of a given account for a given token for a given period */
     function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view returns (uint256) {
         // Get the amount of tokens the account deposited into a given period
-        return stakingPeriods[_periodId][_token].deposits[_account];
+        return StakingPeriods[_periodId][_token].deposits[_account];
     }
 
     /** @dev Returns the value of the tokens for a given period for a given token once they are redeemed */
     function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view onlyApproved(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
-        StakingPeriod storage period = stakingPeriods[_periodId][_token];
+        StakingPeriod storage period = StakingPeriods[_periodId][_token];
 
         uint256 totalDeposited = period.totalDeposited;
         uint256 liquidity = period.liquidity;
@@ -148,7 +148,7 @@ contract VPool is Ownable {
         // Move the tokens to the pool and update the users deposit amount
         _token.safeTransferFrom(_msgSender(), address(this), _amount);
 
-        StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
+        StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
 
         stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].add(_amount);
         stakingPeriod.liquidity = stakingPeriod.liquidity.add(_amount);
@@ -164,7 +164,7 @@ contract VPool is Ownable {
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
         // Update the balances of the period
-        StakingPeriod storage stakingPeriod = stakingPeriods[_periodId][_token];
+        StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
 
         // Withdraw the allocated amount from the pool and return it to the user
         uint256 tokensRedeemed = redeemValue(_token, _amount, _periodId);
@@ -187,14 +187,14 @@ contract VPool is Ownable {
         // Pay a tax to the owner
         uint256 amount = _amount;
         {
-            uint256 tax = _amount.mul(TaxPercent).div(100);
+            uint256 tax = _amount.mul(taxPercent).div(100);
             amount = amount.sub(tax);
             _token.safeTransferFrom(_msgSender(), owner(), tax);
         }
 
         // Receive a given number of funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), amount);
-        stakingPeriods[periodId][_token].liquidity = stakingPeriods[periodId][_token].liquidity.add(amount);
+        StakingPeriods[periodId][_token].liquidity = StakingPeriods[periodId][_token].liquidity.add(amount);
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
@@ -206,7 +206,7 @@ contract VPool is Ownable {
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
-        StakingPeriod storage stakingPeriod = stakingPeriods[periodId][_token]; 
+        StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token]; 
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
