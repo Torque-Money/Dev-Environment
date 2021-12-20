@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./Oracle.sol";
-import "./VPool.sol";
+import "./LPool.sol";
 import "./lib/UniswapV2Router02.sol";
 
 contract Margin is Ownable {
@@ -14,7 +14,7 @@ contract Margin is Ownable {
     using SafeMath for uint256;
 
     Oracle public immutable oracle;
-    VPool public immutable pool;
+    LPool public immutable pool;
 
     struct BorrowAccount {
         uint256 collateral;
@@ -34,7 +34,7 @@ contract Margin is Ownable {
 
     uint256 public maxInterestPercent;
 
-    constructor(Oracle oracle_, VPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
+    constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
         oracle = oracle_;
         pool = pool_;
         minBorrowLength = minBorrowLength_;
