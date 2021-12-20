@@ -11,10 +11,9 @@ contract VPool is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    Margin public immutable margin;
+    Margin public immutable Margin;
 
-    // Approved assets of the pool
-    IERC20[] public approvedList;
+    IERC20[] public ApprovedList;
     mapping(IERC20 => bool) private approved;
 
     // Staking data
@@ -24,23 +23,23 @@ contract VPool is Ownable {
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
-    uint256 public periodLength;
-    uint256 public cooldownLength;
+    uint256 public PeriodLength;
+    uint256 public CooldownLength;
 
-    uint256 public taxPercent;
+    uint256 public TaxPercent;
 
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) {
-        periodLength = periodLength_;
-        cooldownLength = cooldownLength_;
-        taxPercent = taxPercent_;
-        margin = margin_;
+        PeriodLength = periodLength_;
+        CooldownLength = cooldownLength_;
+        TaxPercent = taxPercent_;
+        Margin = margin_;
     }
 
     // ======== Contract configuration ========
 
     /** @dev Set the tax percentage */
     function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
-        taxPercent = _taxPercent;
+        TaxPercent = _taxPercent;
     }
 
     // ======== Check the staking period and cooldown periods ========
@@ -48,8 +47,8 @@ contract VPool is Ownable {
     /** @dev Get the times at which the prologue of the given period occurs */
     function getPrologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the prologue is between
-        uint256 prologueStart = _periodId.mul(periodLength);
-        uint256 prologueEnd = prologueStart.add(cooldownLength);
+        uint256 prologueStart = _periodId.mul(PeriodLength);
+        uint256 prologueEnd = prologueStart.add(CooldownLength);
         return (prologueStart, prologueEnd);
     }
 
@@ -66,8 +65,8 @@ contract VPool is Ownable {
     function getEpilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the epilogue is between
         uint256 periodId = _periodId.add(1);
-        uint256 epilogueEnd = periodId.mul(periodLength);
-        uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
+        uint256 epilogueEnd = periodId.mul(PeriodLength);
+        uint256 epilogueStart = epilogueEnd.sub(CooldownLength);
         return (epilogueStart, epilogueEnd);
     }
 
@@ -87,7 +86,7 @@ contract VPool is Ownable {
 
     /** @dev Returns the id of the current period */
     function currentPeriodId() public view returns (uint256) {
-        return uint256(block.timestamp).div(periodLength);
+        return uint256(block.timestamp).div(PeriodLength);
     }
 
     // ======== Approved tokens ========
@@ -99,7 +98,7 @@ contract VPool is Ownable {
 
         // Approve the token
         approved[_token] = true;
-        approvedList.push(_token);
+        ApprovedList.push(_token);
     }
 
     /** @dev Returns whether or not a token is approved */
@@ -188,7 +187,7 @@ contract VPool is Ownable {
         // Pay a tax to the owner
         uint256 amount = _amount;
         {
-            uint256 tax = _amount.mul(taxPercent).div(100);
+            uint256 tax = _amount.mul(TaxPercent).div(100);
             amount = amount.sub(tax);
             _token.safeTransferFrom(_msgSender(), owner(), tax);
         }
@@ -202,7 +201,7 @@ contract VPool is Ownable {
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
     function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         // Only margin may call this and make sure no withdraws during cooldown period
-        require(_msgSender() == address(margin), "Only the margin may call this function");
+        require(_msgSender() == address(Margin), "Only the margin may call this function");
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
