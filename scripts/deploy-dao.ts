@@ -25,6 +25,7 @@ async function main() {
     await yieldApproved.deployed();
 
     console.log(`Deployed yield approved to ${yieldApproved.address}`);
+    config.yieldApprovedAddress = yieldApproved.address;
 
     // Deploy the token
     const tokenConfig = {
@@ -38,6 +39,7 @@ async function main() {
     await token.deployed();
 
     console.log(`Deployed token to ${token.address}`);
+    config.tokenAddress = token.address;
 
     // Deploy the governor
     const governorConfig = {
@@ -53,6 +55,7 @@ async function main() {
     await governor.deployed();
 
     console.log(`Deployed governor to ${governor.address}`);
+    config.daoAddress = governor.address;
 
     // Deploy the timelock
     const timelockConfig = {
@@ -65,6 +68,9 @@ async function main() {
     await timelock.deployed();
 
     console.log(`Deployed timelock to ${timelock.address}`);
+    config.timelockAddress = timelock.address;
+
+    fs.writeFileSync("config.json", JSON.stringify(config));
 }
 
 main()
