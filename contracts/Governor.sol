@@ -17,8 +17,6 @@ contract DAO is Governor, GovernorSettings, GovernorCountingSimple, GovernorVote
         GovernorTimelockControl(timelock_)
     {}
 
-    // The following functions are overrides required by Solidity.
-
     function votingDelay()
         public
         view
