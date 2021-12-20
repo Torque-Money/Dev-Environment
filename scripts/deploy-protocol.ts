@@ -24,7 +24,7 @@ async function main() {
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));
     await pool.deployed();
-    console.log(`Value pool deployed to ${pool.address}`);
+    console.log(`Liquidity pool deployed to ${pool.address}`);
     config.poolAddress = pool.address;
 
     for (const approved of config.approved) {
