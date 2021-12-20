@@ -35,12 +35,20 @@ describe("DAO", async () => {
         console.log(`Proposed grant for owner with proposal id: ${proposalId.toHexString()}`);
 
         // Vote on proposal
+        const stateInitial = await dao.state(proposalId);
+        console.log(`Initial state of proposal: ${stateInitial}`);
+
         await dao.castVote(proposalId, 1);
         console.log("Voted for proposal");
 
-        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this
         for (let i = 0; i < 3; i++) await network.provider.send("evm_mine");
-        await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
+
+        const stateAfter = await dao.state(proposalId);
+        console.log(`Final state of proposal: ${stateAfter}`);
+
+        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this
+
+        // await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
         // Execute the proposal
         // await timelock.
