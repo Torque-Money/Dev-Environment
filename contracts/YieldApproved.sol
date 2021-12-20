@@ -30,6 +30,7 @@ contract YieldApproved is Ownable {
         // Get the period id
         uint256 periodId = pool.currentPeriodId();
         require(!yields[periodId][_account], "Yield has already been approved");
+        require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
 
         // Check if the account has an asset staked that exceeds the amount needed for a reward to be paid out
         IERC20[] memory approved = pool.approvedList;
