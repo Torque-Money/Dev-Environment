@@ -45,7 +45,7 @@ contract VPool is Ownable {
     // ======== Check the staking period and cooldown periods ========
 
     /** @dev Get the times at which the prologue of the given period occurs */
-    function getPrologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
+    function prologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the prologue is between
         uint256 prologueStart = _periodId.mul(periodLength);
         uint256 prologueEnd = prologueStart.add(cooldownLength);
@@ -55,14 +55,14 @@ contract VPool is Ownable {
     /** @dev Checks if the given period is in the prologue phase */
     function isPrologue(uint256 _periodId) public view returns (bool) {
         // Check if the prologue period of the specified period is present
-        (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes(_periodId);
+        (uint256 prologueStart, uint256 prologueEnd) = prologueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return (current >= prologueStart && current < prologueEnd);
     }
 
     /** @dev Get the times at which the epilogue of the given period occurs */
-    function getEpilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
+    function epilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the epilogue is between
         uint256 periodId = _periodId.add(1);
         uint256 epilogueEnd = periodId.mul(periodLength);
@@ -73,7 +73,7 @@ contract VPool is Ownable {
     /** @dev Checks if the given period is in the epilogue phase */
     function isEpilogue(uint256 _periodId) public view returns (bool) {
         // Check if the epilogue period of the specified period is present
-        (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes(_periodId);
+        (uint256 epilogueStart, uint256 epilogueEnd) = epilogueTimes(_periodId);
 
         uint256 current = block.timestamp;
         return (current >= epilogueStart && current < epilogueEnd);
@@ -114,7 +114,7 @@ contract VPool is Ownable {
     // ======== Helper functions ========
 
     /** @dev Returns the total locked liquidity for the current period */
-    function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
+    function liquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
         return StakingPeriods[_periodId][_token].liquidity;
     }
 
@@ -130,11 +130,7 @@ contract VPool is Ownable {
     function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view onlyApproved(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = StakingPeriods[_periodId][_token];
-
-        uint256 totalDeposited = period.totalDeposited;
-        uint256 liquidity = period.liquidity;
-
-        return _amount.mul(liquidity).div(totalDeposited);
+        return _amount.mul(period.liquidity).div(period.totalDeposited);
     }
 
     // ======== Liquidity manipulation ========
