@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./VPool.sol";
+import "./IYieldApproved.sol";
 
-contract YieldApproved is Ownable {
+contract YieldApproved is Ownable, IYieldApproved {
     using SafeMath for uint256;
 
     mapping(uint256 => mapping(address => bool)) private yields; // Track all of the approved yields to ensure no double payouts
@@ -22,7 +23,7 @@ contract YieldApproved is Ownable {
         minStake[_token] = _amount;
     }
 
-    function yieldApproved(address _account) external returns (bool) {
+    function yieldApproved(address _account) external override returns (bool) {
         // Get the period id
         uint256 periodId = pool.currentPeriodId();
         require(!yields[periodId][_account], "Yield has already been approved");
