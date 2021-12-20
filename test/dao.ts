@@ -15,13 +15,13 @@ describe("DAO", async () => {
         const testToken = new ethers.Contract(config.approved[0].address, ERC20.abi, signer);
         const token = new ethers.Contract(config.tokenAddress, ERC20Votes.abi, signer);
 
-        // Transfer tokens to the timelock
+        // ======== Transfer tokens to the timelock ========
         const initialBal = await testToken.balanceOf(signerAddress);
         const tokenAmount = (1e18).toString();
         await testToken.transfer(timelock.address, tokenAmount);
         console.log("Transferred tokens to the timelock");
 
-        // Create a proposal to transfer tokens back to owner
+        // ======== Create a proposal to transfer tokens back to owner ========
         const transferCallData = testToken.interface.encodeFunctionData("transfer", [signerAddress, tokenAmount]);
         const proposalConfig = {
             contracts: [testToken.address],
@@ -35,7 +35,7 @@ describe("DAO", async () => {
 
         console.log(`Proposed grant for owner with proposal id: ${proposalId.toHexString()}`);
 
-        // Vote on proposal
+        // ======== Vote on proposal ========
         const voterBalance = await token.balanceOf(signerAddress);
         console.log(`Token balance of voter: ${voterBalance}`);
 
@@ -55,7 +55,7 @@ describe("DAO", async () => {
         const stateAfter = await dao.state(proposalId);
         console.log(`Final state of proposal: ${stateAfter}`);
 
-        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this
+        // ======== Queue the proposal for the timelock **** move time forward for this ========
 
         // await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
