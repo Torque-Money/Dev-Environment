@@ -12,25 +12,41 @@ async function main() {
 
     const timelockAddress = getContractAddress({
         from: signerAddress,
-        nonce: transactionCount + 2,
+        nonce: transactionCount + 3,
     });
 
     // Deploy the yield approval
+    const yieldApprovalConfig = {
+        pool: config.poolAddress,
+    };
     const YieldApproval = await hre.ethers.getContractFactory("YieldApproval");
-    const yieldApproval = await YieldApproval.deploy();
+    const yieldApproval = await YieldApproval.deploy(...Object.values(yieldApprovalConfig));
     await yieldApproval.deployed();
 
     console.log(`Deployed token to ${yieldApproval.address}`);
 
     // Deploy the token
-    const tokenAmount = (1e18).toString();
+    const tokenConfig = {
+        tokenAmount: (1e18).toString(),
+        yieldSlashRate: 10000,
+        yieldReward: 2e18,
+        yieldApproval: yieldApproval.address,
+    };
     const Token = await hre.ethers.getContractFactory("Token");
-    const token = await Token.deploy(tokenAmount);
+    const token = await Token.deploy(...Object.values(tokenConfig));
     await token.deployed();
 
     console.log(`Deployed token to ${token.address}`);
 
     // Deploy the governor
+    const governorConfig = {
+        token: token.address,
+        timelock: timelockAddress,
+        quorumFraction: 2,
+        votingDelay: 0,
+        votingPeriod: 1,
+        proposalThreshold: 0,
+    };
     const Governor = await hre.ethers.getContractFactory("DAO");
     const governor = await Governor.deploy(token.address, timelockAddress);
     await governor.deployed();
