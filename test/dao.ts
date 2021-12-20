@@ -38,8 +38,12 @@ describe("DAO", async () => {
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
+        await network.provider.send("evm_mine");
         await dao.castVote(proposalId, 1);
         console.log("Voted for proposal");
+
+        const votes = await dao.proposalVotes(proposalId);
+        console.log(votes);
 
         for (let i = 0; i < 3; i++) await network.provider.send("evm_mine");
 
