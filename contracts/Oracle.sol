@@ -5,27 +5,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IOracle.sol";
 import "./lib/UniswapV2Router02.sol";
 
-contract Oracle is IOracle, Ownable {
+contract Oracle is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     UniswapV2Router02[] private routers;
-    uint256 private decimals;
-
     mapping(UniswapV2Router02 => bool) private storedRouters;
+
+    uint256 public decimals;
 
     constructor(uint256 decimals_) {
         decimals = decimals_;
     }
 
-    function getDecimals() public view override returns (uint256) {
-        return decimals;
-    }
-
-    function addRouter(UniswapV2Router02 _router) external override onlyOwner {
+    function addRouter(UniswapV2Router02 _router) external onlyOwner {
         require(storedRouters[_router] != true, "This router has already been added");
         routers.push(_router);
         storedRouters[_router] = true;
@@ -64,10 +59,10 @@ contract Oracle is IOracle, Ownable {
     function _median(uint256[] memory _array) private pure returns(uint256) {
         uint256 length = _array.length;
         _sort(_array);
-        return length % 2 == 0 ? _array[length/2-1].add(_array[length/2]).div(2) : _array[length/2];
+        return length.mod(2) == 0 ? _array[length.div(2).sub(1)].add(_array[length.div(2)]).div(2) : _array[length.div(2)];
     }
 
-    function pairPrice(IERC20 _token1, IERC20 _token2) public view override returns (uint256) {
+    function pairPrice(IERC20 _token1, IERC20 _token2) public view returns (uint256) {
         // Update the path if the tokens are pool tokens, and return the converted values if we are trying to compare the pool asset with its approved asset
         address[] memory path = new address[](2);
         path[0] = address(_token1);
@@ -81,7 +76,7 @@ contract Oracle is IOracle, Ownable {
         return _median(prices);
     }
 
-    function getRouter() external view override returns (UniswapV2Router02) {
+    function getRouter() external view returns (UniswapV2Router02) {
         uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(routers.length);
         return routers[index];
     }
