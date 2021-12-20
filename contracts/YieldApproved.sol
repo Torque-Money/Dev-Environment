@@ -17,12 +17,8 @@ contract YieldApproved is Ownable {
         pool = pool_; 
     }
 
-    modifier onlyApproved(IERC20 _token) {
+    function setMinStake(IERC20 _token, uint256 _amount) external onlyOwner {
         require(pool.isApproved(_token), "This token has not been approved");
-        _;
-    }
-
-    function setMinStake(IERC20 _token, uint256 _amount) external onlyOwner onlyApproved {
         minStake[_token] = _amount;
     }
 
