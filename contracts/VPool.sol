@@ -36,6 +36,13 @@ contract VPool is Ownable {
         margin = margin_;
     }
 
+    // ======== Contract configuration ========
+
+    /** @dev Set the tax percentage */
+    function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
+        taxPercent = _taxPercent;
+    }
+
     // ======== Check the staking period and cooldown periods ========
 
     /** @dev Get the times at which the prologue of the given period occurs */
