@@ -34,7 +34,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     /** @dev Set the yield approval function */
     function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
 
-    /** @dev Yield new tokens for the account */
+    /** @dev Yield new tokens as a reward to the caller if approved to do so by the yield function */
     function yield() external {
         // Make sure the yield has been approved first
         address account = _msgSender();
