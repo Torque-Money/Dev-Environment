@@ -4,6 +4,8 @@ import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
 import Margin from "../artifacts/contracts/Margin.sol/Margin.json";
 import { expect } from "chai";
 
+// ******************** When moving this back remove this from tsconfig.json
+
 describe("Borrow", async () => {
     it("should stake, deposit, borrow, repay, withdraw, unstake", async () => {
         // Initialize the contracts
