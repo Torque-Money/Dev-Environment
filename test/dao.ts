@@ -38,8 +38,8 @@ describe("DAO", async () => {
         await dao.castVote(proposalId, 1);
         console.log("Voted for proposal");
 
-        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this - might also have to add the function with a .super
-        // await dao.queue(...Object.values(proposalConfig));
+        // Queue the proposal for the timelock **** Might need to move forward a few blocks to do this
+        for (let i = 0; i < 2; i++) await network.provider.send("evm_mine");
         await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
         // Execute the proposal
