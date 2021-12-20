@@ -45,9 +45,9 @@ async function main() {
     const governorConfig = {
         token: token.address,
         timelock: timelockAddress,
-        quorumFraction: 0,
-        votingDelay: 0,
-        votingPeriod: 1,
+        quorumFraction: 4,
+        votingDelay: 1,
+        votingPeriod: 5,
         proposalThreshold: 0,
     };
     const Governor = await hre.ethers.getContractFactory("DAO");
@@ -59,7 +59,7 @@ async function main() {
 
     // Deploy the timelock
     const timelockConfig = {
-        minDelay: 2,
+        minDelay: 1,
         proposers: [governor.address],
         executors: [governor.address],
     };
