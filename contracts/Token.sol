@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./IYieldApproved.sol";
 
 contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     using SafeMath for uint256;
@@ -14,17 +15,24 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     uint256 public yieldSlashRate;
     uint256 public yieldReward;
 
-    constructor(uint256 initialSupply_, uint256 yieldSlashRate_, uint256 yieldReward_) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
+    IYieldApproved public yieldApproved;
+
+    constructor(uint256 initialSupply_, uint256 yieldSlashRate_, uint256 yieldReward_, IYieldApproved yieldApproved_) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
         yieldSlashRate = yieldSlashRate_;
         yieldReward = yieldReward_;
+        yieldApproved = yieldApproved_;
         _mint(owner(), initialSupply_);
     }
+
+    function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
 
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
 
     function setYieldReward(uint256 _yieldReward) external onlyOwner { yieldReward = _yieldReward; }
 
     function yield(address _account) external onlyOwner {
+        require(yieldApproved.yieldApproved(_account), "Account is not approved to yield tokens");
+
         uint256 slash = numYields.div(yieldSlashRate);
         if (slash == 0) slash = 1;
 
