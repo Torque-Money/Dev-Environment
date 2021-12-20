@@ -26,7 +26,7 @@ describe("Borrow", async () => {
         const stakeAmount = ethers.BigNumber.from(10000).mul(ethers.BigNumber.from(10).pow(stakeAsset.decimals));
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
 
-        expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
+        expect(await pool.liquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
 
         // Deposit into the pool
         const depositAsset = config.approved[1];
@@ -60,6 +60,6 @@ describe("Borrow", async () => {
         await network.provider.send("evm_mine");
         await pool.redeem(stakeAsset.address, stakeAmount, periodId);
 
-        expect(await pool.getLiquidity(stakeAsset.address, periodId)).to.equal(0);
+        expect(await pool.liquidity(stakeAsset.address, periodId)).to.equal(0);
     });
 });
