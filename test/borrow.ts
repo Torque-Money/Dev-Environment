@@ -1,7 +1,7 @@
 import { ethers, network } from "hardhat";
 import config from "../config.json";
-import VPool from "../artifacts/contracts/IVPool.sol/IVPool.json";
-import Margin from "../artifacts/contracts/IMargin.sol/IMargin.json";
+import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
+import Margin from "../artifacts/contracts/Margin.sol/Margin.json";
 import { expect } from "chai";
 
 describe("Borrow", async () => {
@@ -9,7 +9,7 @@ describe("Borrow", async () => {
         // Initialize the contracts
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
-        const pool = new ethers.Contract(config.poolAddress, VPool.abi, signer);
+        const pool = new ethers.Contract(config.poolAddress, LPool.abi, signer);
         const margin = new ethers.Contract(config.marginAddress, Margin.abi, signer);
 
         // Set the time of the network to be at the start of the next hour
