@@ -1,14 +1,13 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "./IVPool.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IMargin.sol";
+import "./Margin.sol";
 
-contract VPool is IVPool, Ownable {
+contract VPool is Ownable {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
@@ -23,14 +22,14 @@ contract VPool is IVPool, Ownable {
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private stakingPeriods; // Stores the data for each approved asset
-    uint256 private periodLength;
-    uint256 private cooldownLength;
+    uint256 public periodLength;
+    uint256 public cooldownLength;
 
-    uint256 private taxPercent;
+    uint256 public taxPercent;
 
-    IMargin private margin;
+    Margin public margin;
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, IMargin margin_) {
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
         taxPercent = taxPercent_;
@@ -39,22 +38,16 @@ contract VPool is IVPool, Ownable {
 
     // ======== Check the staking period and cooldown periods ========
 
-    function getPeriodLength() external view override returns (uint256) {
-        return periodLength;
-    }
-
-    function getCooldownLength() external view override returns (uint256) {
-        return cooldownLength;
-    }
-
-    function getPrologueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
+    /** @dev Get the times at which the prologue of the given period occurs */
+    function getPrologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the prologue is between
         uint256 prologueStart = _periodId.mul(periodLength);
         uint256 prologueEnd = prologueStart.add(cooldownLength);
         return (prologueStart, prologueEnd);
     }
 
-    function isPrologue(uint256 _periodId) public view override returns (bool) {
+    /** @dev Checks if the given period is in the prologue phase */
+    function isPrologue(uint256 _periodId) public view returns (bool) {
         // Check if the prologue period of the specified period is present
         (uint256 prologueStart, uint256 prologueEnd) = getPrologueTimes(_periodId);
 
@@ -62,7 +55,8 @@ contract VPool is IVPool, Ownable {
         return (current >= prologueStart && current < prologueEnd);
     }
 
-    function getEpilogueTimes(uint256 _periodId) public view override returns (uint256, uint256) {
+    /** @dev Get the times at which the epilogue of the given period occurs */
+    function getEpilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
         // Return the times of when the epilogue is between
         uint256 periodId = _periodId.add(1);
         uint256 epilogueEnd = periodId.mul(periodLength);
@@ -70,7 +64,8 @@ contract VPool is IVPool, Ownable {
         return (epilogueStart, epilogueEnd);
     }
 
-    function isEpilogue(uint256 _periodId) public view override returns (bool) {
+    /** @dev Checks if the given period is in the epilogue phase */
+    function isEpilogue(uint256 _periodId) public view returns (bool) {
         // Check if the epilogue period of the specified period is present
         (uint256 epilogueStart, uint256 epilogueEnd) = getEpilogueTimes(_periodId);
 
@@ -78,17 +73,20 @@ contract VPool is IVPool, Ownable {
         return (current >= epilogueStart && current < epilogueEnd);
     }
 
-    function isCurrentPeriod(uint256 _periodId) public view override returns (bool) {
+    /** @dev Checks if the specified period is the current period */
+    function isCurrentPeriod(uint256 _periodId) public view returns (bool) {
         return _periodId == currentPeriodId();
     }
 
-    function currentPeriodId() public view override returns (uint256) {
+    /** @dev Returns the id of the current period */
+    function currentPeriodId() public view returns (uint256) {
         return uint256(block.timestamp).div(periodLength);
     }
 
     // ======== Approved tokens ========
 
-    function approveToken(IERC20 _token) external override onlyOwner {
+    /** @dev Approves a token for use with the protocol */
+    function approveToken(IERC20 _token) external onlyOwner {
         // Satisfy the requirements
         require(!isApproved(_token), "This token has already been approved");
 
@@ -97,11 +95,13 @@ contract VPool is IVPool, Ownable {
         approvedList.push(_token);
     }
 
-    function isApproved(IERC20 _token) public view override returns (bool) {
+    /** @dev Returns whether or not a token is approved */
+    function isApproved(IERC20 _token) public view returns (bool) {
         return approved[_token];
     }
 
-    function getApproved() external view override returns (IERC20[] memory) {
+    /** @dev Returns a list of approved tokens */
+    function getApproved() external view returns (IERC20[] memory) {
         return approvedList;
     }
 
@@ -112,18 +112,21 @@ contract VPool is IVPool, Ownable {
 
     // ======== Helper functions ========
 
-    function getLiquidity(IERC20 _token, uint256 _periodId) external view override returns (uint256) {
+    /** @dev Returns the total locked liquidity for the current period */
+    function getLiquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
         return stakingPeriods[_periodId][_token].liquidity;
     }
 
     // ======== Balance management ========
 
-    function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view override returns (uint256) {
+    /** @dev Returns the deposited balance of a given account for a given token for a given period */
+    function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view returns (uint256) {
         // Get the amount of tokens the account deposited into a given period
         return stakingPeriods[_periodId][_token].deposits[_account];
     }
 
-    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view override onlyApproved(_token) returns (uint256) {
+    /** @dev Returns the value of the tokens for a given period for a given token once they are redeemed */
+    function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view onlyApproved(_token) returns (uint256) {
         // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = stakingPeriods[_periodId][_token];
 
@@ -135,7 +138,8 @@ contract VPool is IVPool, Ownable {
 
     // ======== Liquidity manipulation ========
 
-    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external override onlyApproved(_token) {
+    /** @dev Stakes a given amount of specified tokens in the pool */
+    function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external onlyApproved(_token) {
         // Make sure the requirements are satisfied
         require(_periodId >= currentPeriodId(), "May only stake into current or future periods");
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Staking is only allowed during the prologue period or for a future period");
@@ -152,7 +156,8 @@ contract VPool is IVPool, Ownable {
         emit Stake(_msgSender(), _periodId, _token, _amount);
     }
 
-    function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external override {
+    /** @dev Redeems the staked amount of tokens in a given pool */
+    function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external {
         // Make sure the requirements are satisfied
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Redeem is only allowed during prologue period or once period has ended");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
@@ -172,7 +177,8 @@ contract VPool is IVPool, Ownable {
         emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
-    function deposit(IERC20 _token, uint256 _amount) external override onlyApproved(_token) {
+    /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
+    function deposit(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
@@ -191,7 +197,8 @@ contract VPool is IVPool, Ownable {
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
-    function withdraw(IERC20 _token, uint256 _amount) external override onlyApproved(_token) {
+    /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
+    function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         // Only margin may call this and make sure no withdraws during cooldown period
         require(_msgSender() == address(margin), "Only the margin may call this function");
         uint256 periodId = currentPeriodId();
@@ -204,4 +211,12 @@ contract VPool is IVPool, Ownable {
         _token.safeTransfer(_msgSender(), _amount);
         emit Withdraw(_msgSender(), periodId, _token, _amount);
     }
+
+    // ======== Events ========
+
+    event Stake(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
+    event Redeem(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount, uint256 liquidity);
+
+    event Deposit(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
+    event Withdraw(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
 }
