@@ -1,5 +1,5 @@
 import { getContractAddress } from "ethers/lib/utils";
-import hre, { ethers } from "hardhat";
+import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
 
@@ -29,9 +29,9 @@ async function main() {
 
     // Deploy the token
     const tokenConfig = {
-        tokenAmount: ethers.BigNumber.from(10).pow(18).mul(1000),
+        tokenAmount: hre.ethers.BigNumber.from(10).pow(18).mul(1000),
         yieldSlashRate: 10000,
-        yieldReward: ethers.BigNumber.from(10).pow(18).mul(5),
+        yieldReward: hre.ethers.BigNumber.from(10).pow(18).mul(5),
         yieldApproval: yieldApproved.address,
     };
     const Token = await hre.ethers.getContractFactory("Token");
