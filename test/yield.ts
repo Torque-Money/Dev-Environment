@@ -5,17 +5,10 @@ import config from "../config.json";
 import { expect } from "chai";
 import resetTime from "../utils/resetTime";
 import timeTravel from "../utils/timeTravel";
-import deployPool from "../scripts/deployPool";
-import deployYield from "../scripts/deployYield";
-import deployToken from "../scripts/deployToken";
 
 describe("Yield", async () => {
     it("Should stake tokens, reap yield, unstake tokens", async () => {
         // ======== Initialize the contracts ========
-        await deployPool();
-        await deployYield();
-        await deployToken();
-
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
         const token = new ethers.Contract(config.tokenAddress, Token.abi, signer);
