@@ -56,12 +56,12 @@ contract Margin is Ownable, MarginCore {
     }
 
     /** @dev Get the interest rate for a given asset */
-    function calculateInterestRate(IERC20 _borrowed) public view returns (uint256) {
+    function calculateInterestRate(IERC20 _token) public view returns (uint256) {
         // interest = totalBorrowed / (totalBorrowed + liquidity)
-        uint256 _borrowedAmount = borrowed(_borrowed);
-        uint256 _liquidity = liquidity(_borrowed);
+        uint256 _borrowed = borrowed(_token);
+        uint256 _liquidity = liquidity(_token);
 
-        return _borrowedAmount.mul(maxInterestPercent).mul(oracle.decimals()).div(_liquidity.add(_borrowedAmount)).div(100).div(pool.periodLength());
+        return _borrowed.mul(maxInterestPercent).mul(oracle.decimals()).div(_liquidity.add(_borrowed)).div(100).div(pool.periodLength());
     }
 
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
