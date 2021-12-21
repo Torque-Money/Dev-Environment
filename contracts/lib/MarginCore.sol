@@ -74,20 +74,22 @@ contract MarginCore is Ownable {
         return retValue;
     }
 
-    /** @dev Return the minimum margin level in terms of decimals */
-    function _minMarginLevel() internal view returns (uint256) {
-        return minMarginThreshold.add(100).mul(oracle.decimals()).div(100);
-    }
-
     /** @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals */
-    function _marginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed,
-                                IERC20 _collateral, IERC20 _borrowed, uint256 _interest) internal view returns (uint256) {
+    function _marginLevel(
+        uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed,
+        IERC20 _collateral, IERC20 _borrowed, uint256 _interest
+    ) internal view returns (uint256) {
         if (_amountBorrowed == 0) return oracle.decimals().mul(999);
 
         uint256 currentBorrowPrice;
         { currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.decimals()); }
         
         return _calculateMarginLevel(_deposited, currentBorrowPrice, _initialBorrowPrice, _interest);
+    }
+
+    /** @dev Return the minimum margin level in terms of decimals */
+    function _minMarginLevel() internal view returns (uint256) {
+        return minMarginThreshold.add(100).mul(oracle.decimals()).div(100);
     }
 
     // ======== Utils ========

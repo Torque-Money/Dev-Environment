@@ -52,7 +52,7 @@ contract Margin is Ownable, MarginCore {
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
         uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
-        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed);
+        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
     }
 
     /** @dev Get the interest rate for a given asset */
@@ -103,7 +103,8 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Borrow ========
 
-    function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
+    /** @dev Require that the borrow is not instantly liquidatable and update the balances */
+    function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
@@ -122,7 +123,6 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        // Requirements for borrowing
         uint256 periodId = pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
@@ -136,7 +136,7 @@ contract Margin is Ownable, MarginCore {
 
         if (borrowAccount.borrowed == 0) borrowAccount.initialBorrowTime = block.timestamp;
 
-        _borrowHelper(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
+        _borrow(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
 
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
