@@ -12,6 +12,9 @@ abstract contract MarginHelper is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    Oracle public immutable oracle;
+    LPool public immutable pool;
+
     struct BorrowAccount {
         uint256 collateral;
         uint256 borrowed;
@@ -24,15 +27,12 @@ abstract contract MarginHelper is Ownable {
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
     }
 
-    Oracle public immutable oracle;
-    LPool public immutable pool;
+    mapping(IERC20 => uint256) private MinCollateral;
 
     uint256 public minBorrowLength;
     uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
 
     uint256 public maxInterestPercent;
-
-    mapping(IERC20 => uint256) private MinCollateral;
 
     constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
         oracle = oracle_;
@@ -43,6 +43,11 @@ abstract contract MarginHelper is Ownable {
     }
 
     // ======== Getters ========
+
+    /** @dev Gets the minimum amount of collateral required to borrow a token */
+    function minCollateral(IERC20 _token) public view returns (uint256) {
+        return MinCollateral[_token];
+    }
 
     /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
     function compensationPercentage() public view virtual returns (uint256);
