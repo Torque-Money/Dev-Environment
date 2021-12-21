@@ -1,7 +1,6 @@
 import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
-import getFutureAddress from "../utils/getFutureAddress";
 
 async function main() {
     await hre.run("compile");
