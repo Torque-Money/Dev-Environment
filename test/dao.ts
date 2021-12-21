@@ -42,7 +42,8 @@ describe("DAO", async () => {
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
-        const signerVotes = await token.getVotes(signerAddress); // **** IT IS A FUNCTION THOUGH ????
+        console.log(token);
+        const signerVotes = await token.getVotes(signerAddress);
         console.log(`Signer has ${signerVotes} votes`);
 
         await network.provider.send("evm_mine");
