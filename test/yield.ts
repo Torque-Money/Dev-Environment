@@ -16,8 +16,6 @@ describe("Yield", async () => {
         await deployYield();
         await deployToken();
 
-        console.log("Hello ????");
-
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
         const token = new ethers.Contract(config.tokenAddress, Token.abi, signer);
