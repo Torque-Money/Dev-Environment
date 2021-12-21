@@ -5,6 +5,8 @@ import Timelock from "../artifacts/@openzeppelin/contracts/governance/TimelockCo
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import ERC20Votes from "@openzeppelin/contracts/build/contracts/ERC20Votes.json";
 import { expect } from "chai";
+import skipBlocks from "../utils/skipBlocks";
+import timeTravel from "../utils/timeTravel";
 
 describe("DAO", async () => {
     it("Should create a proposal, vote on the proposal, then execute the proposal after the given time", async () => {
@@ -51,7 +53,7 @@ describe("DAO", async () => {
         const hasVoted = await dao.hasVoted(proposalId, signerAddress);
         console.log(`Voted status: ${hasVoted}`);
 
-        for (let i = 0; i < 5; i++) await network.provider.send("evm_mine");
+        skipBlocks(5);
 
         const stateAfter = await dao.state(proposalId);
         console.log(`Final state of proposal: ${stateAfter}`);
@@ -61,8 +63,7 @@ describe("DAO", async () => {
         await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
         console.log("Queued proposal for execution");
 
-        await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
-        await network.provider.send("evm_mine");
+        await timeTravel(1);
 
         // Execute the proposal and check that the balance is the same
         await dao["execute(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
