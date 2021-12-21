@@ -1,20 +1,17 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./LPoolCore.sol";
 import "./Margin.sol";
 
-contract LPool is Ownable {
-    using SafeERC20 for IERC20;
+contract LPool is LPoolCore {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     Margin public immutable margin;
-
-    IERC20[] private ApprovedList;
-    mapping(IERC20 => bool) private Approved; // Token => approved
 
     struct StakingPeriod {
         uint256 totalDeposited;
@@ -22,8 +19,6 @@ contract LPool is Ownable {
         mapping(address => uint256) deposits;
     }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Period Id => token => staking period
-    uint256 public immutable periodLength;
-    uint256 public immutable cooldownLength;
 
     uint256 public taxPercent;
 
@@ -41,80 +36,6 @@ contract LPool is Ownable {
         taxPercent = _taxPercent;
     }
 
-    // ======== Check the staking period and cooldown periods ========
-
-    /** @dev Get the times at which the prologue of the given period occurs */
-    function prologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
-        uint256 prologueStart = _periodId.mul(periodLength);
-        uint256 prologueEnd = prologueStart.add(cooldownLength);
-        return (prologueStart, prologueEnd);
-    }
-
-    /** @dev Checks if the given period is in the prologue phase */
-    function isPrologue(uint256 _periodId) public view returns (bool) {
-        (uint256 prologueStart, uint256 prologueEnd) = prologueTimes(_periodId);
-
-        uint256 current = block.timestamp;
-        return (current >= prologueStart && current < prologueEnd);
-    }
-
-    /** @dev Get the times at which the epilogue of the given period occurs */
-    function epilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
-        uint256 periodId = _periodId.add(1);
-        uint256 epilogueEnd = periodId.mul(periodLength);
-        uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
-        return (epilogueStart, epilogueEnd);
-    }
-
-    /** @dev Checks if the given period is in the epilogue phase */
-    function isEpilogue(uint256 _periodId) public view returns (bool) {
-        (uint256 epilogueStart, uint256 epilogueEnd) = epilogueTimes(_periodId);
-
-        uint256 current = block.timestamp;
-        return (current >= epilogueStart && current < epilogueEnd);
-    }
-
-    /** @dev Checks if the specified period is the current period */
-    function isCurrentPeriod(uint256 _periodId) public view returns (bool) {
-        return _periodId == currentPeriodId();
-    }
-
-    /** @dev Returns the id of the current period */
-    function currentPeriodId() public view returns (uint256) {
-        return uint256(block.timestamp).div(periodLength);
-    }
-
-    // ======== Approved tokens ========
-
-    /** @dev Approves a token for use with the protocol */
-    function approveToken(IERC20 _token) external onlyOwner {
-        require(!isApproved(_token), "This token has already been approved");
-
-        Approved[_token] = true;
-        ApprovedList.push(_token);
-    }
-
-    function approvedList() external view returns (IERC20[] memory) {
-        return ApprovedList;
-    }
-
-    /** @dev Returns whether or not a token is approved */
-    function isApproved(IERC20 _token) public view returns (bool) {
-        return Approved[_token];
-    }
-
-    modifier onlyApproved(IERC20 _token) {
-        require(isApproved(_token), "This token has not been approved");
-        _;
-    }
-
-    // ======== Helper functions ========
-
-    /** @dev Returns the total locked liquidity for the current period */
-    function liquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
-        return StakingPeriods[_periodId][_token].liquidity;
-    }
-
     // ======== Balance management ========
 
     /** @dev Returns the deposited balance of a given account for a given token for a given period */
@@ -129,6 +50,11 @@ contract LPool is Ownable {
     }
 
     // ======== Liquidity manipulation ========
+
+    /** @dev Returns the total locked liquidity for the current period */
+    function liquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
+        return StakingPeriods[_periodId][_token].liquidity;
+    }
 
     /** @dev Stakes a given amount of specified tokens in the pool */
     function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external onlyApproved(_token) {
@@ -182,7 +108,7 @@ contract LPool is Ownable {
         // Deposit the funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), amount);
         StakingPeriods[periodId][_token].liquidity = StakingPeriods[periodId][_token].liquidity.add(amount);
-        
+
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
