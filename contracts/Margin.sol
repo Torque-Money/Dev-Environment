@@ -36,44 +36,27 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Return the total amount of a given asset borrowed */
     function borrowed(IERC20 _token) public view returns (uint256) {
-        // Calculate the amount borrowed for the current token for the given pool for the given period
         uint256 periodId = pool.currentPeriodId();
         return BorrowPeriods[periodId][_token].totalBorrowed;
     }
 
     /** @dev Return the total amount of a given asset borrowed */
     function liquidity(IERC20 _token) public view returns (uint256) {
-        // Calculate the liquidity available for the current token for the current period
         uint256 _liquidity = pool.liquidity(_token, pool.currentPeriodId());
         uint256 _borrowed = borrowed(_token);
 
         return _liquidity.sub(_borrowed);
     }
 
-    /** @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals */
-    function calculateMarginLevel(uint256 _deposited, uint256 _initialBorrowPrice, uint256 _borrowTime, 
-                                    uint256 _amountBorrowed, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
-        if (_amountBorrowed == 0) return oracle.decimals().mul(999);
-
-        uint256 currentBorrowPrice;
-        { currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.decimals()); }
-
-        uint256 interest;
-        { interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime); }
-        
-        return _calculateMarginLevel(_deposited, currentBorrowPrice, _initialBorrowPrice, interest);
-    }
-
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
-        // Get the borrowed period and and borrowed asset data and calculate and return accounts margin level
         BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
-        return calculateMarginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.initialBorrowTime, borrowAccount.borrowed, _collateral, _borrowed);
+        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
+        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed);
     }
 
     /** @dev Get the interest rate for a given asset */
     function calculateInterestRate(IERC20 _borrowed) public view returns (uint256) {
-        // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
         uint256 _borrowedAmount = borrowed(_borrowed);
         uint256 _liquidity = liquidity(_borrowed);
@@ -265,6 +248,7 @@ contract Margin is Ownable, MarginCore {
         borrowAccount.initialPrice = 0;
         borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
         borrowAccount.borrowed = 0;
+
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
 
@@ -282,6 +266,7 @@ contract Margin is Ownable, MarginCore {
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
         emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
+
     }
 
     // ======== Liquidate ========
