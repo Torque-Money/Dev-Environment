@@ -170,6 +170,7 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Repay and withdraw ========
 
+    /** @dev Get the interest and borrowed current price to help the balance function */
     function _balanceOf(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
@@ -178,7 +179,6 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Check the current margin balance of an account */
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view returns (uint256) {
-        // The value returned from repaying a margin in terms of the collateral asset
         BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
 
         (uint256 interest, uint256 borrowedCurrentPrice) = _balanceOf(_collateral, _borrowed, borrowAccount);
@@ -187,7 +187,7 @@ contract Margin is Ownable, MarginCore {
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
     }
 
-    function _repayGreaterHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) private {
+    function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) private {
         // Convert the accounts tokens back to the deposited asset
         uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.decimals());
 
@@ -205,7 +205,7 @@ contract Margin is Ownable, MarginCore {
         }
     }
 
-    function _repayLessEqualHelper(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) private {
+    function _repayLessEqual(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) private {
         // Amount the user has to repay the protocol
         uint256 repayAmount = _borrowAccount.collateral.sub(_balAfterRepay);
         _borrowAccount.collateral = _balAfterRepay;
@@ -239,8 +239,8 @@ contract Margin is Ownable, MarginCore {
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId), "Cannot repay until minimum borrow period is over or epilogue has started");
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
-        if (balAfterRepay > borrowAccount.collateral) _repayGreaterHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
-        else _repayLessEqualHelper(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
+        if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
+        else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
 
         // Update the borrowed
         borrowAccount.initialPrice = 0;
