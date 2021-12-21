@@ -33,7 +33,6 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Getters ========
 
-
     /** @dev Return the total amount of a given asset borrowed */
     function borrowed(IERC20 _token) public view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
@@ -55,22 +54,20 @@ contract Margin is Ownable, MarginCore {
         return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
     }
 
-    /** @dev Get the interest rate for a given asset */
+    /** @dev Get the interest rate for a given asset
+        interest = totalBorrowed / (totalBorrowed + liquidity) */
     function calculateInterestRate(IERC20 _token) public view returns (uint256) {
-        // interest = totalBorrowed / (totalBorrowed + liquidity)
         uint256 _borrowed = borrowed(_token);
         uint256 _liquidity = liquidity(_token);
-
         return _borrowed.mul(maxInterestPercent).mul(oracle.decimals()).div(_liquidity.add(_borrowed)).div(100).div(pool.periodLength());
     }
 
-    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
+    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
+        interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod) */
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view returns (uint256) {
-        // interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod)
         uint256 retValue;
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed)); }
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
-
         return retValue;
     }
 
@@ -173,7 +170,7 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Repay and withdraw ========
 
-    function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) private view returns (uint256, uint256) {
+    function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
         return (interest, borrowedCurrentPrice);
