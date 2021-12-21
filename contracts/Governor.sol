@@ -106,7 +106,7 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(Governor, GovernorTimelockControl)
+        override(Governor, GovernorTimelockControl, IERC165)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
