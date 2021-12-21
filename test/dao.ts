@@ -61,9 +61,13 @@ describe("DAO", async () => {
         // ======== Queue the proposal for the timelock **** move time forward for this ========
 
         await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
+        console.log("Queued proposal for execution");
+
+        await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
+        await network.provider.send("evm_mine")
 
         // Execute the proposal
-        // await timelock.
+        await timelock.
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
