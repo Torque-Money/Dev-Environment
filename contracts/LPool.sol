@@ -14,15 +14,14 @@ contract LPool is Ownable {
     Margin public immutable margin;
 
     IERC20[] private ApprovedList;
-    mapping(IERC20 => bool) private Approved;
+    mapping(IERC20 => bool) private Approved; // Token => approved
 
-    // Staking data
     struct StakingPeriod {
         uint256 totalDeposited;
         uint256 liquidity;
         mapping(address => uint256) deposits;
     }
-    mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Stores the data for each approved asset
+    mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Period Id => token => staking period
     uint256 public immutable periodLength;
     uint256 public immutable cooldownLength;
 
@@ -46,7 +45,6 @@ contract LPool is Ownable {
 
     /** @dev Get the times at which the prologue of the given period occurs */
     function prologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
-        // Return the times of when the prologue is between
         uint256 prologueStart = _periodId.mul(periodLength);
         uint256 prologueEnd = prologueStart.add(cooldownLength);
         return (prologueStart, prologueEnd);
@@ -54,7 +52,6 @@ contract LPool is Ownable {
 
     /** @dev Checks if the given period is in the prologue phase */
     function isPrologue(uint256 _periodId) public view returns (bool) {
-        // Check if the prologue period of the specified period is present
         (uint256 prologueStart, uint256 prologueEnd) = prologueTimes(_periodId);
 
         uint256 current = block.timestamp;
@@ -63,7 +60,6 @@ contract LPool is Ownable {
 
     /** @dev Get the times at which the epilogue of the given period occurs */
     function epilogueTimes(uint256 _periodId) public view returns (uint256, uint256) {
-        // Return the times of when the epilogue is between
         uint256 periodId = _periodId.add(1);
         uint256 epilogueEnd = periodId.mul(periodLength);
         uint256 epilogueStart = epilogueEnd.sub(cooldownLength);
@@ -72,7 +68,6 @@ contract LPool is Ownable {
 
     /** @dev Checks if the given period is in the epilogue phase */
     function isEpilogue(uint256 _periodId) public view returns (bool) {
-        // Check if the epilogue period of the specified period is present
         (uint256 epilogueStart, uint256 epilogueEnd) = epilogueTimes(_periodId);
 
         uint256 current = block.timestamp;
@@ -93,15 +88,15 @@ contract LPool is Ownable {
 
     /** @dev Approves a token for use with the protocol */
     function approveToken(IERC20 _token) external onlyOwner {
-        // Satisfy the requirements
         require(!isApproved(_token), "This token has already been approved");
 
-        // Approve the token
         Approved[_token] = true;
         ApprovedList.push(_token);
     }
 
-    function approvedList() external view returns (IERC20[] memory) { return ApprovedList; }
+    function approvedList() external view returns (IERC20[] memory) {
+        return ApprovedList;
+    }
 
     /** @dev Returns whether or not a token is approved */
     function isApproved(IERC20 _token) public view returns (bool) {
@@ -124,13 +119,11 @@ contract LPool is Ownable {
 
     /** @dev Returns the deposited balance of a given account for a given token for a given period */
     function balanceOf(address _account, IERC20 _token, uint256 _periodId) public view returns (uint256) {
-        // Get the amount of tokens the account deposited into a given period
         return StakingPeriods[_periodId][_token].deposits[_account];
     }
 
     /** @dev Returns the value of the tokens for a given period for a given token once they are redeemed */
     function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view onlyApproved(_token) returns (uint256) {
-        // Get the value for redeeming a given amount of tokens for a given periodId
         StakingPeriod storage period = StakingPeriods[_periodId][_token];
         return _amount.mul(period.liquidity).div(period.totalDeposited);
     }
@@ -139,7 +132,6 @@ contract LPool is Ownable {
 
     /** @dev Stakes a given amount of specified tokens in the pool */
     function stake(IERC20 _token, uint256 _amount, uint256 _periodId) external onlyApproved(_token) {
-        // Make sure the requirements are satisfied
         require(_periodId >= currentPeriodId(), "May only stake into current or future periods");
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Staking is only allowed during the prologue period or for a future period");
 
@@ -157,14 +149,12 @@ contract LPool is Ownable {
 
     /** @dev Redeems the staked amount of tokens in a given pool */
     function redeem(IERC20 _token, uint256 _amount, uint256 _periodId) external {
-        // Make sure the requirements are satisfied
         require(isPrologue(_periodId) || !isCurrentPeriod(_periodId), "Redeem is only allowed during prologue period or once period has ended");
         require(_amount <= balanceOf(_msgSender(), _token, _periodId), "Cannot redeem more than total balance");
 
-        // Update the balances of the period
+        // Update the balances of the period, withdraw collateral and return to user
         StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
 
-        // Withdraw the allocated amount from the pool and return it to the user
         uint256 tokensRedeemed = redeemValue(_token, _amount, _periodId);
 
         stakingPeriod.deposits[_msgSender()] = stakingPeriod.deposits[_msgSender()].sub(_amount);
@@ -178,11 +168,10 @@ contract LPool is Ownable {
 
     /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
     function deposit(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
-        // Make sure no deposits during cooldown period
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
 
-        // Pay a tax to the owner
+        // Pay a tax to the contract owner
         uint256 amount = _amount;
         {
             uint256 tax = _amount.mul(taxPercent).div(100);
@@ -190,24 +179,27 @@ contract LPool is Ownable {
             _token.safeTransferFrom(_msgSender(), owner(), tax);
         }
 
-        // Receive a given number of funds to the current pool
+        // Deposit the funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), amount);
         StakingPeriods[periodId][_token].liquidity = StakingPeriods[periodId][_token].liquidity.add(amount);
+        
         emit Deposit(_msgSender(), periodId, _token, amount);
     }
 
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
     function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
-        // Only margin may call this and make sure no withdraws during cooldown period
-        require(_msgSender() == address(margin), "Only the margin may call this function");
         uint256 periodId = currentPeriodId();
+        require(_msgSender() == address(margin), "Only the margin may call this function");
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token]; 
+
         require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
+
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
+
         emit Withdraw(_msgSender(), periodId, _token, _amount);
     }
 
