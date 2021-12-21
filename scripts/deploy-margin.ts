@@ -18,6 +18,8 @@ async function main() {
     await margin.deployed();
     console.log(`Margin deployed to ${margin.address}`);
     config.marginAddress = margin.address;
+
+    fs.writeFileSync("config.json", JSON.stringify(config));
 }
 
 main()
