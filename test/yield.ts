@@ -15,14 +15,14 @@ describe("Yield", async () => {
         const stakeAsset = config.approved[0];
         const stakeAmount = ethers.BigNumber.from(10).pow(18).mul(100);
 
-        const periodId = await pool.currentPeriodId();
-
         // ======== Set the time of the network to be at the start of the next hour ========
         const blockNumber = ethers.provider.blockNumber;
         const timeStamp = (await ethers.provider.getBlock(blockNumber)).timestamp;
         const startTime = timeStamp - (timeStamp % 3600) + 3600;
         await network.provider.send("evm_setNextBlockTimestamp", [startTime]);
         await network.provider.send("evm_mine");
+
+        const periodId = await pool.currentPeriodId();
 
         //======== Stake tokens ========
         await pool.stake(stakeAsset.address, stakeAmount, periodId);
