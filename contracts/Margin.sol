@@ -35,28 +35,19 @@ contract Margin is Ownable, MarginCore {
 
 
     /** @dev Return the total amount of a given asset borrowed */
-    function totalBorrowed(IERC20 _token) public view returns (uint256) {
+    function borrowed(IERC20 _token) public view returns (uint256) {
         // Calculate the amount borrowed for the current token for the given pool for the given period
         uint256 periodId = pool.currentPeriodId();
         return BorrowPeriods[periodId][_token].totalBorrowed;
     }
 
     /** @dev Return the total amount of a given asset borrowed */
-    function liquidityAvailable(IERC20 _token) public view returns (uint256) {
+    function liquidity(IERC20 _token) public view returns (uint256) {
         // Calculate the liquidity available for the current token for the current period
-        uint256 liquidity = pool.liquidity(_token, pool.currentPeriodId());
-        uint256 borrowed = totalBorrowed(_token);
+        uint256 _liquidity = pool.liquidity(_token, pool.currentPeriodId());
+        uint256 _borrowed = borrowed(_token);
 
-        return liquidity.sub(borrowed);
-    }
-
-    function _calculateMarginLevelHelper(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) private view returns (uint256) {
-        uint256 retValue;
-        { retValue = oracle.decimals(); }
-        { retValue = retValue.mul(_deposited.add(_currentBorrowPrice)); }
-        { retValue = retValue.div(_initialBorrowPrice.add(_interest)); }
-        
-        return retValue;
+        return _liquidity.sub(_borrowed);
     }
 
     /** @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals */
@@ -70,11 +61,8 @@ contract Margin is Ownable, MarginCore {
         uint256 interest;
         { interest = calculateInterest(_borrowed, _initialBorrowPrice, _borrowTime); }
         
-        return _calculateMarginLevelHelper(_deposited, currentBorrowPrice, _initialBorrowPrice, interest);
+        return _calculateMarginLevel(_deposited, currentBorrowPrice, _initialBorrowPrice, interest);
     }
-
-    /** @dev Return the minimum margin level in terms of decimals */
-    function _minMarginLevel() private view returns (uint256) { return minMarginThreshold.add(100).mul(oracle.decimals()).div(100); }
 
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
@@ -87,10 +75,10 @@ contract Margin is Ownable, MarginCore {
     function calculateInterestRate(IERC20 _borrowed) public view returns (uint256) {
         // Calculate the interest rate for a given asset
         // interest = totalBorrowed / (totalBorrowed + liquidity)
-        uint256 _totalBorrowed = totalBorrowed(_borrowed);
-        uint256 liquidity = liquidityAvailable(_borrowed);
+        uint256 _borrowedAmount = borrowed(_borrowed);
+        uint256 _liquidity = liquidity(_borrowed);
 
-        return _totalBorrowed.mul(maxInterestPercent).mul(oracle.decimals()).div(liquidity.add(_totalBorrowed)).div(100).div(pool.periodLength());
+        return _borrowedAmount.mul(maxInterestPercent).mul(oracle.decimals()).div(_liquidity.add(_borrowedAmount)).div(100).div(pool.periodLength());
     }
 
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */

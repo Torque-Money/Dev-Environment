@@ -63,7 +63,24 @@ contract MarginCore is Ownable {
         return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
     }
 
+    // ======== Calculation assistances ========
+
+    function _calculateMarginLevel(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) internal view returns (uint256) {
+        uint256 retValue;
+        { retValue = oracle.decimals(); }
+        { retValue = retValue.mul(_deposited.add(_currentBorrowPrice)); }
+        { retValue = retValue.div(_initialBorrowPrice.add(_interest)); }
+        
+        return retValue;
+    }
+
+    /** @dev Return the minimum margin level in terms of decimals */
+    function _minMarginLevel() internal view returns (uint256) {
+        return minMarginThreshold.add(100).mul(oracle.decimals()).div(100);
+    }
+
     // ======== Utils ========
+
     function _swap(IERC20 _token1, IERC20 _token2, uint256 _amount) internal returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(_token1);
