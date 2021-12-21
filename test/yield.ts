@@ -32,7 +32,10 @@ describe("Yield", async () => {
         await network.provider.send("evm_increaseTime", [20 * 60]);
         await network.provider.send("evm_mine");
 
+        const initialTokenBalance = await token.balanceOf(signerAddress);
+        const yieldAmount = await token.currentYieldReward();
         await token.yield();
+        expect(await token.balanceOf(signerAddress)).to.equal(initialTokenBalance.add(yieldAmount));
 
         //======== Unstake tokens reward ========
     });
