@@ -27,7 +27,7 @@ contract LPool is LPoolCore {
         margin = margin_;
     }
 
-    // ======== Contract configuration ========
+    // ======== Admin ========
 
     /** @dev Set the tax percentage */
     function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
