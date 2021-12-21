@@ -42,7 +42,7 @@ describe("DAO", async () => {
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
-        const signerVotes = await token.getVotes(signerAddress);
+        const signerVotes = await token.getVotes(signerAddress); // **** The problem is that I have 0 votes, but I CAN still vote with my zero votes - why do I have zero ???
         console.log(`Signer has ${signerVotes} votes`);
 
         await network.provider.send("evm_mine");
