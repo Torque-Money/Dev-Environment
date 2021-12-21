@@ -3,7 +3,9 @@
 import hre from "hardhat";
 import config from "../config.json";
 
-export default async function main() {}
+export default async function main() {
+    // Hand the contracts over to the DAO, approve funds to exit
+}
 
 main()
     .then(() => process.exit(0))
