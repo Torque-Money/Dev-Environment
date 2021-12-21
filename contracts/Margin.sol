@@ -107,9 +107,13 @@ contract Margin is Ownable, MarginCore {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
 
-        require(calculateMarginLevel(_borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
-                                    _borrowAccount.initialBorrowTime, _borrowAccount.borrowed.add(_amount), _collateral, _borrowed) > _minMarginLevel(),
-                                    "This deposited collateral is not enough to exceed minimum margin level");
+        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
+        require(
+            _marginLevel(
+                _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
+                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
+            ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
+        );
 
         // Update the balances of the borrowed value
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
@@ -125,7 +129,7 @@ contract Margin is Ownable, MarginCore {
         uint256 periodId = pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
-        require(liquidityAvailable(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(liquidity(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
         require(_collateral != _borrowed, "Cannot borrow against the same asset");
 
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
