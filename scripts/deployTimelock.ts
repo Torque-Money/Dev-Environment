@@ -9,7 +9,7 @@ export default async function main() {
     const timelockConfig = {
         minDelay: 1,
         proposers: [config.daoAddress],
-        executors: [config.daoAddress],
+        executors: [hre.ethers.constants.AddressZero],
     };
     const Timelock = await hre.ethers.getContractFactory("TimelockController");
     const timelock = await Timelock.deploy(...Object.values(timelockConfig));
