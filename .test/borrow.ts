@@ -4,8 +4,6 @@ import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
 import Margin from "../artifacts/contracts/Margin.sol/Margin.json";
 import { expect } from "chai";
 
-// ******************** When moving this back remove this from tsconfig.json
-
 describe("Borrow", async () => {
     it("should stake, deposit, borrow, repay, withdraw, unstake", async () => {
         // Initialize the contracts
@@ -15,6 +13,7 @@ describe("Borrow", async () => {
         const margin = new ethers.Contract(config.marginAddress, Margin.abi, signer);
 
         // Set the time of the network to be at the start of the next hour
+        await network.provider.send("evm_mine");
         const blockNumber = ethers.provider.blockNumber;
         const timeStamp = (await ethers.provider.getBlock(blockNumber)).timestamp;
         const startTime = timeStamp - (timeStamp % 3600) + 3600;

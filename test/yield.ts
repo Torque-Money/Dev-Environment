@@ -1,6 +1,6 @@
 import { ethers, network } from "hardhat";
-import Token from "../artifacts/contracts/LPool.sol/LPool.json";
-import LPool from "../artifacts/contracts/Token.sol/Token.json";
+import Token from "../artifacts/contracts/Token.sol/Token.json";
+import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
 import config from "../config.json";
 import { expect } from "chai";
 
@@ -16,6 +16,7 @@ describe("Yield", async () => {
         const stakeAmount = ethers.BigNumber.from(10).pow(18).mul(100);
 
         // ======== Set the time of the network to be at the start of the next hour ========
+        await network.provider.send("evm_mine");
         const blockNumber = ethers.provider.blockNumber;
         const timeStamp = (await ethers.provider.getBlock(blockNumber)).timestamp;
         const startTime = timeStamp - (timeStamp % 3600) + 3600;
