@@ -9,6 +9,7 @@
         "fund": "npx hardhat run --network localhost scripts/fund.ts",
         "all:protocol": "npm run deploy:protocol && npm run fund && npm run update",
         "all:dao": "npm run deploy:dao && npm run fund",
+        "all": "npm run all:protocol && npm run deploy:dao",
         "time": "npx hardhat time --network localhost",
         "test": "npx hardhat test --network localhost"
     },
