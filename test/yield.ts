@@ -37,6 +37,13 @@ describe("Yield", async () => {
         await token.yield();
         expect(await token.balanceOf(signerAddress)).to.equal(initialTokenBalance.add(yieldAmount));
 
+        expect(async () => await token.yield()).to.throw("Able to yield twice");
+
         //======== Unstake tokens reward ========
+        await network.provider.send("evm_increaseTime", [40 * 60]);
+        await network.provider.send("evm_mine");
+
+        await pool.redeem(stakeAsset.address, stakeAmount, periodId);
+        expect(await pool.liquidity(stakeAsset.address, periodId)).to.equal(0);
     });
 });
