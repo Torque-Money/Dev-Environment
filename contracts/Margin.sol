@@ -8,28 +8,28 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./Oracle.sol";
 import "./LPool.sol";
 import "./lib/UniswapV2Router02.sol";
-import "./lib/MarginCore.sol";
+import "./lib/MarginHelper.sol";
 
-contract Margin is Ownable, MarginCore {
+contract Margin is Ownable, MarginHelper {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private BorrowPeriods;
 
     constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_)
-        MarginCore(oracle_, pool_, minBorrowLength_, maxInterestPercent_, minMarginThreshold_)
+        MarginHelper(oracle_, pool_, minBorrowLength_, maxInterestPercent_, minMarginThreshold_)
     {}
 
     // ======== Getters ========
 
+    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
+    function compensationPercentage() public view override returns (uint256) {
+        return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
+    }
+
     /** @dev Gets the minimum amount of collateral required to borrow a token */
     function minCollateral(IERC20 _token) public view returns (uint256) {
         return MinCollateral[_token];
-    }
-
-    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view returns (uint256) {
-        return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
     }
 
     /** @dev Return the total amount of a given asset borrowed */

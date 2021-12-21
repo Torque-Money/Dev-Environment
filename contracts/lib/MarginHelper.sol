@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../Oracle.sol";
 import "../LPool.sol";
 
-abstract contract MarginCore is Ownable {
+abstract contract MarginHelper is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -43,6 +43,9 @@ abstract contract MarginCore is Ownable {
     }
 
     // ======== Getters ========
+
+    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
+    function compensationPercentage() public view virtual returns (uint256);
 
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view virtual returns (uint256);
