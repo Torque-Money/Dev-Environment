@@ -26,44 +26,13 @@ contract Margin is Ownable, MarginCore {
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
     }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private BorrowPeriods;
-    mapping(IERC20 => uint256) private MinCollateral;
 
-    constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
-        oracle = oracle_;
-        pool = pool_;
-        minBorrowLength = minBorrowLength_;
-        maxInterestPercent = maxInterestPercent_;
-        minMarginThreshold = minMarginThreshold_;
-    }
+    constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_)
+        MarginCore(oracle_, pool_, minBorrowLength_, maxInterestPercent_, minMarginThreshold_)
+    {}
 
-    // ======== Modifiers ========
+    // ======== Getters ========
 
-    modifier onlyApproved(IERC20 _token) {
-        require(pool.isApproved(_token), "This token has not been approved");
-        _;
-    }
-
-    /** @dev Set the minimum borrow length */
-    function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner { minBorrowLength = _minBorrowLength; } 
-
-    /** @dev Set the maximum interest percent */
-    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner { maxInterestPercent = _maxInterestPercent; }
-
-    /** @dev Set the minimum margin level */
-    function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner { minMarginThreshold = _minMarginThreshold; }
-
-    /** @dev Set the minimum amount of collateral for a given token required to borrow against */
-    function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
-        MinCollateral[_token] = _amount;
-    }
-
-    // ======== Calculations ========
-
-    /** @dev Gets the minimum amount of collateral required to borrow a token */
-    function minCollateral(IERC20 _token) public view returns (uint256) { return MinCollateral[_token]; }
-
-    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view returns (uint256) { return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10); }
 
     /** @dev Return the total amount of a given asset borrowed */
     function totalBorrowed(IERC20 _token) public view returns (uint256) {
@@ -231,16 +200,6 @@ contract Margin is Ownable, MarginCore {
     }
 
     // ======== Repay and withdraw ========
-
-    function _swap(IERC20 _token1, IERC20 _token2, uint256 _amount) private returns (uint256) {
-        address[] memory path = new address[](2);
-        path[0] = address(_token1);
-        path[1] = address(_token2);
-
-        address router = address(oracle.router());
-        _token1.safeApprove(address(router), _amount);
-        return UniswapV2Router02(router).swapExactTokensForTokens(_amount, 0, path, address(this), block.timestamp + 1 hours)[1];
-    }
 
     function _balanceHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) private view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
