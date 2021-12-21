@@ -3,7 +3,7 @@
 import hre from "hardhat";
 import config from "../config.json";
 
-async function main() {}
+export default async function main() {}
 
 main()
     .then(() => process.exit(0))

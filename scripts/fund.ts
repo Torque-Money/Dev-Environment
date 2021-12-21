@@ -2,7 +2,7 @@ import hre from "hardhat";
 import config from "../config.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
-async function main() {
+export default async function main() {
     // Account to fund with tokens
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
