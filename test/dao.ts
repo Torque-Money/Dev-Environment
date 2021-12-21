@@ -51,9 +51,6 @@ describe("DAO", async () => {
         const hasVoted = await dao.hasVoted(proposalId, signerAddress);
         console.log(`Voted status: ${hasVoted}`);
 
-        const proposalVotes = await dao.proposalVotes(proposalId);
-        console.log(proposalVotes);
-
         for (let i = 0; i < 5; i++) await network.provider.send("evm_mine");
 
         const stateAfter = await dao.state(proposalId);
