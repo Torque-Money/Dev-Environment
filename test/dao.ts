@@ -3,7 +3,7 @@ import config from "../config.json";
 import DAO from "../artifacts/contracts/Governor.sol/DAO.json";
 import Timelock from "../artifacts/@openzeppelin/contracts/governance/TimelockController.sol/TimelockController.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import ERC20Votes from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import ERC20Votes from "@openzeppelin/contracts/build/contracts/ERC20Votes.json";
 
 describe("DAO", async () => {
     it("Should create a proposal, vote on the proposal, then execute the proposal after the given time", async () => {
