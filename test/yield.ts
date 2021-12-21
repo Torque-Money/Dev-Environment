@@ -10,9 +10,11 @@ import deployYield from "../scripts/deployYield";
 import deployToken from "../scripts/deployToken";
 
 describe("Yield", async () => {
-    await deployPool();
-    await deployYield();
-    await deployToken();
+    beforeEach(async () => {
+        await deployPool();
+        await deployYield();
+        await deployToken();
+    });
 
     it("Should stake tokens, reap yield, unstake tokens", async () => {
         // ======== Initialize the contracts ========
