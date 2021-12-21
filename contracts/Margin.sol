@@ -22,6 +22,16 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Getters ========
 
+    /** @dev Gets the minimum amount of collateral required to borrow a token */
+    function minCollateral(IERC20 _token) public view returns (uint256) {
+        return MinCollateral[_token];
+    }
+
+    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
+    function compensationPercentage() public view returns (uint256) {
+        return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
+    }
+
     /** @dev Return the total amount of a given asset borrowed */
     function borrowed(IERC20 _token) public view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();

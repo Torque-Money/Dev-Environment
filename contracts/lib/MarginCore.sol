@@ -68,18 +68,6 @@ abstract contract MarginCore is Ownable {
         MinCollateral[_token] = _amount;
     }
 
-    // ======== Getters ========
-
-    /** @dev Gets the minimum amount of collateral required to borrow a token */
-    function minCollateral(IERC20 _token) public view returns (uint256) {
-        return MinCollateral[_token];
-    }
-
-    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view returns (uint256) {
-        return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
-    }
-
     // ======== Calculation assistances ========
 
     function _calculateMarginLevel(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) internal view returns (uint256) {
