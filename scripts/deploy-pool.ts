@@ -6,6 +6,7 @@ import getFutureAddress from "../utils/getFutureAddress";
 async function main() {
     await hre.run("compile");
 
+    // Deploy the liquidity pool - this should be done before deploying any other contract
     const signer = hre.ethers.provider.getSigner();
     const preMarginAddress = await getFutureAddress(signer, 2);
 
