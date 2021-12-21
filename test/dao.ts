@@ -36,13 +36,13 @@ describe("DAO", async () => {
         console.log(`Proposed grant for owner with proposal id: ${proposalId.toHexString()}`);
 
         // ======== Vote on proposal ========
-        const voterBalance = await token.balanceOf(signerAddress); // **** I have to find a way of making my votes worth something as for some reason they are not
-        await token.transfer(signerAddress, voterBalance);
+        const voterBalance = await token.balanceOf(signerAddress);
         console.log(`Token balance of voter: ${voterBalance}`);
 
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
+        await token.delegate(signerAddress);
         const signerVotes = await token.getVotes(signerAddress);
         console.log(`Signer has ${signerVotes} votes`);
 
@@ -60,7 +60,7 @@ describe("DAO", async () => {
 
         // ======== Queue the proposal for the timelock **** move time forward for this ========
 
-        // await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
+        await dao["queue(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
 
         // Execute the proposal
         // await timelock.
