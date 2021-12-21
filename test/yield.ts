@@ -6,10 +6,12 @@ import { expect } from "chai";
 import resetTime from "../utils/resetTime";
 import timeTravel from "../utils/timeTravel";
 import deployPool from "../scripts/deployPool";
+import deployYield from "../scripts/deployYield";
 import deployToken from "../scripts/deployToken";
 
 describe("Yield", async () => {
     await deployPool();
+    await deployYield();
     await deployToken();
 
     it("Should stake tokens, reap yield, unstake tokens", async () => {
