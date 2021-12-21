@@ -42,7 +42,6 @@ describe("DAO", async () => {
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
-        console.log(token);
         const signerVotes = await token.getVotes(signerAddress);
         console.log(`Signer has ${signerVotes} votes`);
 
