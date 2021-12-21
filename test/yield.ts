@@ -3,6 +3,8 @@ import Token from "../artifacts/contracts/Token.sol/Token.json";
 import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
 import config from "../config.json";
 import { expect } from "chai";
+import resetTime from "../utils/resetTime";
+import timeTravel from "../utils/timeTravel";
 
 describe("Yield", async () => {
     it("Should stake tokens, reap yield, unstake tokens", async () => {
@@ -16,13 +18,7 @@ describe("Yield", async () => {
         const stakeAmount = ethers.BigNumber.from(10).pow(18).mul(100);
 
         // ======== Set the time of the network to be at the start of the next hour ========
-        await network.provider.send("evm_mine");
-        const blockNumber = ethers.provider.blockNumber;
-        const timeStamp = (await ethers.provider.getBlock(blockNumber)).timestamp;
-        const startTime = timeStamp - (timeStamp % 3600) + 3600;
-        await network.provider.send("evm_setNextBlockTimestamp", [startTime]);
-        await network.provider.send("evm_mine");
-
+        await resetTime();
         const periodId = await pool.currentPeriodId();
 
         //======== Stake tokens ========
@@ -30,8 +26,7 @@ describe("Yield", async () => {
         expect(await pool.liquidity(stakeAsset.address, periodId)).to.equal(stakeAmount);
 
         //======== Yield reward ========
-        await network.provider.send("evm_increaseTime", [20 * 60]);
-        await network.provider.send("evm_mine");
+        await timeTravel(20);
 
         const initialTokenBalance = await token.balanceOf(signerAddress);
         const yieldAmount = await token.currentYieldReward();
@@ -48,8 +43,7 @@ describe("Yield", async () => {
         expect(executed).to.equal(false);
 
         //======== Unstake tokens reward ========
-        await network.provider.send("evm_increaseTime", [40 * 60]);
-        await network.provider.send("evm_mine");
+        await timeTravel(40);
 
         await pool.redeem(stakeAsset.address, stakeAmount, periodId);
         expect(await pool.liquidity(stakeAsset.address, periodId)).to.equal(0);
