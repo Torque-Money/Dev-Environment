@@ -1,6 +1,6 @@
 import { ethers, network } from "hardhat";
-import ERC20Votes from "@openzeppelin/contracts/build/contracts/ERC20Votes.json";
-import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
+import Token from "../artifacts/contracts/LPool.sol/LPool.json";
+import LPool from "../artifacts/contracts/Token.sol/Token.json";
 import config from "../config.json";
 import { expect } from "chai";
 
@@ -9,7 +9,7 @@ describe("Yield", async () => {
         // ======== Initialize the contracts ========
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
-        const token = new ethers.Contract(config.tokenAddress, ERC20Votes.abi, signer);
+        const token = new ethers.Contract(config.tokenAddress, Token.abi, signer);
         const pool = new ethers.Contract(config.poolAddress, LPool.abi, signer);
 
         const stakeAsset = config.approved[0];
