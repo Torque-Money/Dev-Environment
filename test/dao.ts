@@ -36,19 +36,17 @@ describe("DAO", async () => {
         console.log(`Proposed grant for owner with proposal id: ${proposalId.toHexString()}`);
 
         // ======== Vote on proposal ========
-        await network.provider.send("evm_mine");
-
-        const voterBalance = await token.balanceOf(signerAddress);
+        const voterBalance = await token.balanceOf(signerAddress); // **** I have to find a way of making my votes worth something as for some reason they are not
         await token.transfer(signerAddress, voterBalance);
         console.log(`Token balance of voter: ${voterBalance}`);
 
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
-        const signerVotes = await token.getVotes(signerAddress); // **** The problem is that I have 0 votes, but I CAN still vote with my zero votes - why do I have zero ???
+        const signerVotes = await token.getVotes(signerAddress);
         console.log(`Signer has ${signerVotes} votes`);
 
-        await dao.castVote(proposalId, 1); // **** Why is my vote not casting ???? - we can see that it is registring the vote in has voted, but not in the rest of the contract?
+        await dao.castVote(proposalId, 1);
         const hasVoted = await dao.hasVoted(proposalId, signerAddress);
         console.log(`Voted status: ${hasVoted}`);
 
