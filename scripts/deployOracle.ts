@@ -2,7 +2,7 @@ import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
 
-async function main() {
+export default async function main() {
     await hre.run("compile");
 
     // Deploy and setup the oracle contract

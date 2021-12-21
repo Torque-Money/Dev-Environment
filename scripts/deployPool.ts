@@ -3,7 +3,7 @@ import config from "../config.json";
 import fs from "fs";
 import getFutureAddress from "../utils/getFutureAddress";
 
-async function main() {
+export default async function main() {
     await hre.run("compile");
 
     // Deploy the liquidity pool - this should be done before deploying any other contract, and needs to be deployed before the margin

@@ -3,7 +3,7 @@ import config from "../config.json";
 import fs from "fs";
 import getFutureAddress from "../utils/getFutureAddress";
 
-async function main() {
+export default async function main() {
     await hre.run("compile");
 
     // Deploy the governor - deploy directly before the timelock

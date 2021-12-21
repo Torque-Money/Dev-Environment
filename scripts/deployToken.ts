@@ -2,7 +2,7 @@ import hre from "hardhat";
 import fs from "fs";
 import config from "../config.json";
 
-async function main() {
+export default async function main() {
     await hre.run("compile");
 
     // Deploy the token
