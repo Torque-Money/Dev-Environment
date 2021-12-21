@@ -21,13 +21,6 @@ async function main() {
         await token.transfer(signerAddress, tokenBalance);
 
         console.log(`Transferred ${tokenBalance.toString()} of tokens with address ${approved.address} to ${signerAddress}`);
-
-        // Approve pools to use tokens
-        const signerToken = token.connect(signer);
-        await signerToken.approve(config.poolAddress, tokenBalance);
-        await signerToken.approve(config.marginAddress, tokenBalance);
-
-        console.log(`Approved ${config.poolAddress} and ${config.marginAddress} to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
     }
 }
 
