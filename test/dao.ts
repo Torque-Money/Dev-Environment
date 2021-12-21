@@ -42,13 +42,16 @@ describe("DAO", async () => {
         const stateInitial = await dao.state(proposalId);
         console.log(`Initial state of proposal: ${stateInitial}`);
 
+        const signerVotes = await token.getVotes(signerAddress);
+        console.log(`Signer has ${signerVotes} votes`);
+
         await network.provider.send("evm_mine");
-        await dao.castVote(proposalId, 1); // **** Why is my vote not casting ????
+        await dao.castVote(proposalId, 1); // **** Why is my vote not casting ???? - we can see that it is registring the vote in has voted, but not in the rest of the contract?
         const hasVoted = await dao.hasVoted(proposalId, signerAddress);
         console.log(`Voted status: ${hasVoted}`);
 
-        const votes = await dao.proposalVotes(proposalId);
-        console.log(votes);
+        const proposalVotes = await dao.proposalVotes(proposalId);
+        console.log(proposalVotes);
 
         for (let i = 0; i < 5; i++) await network.provider.send("evm_mine");
 
