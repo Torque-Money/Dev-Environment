@@ -65,7 +65,7 @@ describe("DAO", async () => {
         await network.provider.send("evm_mine");
 
         // Execute the proposal and check that the balance is the same
-        await dao.execute(...Object.values(proposalConfig));
+        await dao["execute(address[],uint256[],bytes[],bytes32)"](...Object.values(proposalConfig));
         expect(await testToken.balanceOf(signerAddress)).to.equal(initialBal);
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
