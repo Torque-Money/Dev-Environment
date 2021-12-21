@@ -38,7 +38,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function currentYieldReward() public view returns (uint256) {
         uint256 slash = numYields.div(yieldSlashRate);
         if (slash == 0) slash = 1;
-        
+
         return baseYieldReward.div(slash);
     }
 
