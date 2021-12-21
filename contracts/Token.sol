@@ -13,13 +13,13 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
 
     uint256 public numYields;
     uint256 public yieldSlashRate;
-    uint256 public yieldReward;
+    uint256 public baseYieldReward;
 
     IYieldApproved public yieldApproved;
 
-    constructor(uint256 initialSupply_, uint256 yieldSlashRate_, uint256 yieldReward_, IYieldApproved yieldApproved_) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
+    constructor(uint256 initialSupply_, uint256 yieldSlashRate_, uint256 baseYieldReward_, IYieldApproved yieldApproved_) ERC20("Wabbit", "WBT") ERC20Permit("WBT") {
         yieldSlashRate = yieldSlashRate_;
-        yieldReward = yieldReward_;
+        baseYieldReward = baseYieldReward_;
         yieldApproved = yieldApproved_;
 
         _mint(owner(), initialSupply_);
@@ -29,10 +29,18 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
 
     /** @dev Set the yield reward */
-    function setYieldReward(uint256 _yieldReward) external onlyOwner { yieldReward = _yieldReward; }
+    function setBaseYieldReward(uint256 _baseYieldReward) external onlyOwner { baseYieldReward = _baseYieldReward; }
 
     /** @dev Set the yield approval function */
     function setYieldApproved(IYieldApproved _yieldApproved) external onlyOwner { yieldApproved = _yieldApproved; }
+
+    /** @dev Get the current yield reward */
+    function currentYieldReward() public view returns (uint256) {
+        uint256 slash = numYields.div(yieldSlashRate);
+        if (slash == 0) slash = 1;
+        
+        return baseYieldReward.div(slash);
+    }
 
     /** @dev Yield new tokens as a reward to the caller if approved to do so by the yield function */
     function yield() external {
@@ -40,13 +48,8 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         address account = _msgSender();
         require(yieldApproved.yieldApproved(account), "Account is not approved to yield tokens");
 
-        // Mint and payout the slashed tokens as farming yield and increment the num of yields
-        uint256 slash = numYields.div(yieldSlashRate);
-        if (slash == 0) slash = 1;
-
-        uint256 amount = yieldReward.div(slash);
-
-        _mint(account, amount);
+        uint256 reward = currentYieldReward();
+        _mint(account, reward);
         numYields = numYields.add(1);
     }
 
