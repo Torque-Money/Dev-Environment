@@ -25,6 +25,8 @@ async function main() {
         await pool.approveToken(approved.address);
     }
     console.log("Approved tokens for use with the pool");
+
+    fs.writeFileSync("config.json", JSON.stringify(config));
 }
 
 main()
