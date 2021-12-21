@@ -10,7 +10,7 @@ import "./IYieldApproved.sol";
 contract YieldApproved is Ownable, IYieldApproved {
     using SafeMath for uint256;
 
-    mapping(uint256 => mapping(address => bool)) private Yields; // Track all of the approved yields to ensure no double payouts
+    mapping(uint256 => mapping(address => bool)) private Yields;
     mapping(IERC20 => uint256) private MinStakes;
 
     LPool public immutable pool;
