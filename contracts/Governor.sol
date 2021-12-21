@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
-import "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
+import "@openzeppelin/contracts/governance/compatibility/GovernorCompatibilityBravo.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
-contract DAO is Governor, GovernorSettings, GovernorCountingSimple, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
     constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
         Governor("WabbitDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
