@@ -19,13 +19,14 @@ contract YieldApproved is Ownable, IYieldApproved {
         pool = pool_; 
     }
 
+    /** @dev Set the minimum stake of a given token required to earn a yield */
     function setMinStake(IERC20 _token, uint256 _amount) external onlyOwner {
         require(pool.isApproved(_token), "This token has not been approved");
         MinStakes[_token] = _amount;
     }
 
+    /** @dev Check if an account is eligible to earn a yield on a stake */
     function yieldApproved(address _account) external override returns (bool) {
-        // Get the period id
         uint256 periodId = pool.currentPeriodId();
         require(!Yields[periodId][_account], "Yield has already been approved");
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
