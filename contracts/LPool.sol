@@ -22,9 +22,7 @@ contract LPool is LPoolCore {
 
     uint256 public taxPercent;
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) {
-        periodLength = periodLength_;
-        cooldownLength = cooldownLength_;
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) LPoolCore(periodLength_, cooldownLength_) {
         taxPercent = taxPercent_;
         margin = margin_;
     }
