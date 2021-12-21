@@ -10,14 +10,12 @@ import deployYield from "../scripts/deployYield";
 import deployToken from "../scripts/deployToken";
 
 describe("Yield", async () => {
-    beforeEach(async () => {
+    it("Should stake tokens, reap yield, unstake tokens", async () => {
+        // ======== Initialize the contracts ========
         await deployPool();
         await deployYield();
         await deployToken();
-    });
 
-    it("Should stake tokens, reap yield, unstake tokens", async () => {
-        // ======== Initialize the contracts ========
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
         const token = new ethers.Contract(config.tokenAddress, Token.abi, signer);
