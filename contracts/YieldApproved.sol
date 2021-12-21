@@ -10,10 +10,10 @@ import "./IYieldApproved.sol";
 contract YieldApproved is Ownable, IYieldApproved {
     using SafeMath for uint256;
 
+    LPool public immutable pool;
+
     mapping(uint256 => mapping(address => bool)) private Yields;
     mapping(IERC20 => uint256) private MinStakes;
-
-    LPool public immutable pool;
 
     constructor(LPool pool_) {
         pool = pool_; 
