@@ -13,11 +13,6 @@ contract LPool is LPoolCore {
 
     Margin public immutable margin;
 
-    struct StakingPeriod {
-        uint256 totalDeposited;
-        uint256 liquidity;
-        mapping(address => uint256) deposits;
-    }
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Period Id => token => staking period
 
     uint256 public taxPercent;

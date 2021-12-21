@@ -14,17 +14,6 @@ contract Margin is Ownable, MarginCore {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
-    struct BorrowAccount {
-        uint256 collateral;
-        uint256 borrowed;
-        uint256 initialPrice;
-        uint256 borrowTime;
-        uint256 initialBorrowTime;
-    }
-    struct BorrowPeriod {
-        uint256 totalBorrowed;
-        mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
-    }
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private BorrowPeriods;
 
     constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_)
@@ -264,7 +253,6 @@ contract Margin is Ownable, MarginCore {
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
         emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
-
     }
 
     // ======== Liquidate ========
@@ -276,11 +264,9 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Liquidates a users account that is liquidatable / below the minimum margin level */
     function flashLiquidate(address _account, IERC20 _collateral, IERC20 _borrowed) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        // Liquidate an at risk account
         require(isLiquidatable(_account, _borrowed, _collateral), "This account is not liquidatable");
 
         uint256 periodId = pool.currentPeriodId();
-
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 

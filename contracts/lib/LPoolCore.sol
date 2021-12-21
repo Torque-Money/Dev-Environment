@@ -11,6 +11,12 @@ contract LPoolCore is Ownable {
     IERC20[] private ApprovedList;
     mapping(IERC20 => bool) private Approved; // Token => approved
 
+    struct StakingPeriod {
+        uint256 totalDeposited;
+        uint256 liquidity;
+        mapping(address => uint256) deposits;
+    }
+
     uint256 public immutable periodLength;
     uint256 public immutable cooldownLength;
 

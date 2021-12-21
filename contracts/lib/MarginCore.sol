@@ -8,9 +8,21 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../Oracle.sol";
 import "../LPool.sol";
 
-contract MarginCore is Ownable {
+abstract contract MarginCore is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+
+    struct BorrowAccount {
+        uint256 collateral;
+        uint256 borrowed;
+        uint256 initialPrice;
+        uint256 borrowTime;
+        uint256 initialBorrowTime;
+    }
+    struct BorrowPeriod {
+        uint256 totalBorrowed;
+        mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
+    }
 
     Oracle public immutable oracle;
     LPool public immutable pool;
