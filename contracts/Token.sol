@@ -25,6 +25,10 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         _mint(owner(), initialSupply_);
     }
 
+    function getVotes(address _account) public view override returns (uint256) {
+        return super.getVotes(_account);
+    }
+
     /** @dev Set the yield slash rate */
     function setYieldSlashRate(uint256 _yieldSlashRate) external onlyOwner { yieldSlashRate = _yieldSlashRate; }
 
