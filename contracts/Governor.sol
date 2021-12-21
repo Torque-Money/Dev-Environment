@@ -56,7 +56,7 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     function state(uint256 proposalId)
         public
         view
-        override(Governor, GovernorTimelockControl)
+        override(Governor, IGovernor, GovernorTimelockControl)
         returns (ProposalState)
     {
         return super.state(proposalId);
@@ -64,7 +64,7 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
 
     function propose(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, string memory description)
         public
-        override(Governor, IGovernor)
+        override(Governor, IGovernor, GovernorCompatibilityBravo)
         returns (uint256)
     {
         return super.propose(targets, values, calldatas, description);
