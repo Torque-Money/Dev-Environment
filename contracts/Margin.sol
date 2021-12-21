@@ -106,7 +106,6 @@ contract Margin is Ownable, MarginCore {
     function _borrowHelper(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) private {
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
-
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
         require(
             _marginLevel(
@@ -115,9 +114,7 @@ contract Margin is Ownable, MarginCore {
             ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
         );
 
-        // Update the balances of the borrowed value
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
-
         _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
         _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
         _borrowAccount.borrowTime = block.timestamp;
