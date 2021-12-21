@@ -170,7 +170,7 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Repay and withdraw ========
 
-    function _balance(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
+    function _balanceOf(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
         return (interest, borrowedCurrentPrice);
@@ -181,7 +181,7 @@ contract Margin is Ownable, MarginCore {
         // The value returned from repaying a margin in terms of the collateral asset
         BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
 
-        (uint256 interest, uint256 borrowedCurrentPrice) = _balance(_collateral, _borrowed, borrowAccount);
+        (uint256 interest, uint256 borrowedCurrentPrice) = _balanceOf(_collateral, _borrowed, borrowAccount);
         if (!pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral.sub(interest);
 
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
@@ -271,7 +271,7 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Check if an account is liquidatable */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (bool) {
-        return marginLevel(_account, _collateral, _borrowed) <= _minMarginLevel();
+        return marginLevel(_account, _collateral, _borrowed) < _minMarginLevel();
     }
 
     /** @dev Liquidates a users account that is liquidatable / below the minimum margin level */
