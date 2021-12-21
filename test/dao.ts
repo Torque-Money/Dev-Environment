@@ -4,6 +4,7 @@ import DAO from "../artifacts/contracts/Governor.sol/DAO.json";
 import Timelock from "../artifacts/@openzeppelin/contracts/governance/TimelockController.sol/TimelockController.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import ERC20Votes from "@openzeppelin/contracts/build/contracts/ERC20Votes.json";
+import { expect } from "chai";
 
 describe("DAO", async () => {
     it("Should create a proposal, vote on the proposal, then execute the proposal after the given time", async () => {
@@ -64,10 +65,11 @@ describe("DAO", async () => {
         console.log("Queued proposal for execution");
 
         await new Promise<void>((resolve) => setTimeout(() => resolve(), 1000));
-        await network.provider.send("evm_mine")
+        await network.provider.send("evm_mine");
 
-        // Execute the proposal
-        await timelock.
+        // Execute the proposal and check that the balance is the same
+        await dao.execute(...Object.values(proposalConfig));
+        expect(await testToken.balanceOf(signerAddress)).to.equal(initialBal);
 
         // **** Eventually integrate the yield and other tokens into this for a full test AND add the correct ownerships and such
     });
