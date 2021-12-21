@@ -42,6 +42,11 @@ abstract contract MarginCore is Ownable {
         minMarginThreshold = minMarginThreshold_;
     }
 
+    // ======== Getters ========
+
+    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view virtual returns (uint256);
+
     // ======== Setters and modifiers ========
 
     modifier onlyApproved(IERC20 _token) {
@@ -114,5 +119,25 @@ abstract contract MarginCore is Ownable {
         address router = address(oracle.router());
         _token1.safeApprove(address(router), _amount);
         return UniswapV2Router02(router).swapExactTokensForTokens(_amount, 0, path, address(this), block.timestamp + 1 hours)[1];
+    }
+
+    // ======== Borrow ========
+
+    /** @dev Require that the borrow is not instantly liquidatable and update the balances */
+    function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
+        // Require that the borrowed amount will be above the required margin level
+        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
+        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
+        require(
+            _marginLevel(
+                _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
+                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
+            ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
+        );
+
+        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
+        _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
+        _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
+        _borrowAccount.borrowTime = block.timestamp;
     }
 }

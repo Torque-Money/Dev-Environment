@@ -53,7 +53,7 @@ contract Margin is Ownable, MarginCore {
 
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
         interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod) */
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view returns (uint256) {
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override returns (uint256) {
         uint256 retValue;
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed)); }
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
@@ -88,24 +88,6 @@ contract Margin is Ownable, MarginCore {
     }
 
     // ======== Borrow ========
-
-    /** @dev Require that the borrow is not instantly liquidatable and update the balances */
-    function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
-        // Require that the borrowed amount will be above the required margin level
-        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
-        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
-        require(
-            _marginLevel(
-                _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
-                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
-            ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
-        );
-
-        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
-        _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
-        _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
-        _borrowAccount.borrowTime = block.timestamp;
-    }
 
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
