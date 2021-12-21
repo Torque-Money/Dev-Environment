@@ -38,7 +38,14 @@ describe("Yield", async () => {
         await token.yield();
         expect(await token.balanceOf(signerAddress)).to.equal(initialTokenBalance.add(yieldAmount));
 
-        // expect(async () => await token.yield()).to.throw("Able to yield twice");
+        let executed;
+        try {
+            await token.yield();
+            executed = true;
+        } catch {
+            executed = false;
+        }
+        expect(executed).to.equal(false);
 
         //======== Unstake tokens reward ========
         await network.provider.send("evm_increaseTime", [40 * 60]);
