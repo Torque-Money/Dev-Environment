@@ -15,9 +15,8 @@ async function main() {
 
         await token.approve(config.poolAddress, tokenBalance);
         await token.approve(config.marginAddress, tokenBalance);
-        // **** Add this for all of the contracts
 
-        console.log(`Approved ${config.poolAddress} and ${config.marginAddress} to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
+        console.log(`Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
     }
 }
 
