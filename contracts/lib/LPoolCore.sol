@@ -89,6 +89,7 @@ contract LPoolCore is AccessControl {
         ApprovedList.push(_token);
     }
 
+    /** @dev Return the approved list of tokens */
     function approvedList() external view returns (IERC20[] memory) {
         return ApprovedList;
     }
