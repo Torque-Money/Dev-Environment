@@ -49,7 +49,7 @@ contract YieldApproved is Ownable, IYield {
             IERC20 _token = assets[i];
 
             uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
-            uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent()); // **** How does this work ???
+            uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent()); // **** How does this work ??? - remove the for loop and do it for a single token
 
             uint256 staked = pool.balanceOf(_account, _token, periodId);
             uint256 borrowed = margin.debtOf(_account, _token);
