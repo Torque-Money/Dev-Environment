@@ -9,5 +9,5 @@ interface IYield {
      *  @param _account The account to check if the yield is eligible for
      *  @param _token The token to check if the account is eligible for a yield on
      */
-    function yield(address _account, IERC20 _token) external returns (uint256, uint256);
+    function yield(address _account, IERC20 _token) external returns (uint256);
 }
