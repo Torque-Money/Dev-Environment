@@ -19,8 +19,9 @@ contract LPoolCore is AccessControl {
     struct StakingPeriod {
         uint256 totalDeposited;
         uint256 liquidity;
-        uint256 borrowed;
         mapping(address => uint256) deposits;
+        uint256 totalClaimed;
+        mapping(address => uint256) claims;
     }
 
     uint256 public immutable periodLength;
