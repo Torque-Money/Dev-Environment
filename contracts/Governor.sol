@@ -8,20 +8,12 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
+// **** Maybe move this seperate extension into its own seperate file
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
-    // **** Here is the game plan - I want to build a dividend system that rewards voters with a portion of tokens allocated to the timelock
-    // **** We will do this by tracking the users who vote on proposals - I actually more just wanted all of the shareholders to be entitled to the funds....
-
-    // **** So here is the problem - if we encourage voting rewards, then people get rewarded for making spam bots
-    // **** If we dont have a reward for voting, then people do not get rewarded for making spam bots
-
-    // **** What perhaps would be a better solution, is to track the people who vote and participate in the protocol every X blocks, and then after a given time
-    // a function may be called which will queue a payout to those voters for a given portion of the desired token (which may indeed be voted on I believe)
-    // **** This method encourages voting, but it does not encourage spam voting and intentionally passing proposals and limits withdrawn liquidity
-
-    // **** We do indeed have the only governance that we can play with for modifying the state of this contract
+    using SafeMath for uint256;
 
     address public taxAccount;
     uint256 public immutable taxPercent;
@@ -33,13 +25,14 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
         mapping(address => bool) hasVoted;
     }
     mapping(uint256 => Vote) private Voters;
-    uint256 public maxRewardedVoters;
+    uint256 public maxPaidVoters;
 
-    // **** Now I need some sort of voting period where users are allowed to call the function (or some sort of day where the payout proposal may be made)
+    uint256 public lastPayout;
+    uint256 public immutable payoutCooldown;
 
     constructor(
-        ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, 
-        uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold, uint256 taxPercent_
+        ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay,
+        uint256 _votingPeriod, uint256 _proposalThreshold, uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_
     )
         Governor("WabbitDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
@@ -49,6 +42,9 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     {
         taxAccount = _msgSender();
         taxPercent = taxPercent_;
+
+        maxPaidVoters = maxPaidVoters_;
+        payoutCooldown = payoutCooldown_;
     }
 
     /** @dev Let the current tax account set a new tax account */
@@ -60,6 +56,18 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     /** @dev Set the payout token */
     function setPayoutToken(IERC20 _token) external onlyGovernance {
         payoutToken = _token;
+    }
+
+    /** @dev Add a voter to the voter reward payout list */
+    function _castVote(
+        uint256 proposalId,
+        address account,
+        uint8 support,
+        string memory reason
+    ) internal override returns (uint256) {
+        
+
+        return super._castVote(proposalId, account, support, reason);
     }
 
     function votingDelay()
