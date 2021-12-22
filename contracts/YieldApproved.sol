@@ -12,7 +12,7 @@ contract YieldApproved is Ownable, IYieldApproved {
 
     LPool public immutable pool;
 
-    mapping(uint256 => mapping(address => bool)) private Yields;
+    mapping(uint256 => mapping(address => bool)) private Yields; // **** Change this so that it is just for one specific token type, then add that token to the yieldApproved
     mapping(IERC20 => uint256) private MinStakes;
 
     constructor(LPool pool_) {
