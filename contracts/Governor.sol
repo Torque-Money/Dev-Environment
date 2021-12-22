@@ -19,6 +19,15 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     // a function may be called which will queue a payout to those voters for a given portion of the desired token (which may indeed be voted on I believe)
     // **** This method encourages voting, but it does not encourage spam voting and intentionally passing proposals and limits withdrawn liquidity
 
+    // **** We do indeed have the only governance that we can play with for modifying the state of this contract
+
+    struct Vote {
+        address[] voters;
+        // **** Maybe do this as a mapping so that we can change each vote easy and track the current index which can wrap around ?
+        mapping(address => bool) hasVoted;
+    }
+    mapping(uint256 => Vote) private Voters; // **** Maybe there is a pool percentage based method where we keep track of their balances ?
+
     constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
         Governor("WabbitDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
