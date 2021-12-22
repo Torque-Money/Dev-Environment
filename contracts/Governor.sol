@@ -68,18 +68,25 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     ) internal override returns (uint256) {
         uint256 weight = super._castVote(proposalId, account, support, reason);
 
-        Payout storage payout = VoterPayouts[payoutId];
-        if (!payout.hasVoted[account]) {
-            uint256 index = payout.index;
+        Payout storage _payout = VoterPayouts[payoutId];
+        if (!_payout.hasVoted[account]) {
+            uint256 index = _payout.index;
             if (index < 2) index = 2; // Number 0 and 1 slots should be dedicated to owner and executor
 
-            payout.voters[index] = account;
-            payout.hasVoted[account] = true;
+            _payout.voters[index] = account;
+            _payout.hasVoted[account] = true;
 
-            payout.index = index.add(1).mod(maxPaidVoters.add(2)); // Add 2 to compensate for the slots taken by the owner and executor
+            _payout.index = index.add(1).mod(maxPaidVoters.add(2)); // Add 2 to compensate for the slots taken by the owner and executor
         }
 
         return weight;
+    }
+
+    /** @dev Payout the voters with funds */
+    function payout() external {
+        require(block.timestamp >= lastPayout.add(payoutCooldown), "Not enough time since last payout");
+
+        // Execute the transaction which pays the tokens out, but how will we actually do this without some sort of delegate call ???
     }
 
     function votingDelay()
