@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFraction.sol";
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
     // **** Here is the game plan - I want to build a dividend system that rewards voters with a portion of tokens allocated to the timelock
     // **** We will do this by tracking the users who vote on proposals - I actually more just wanted all of the shareholders to be entitled to the funds....
@@ -21,12 +23,16 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
 
     // **** We do indeed have the only governance that we can play with for modifying the state of this contract
 
+    address public taxAccount; // The deployers account
+    IERC20 public payoutToken;
+
     struct Vote {
-        address[] voters;
-        // **** Maybe do this as a mapping so that we can change each vote easy and track the current index which can wrap around ?
+        mapping(uint256 => address) voters;
+        uint256 length;
         mapping(address => bool) hasVoted;
     }
-    mapping(uint256 => Vote) private Voters; // **** Maybe there is a pool percentage based method where we keep track of their balances ?
+    mapping(uint256 => Vote) private Voters;
+    uint256 public maxRewardedVoters;
 
     constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
         Governor("WabbitDAO")
@@ -34,7 +40,22 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
         GovernorVotes(token_)
         GovernorVotesQuorumFraction(_quorumFraction)
         GovernorTimelockControl(timelock_)
-    {}
+    {
+        taxAccount = _msgSender();
+    }
+
+    // **** Then I should go about adding a way of determing the token that should be used for the vote (determined by governance)
+
+    /** @dev Let the current tax account set a new tax account */
+    function setTaxAccount(address _account) external {
+        require(_msgSender() == taxAccount, "Only the current tax account may set the new tax account");
+        taxAccount = _account;
+    }
+
+    /** @dev Set the payout token */
+    function setPayoutToken(IERC20 _token) external onlyGovernance {
+        payoutToken = _token;
+    }
 
     function votingDelay()
         public
