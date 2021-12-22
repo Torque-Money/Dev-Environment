@@ -29,9 +29,6 @@ contract LPoolCore is AccessControl {
     uint256 public immutable cooldownLength;
 
     constructor(uint256 periodLength_, uint256 cooldownLength_) {
-        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
-        _grantRole(POOL_ADMIN, _msgSender());
-
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
     }
