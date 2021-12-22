@@ -48,7 +48,7 @@ contract Margin is Ownable, MarginHelper {
         return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
     }
 
-    /** @dev Get the interest rate for a given asset
+    /** @dev Get the interest rate for a given asset per second
         interest = totalBorrowed / (totalBorrowed + liquidity) */
     function calculateInterestRate(IERC20 _token) public view returns (uint256) {
         uint256 _borrowed = borrowed(_token);

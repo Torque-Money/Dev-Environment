@@ -24,6 +24,7 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function claimYield() external {
         address account = _msgSender();
         uint256 _yield = yield.yield(account);
+        require(_yield > 0, "No yield to claim");
         _mint(account, _yield);
     }
 

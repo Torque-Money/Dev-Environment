@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./LPool.sol";
 import "./Margin.sol";
+import "./Oracle.sol";
 import "./IYield.sol";
 
 contract YieldApproved is Ownable, IYield {
@@ -13,20 +14,18 @@ contract YieldApproved is Ownable, IYield {
 
     LPool public immutable pool;
     Margin public immutable margin;
+    Oracle public immutable oracle;
     IERC20 public immutable token;
 
-    struct Yield {
-        uint256 stake;
-        uint256 borrow;
-    }
-    mapping(uint256 => mapping(address => mapping(IERC20 => Yield))) private Yields; // Period id => account => token => stake
+    mapping(uint256 => mapping(address => bool)) private Yields; // Period id => account => has yielded
 
     mapping(IERC20 => uint256) private NumYields;
     uint256 public slashingRate;
 
-    constructor(LPool pool_, Margin margin_, IERC20 token_, uint256 slashingRate_) {
+    constructor(LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_) {
         pool = pool_; 
         margin = margin_;
+        oracle = oracle_;
         token = token_;
         slashingRate = slashingRate_;
     }
@@ -39,31 +38,29 @@ contract YieldApproved is Ownable, IYield {
     /** @dev Calculate the yield for the given account and update their yield status */
     function yield(address _account) external override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-
-        // Go through and calculate the yield for all of the users tokens
-        // **** Maybe add an interface to check the amount of the asset borrowed ?
-
-        Yield storage _yield = Yields[periodId][_account][_token];
-
         require(_msgSender() == address(token), "Only the token may call yield");
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
-        require(yield.stake == 0 || yield.borrow == 0, "Yield has already been approved");
+        require(!Yields[periodId][_msgSender()], "Yield has already been approved");
 
         uint256 stake = 0;
-        if (yield.stake == 0) {
-            stake = pool.balanceOf(_account, _token, periodId);
-            Yields[periodId][_account][_token].stake = stake;
-        }
-
         uint256 borrow = 0;
-        if (yield.borrow == 0) {
-            IERC20[] memory tokens = pool.approvedList();
-            for (uint256 i = 0; i < tokens.length; i++) {
-                uint256 borrowed = margin.debtOf(_account, tokens[i], _token);
-                if (borrowed > borrow) borrow = borrowed;
-            }
+
+        IERC20[] memory assets = pool.approvedList();
+        for (uint256 i = 0; i < assets.length; i++) {
+            IERC20 token = assets[i];
+
+            uint256 interestRate = margin.calculateInterestRate(token).mul(pool.periodLength());
+
+            uint256 staked = pool.balanceOf(_msgSender(), token, periodId);
+            uint256 borrowed = margin.debtOf(_msgSender(), token);
+
+            uint256 stakedReward = staked.mul(interestRate.mul(interestRate)).div(oracle.decimals().mul(oracle.decimals()));
+            uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
+
+            stake = stake.add(stakedReward);
+            borrow = borrow.add(borrowedReward);
         }
 
-        return (stake, borrow);
+        return stake + borrow;
     }
 }
