@@ -49,11 +49,10 @@ contract Margin is Ownable, MarginHelper {
     }
 
     /** @dev Get the interest rate for a given asset per second
-        interest = totalBorrowed / (totalBorrowed + liquidity) */
+        interest = maxInterestRate * totalBorrowed / (totalBorrowed + liquidity) */
     function calculateInterestRate(IERC20 _token) public view returns (uint256) {
-        uint256 _borrowed = borrowed(_token);
-        uint256 _liquidity = liquidity(_token);
-        return _borrowed.mul(maxInterestPercent).mul(oracle.decimals()).div(_liquidity.add(_borrowed)).div(100).div(pool.periodLength());
+        uint256 utilization = utilizationRate(_token);
+        return utilization.mul(maxInterestPercent).div(100).div(pool.periodLength());
     }
 
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
@@ -63,6 +62,13 @@ contract Margin is Ownable, MarginHelper {
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed)); }
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
         return retValue;
+    }
+
+    /** @dev Get the percentage of the pool of a given token being utilized */
+    function utilizationRate(IERC20 _token) public view returns (uint256) {
+        uint256 _borrowed = borrowed(_token);
+        uint256 _liquidity = liquidity(_token);
+        return _borrowed.mul(oracle.decimals()).div(_liquidity.add(_borrowed));
     }
 
     // ======== Deposit ========

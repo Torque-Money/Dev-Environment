@@ -38,13 +38,13 @@ contract YieldApproved is Ownable, IYield {
     /** @dev Calculate the yield for the given account and token and update their yield status */
     function yield(address _account, IERC20 _token) external override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        require(_msgSender() == address(token), "Only the token may call yield");
-        require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
         require(pool.isApproved(_token), "This token has not been approved");
-        require(!Yields[periodId][_account][_token], "Yield has already been claimed");
+        require(_msgSender() == address(token), "Only the token may call yield");
+        require(!pool.isPrologue(periodId), "Cannot claim yield during prologue");
+        require(!Yields[periodId][_account][_token], "Yield has already been claimed for this token");
 
         uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
-        uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent()); // **** How does this work + add to margin ???
+        uint256 utilizationRate = margin.utilizationRate(_token);
 
         uint256 staked = pool.balanceOf(_account, _token, periodId);
         uint256 borrowed = margin.debtOf(_account, _token);
