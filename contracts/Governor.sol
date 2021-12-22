@@ -9,6 +9,15 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFractio
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
 contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
+    // **** Here is the game plan - I want to build a dividend system that rewards voters with a portion of tokens allocated to the timelock
+    // **** We will do this by tracking the users who vote on proposals - I actually more just wanted all of the shareholders to be entitled to the funds....
+
+    // **** So here is the problem - if we encourage voting rewards, then people get rewarded for making spam bots
+    // **** If we dont have a reward for voting, then people do not get rewarded for making spam bots
+
+    // **** What perhaps would be a better solution, is to track the people who vote and participate in the protocol every X blocks, and then after a given time
+    // a function may be called which will queue a payout to those voters for a given portion of the desired token (which may indeed be voted on I believe)
+
     constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
         Governor("WabbitDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
