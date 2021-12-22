@@ -17,6 +17,7 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
 
     // **** What perhaps would be a better solution, is to track the people who vote and participate in the protocol every X blocks, and then after a given time
     // a function may be called which will queue a payout to those voters for a given portion of the desired token (which may indeed be voted on I believe)
+    // **** This method encourages voting, but it does not encourage spam voting and intentionally passing proposals and limits withdrawn liquidity
 
     constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
         Governor("WabbitDAO")
