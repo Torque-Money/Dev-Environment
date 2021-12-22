@@ -19,12 +19,12 @@ contract LPool is LPoolCore {
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) LPoolCore(periodLength_, cooldownLength_) {
         _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
         _grantRole(POOL_ADMIN, _msgSender());
-        
+
         taxPercent = taxPercent_;
         taxAccount = _msgSender();
     }
 
-    // ======== Admin ========
+    // ======== Tax ========
 
     /** @dev Set the tax percentage */
     function setTaxPercentage(uint256 _taxPercent) external onlyRole(POOL_ADMIN) {
