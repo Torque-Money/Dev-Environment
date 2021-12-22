@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface IYieldApproved {
+interface IYield {
     /**
-     *  @dev Check if an account is eligible to earn a yield and return their stake / borrow
+     *  @dev Return the amount to be yielded to a user
      *  @param _account The account to check if the yield is eligible for
      *  @param _token The token to check if the account is eligible for a yield on
      */
-    function yieldApproved(address _account, IERC20 _token) external returns (uint256, uint256);
+    function yield(address _account, IERC20 _token) external returns (uint256, uint256);
 }
