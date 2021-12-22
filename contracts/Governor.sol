@@ -23,7 +23,8 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
 
     // **** We do indeed have the only governance that we can play with for modifying the state of this contract
 
-    address public taxAccount; // The deployers account
+    address public taxAccount;
+    uint256 public immutable taxPercent;
     IERC20 public payoutToken;
 
     struct Vote {
@@ -34,7 +35,12 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     mapping(uint256 => Vote) private Voters;
     uint256 public maxRewardedVoters;
 
-    constructor(ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold)
+    // **** Now I need some sort of voting period where users are allowed to call the function (or some sort of day where the payout proposal may be made)
+
+    constructor(
+        ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction, 
+        uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold, uint256 taxPercent_
+    )
         Governor("WabbitDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
         GovernorVotes(token_)
@@ -42,9 +48,8 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
         GovernorTimelockControl(timelock_)
     {
         taxAccount = _msgSender();
+        taxPercent = taxPercent_;
     }
-
-    // **** Then I should go about adding a way of determing the token that should be used for the vote (determined by governance)
 
     /** @dev Let the current tax account set a new tax account */
     function setTaxAccount(address _account) external {
