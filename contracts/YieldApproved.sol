@@ -25,7 +25,7 @@ contract YieldApproved is Ownable, IYieldApproved {
         margin = margin_;
     }
 
-    /** @dev Check if an account is eligible to earn a yield on a stake */
+    /** @dev Check if an account is eligible to earn a yield on a stake / borrow and return the amount */
     function yieldApproved(address _account, IERC20 _token) external override returns (uint256, uint256) {
         uint256 periodId = pool.currentPeriodId();
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
