@@ -40,7 +40,7 @@ contract YieldApproved is Ownable, IYield {
         uint256 periodId = pool.currentPeriodId();
         require(_msgSender() == address(token), "Only the token may call yield");
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
-        require(!Yields[periodId][_msgSender()], "Yield has already been claimed");
+        require(!Yields[periodId][_account], "Yield has already been claimed");
 
         uint256 stake = 0;
         uint256 borrow = 0;
@@ -51,8 +51,8 @@ contract YieldApproved is Ownable, IYield {
 
             uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
 
-            uint256 staked = pool.balanceOf(_msgSender(), _token, periodId);
-            uint256 borrowed = margin.debtOf(_msgSender(), _token);
+            uint256 staked = pool.balanceOf(_account, _token, periodId);
+            uint256 borrowed = margin.debtOf(_account, _token);
 
             uint256 stakedReward = staked.mul(interestRate.mul(interestRate)).div(oracle.decimals().mul(oracle.decimals()));
             uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
@@ -61,7 +61,7 @@ contract YieldApproved is Ownable, IYield {
             borrow = borrow.add(borrowedReward);
         }
 
-        Yields[periodId][_msgSender()] = true;
+        Yields[periodId][_account] = true;
         return stake.add(borrow);
     }
 }
