@@ -135,6 +135,8 @@ abstract contract MarginHelper is Ownable {
         _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
         _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
         _borrowAccount.borrowTime = block.timestamp;
+
+        pool.claim(_borrowed, _amount);
     }
 
 
