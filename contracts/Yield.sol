@@ -49,11 +49,12 @@ contract YieldApproved is Ownable, IYield {
             IERC20 _token = assets[i];
 
             uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
+            uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent());
 
             uint256 staked = pool.balanceOf(_account, _token, periodId);
             uint256 borrowed = margin.debtOf(_account, _token);
 
-            uint256 stakedReward = staked.mul(interestRate.mul(interestRate)).div(oracle.decimals().mul(oracle.decimals()));
+            uint256 stakedReward = staked.mul(interestRate.mul(utilizationRate)).div(oracle.decimals().mul(oracle.decimals()));
             uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
 
             totalYield = totalYield.add(stakedReward).add(borrowedReward);
