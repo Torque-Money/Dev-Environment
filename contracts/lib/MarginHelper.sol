@@ -25,6 +25,7 @@ abstract contract MarginHelper is Ownable {
     struct BorrowPeriod {
         uint256 totalBorrowed;
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
+        mapping(address => uint256) borrowed;
     }
 
     mapping(IERC20 => uint256) private MinCollateral;
@@ -132,13 +133,13 @@ abstract contract MarginHelper is Ownable {
         );
 
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
+        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].add(_amount);
         _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
         _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
         _borrowAccount.borrowTime = block.timestamp;
 
         pool.claim(_borrowed, _amount);
     }
-
 
     /** @dev Get the interest and borrowed current price to help the balance function */
     function _balanceOf(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {

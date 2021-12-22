@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IYield {
     /**
-     *  @dev Return the amount to be yielded to a user
+     *  @dev Return the amount to be yielded to a user and update their yielded status
      *  @param _account The account to check if the yield is eligible for
      */
     function yield(address _account) external returns (uint256);
