@@ -150,8 +150,6 @@ contract LPool is LPoolCore {
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token]; 
 
-        require(stakingPeriod.claims[_msgSender()] == 0, "Cannot withdraw with an outstanding claim");
-
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
 
