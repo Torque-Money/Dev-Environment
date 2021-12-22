@@ -46,10 +46,8 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     function yield(IERC20 _token) external {
         // Make sure the yield has been approved first
         address account = _msgSender();
-        uint256 stake = yieldApproved.yieldApproved(account, _token);
-        require(stake > 0, "Account has not staked this token to earn a yield on it");
-
-        // **** So now I need some way of determining the return based on what the user deposits ??? What about different prices of different coins ?
+        (uint256 stake, uint256 borrowed) = yieldApproved.yieldApproved(account, _token);
+        require(stake > 0 || borrowed > 0, "Account has not staked or borrowed this token to earn a yield on it");
 
         uint256 reward = currentYieldReward();
         _mint(account, reward);
