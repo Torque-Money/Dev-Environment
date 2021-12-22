@@ -17,7 +17,7 @@ contract YieldApproved is Ownable, IYield {
     Oracle public immutable oracle;
     IERC20 public immutable token;
 
-    mapping(uint256 => mapping(address => bool)) private Yields; // Period id => account => has yielded
+    mapping(uint256 => mapping(address => mapping(IERC20 => bool))) private Yields; // Period id => account => token => has yielded
 
     mapping(IERC20 => uint256) private NumYields;
     uint256 public slashingRate;
@@ -35,32 +35,29 @@ contract YieldApproved is Ownable, IYield {
         slashingRate = _slashingRate;
     }
 
-    /** @dev Calculate the yield for the given account and update their yield status */
-    function yield(address _account) external override returns (uint256) {
+    /** @dev Calculate the yield for the given account and token and update their yield status */
+    function yield(address _account, IERC20 _token) external override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
         require(_msgSender() == address(token), "Only the token may call yield");
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
-        require(!Yields[periodId][_account], "Yield has already been claimed");
+        require(pool.isApproved(_token), "This token has not been approved");
+        require(!Yields[periodId][_account][_token], "Yield has already been claimed");
 
-        uint256 totalYield = 0;
+        uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
+        uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent()); // **** How does this work + add to margin ???
 
-        IERC20[] memory assets = pool.approvedList();
-        for (uint256 i = 0; i < assets.length; i++) {
-            IERC20 _token = assets[i];
+        uint256 staked = pool.balanceOf(_account, _token, periodId);
+        uint256 borrowed = margin.debtOf(_account, _token);
 
-            uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
-            uint256 utilizationRate = interestRate.mul(100).div(margin.maxInterestPercent()); // **** How does this work + add to margin ??? - remove the for loop and do it for a single token
+        uint256 stakedReward = staked.mul(interestRate.mul(utilizationRate)).div(oracle.decimals().mul(oracle.decimals()));
+        uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
 
-            uint256 staked = pool.balanceOf(_account, _token, periodId);
-            uint256 borrowed = margin.debtOf(_account, _token);
+        uint256 slash = NumYields[_token].mul(slashingRate).div(100);
+        if (slash == 0) slash = 1;
+        uint256 totalYield = stakedReward.add(borrowedReward).div(slash);
 
-            uint256 stakedReward = staked.mul(interestRate.mul(utilizationRate)).div(oracle.decimals().mul(oracle.decimals()));
-            uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
-
-            totalYield = totalYield.add(stakedReward).add(borrowedReward);
-        }
-
-        Yields[periodId][_account] = true;
+        Yields[periodId][_account][_token] = true;
+        NumYields[_token] = NumYields[_token].add(1);
         return totalYield;
     }
 }

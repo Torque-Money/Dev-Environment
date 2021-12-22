@@ -7,6 +7,7 @@ interface IYield {
     /**
      *  @dev Return the amount to be yielded to a user and update their yielded status
      *  @param _account The account to check if the yield is eligible for
+     *  @param _account The token to check if the yield is eligible for
      */
-    function yield(address _account) external returns (uint256);
+    function yield(address _account, IERC20 _token) external returns (uint256);
 }
