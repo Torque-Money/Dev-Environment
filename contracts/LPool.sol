@@ -105,6 +105,17 @@ contract LPool is LPoolCore {
 
     /** @dev Allow an approved user to unclaim liquidity */
     function unclaim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
+        uint256 periodId = currentPeriodId();
+        require(!isPrologue(periodId), "Cannot unclaim during prologue");
+
+        StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token];
+
+        require(_amount <= stakingPeriod.claims[_msgSender()], "Cannot unclaim more than what has been claimed");
+
+        stakingPeriod.totalClaimed = stakingPeriod.totalClaimed.sub(_amount);
+        stakingPeriod.claims[_msgSender()] = stakingPeriod.claims[_msgSender()].sub(_amount);
+
+        emit Unclaim(_msgSender(), periodId, _token, _amount);
     }
 
     /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
@@ -120,7 +131,6 @@ contract LPool is LPoolCore {
             _token.safeTransferFrom(_msgSender(), taxAccount, tax);
         }
 
-        // Deposit the funds to the current pool
         _token.safeTransferFrom(_msgSender(), address(this), amount);
         StakingPeriods[periodId][_token].liquidity = StakingPeriods[periodId][_token].liquidity.add(amount);
 
