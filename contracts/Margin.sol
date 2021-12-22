@@ -64,7 +64,7 @@ contract Margin is Ownable, MarginHelper {
         return retValue;
     }
 
-    /** @dev Get the percentage of the pool of a given token being utilized */
+    /** @dev Get the percentage of the pool of a given token being utilized by borrowers */
     function utilizationRate(IERC20 _token) public view returns (uint256) {
         uint256 _borrowed = borrowed(_token);
         uint256 _liquidity = liquidity(_token);
