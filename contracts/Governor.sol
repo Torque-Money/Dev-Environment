@@ -19,12 +19,13 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
     uint256 public immutable taxPercent;
     IERC20 public payoutToken;
 
-    struct Vote {
+    uint256 public payoutId;
+    struct Payout {
         mapping(uint256 => address) voters;
-        uint256 length;
+        uint256 index;
         mapping(address => bool) hasVoted;
     }
-    mapping(uint256 => Vote) private Voters;
+    mapping(uint256 => Payout) private VoterPayouts;
     uint256 public maxPaidVoters;
 
     uint256 public lastPayout;
@@ -65,9 +66,20 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
         uint8 support,
         string memory reason
     ) internal override returns (uint256) {
-        
+        uint256 weight = super._castVote(proposalId, account, support, reason);
 
-        return super._castVote(proposalId, account, support, reason);
+        Payout storage payout = VoterPayouts[payoutId];
+        if (!payout.hasVoted[account]) {
+            uint256 index = payout.index;
+            if (index < 2) index = 2; // Number 0 and 1 slots should be dedicated to owner and executor
+
+            payout.voters[index] = account;
+            payout.hasVoted[account] = true;
+
+            payout.index = index.add(1).mod(maxPaidVoters.add(2)); // Add 2 to compensate for the slots taken by the owner and executor
+        }
+
+        return weight;
     }
 
     function votingDelay()
