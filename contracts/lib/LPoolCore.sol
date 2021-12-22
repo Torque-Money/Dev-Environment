@@ -80,7 +80,7 @@ contract LPoolCore is AccessControl {
     // ======== Approved tokens ========
 
     /** @dev Approves a token for use with the protocol */
-    function approveToken(IERC20 _token) external onlyOwner {
+    function approveToken(IERC20 _token) external onlyRole(POOL_ADMIN) {
         require(!isApproved(_token), "This token has already been approved");
 
         Approved[_token] = true;

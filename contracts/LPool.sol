@@ -24,12 +24,12 @@ contract LPool is LPoolCore {
     // ======== Admin ========
 
     /** @dev Set the tax percentage */
-    function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
+    function setTaxPercentage(uint256 _taxPercent) external onlyRole(POOL_ADMIN) {
         taxPercent = _taxPercent;
     }
 
     /** @dev Set the tax account */
-    function setTaxAccount(address _account) external onlyOwner {
+    function setTaxAccount(address _account) external onlyRole(POOL_ADMIN) {
         taxAccount = _account;
     }
 
@@ -90,16 +90,16 @@ contract LPool is LPoolCore {
     }
 
     /** @dev Allow an approved user to claim collateral as their own */
-    function claim(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+    function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         // **** Might need a seperate struct for this for the approved users
     }
 
     /** @dev Allow an approved user to unclaim collateral as their own */
-    function unclaim(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+    function unclaim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
     }
 
     /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
-    function deposit(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+    function deposit(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot deposit during prologue");
 
@@ -119,9 +119,8 @@ contract LPool is LPoolCore {
     }
 
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
-    function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+    function withdraw(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
-        require(_msgSender() == address(margin), "Only the margin may call this function"); // **** This needs to be removed and swapped with the approved owners - I need to set that up properly
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
