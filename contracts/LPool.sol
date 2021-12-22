@@ -51,6 +51,12 @@ contract LPool is LPoolCore {
 
     // ======== Liquidity manipulation ========
 
+    /** @dev Get the total amount of deposited assets into the given pool */
+    function deposited(IERC20 _token, uint256 _periodId) external view returns (uint256) {
+        StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
+        return stakingPeriod.totalDeposited;
+    }
+
     /** @dev Returns the total locked liquidity for the current period */
     function liquidity(IERC20 _token, uint256 _periodId) public view returns (uint256) {
         StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
