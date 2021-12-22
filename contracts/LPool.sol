@@ -52,6 +52,8 @@ contract LPool is LPoolCore {
     function liquidity(IERC20 _token, uint256 _periodId) public view returns (uint256) {
         StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
         return stakingPeriod.liquidity.sub(stakingPeriod.totalClaimed);
+
+        // **** THis liquidity is not a very good representation - we need to fix it so that when the period ends the total claimed no longer means anything
     }
 
     /** @dev Stakes a given amount of specified tokens in the pool */
