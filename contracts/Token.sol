@@ -43,10 +43,10 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     }
 
     /** @dev Yield new tokens as a reward to the caller if approved to do so by the yield function */
-    function yield() external {
+    function yield(IERC20 _token) external {
         // Make sure the yield has been approved first
         address account = _msgSender();
-        require(yieldApproved.yieldApproved(account), "Account is not approved to yield tokens");
+        require(yieldApproved.yieldApproved(account, _token), "Account is not approved to yield tokens");
 
         uint256 reward = currentYieldReward();
         _mint(account, reward);

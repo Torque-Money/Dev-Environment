@@ -12,34 +12,20 @@ contract YieldApproved is Ownable, IYieldApproved {
 
     LPool public immutable pool;
 
-    mapping(uint256 => mapping(address => bool)) private Yields; // **** Change this so that it is just for one specific token type, then add that token to the yieldApproved
-    mapping(IERC20 => uint256) private MinStakes;
+    mapping(uint256 => mapping(address => mapping(IERC20 => uint256))) private Yields; // Period id => account => token => stake
 
     constructor(LPool pool_) {
         pool = pool_; 
     }
 
-    /** @dev Set the minimum stake of a given token required to earn a yield */
-    function setMinStake(IERC20 _token, uint256 _amount) external onlyOwner {
-        require(pool.isApproved(_token), "This token has not been approved");
-        MinStakes[_token] = _amount;
-    }
-
     /** @dev Check if an account is eligible to earn a yield on a stake */
-    function yieldApproved(address _account) external override returns (bool) {
+    function yieldApproved(address _account, IERC20 _token) external override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        require(!Yields[periodId][_account], "Yield has already been approved");
         require(!pool.isPrologue(periodId), "Cannot approve yield during prologue phase");
+        require(Yields[periodId][_account][_token] == 0, "Yield has already been approved");
 
-        // Check if the account has an asset staked that exceeds the amount needed for a reward to be paid out
-        IERC20[] memory approved = pool.approvedList();
-        for (uint256 i = 0; i < approved.length; i++) {
-            IERC20 asset = approved[i];
-            if (pool.balanceOf(_account, asset, periodId) >= MinStakes[asset]) {
-                Yields[periodId][_account] = true;
-                return true;
-            }
-        }
-        return false;
+        uint256 stake = pool.balanceOf(_account, _token, periodId);
+        Yields[periodId][_account][_token] = stake;
+        return stake;
     }
 }
