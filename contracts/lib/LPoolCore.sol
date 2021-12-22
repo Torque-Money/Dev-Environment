@@ -1,12 +1,17 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract LPoolCore is Ownable {
+// **** Dont forget to add some sort of approval in here for liquidity accessors using grant role or something instead of ownable ???
+
+contract LPoolCore is AccessControl {
     using SafeMath for uint256;
+
+    bytes32 public constant POOL_ADMIN = keccak256("POOL_ADMIN");
+    bytes32 public constant POOL_APPROVED = keccak256("POOL_APPROVED");
 
     IERC20[] private ApprovedList;
     mapping(IERC20 => bool) private Approved; // Token => approved
@@ -14,6 +19,7 @@ contract LPoolCore is Ownable {
     struct StakingPeriod {
         uint256 totalDeposited;
         uint256 liquidity;
+        uint256 borrowed;
         mapping(address => uint256) deposits;
     }
 
@@ -21,6 +27,9 @@ contract LPoolCore is Ownable {
     uint256 public immutable cooldownLength;
 
     constructor(uint256 periodLength_, uint256 cooldownLength_) {
+        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
+        _grantRole(POOL_ADMIN, _msgSender());
+
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
     }

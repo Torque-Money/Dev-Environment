@@ -11,15 +11,14 @@ contract LPool is LPoolCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    Margin public immutable margin;
-
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Period Id => token => staking period
 
     uint256 public taxPercent;
+    address public taxAccount;
 
-    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_, Margin margin_) LPoolCore(periodLength_, cooldownLength_) {
+    constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) LPoolCore(periodLength_, cooldownLength_) {
         taxPercent = taxPercent_;
-        margin = margin_;
+        taxAccount = _msgSender();
     }
 
     // ======== Admin ========
@@ -27,6 +26,11 @@ contract LPool is LPoolCore {
     /** @dev Set the tax percentage */
     function setTaxPercentage(uint256 _taxPercent) external onlyOwner {
         taxPercent = _taxPercent;
+    }
+
+    /** @dev Set the tax account */
+    function setTaxAccount(address _account) external onlyOwner {
+        taxAccount = _account;
     }
 
     // ======== Balance management ========
@@ -85,6 +89,15 @@ contract LPool is LPoolCore {
         emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
+    /** @dev Allow an approved user to claim collateral as their own */
+    function claim(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+        // **** Might need a seperate struct for this for the approved users
+    }
+
+    /** @dev Allow an approved user to unclaim collateral as their own */
+    function unclaim(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
+    }
+
     /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
     function deposit(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
@@ -95,7 +108,7 @@ contract LPool is LPoolCore {
         {
             uint256 tax = _amount.mul(taxPercent).div(100);
             amount = amount.sub(tax);
-            _token.safeTransferFrom(_msgSender(), owner(), tax);
+            _token.safeTransferFrom(_msgSender(), taxAccount, tax);
         }
 
         // Deposit the funds to the current pool
@@ -108,7 +121,7 @@ contract LPool is LPoolCore {
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
     function withdraw(IERC20 _token, uint256 _amount) external onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
-        require(_msgSender() == address(margin), "Only the margin may call this function");
+        require(_msgSender() == address(margin), "Only the margin may call this function"); // **** This needs to be removed and swapped with the approved owners - I need to set that up properly
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
 
         // Withdraw an amount from the current pool
