@@ -20,10 +20,10 @@ contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
         yield = _yield;
     }
 
-    /** @dev Yield new tokens as a reward to the caller if approved to do so by the yield function */
-    function claimYield(IERC20 _token) external {
+    /** @dev Yield new tokens as a reward to the yielder */
+    function claimYield() external {
         address account = _msgSender();
-        uint256 _yield = yield.yield(account, _token);
+        uint256 _yield = yield.yield(account);
         _mint(account, _yield);
     }
 

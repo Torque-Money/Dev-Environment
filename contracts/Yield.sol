@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./LPool.sol";
 import "./Margin.sol";
-import "./IYieldApproved.sol";
+import "./IYield.sol";
 
 contract YieldApproved is Ownable, IYieldApproved {
     using SafeMath for uint256;
