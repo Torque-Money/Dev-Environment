@@ -69,7 +69,6 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Deposit the given amount of collateral to borrow against a specified asset */
     function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        // Make sure the amount is greater than 0
         require(_amount > 0, "Amount must be greater than 0");
         uint256 periodId = pool.currentPeriodId();
 
@@ -85,7 +84,6 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Get the collateral of an account for a given pool and period id */
     function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256) {
-        // Return the collateral of the account
         BorrowPeriod storage borrowPeriod = BorrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
@@ -187,7 +185,6 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Withdraw collateral from the account if the account has no debt */
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        // Check that the user does not have any debt
         BorrowPeriod storage borrowPeriod = BorrowPeriods[_periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
 
