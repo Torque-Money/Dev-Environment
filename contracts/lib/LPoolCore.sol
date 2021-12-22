@@ -20,6 +20,7 @@ contract LPoolCore is AccessControl {
         uint256 totalDeposited;
         uint256 liquidity;
         mapping(address => uint256) deposits;
+
         uint256 totalClaimed;
         mapping(address => uint256) claims;
     }

@@ -49,8 +49,9 @@ contract LPool is LPoolCore {
     // ======== Liquidity manipulation ========
 
     /** @dev Returns the total locked liquidity for the current period */
-    function liquidity(IERC20 _token, uint256 _periodId) external view returns (uint256) {
-        return StakingPeriods[_periodId][_token].liquidity;
+    function liquidity(IERC20 _token, uint256 _periodId) public view returns (uint256) {
+        StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
+        return stakingPeriod.liquidity.sub(stakingPeriod.totalClaimed);
     }
 
     /** @dev Stakes a given amount of specified tokens in the pool */
@@ -89,12 +90,20 @@ contract LPool is LPoolCore {
         emit Redeem(_msgSender(), _periodId, _token, _amount, tokensRedeemed);
     }
 
-    /** @dev Allow an approved user to claim collateral as their own */
+    /** @dev Allow an approved user to claim liquidity as their own without removing liquidity from the pool */
     function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
-        // **** Might need a seperate struct for this for the approved users
+        uint256 periodId = currentPeriodId();
+        require(!isPrologue(periodId), "Cannot claim during prologue");
+        require(_amount <= liquidity(_token, periodId), "Cannot claim more than total liquidity");
+
+        StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token];
+        stakingPeriod.totalClaimed = stakingPeriod.totalClaimed.add(_amount);
+        stakingPeriod.claims[_msgSender()] = stakingPeriod.claims[_msgSender()].add(_amount);
+
+        emit Claim(_msgSender(), periodId, _token, _amount);
     }
 
-    /** @dev Allow an approved user to unclaim collateral as their own */
+    /** @dev Allow an approved user to unclaim liquidity */
     function unclaim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
     }
 
@@ -120,13 +129,15 @@ contract LPool is LPoolCore {
 
     /** @dev Withdraw tokens from the pool and decrease the liquidity of the pool */
     function withdraw(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
+        // ************************** ADD IN A CHECK FOR THE CLAIMED AMOUNT
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot withdraw during prologue");
+        require(_amount <= liquidity(_token, periodId), "Cannot withdraw more than what is in pool");
+
+        // **** If the user has claimed a specific amount of crypto we should sub it from them too ????
 
         // Withdraw an amount from the current pool
         StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token]; 
-
-        require(_amount <= stakingPeriod.liquidity, "Cannot withdraw more than value pool");
 
         stakingPeriod.liquidity = stakingPeriod.liquidity.sub(_amount);
         _token.safeTransfer(_msgSender(), _amount);
@@ -138,6 +149,9 @@ contract LPool is LPoolCore {
 
     event Stake(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
     event Redeem(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount, uint256 liquidity);
+
+    event Claim(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
+    event Unclaim(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
 
     event Deposit(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
     event Withdraw(address indexed account, uint256 indexed periodId, IERC20 token, uint256 amount);
