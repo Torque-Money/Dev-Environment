@@ -116,17 +116,21 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Get the debt of a given account */
     function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        // Return the collateral of the account
         uint256 periodId = pool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
-
         return borrowAccount.borrowed;
+    }
+
+    /** @dev Return the total debt of a given asset for a given account */
+    function debtOf(address _account, IERC20 _borrowed) external view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
+        return borrowPeriod.borrowed[_account];
     }
 
     /** @dev Get the most recent borrow time for a given account */
     function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        // Return the most recent borrow time of the account
         uint256 periodId = pool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
@@ -136,7 +140,6 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Get the initial borrow time of the account */
     function initialBorrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        // Return the initial borrow time of the account
         uint256 periodId = pool.currentPeriodId();
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
