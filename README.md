@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Torque Finance is a lending and leveraging protocol that allows our users to leverage huge amounts against their collateral without risk to the protocol itself. We believe that leveragers should be able to leverage as much as they wish without restriction, while of course understanding the risks that come with such a dangerous position.
+Torque Money is a lending and leveraging protocol that allows our users to leverage huge amounts against their collateral without risk to the protocol itself. We believe that leveragers should be able to leverage as much as they wish without restriction, while of course understanding the risks that come with such a dangerous position.
 
 Stakers may lock assets in the pool for a given period of time, where those assets will be lent out to leveragers. At the end of the period the leveragers take their earnings after paying interest, and the stakers receive their stake in the pool based on what they deposited.
 
