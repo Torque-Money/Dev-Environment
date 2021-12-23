@@ -22,11 +22,8 @@ abstract contract GovernorRebase is Governor {
     uint256 public minVotingPower;
 
     uint256 public rebaseId;
-    struct RebaseReceiver {
-        uint256[] receivers;
-        mapping(address => bool) hasReceived; // **** If I modified delegate a bit I could prevent people from transferring tokens over and replacing money this way
-    }
-    mapping(uint256 => RebaseReceiver) private RebaseReceivers;
+    // **** If I modified delegate a bit I could prevent people from transferring tokens over and replacing money this way
+    mapping(uint256 => uint256[]) private RebaseReceivers;
 
     constructor(uint256 taxPercent_, uint256 rebaseCooldown_, uint256 rebasePercent_, uint256 minVotingPower_) {
         taxAccount = _msgSender();
