@@ -64,7 +64,7 @@ contract Margin is Ownable, MarginCore {
         return retValue;
     }
 
-    // ======== Deposit ========
+    // ======== Deposit and withdraw ========
 
     /** @dev Deposit the given amount of collateral to borrow against a specified asset */
     function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
@@ -87,6 +87,19 @@ contract Margin is Ownable, MarginCore {
         BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
 
         return borrowAccount.collateral;
+    }
+
+    /** @dev Withdraw collateral from the account if the account has no debt */
+    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
+        BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_msgSender()][_collateral];
+
+        require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
+        require(borrowAccount.collateral >= _amount, "Insufficient balance to withdraw");
+
+        borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
+        _collateral.safeTransfer(_msgSender(), _amount);
+
+        emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
     }
 
     // ======== Borrow ========
@@ -167,18 +180,6 @@ contract Margin is Ownable, MarginCore {
         else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
 
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
-    }
-
-    /** @dev Withdraw collateral from the account if the account has no debt */
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_msgSender()][_collateral];
-
-        require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
-        require(borrowAccount.collateral >= _amount, "Insufficient balance to withdraw");
-
-        _withdraw(_collateral, _amount, borrowAccount);
-
-        emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
     }
 
     // ======== Liquidate ========

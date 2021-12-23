@@ -214,10 +214,4 @@ abstract contract MarginCore is Ownable {
         _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
         _borrowAccount.borrowed = 0;
     }
-
-    /** @dev Withdraw funds */
-    function _withdraw(IERC20 _collateral, uint256 _amount, BorrowAccount storage _borrowAccount) internal {
-        _borrowAccount.collateral = _borrowAccount.collateral.sub(_amount);
-        _collateral.safeTransfer(_msgSender(), _amount);
-    }
 }
