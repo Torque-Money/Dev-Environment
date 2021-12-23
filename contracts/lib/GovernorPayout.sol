@@ -16,6 +16,7 @@ abstract contract GovernorPayout is Governor {
     uint256 public payoutId;
     struct Payout {
         mapping(uint256 => address) voters;
+        uint256 numVoters;
         uint256 index;
         mapping(address => bool) hasVoted;
 
@@ -71,6 +72,7 @@ abstract contract GovernorPayout is Governor {
             _payout.voters[index] = account;
             _payout.hasVoted[account] = true;
 
+            _payout.numVoters = _payout.numVoters.add(1);
             _payout.index = index.add(1).mod(maxPaidVoters.add(1)); // Add 2 to compensate for the slots taken by the owner and executor
         }
 
@@ -100,24 +102,35 @@ abstract contract GovernorPayout is Governor {
     /** @dev Used by the timelock to distribute the tokens
      *  NOTE: if the payout is executed and the liquidity of the protocol is different, this will have to be rexecuted
      */
-    function payout(uint256 _payoutId) external onlyGovernance {
+    function executePayout(uint256 _payoutId) external onlyGovernance {
         Payout storage _payout = VoterPayouts[_payoutId];
         require(_payout.requested && !_payout.completed, "Not eligible for payout to occur");
 
         // Special payout for the tax account and the caller
         IERC20 token = _payout.token;
-        uint256 tax = _payout.amount.mul(taxPercent).div(100);
+        uint256 amount = _payout.amount;
+
+        uint256 tax = amount.mul(taxPercent).div(100);
+        amount = amount.sub(tax);
         token.safeTransferFrom(timelock(), taxAccount, tax);
 
-        // **** It would be in my best interest to introduce a length incase there are not enough voters to fulfill the quarter
         mapping(uint256 => address) storage voters = _payout.voters;
-        for (uint256 i = 1; i < maxPaidVoters.add(1); i++) {
-                
+        uint256 numVoters = _payout.numVoters;
+        if (_payout.numVoters > maxPaidVoters.add(1)) numVoters = maxPaidVoters.add(1);
+
+        uint256 tokenDistribution = amount.div(numVoters);
+
+        for (uint256 i = 1; i < numVoters; i++) {
+            token.safeTransferFrom(timelock(), voters[i], tokenDistribution);
         }
 
         _payout.completed = true;
     }
 
-    /** @dev Override from the GovernorTimelockControl */
+    /** @dev Get the timelock */
     function timelock() public view virtual returns (address);
+
+    event PayoutRequested();
+
+    event PayoutExecuted();
 }
