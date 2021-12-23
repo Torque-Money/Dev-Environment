@@ -22,8 +22,6 @@ contract Oracle is Ownable {
         decimals = decimals_;
     }
 
-    // ======== Routers ========
-
     /** @dev Adds a new router to be used in price calculation */
     function addRouter(UniswapV2Router02 _router) external onlyOwner {
         require(StoredRouters[_router] != true, "This router has already been added");
@@ -32,15 +30,15 @@ contract Oracle is Ownable {
     }
 
     /** @dev Return the list of routers used in the oracle */
-    function routers() external view returns (UniswapV2Router02[] memory) { return Routers; }
+    function routers() external view returns (UniswapV2Router02[] memory) {
+        return Routers;
+    }
 
     /** @dev Returns a pseudo-random router to use */
     function router() external view returns (UniswapV2Router02) {
         uint256 index = uint256(keccak256(abi.encodePacked(_msgSender(), block.timestamp))).mod(Routers.length);
         return Routers[index];
     }
-
-    // ======== Verify price from multiple sources ========
 
     /** @dev Returns the median price of the amount of tokens 2 from tokens 1 over the stored exchanges */
     function pairPrice(IERC20 _token1, IERC20 _token2) public view returns (uint256) {
