@@ -29,7 +29,7 @@ abstract contract GovernorPayout is Governor {
     mapping(uint256 => Payout) private VoterPayouts;
     uint256 public maxPaidVoters;
     IERC20 public payoutToken;
-    uint256 public immutable payoutPercentage;
+    uint256 public immutable payoutPercent;
 
     uint256 public lastPayout;
     uint256 public immutable payoutCooldown;
@@ -88,6 +88,8 @@ abstract contract GovernorPayout is Governor {
 
         // Get the amount of the token to be distributed back to the users
         uint256 balance = IERC20(payoutToken).balanceOf(timelock());
+        uint256 payoutAmount = balance.mul(payoutPercent).div(100);
+        _payout.amount = payoutAmount;
 
         lastPayout = block.timestamp;
         payoutId = payoutId.add(1);
