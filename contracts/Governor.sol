@@ -15,7 +15,7 @@ contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, Governor
         uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold,
         uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_, uint256 payoutPercent_
     )
-        Governor("WabbitDAO")
+        Governor("torqueDAO")
         GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
         GovernorVotes(token_)
         GovernorVotesQuorumFraction(_quorumFraction)
