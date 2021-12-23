@@ -6,7 +6,7 @@ import "./LPoolApproved.sol";
 import "./LPoolPeriod.sol";
 import "./LPoolTax.sol";
 
-contract LPoolAdmin is LPoolCore, LPoolApproved, LPoolPeriod, LPoolTax {
+abstract contract LPoolAdmin is LPoolCore, LPoolApproved, LPoolPeriod, LPoolTax {
     /** @dev Allow an approved user to claim liquidity as their own without removing liquidity from the pool */
     function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();

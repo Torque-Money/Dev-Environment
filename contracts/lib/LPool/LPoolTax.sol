@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./LPoolCore.sol";
 
-contract LPoolTax is LPoolCore {
+abstract contract LPoolTax is LPoolCore {
     uint256 public taxPercent;
     address public taxAccount;
 
