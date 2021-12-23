@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../Oracle.sol";
 import "../LPool.sol";
 
-abstract contract MarginHelper is Ownable {
+abstract contract MarginCore is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -213,5 +213,11 @@ abstract contract MarginHelper is Ownable {
         _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
         _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
         _borrowAccount.borrowed = 0;
+    }
+
+    /** @dev Withdraw funds */
+    function _withdraw(IERC20 _collateral, uint256 _amount, BorrowAccount storage _borrowAccount) internal {
+        _borrowAccount.collateral = _borrowAccount.collateral.sub(_amount);
+        _collateral.safeTransfer(_msgSender(), _amount);
     }
 }

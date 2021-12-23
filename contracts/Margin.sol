@@ -8,16 +8,16 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./Oracle.sol";
 import "./LPool.sol";
 import "./lib/UniswapV2Router02.sol";
-import "./lib/MarginHelper.sol";
+import "./lib/MarginCore.sol";
 
-contract Margin is Ownable, MarginHelper {
+contract Margin is Ownable, MarginCore {
     using SafeERC20 for IERC20;
     using SafeMath for uint256;
 
     mapping(uint256 => mapping(IERC20 => BorrowPeriod)) private BorrowPeriods;
 
     constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_)
-        MarginHelper(oracle_, pool_, minBorrowLength_, maxInterestPercent_, minMarginThreshold_)
+        MarginCore(oracle_, pool_, minBorrowLength_, maxInterestPercent_, minMarginThreshold_)
     {}
 
     // ======== Getters ========
@@ -171,16 +171,12 @@ contract Margin is Ownable, MarginHelper {
 
     /** @dev Withdraw collateral from the account if the account has no debt */
     function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[_periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+        BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_msgSender()][_collateral];
 
-        // Require the amount in the balance and the user not to be borrowing
         require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
         require(borrowAccount.collateral >= _amount, "Insufficient balance to withdraw");
 
-        // Update the balance and transfer
-        borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
-        _collateral.safeTransfer(_msgSender(), _amount);
+        _withdraw(_collateral, _amount, borrowAccount);
 
         emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
     }
