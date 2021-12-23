@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./lib/LPoolCore.sol";
+import "./lib/LPool/LPoolCore.sol";
 import "./Margin.sol";
 
 contract LPool is LPoolCore {
@@ -13,27 +13,7 @@ contract LPool is LPoolCore {
 
     mapping(uint256 => mapping(IERC20 => StakingPeriod)) private StakingPeriods; // Period Id => token => staking period
 
-    uint256 public taxPercent;
-    address public taxAccount;
-
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_) LPoolCore(periodLength_, cooldownLength_) {
-        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
-        _grantRole(POOL_ADMIN, _msgSender());
-
-        taxPercent = taxPercent_;
-        taxAccount = _msgSender();
-    }
-
-    // ======== Tax ========
-
-    /** @dev Set the tax percentage */
-    function setTaxPercentage(uint256 _taxPercent) external onlyRole(POOL_ADMIN) {
-        taxPercent = _taxPercent;
-    }
-
-    /** @dev Set the tax account */
-    function setTaxAccount(address _account) external onlyRole(POOL_ADMIN) {
-        taxAccount = _account;
     }
 
     // ======== Balance management ========

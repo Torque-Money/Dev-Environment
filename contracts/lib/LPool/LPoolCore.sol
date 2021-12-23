@@ -15,4 +15,9 @@ abstract contract LPoolCore is AccessControl {
         uint256 totalClaimed;
         mapping(address => uint256) claims;
     }
+
+    constructor() {
+        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
+        _grantRole(POOL_ADMIN, _msgSender());
+    }
 }
