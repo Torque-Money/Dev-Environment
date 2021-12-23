@@ -131,7 +131,6 @@ contract LPool is LPoolCore {
     /** @dev Deposit tokens into the pool and increase the liquidity of the pool */
     function deposit(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
-        require(!isPrologue(periodId), "Cannot deposit during prologue");
 
         // Pay a tax to the contract owner
         uint256 amount = _amount;
