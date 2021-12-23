@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-// **** Dont forget to add some sort of approval in here for liquidity accessors using grant role or something instead of ownable ???
-
 contract LPoolCore is AccessControl {
     using SafeMath for uint256;
 
