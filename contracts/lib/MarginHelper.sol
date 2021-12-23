@@ -150,7 +150,7 @@ abstract contract MarginHelper is Ownable {
     }
 
     /** @dev Get the interest and borrowed current price to help the balance function */
-    function _balanceOf(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
+    function _balanceOfHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
         return (interest, borrowedCurrentPrice);

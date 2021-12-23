@@ -143,7 +143,7 @@ contract Margin is Ownable, MarginHelper {
     function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view returns (uint256) {
         BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
 
-        (uint256 interest, uint256 borrowedCurrentPrice) = _balanceOf(_collateral, _borrowed, borrowAccount);
+        (uint256 interest, uint256 borrowedCurrentPrice) = _balanceOfHelper(_collateral, _borrowed, borrowAccount);
         if (!pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral.sub(interest);
 
         return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
@@ -181,6 +181,7 @@ contract Margin is Ownable, MarginHelper {
         // Update the balance and transfer
         borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
         _collateral.safeTransfer(_msgSender(), _amount);
+
         emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
     }
 
