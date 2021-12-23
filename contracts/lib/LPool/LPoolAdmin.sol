@@ -1,12 +1,19 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./LPoolCore.sol";
 import "./LPoolApproved.sol";
 import "./LPoolPeriod.sol";
 import "./LPoolTax.sol";
+import "./LPoolLiquidity.sol";
 
-abstract contract LPoolAdmin is LPoolCore, LPoolApproved, LPoolPeriod, LPoolTax {
+abstract contract LPoolAdmin is LPoolCore, LPoolApproved, LPoolPeriod, LPoolTax, LPoolLiquidity {
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
+
     /** @dev Allow an approved user to claim liquidity as their own without removing liquidity from the pool */
     function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
