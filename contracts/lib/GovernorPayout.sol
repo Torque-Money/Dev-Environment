@@ -93,15 +93,15 @@ abstract contract GovernorPayout is Governor {
         uint256 payoutAmount = balance.mul(payoutPercent).div(100);
         _payout.amount = payoutAmount;
 
+        bytes[] memory data = new bytes[](2);
+        data[0] = abi.encodeWithSignature("approve(address,uint256)", address(this), payoutAmount);
+        data[1] = abi.encodeWithSignature("executePayout(uint256)", payoutId);
+        _execute(0, [address(payoutToken), address(this)], [0, 0], data, 0);
+
         lastPayout = block.timestamp;
         payoutId = payoutId.add(1);
-
-        // **** Now we need to queue the payout function as well as the approve the tokens
     }
 
-    /** @dev Used by the timelock to distribute the tokens
-     *  NOTE: if the payout is executed and the liquidity of the protocol is different, this will have to be rexecuted
-     */
     function executePayout(uint256 _payoutId) external onlyGovernance {
         Payout storage _payout = VoterPayouts[_payoutId];
         require(_payout.requested && !_payout.completed, "Not eligible for payout to occur");
@@ -127,10 +127,5 @@ abstract contract GovernorPayout is Governor {
         _payout.completed = true;
     }
 
-    /** @dev Get the timelock */
     function timelock() public view virtual returns (address);
-
-    event PayoutRequested();
-
-    event PayoutExecuted();
 }
