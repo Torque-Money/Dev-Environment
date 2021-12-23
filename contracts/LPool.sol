@@ -112,9 +112,10 @@ contract LPool is LPoolCore {
     function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApproved(_token) {
         uint256 periodId = currentPeriodId();
         require(!isPrologue(periodId), "Cannot claim during prologue");
-        require(_amount <= liquidity(_token, periodId), "Cannot claim more than total liquidity");
+        require(_amount <= liquidity(_token, periodId), "Cannot claim more than available liquidity");
 
         StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token];
+
         stakingPeriod.totalClaimed = stakingPeriod.totalClaimed.add(_amount);
         stakingPeriod.claims[_msgSender()] = stakingPeriod.claims[_msgSender()].add(_amount);
 
@@ -128,7 +129,7 @@ contract LPool is LPoolCore {
 
         StakingPeriod storage stakingPeriod = StakingPeriods[periodId][_token];
 
-        require(_amount <= stakingPeriod.claims[_msgSender()], "Cannot unclaim more than what has been claimed");
+        require(_amount <= stakingPeriod.claims[_msgSender()], "Cannot unclaim more than what you have claimed");
 
         stakingPeriod.totalClaimed = stakingPeriod.totalClaimed.sub(_amount);
         stakingPeriod.claims[_msgSender()] = stakingPeriod.claims[_msgSender()].sub(_amount);
