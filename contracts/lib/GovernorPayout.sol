@@ -15,7 +15,7 @@ abstract contract GovernorPayout is Governor {
 
     uint256 public payoutId;
     struct Payout {
-        mapping(uint256 => address) voters;
+        mapping(uint256 => address) voters; // **** Perhaps overwrite this with a priority queue at some point in the future
         uint256 index;
         mapping(address => bool) hasVoted;
 
@@ -34,13 +34,13 @@ abstract contract GovernorPayout is Governor {
     uint256 public lastPayout;
     uint256 public immutable payoutCooldown;
 
-    constructor(uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_, uint256 payoutPercentage_) {
+    constructor(uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_, uint256 payoutPercent_) {
         taxAccount = _msgSender();
         taxPercent = taxPercent_;
 
         maxPaidVoters = maxPaidVoters_;
         payoutCooldown = payoutCooldown_;
-        payoutPercentage = payoutPercentage_;
+        payoutPercent = payoutPercent_;
     }
 
     /** @dev Let the current tax account set a new tax account */
