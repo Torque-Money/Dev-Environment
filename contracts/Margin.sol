@@ -166,12 +166,6 @@ contract Margin is Ownable, MarginHelper {
         if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
         else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
 
-        // Update the borrowed
-        borrowAccount.initialPrice = 0;
-        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
-        borrowPeriod.borrowed[_msgSender()] = borrowPeriod.borrowed[_msgSender()].sub(borrowAccount.borrowed);
-        borrowAccount.borrowed = 0;
-
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
 

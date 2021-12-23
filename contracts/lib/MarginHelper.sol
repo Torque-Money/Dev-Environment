@@ -157,7 +157,10 @@ abstract contract MarginHelper is Ownable {
     }
 
     /** @dev Convert the accounts tokens back to the deposited asset */
-    function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) internal {
+    function _repayGreater(
+        address _account, IERC20 _collateral, IERC20 _borrowed,
+        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
+    ) internal {
         uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.decimals());
         pool.unclaim(_borrowed, _borrowAccount.collateral);
 
@@ -173,10 +176,19 @@ abstract contract MarginHelper is Ownable {
 
             _borrowAccount.collateral = _borrowAccount.collateral.sub(reward);
         }
+
+        // Update the borrowed
+        _borrowAccount.initialPrice = 0;
+        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
+        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
+        _borrowAccount.borrowed = 0;
     }
 
     /** @dev Amount the user has to repay the protocol */
-    function _repayLessEqual(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) internal {
+    function _repayLessEqual(
+        address _account, IERC20 _collateral, IERC20 _borrowed,
+        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
+    ) internal {
         uint256 repayAmount = _borrowAccount.collateral.sub(_balAfterRepay);
         _borrowAccount.collateral = _balAfterRepay;
 
@@ -195,5 +207,11 @@ abstract contract MarginHelper is Ownable {
         _borrowed.safeApprove(address(pool), depositValue);
         pool.deposit(_borrowed, depositValue);
         pool.unclaim(_borrowed, _borrowAccount.collateral);
+
+        // Update the borrowed
+        _borrowAccount.initialPrice = 0;
+        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
+        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
+        _borrowAccount.borrowed = 0;
     }
 }
