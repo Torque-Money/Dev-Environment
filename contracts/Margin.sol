@@ -104,8 +104,6 @@ contract Margin is Ownable, MarginHelper {
 
         require(borrowAccount.collateral > 0 && borrowAccount.collateral >= minCollateral(_collateral), "Not enough collateral to borrow against");
 
-        if (borrowAccount.borrowed == 0) borrowAccount.initialBorrowTime = block.timestamp;
-
         _borrow(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
 
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
@@ -114,8 +112,7 @@ contract Margin is Ownable, MarginHelper {
     /** @dev Get the debt of a given account */
     function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
+        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
         return borrowAccount.borrowed;
     }
 
@@ -129,18 +126,14 @@ contract Margin is Ownable, MarginHelper {
     /** @dev Get the most recent borrow time for a given account */
     function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
-
+        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
         return borrowAccount.borrowTime;
     }
 
     /** @dev Get the initial borrow time of the account */
     function initialBorrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
-
+        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
         return borrowAccount.initialBorrowTime;
     }
 

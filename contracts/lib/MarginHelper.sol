@@ -64,13 +64,19 @@ abstract contract MarginHelper is Ownable {
     }
 
     /** @dev Set the minimum borrow length */
-    function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner { minBorrowLength = _minBorrowLength; } 
+    function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner {
+        minBorrowLength = _minBorrowLength;
+    }
 
     /** @dev Set the maximum interest percent */
-    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner { maxInterestPercent = _maxInterestPercent; }
+    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner {
+        maxInterestPercent = _maxInterestPercent;
+    }
 
     /** @dev Set the minimum margin level */
-    function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner { minMarginThreshold = _minMarginThreshold; }
+    function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner {
+        minMarginThreshold = _minMarginThreshold;
+    }
 
     /** @dev Set the minimum amount of collateral for a given token required to borrow against */
     function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
@@ -122,6 +128,8 @@ abstract contract MarginHelper is Ownable {
 
     /** @dev Require that the borrow is not instantly liquidatable and update the balances */
     function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
+        if (_borrowAccount.borrowed == 0) _borrowAccount.initialBorrowTime = block.timestamp;
+
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
