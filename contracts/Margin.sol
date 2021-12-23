@@ -33,19 +33,19 @@ contract Margin is Ownable, MarginHelper {
         return BorrowPeriods[periodId][_token].totalBorrowed;
     }
 
-    /** @dev Return the total amount of a given asset borrowed */
-    function liquidity(IERC20 _token) public view returns (uint256) {
-        uint256 _liquidity = pool.liquidity(_token, pool.currentPeriodId());
-        uint256 _borrowed = borrowed(_token);
-
-        return _liquidity.sub(_borrowed);
-    }
-
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
         uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
         return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
+    }
+
+    /** @dev Get the percentage of the pool of a given token being utilized by borrowers */
+    function utilizationRate(IERC20 _token) public view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        uint256 _borrowed = borrowed(_token);
+        uint256 _tvl = pool.tvl(_token, periodId);
+        return _borrowed.mul(oracle.decimals()).div(_tvl.add(_borrowed));
     }
 
     /** @dev Get the interest rate for a given asset per second
@@ -62,13 +62,6 @@ contract Margin is Ownable, MarginHelper {
         { retValue = _initialBorrow.mul(calculateInterestRate(_borrowed)); }
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
         return retValue;
-    }
-
-    /** @dev Get the percentage of the pool of a given token being utilized by borrowers */
-    function utilizationRate(IERC20 _token) public view returns (uint256) {
-        uint256 _borrowed = borrowed(_token);
-        uint256 _liquidity = liquidity(_token);
-        return _borrowed.mul(oracle.decimals()).div(_liquidity.add(_borrowed));
     }
 
     // ======== Deposit ========
@@ -103,7 +96,7 @@ contract Margin is Ownable, MarginHelper {
         uint256 periodId = pool.currentPeriodId();
         require(_amount > 0, "Amount must be greater than 0");
         require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
-        require(liquidity(_borrowed) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(pool.liquidity(_borrowed, periodId) >= _amount, "Amount to borrow exceeds available liquidity");
         require(_collateral != _borrowed, "Cannot borrow against the same asset");
 
         BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
