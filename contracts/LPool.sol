@@ -58,6 +58,8 @@ contract LPool is LPoolCore {
         return stakingPeriod.totalDeposited;
     }
 
+    // **** Here is the problem with this - we need a TVL and a different liquidity, because now this would be affecting the utilization and interest rates
+
     /** @dev Returns the total locked liquidity for the current period */
     function liquidity(IERC20 _token, uint256 _periodId) public view returns (uint256) {
         StakingPeriod storage stakingPeriod = StakingPeriods[_periodId][_token];
