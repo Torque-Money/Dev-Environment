@@ -10,7 +10,7 @@ import "./IYield.sol";
 contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
     IYield public yield;
 
-    constructor(uint256 initialSupply_, IYield yield_) ERC20("torque", "WBT") ERC20Permit("WBT") {
+    constructor(uint256 initialSupply_, IYield yield_) ERC20("Torque", "TAU") ERC20Permit("TAU") {
         yield = yield_;
         _mint(owner(), initialSupply_);
     }
