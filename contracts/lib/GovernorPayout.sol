@@ -4,35 +4,43 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/governance/Governor.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 abstract contract GovernorPayout is Governor {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     address public taxAccount;
     uint256 public immutable taxPercent;
-    IERC20 public payoutToken;
 
     uint256 public payoutId;
     struct Payout {
         mapping(uint256 => address) voters;
         uint256 index;
         mapping(address => bool) hasVoted;
+
         bool requested;
-        bool complete;
+        address requester;
+        bool completed;
+
         IERC20 token;
+        uint256 amount;
     }
     mapping(uint256 => Payout) private VoterPayouts;
     uint256 public maxPaidVoters;
+    IERC20 public payoutToken;
+    uint256 public immutable payoutPercentage;
 
     uint256 public lastPayout;
     uint256 public immutable payoutCooldown;
 
-    constructor(uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_) {
+    constructor(uint256 taxPercent_, uint256 maxPaidVoters_, uint256 payoutCooldown_, uint256 payoutPercentage_) {
         taxAccount = _msgSender();
         taxPercent = taxPercent_;
 
         maxPaidVoters = maxPaidVoters_;
         payoutCooldown = payoutCooldown_;
+        payoutPercentage = payoutPercentage_;
     }
 
     /** @dev Let the current tax account set a new tax account */
@@ -69,18 +77,33 @@ abstract contract GovernorPayout is Governor {
         return weight;
     }
 
-    /** @dev Payout the voters with funds */
-    function executePayout() external {
+    /** @dev Request a payout to the voters for the timelock to fulfill */
+    function requestPayout() external {
         require(block.timestamp >= lastPayout.add(payoutCooldown), "Not enough time since last payout");
 
-        // Execute the transaction which pays the tokens out, but how will we actually do this without some sort of delegate call ???
+        Payout storage _payout = VoterPayouts[payoutId];
+        _payout.requested = true;
+        _payout.requester = _msgSender();
+        _payout.token = payoutToken;
+
+        // Get the amount of the token to be distributed back to the users
+        uint256 balance = IERC20(payoutToken).balanceOf(timelock());
+
+        lastPayout = block.timestamp;
+        payoutId = payoutId.add(1);
     }
 
     /** @dev Used by the timelock to distribute the tokens */
     function payout(uint256 _payoutId) external onlyGovernance {
+        // **** Assume that the required amount has been allocated out
+        // **** How do we make sure that the protocol has the liquidity to pay us out ?
+
         Payout storage _payout = VoterPayouts[payoutId];
-        require();
+        // require();
 
         // **** Distribute the tokens from the timelock to the voters
     }
+
+    /** @dev Override from the GovernorTimelockControl */
+    function timelock() public view virtual returns (address);
 }

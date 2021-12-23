@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFractio
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 import "./lib/GovernorPayout.sol";
 
-contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl, GovernorPayout {
+contract DAO is Governor, GovernorSettings, GovernorCompatibilityBravo, GovernorVotes, GovernorVotesQuorumFraction, GovernorPayout, GovernorTimelockControl {
     constructor(
         ERC20Votes token_, TimelockController timelock_, uint256 _quorumFraction,
         uint256 _votingDelay, uint256 _votingPeriod, uint256 _proposalThreshold,
