@@ -151,6 +151,7 @@ abstract contract MarginHelper is Ownable {
     /** @dev Convert the accounts tokens back to the deposited asset */
     function _repayGreater(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _balAfterRepay, BorrowAccount storage _borrowAccount) internal {
         uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.decimals());
+        pool.unclaim(_borrowed, _borrowAccount.collateral);
 
         // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
         pool.withdraw(_borrowed, payout);
@@ -185,5 +186,6 @@ abstract contract MarginHelper is Ownable {
         uint256 depositValue = amountOut.sub(reward);
         _borrowed.safeApprove(address(pool), depositValue);
         pool.deposit(_borrowed, depositValue);
+        pool.unclaim(_borrowed, _borrowAccount.collateral);
     }
 }
