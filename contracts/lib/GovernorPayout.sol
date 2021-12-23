@@ -66,12 +66,12 @@ abstract contract GovernorPayout is Governor {
         Payout storage _payout = VoterPayouts[payoutId];
         if (!_payout.hasVoted[account]) {
             uint256 index = _payout.index;
-            if (index < 2) index = 2; // Number 0 and 1 slots should be dedicated to owner and executor
+            if (index < 1) index = 1; // Number 0 and 1 slots should be dedicated to owner and executor
 
             _payout.voters[index] = account;
             _payout.hasVoted[account] = true;
 
-            _payout.index = index.add(1).mod(maxPaidVoters.add(2)); // Add 2 to compensate for the slots taken by the owner and executor
+            _payout.index = index.add(1).mod(maxPaidVoters.add(1)); // Add 2 to compensate for the slots taken by the owner and executor
         }
 
         return weight;
@@ -93,17 +93,29 @@ abstract contract GovernorPayout is Governor {
 
         lastPayout = block.timestamp;
         payoutId = payoutId.add(1);
+
+        // **** Now we need to queue the payout function as well as the approve the tokens
     }
 
-    /** @dev Used by the timelock to distribute the tokens */
+    /** @dev Used by the timelock to distribute the tokens
+     *  NOTE: if the payout is executed and the liquidity of the protocol is different, this will have to be rexecuted
+     */
     function payout(uint256 _payoutId) external onlyGovernance {
-        // **** Assume that the required amount has been allocated out
-        // **** How do we make sure that the protocol has the liquidity to pay us out ?
+        Payout storage _payout = VoterPayouts[_payoutId];
+        require(_payout.requested && !_payout.completed, "Not eligible for payout to occur");
 
-        Payout storage _payout = VoterPayouts[payoutId];
-        // require();
+        // Special payout for the tax account and the caller
+        IERC20 token = _payout.token;
+        uint256 tax = _payout.amount.mul(taxPercent).div(100);
+        token.safeTransferFrom(timelock(), taxAccount, tax);
 
-        // **** Distribute the tokens from the timelock to the voters
+        // **** It would be in my best interest to introduce a length incase there are not enough voters to fulfill the quarter
+        mapping(uint256 => address) storage voters = _payout.voters;
+        for (uint256 i = 1; i < maxPaidVoters.add(1); i++) {
+                
+        }
+
+        _payout.completed = true;
     }
 
     /** @dev Override from the GovernorTimelockControl */
