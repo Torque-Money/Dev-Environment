@@ -115,7 +115,6 @@ abstract contract GovernorPayout is Governor {
         Payout storage _payout = VoterPayouts[_payoutId];
         require(_payout.requested && !_payout.completed, "Not eligible for payout to occur");
 
-        // Special payout for the tax account and the caller
         IERC20 token = _payout.token;
         uint256 amount = _payout.amount;
 
