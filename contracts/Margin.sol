@@ -45,7 +45,7 @@ contract Margin is Ownable, MarginHelper {
         uint256 periodId = pool.currentPeriodId();
         uint256 _borrowed = borrowed(_token);
         uint256 _tvl = pool.tvl(_token, periodId);
-        return _borrowed.mul(oracle.decimals()).div(_tvl.add(_borrowed));
+        return _borrowed.mul(oracle.decimals()).div(_tvl);
     }
 
     /** @dev Get the interest rate for a given asset per second
