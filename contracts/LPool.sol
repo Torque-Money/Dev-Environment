@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 import "./lib/LPool/LPoolAccount.sol";
 import "./lib/LPool/LPoolAdmin.sol";
-import "./lib/LPool/LPoolApproved.sol";
-import "./lib/LPool/LPoolCore.sol";
-import "./lib/LPool/LPoolLiquidity.sol";
-import "./lib/LPool/LPoolPeriod.sol";
-import "./lib/LPool/LPoolTax.sol";
+import "./lib/LPool/LPoolApproved.sol"; // Done
+import "./lib/LPool/LPoolCore.sol"; // Done
+import "./lib/LPool/LPoolLiquidity.sol"; // Done
+import "./lib/LPool/LPoolPeriod.sol"; // Done
+import "./lib/LPool/LPoolTax.sol"; // Done
 
 // **** Problem occurs with account and with admin - potentially add seperate interfaces into them or something ?
 contract LPool is LPoolCore, LPoolPeriod, LPoolApproved, LPoolTax, LPoolLiquidity {
