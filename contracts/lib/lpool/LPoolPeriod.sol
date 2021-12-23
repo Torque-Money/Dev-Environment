@@ -1,27 +1,11 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./LPoolCore.sol";
 
-contract LPoolCore is AccessControl {
+contract LPoolPeriod is LPoolCore {
     using SafeMath for uint256;
-
-    bytes32 public constant POOL_ADMIN = keccak256("POOL_ADMIN");
-    bytes32 public constant POOL_APPROVED = keccak256("POOL_APPROVED");
-
-    IERC20[] private ApprovedList;
-    mapping(IERC20 => bool) private Approved; // Token => approved
-
-    struct StakingPeriod {
-        uint256 totalDeposited;
-        uint256 liquidity;
-        mapping(address => uint256) deposits;
-
-        uint256 totalClaimed;
-        mapping(address => uint256) claims;
-    }
 
     uint256 public immutable periodLength;
     uint256 public immutable cooldownLength;
@@ -30,8 +14,6 @@ contract LPoolCore is AccessControl {
         periodLength = periodLength_;
         cooldownLength = cooldownLength_;
     }
-
-    // ======== Check the staking period and cooldown periods ========
 
     /** @dev Get the times at which the prologue of the given period occurs */
     function prologueTimes(uint256 _periodId) public view returns (uint256, uint256) {
@@ -72,30 +54,5 @@ contract LPoolCore is AccessControl {
     /** @dev Returns the id of the current period */
     function currentPeriodId() public view returns (uint256) {
         return uint256(block.timestamp).div(periodLength);
-    }
-
-    // ======== Approved tokens ========
-
-    /** @dev Approves a token for use with the protocol */
-    function approveToken(IERC20 _token) external onlyRole(POOL_ADMIN) {
-        require(!isApproved(_token), "This token has already been approved");
-
-        Approved[_token] = true;
-        ApprovedList.push(_token);
-    }
-
-    /** @dev Return the approved list of tokens */
-    function approvedList() external view returns (IERC20[] memory) {
-        return ApprovedList;
-    }
-
-    /** @dev Returns whether or not a token is approved */
-    function isApproved(IERC20 _token) public view returns (bool) {
-        return Approved[_token];
-    }
-
-    modifier onlyApproved(IERC20 _token) {
-        require(isApproved(_token), "This token has not been approved");
-        _;
     }
 }
