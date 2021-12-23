@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./LPoolCore.sol";
 
-contract LPoolApproved is LPoolCore {
+abstract contract LPoolApproved is LPoolCore {
     IERC20[] private ApprovedList;
     mapping(IERC20 => bool) private Approved; // Token => approved
 

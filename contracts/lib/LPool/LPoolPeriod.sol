@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolCore.sol";
 
-contract LPoolPeriod is LPoolCore {
+abstract contract LPoolPeriod is LPoolCore {
     using SafeMath for uint256;
 
     uint256 public immutable periodLength;
