@@ -163,8 +163,8 @@ contract Margin is Ownable, MarginHelper {
                 "Cannot repay until minimum borrow period is over or epilogue has started");
 
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
-        if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
-        else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
+        if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
+        else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
 
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
