@@ -17,6 +17,9 @@ abstract contract GovernorPayout is Governor {
         mapping(uint256 => address) voters;
         uint256 index;
         mapping(address => bool) hasVoted;
+        bool requested;
+        bool complete;
+        IERC20 token;
     }
     mapping(uint256 => Payout) private VoterPayouts;
     uint256 public maxPaidVoters;
@@ -67,11 +70,17 @@ abstract contract GovernorPayout is Governor {
     }
 
     /** @dev Payout the voters with funds */
-    function payout() external {
+    function executePayout() external {
         require(block.timestamp >= lastPayout.add(payoutCooldown), "Not enough time since last payout");
 
         // Execute the transaction which pays the tokens out, but how will we actually do this without some sort of delegate call ???
+    }
 
-        // **** We will have to have some sort of payout which will use transfer from, and then the token itself will basically just approve this function
+    /** @dev Used by the timelock to distribute the tokens */
+    function payout(uint256 _payoutId) external onlyGovernance {
+        Payout storage _payout = VoterPayouts[payoutId];
+        require();
+
+        // **** Distribute the tokens from the timelock to the voters
     }
 }
