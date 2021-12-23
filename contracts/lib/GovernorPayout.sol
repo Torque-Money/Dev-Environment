@@ -88,20 +88,29 @@ abstract contract GovernorPayout is Governor {
         _payout.requester = _msgSender();
         _payout.token = payoutToken;
 
-        // Get the amount of the token to be distributed back to the users
         uint256 balance = IERC20(payoutToken).balanceOf(timelock());
         uint256 payoutAmount = balance.mul(payoutPercent).div(100);
         _payout.amount = payoutAmount;
 
-        bytes[] memory data = new bytes[](2);
-        data[0] = abi.encodeWithSignature("approve(address,uint256)", address(this), payoutAmount);
-        data[1] = abi.encodeWithSignature("executePayout(uint256)", payoutId);
-        _execute(0, [address(payoutToken), address(this)], [0, 0], data, 0);
+        address[] memory _targets = new address[](2);
+        _targets[0] = address(payoutToken);
+        _targets[1] = address(this);
+
+        uint256[] memory _values = new uint256[](2);
+        _values[0] = 0;
+        _values[1] = 0;
+
+        bytes[] memory _calldatas = new bytes[](2);
+        _calldatas[0] = abi.encodeWithSignature("approve(address,uint256)", address(this), payoutAmount);
+        _calldatas[1] = abi.encodeWithSignature("executePayout(uint256)", payoutId);
+
+        _execute(0, _targets, _values, _calldatas, 0);
 
         lastPayout = block.timestamp;
         payoutId = payoutId.add(1);
     }
 
+    /** @dev Callback for the payout */
     function executePayout(uint256 _payoutId) external onlyGovernance {
         Payout storage _payout = VoterPayouts[_payoutId];
         require(_payout.requested && !_payout.completed, "Not eligible for payout to occur");
