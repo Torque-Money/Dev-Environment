@@ -38,5 +38,14 @@ abstract contract GovernorPayout is Governor {
         payoutToken = _token;
     }
 
+    function _castVote(
+        uint256 proposalId,
+        address account,
+        uint8 support,
+        string memory reason
+    ) internal virtual override returns (uint256) {
+        return super._castVote(proposalId, account, support, reason);
+    }
+
     function timelock() public view virtual returns (address);
 }
