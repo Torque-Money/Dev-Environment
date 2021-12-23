@@ -15,7 +15,7 @@ abstract contract GovernorPayout is Governor {
 
     uint256 public payoutId;
     struct Payout {
-        mapping(uint256 => address) voters; // **** Perhaps overwrite this with a priority queue at some point in the future
+        mapping(uint256 => address) voters;
         uint256 index;
         mapping(address => bool) hasVoted;
 
