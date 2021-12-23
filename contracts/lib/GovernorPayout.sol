@@ -110,6 +110,9 @@ abstract contract GovernorPayout is Governor {
         payoutId = payoutId.add(1);
     }
 
+    // **** This isnt actually going to work, it still has to go through the timelock, which means that the request to execute needs to be operated manually
+    // **** Perhaps it would be better to do with a callback that tracks all of the votes for upgradability purposes ?
+
     /** @dev Callback for the payout */
     function executePayout(uint256 _payoutId) external onlyGovernance {
         Payout storage _payout = VoterPayouts[_payoutId];
