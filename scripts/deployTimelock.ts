@@ -5,7 +5,7 @@ import fs from "fs";
 export default async function main() {
     // Deploy the timelock
     const timelockConfig = {
-        minDelay: 1,
+        minDelay: 259200,
         proposers: [config.daoAddress],
         executors: [hre.ethers.constants.AddressZero],
     };

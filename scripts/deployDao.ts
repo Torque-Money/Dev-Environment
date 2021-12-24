@@ -15,7 +15,7 @@ export default async function main() {
         quorumFraction: 6,
         votingDelay: hre.ethers.BigNumber.from(86400).div(blocktime),
         votingPeriod: hre.ethers.BigNumber.from(604800).div(blocktime),
-        proposalThreshold: 0,
+        proposalThreshold: 2,
     };
     const Governor = await hre.ethers.getContractFactory("DAO");
     const governor = await Governor.deploy(...Object.values(governorConfig));
