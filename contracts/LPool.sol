@@ -3,9 +3,8 @@ pragma solidity ^0.8.0;
 
 import "./lib/LPool/LPoolAccount.sol";
 import "./lib/LPool/LPoolAdmin.sol";
-import "./lib/LPool/LPoolTax.sol"; // Done
 
-contract LPool is LPoolTax, LPoolAccount, LPoolAdmin {
+contract LPool is LPoolAccount, LPoolAdmin {
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_)
     LPoolPeriod(periodLength_, cooldownLength_)
     LPoolTax(taxPercent_)
