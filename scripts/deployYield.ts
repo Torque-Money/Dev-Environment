@@ -14,6 +14,7 @@ export default async function main() {
         oracle: config.oracleAddress,
         token: config.tokenAddress,
         slashingRate: slashingRate,
+        // **** Add a starting slash rate to this as well
     };
     const YieldApproved = await hre.ethers.getContractFactory("YieldApproved");
     const yieldApproved = await YieldApproved.deploy(...Object.values(yieldApprovedConfig));

@@ -27,6 +27,7 @@ contract YieldApproved is Ownable, IYield {
         margin = margin_;
         oracle = oracle_;
         token = token_;
+        
         slashingRate = slashingRate_;
         deployTime = block.timestamp;
     }

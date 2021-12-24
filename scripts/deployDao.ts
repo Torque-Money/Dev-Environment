@@ -8,12 +8,13 @@ export default async function main() {
     const signer = hre.ethers.provider.getSigner();
     const timelockAddress = await getFutureAddress(signer, 1);
 
+    const blocktime = hre.ethers.BigNumber.from(2); // Seconds
     const governorConfig = {
         token: config.tokenAddress,
         timelock: timelockAddress,
-        quorumFraction: 4,
-        votingDelay: 1,
-        votingPeriod: 5,
+        quorumFraction: 6,
+        votingDelay: hre.ethers.BigNumber.from(86400).div(blocktime),
+        votingPeriod: hre.ethers.BigNumber.from(604800).div(blocktime),
         proposalThreshold: 0,
     };
     const Governor = await hre.ethers.getContractFactory("DAO");

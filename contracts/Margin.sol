@@ -13,9 +13,9 @@ contract Margin is MarginBorrow {
         uint256 minBorrowLength_,
         uint256 maxInterestPercent_ 
     )
-    MarginCore(oracle_, pool_)
-    MarginLevel(minMarginThreshold_)
-    MarginBorrowHelper(minBorrowLength_)
-    MarginInterest(maxInterestPercent_)
+        MarginCore(oracle_, pool_)
+        MarginLevel(minMarginThreshold_)
+        MarginBorrowHelper(minBorrowLength_)
+        MarginInterest(maxInterestPercent_)
     {}
 }

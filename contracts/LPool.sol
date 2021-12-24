@@ -6,7 +6,7 @@ import "./lib/LPool/LPoolAdmin.sol";
 
 contract LPool is LPoolAccount, LPoolAdmin {
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_)
-    LPoolPeriod(periodLength_, cooldownLength_)
-    LPoolTax(taxPercent_)
+        LPoolPeriod(periodLength_, cooldownLength_)
+        LPoolTax(taxPercent_)
     {}
 }
