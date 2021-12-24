@@ -5,20 +5,20 @@ import fs from "fs";
 export default async function main() {
     // Deploy the yield approval
 
-    // Using the formula yieldPercent < slashRate / (slashRate + time + offset)
-    const percentAfterTimeframe = hre.ethers.BigNumber.from(10);
-    const timeframe = hre.ethers.BigNumber.from(3.154e7);
-    const slashingRate = percentAfterTimeframe.mul(timeframe).div(hre.ethers.BigNumber.from(100).sub(percentAfterTimeframe)); // slash < percentage * timeframe / (1 - percentage) (solve for p)
+    // Using the formula yieldPercent < slashRate / (slashRate + time + offset), then solve simultaneously for yield = p_f at time = t and yield = p_0 at time = 0
+    const percentInitial = hre.ethers.BigNumber.from(40);
+    const percentFinal = hre.ethers.BigNumber.from(1);
+    const timeframe = hre.ethers.BigNumber.from(6.307e7); // 2 years
 
-    const percentInitial = hre.ethers.BigNumber.from(60);
-    const slashOffset = slashingRate.sub(percentInitial);
+    const slashRate = percentInitial.mul(percentFinal).mul(timeframe).div(percentInitial.sub(percentFinal)).div(100);
+    const slashOffset = slashRate.mul(hre.ethers.BigNumber.from(100).sub(percentInitial)).div(percentInitial);
 
     const yieldApprovedConfig = {
         pool: config.poolAddress,
         margin: config.marginAddress,
         oracle: config.oracleAddress,
         token: config.tokenAddress,
-        slashingRate: slashingRate,
+        slashingRate: slashRate,
         slashOffset: slashOffset,
     };
     const YieldApproved = await hre.ethers.getContractFactory("YieldApproved");
