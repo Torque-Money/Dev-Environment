@@ -3,8 +3,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./MarginCore.sol";
 
-abstract contract MarginLiquidate {
+abstract contract MarginLiquidate is MarginCore {
+    using SafeMath for uint256;
+
     /** @dev Check if an account is liquidatable */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (bool) {
         return marginLevel(_account, _collateral, _borrowed) < _minMarginLevel();
