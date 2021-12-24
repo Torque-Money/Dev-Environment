@@ -10,6 +10,10 @@ abstract contract MarginInterest is MarginBorrowHelper {
 
     uint256 public maxInterestPercent;
 
+    constructor(uint256 maxInterestPercent_) {
+        maxInterestPercent = maxInterestPercent_;
+    }
+
     /** @dev Get the interest rate for a given asset per second
         interest = maxInterestRate * totalBorrowed / (totalBorrowed + liquidity) */
     function interestRate(IERC20 _token) public view returns (uint256) {

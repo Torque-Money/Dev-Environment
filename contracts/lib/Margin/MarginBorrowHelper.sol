@@ -11,9 +11,18 @@ abstract contract MarginBorrowHelper is MarginCore {
     uint256 public minBorrowLength;
     mapping(IERC20 => uint256) private MinCollateral;
 
+    constructor(uint256 minBorrowLength_) {
+        minBorrowLength = minBorrowLength_;
+    }
+
     /** @dev Set the minimum borrow length */
     function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner {
         minBorrowLength = _minBorrowLength;
+    }
+
+    /** @dev Set the minimum amount of collateral for a given token required to borrow against */
+    function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
+        MinCollateral[_token] = _amount;
     }
 
     /** @dev Return the minimum borrow time remaining */
@@ -26,11 +35,6 @@ abstract contract MarginBorrowHelper is MarginCore {
     /** @dev Gets the minimum amount of collateral required to borrow a token */
     function minCollateral(IERC20 _token) public view returns (uint256) {
         return MinCollateral[_token];
-    }
-
-    /** @dev Set the minimum amount of collateral for a given token required to borrow against */
-    function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
-        MinCollateral[_token] = _amount;
     }
 
     /** @dev Return the total amount of a given asset borrowed */

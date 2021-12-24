@@ -10,6 +10,10 @@ abstract contract MarginLevel is MarginInterest {
 
     uint256 public minMarginThreshold; // Stored as the percentage above equilibrium
 
+    constructor(uint256  minMarginThreshold_) {
+        minMarginThreshold = minMarginThreshold_;
+    }
+
     /** @dev Set the minimum margin level */
     function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner {
         minMarginThreshold = _minMarginThreshold;
