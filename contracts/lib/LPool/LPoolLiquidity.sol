@@ -2,10 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./LPoolCore.sol";
 import "./LPoolPeriod.sol";
 
-abstract contract LPoolLiquidity is LPoolCore, LPoolPeriod {
+abstract contract LPoolLiquidity is LPoolPeriod {
     using SafeMath for uint256;
 
     /** @dev Get the total amount of deposited assets into the given pool */

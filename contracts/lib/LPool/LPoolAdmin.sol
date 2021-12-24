@@ -10,7 +10,7 @@ import "./LPoolPeriod.sol";
 import "./LPoolTax.sol";
 import "./LPoolLiquidity.sol";
 
-abstract contract LPoolAdmin is LPoolCore, LPoolApproved, LPoolPeriod, LPoolTax, LPoolLiquidity {
+abstract contract LPoolAdmin is LPoolApproved, LPoolTax, LPoolLiquidity {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 

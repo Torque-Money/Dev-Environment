@@ -10,7 +10,7 @@ import "./lib/LPool/LPoolPeriod.sol"; // Done
 import "./lib/LPool/LPoolTax.sol"; // Done
 
 // **** Problem occurs with account and with admin - potentially add seperate interfaces into them or something ?
-contract LPool is LPoolCore, LPoolPeriod, LPoolApproved, LPoolTax, LPoolLiquidity {
+contract LPool is LPoolTax, LPoolLiquidity, LPoolAccount, LPoolAdmin {
     constructor(uint256 periodLength_, uint256 cooldownLength_, uint256 taxPercent_)
     LPoolPeriod(periodLength_, cooldownLength_)
     LPoolTax(taxPercent_)
