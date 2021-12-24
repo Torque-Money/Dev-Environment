@@ -21,4 +21,12 @@ abstract contract MarginInterest {
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
         return retValue;
     }
+
+    /** @dev Get the percentage of the pool of a given token being utilized by borrowers */
+    function utilizationRate(IERC20 _token) public view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        uint256 _borrowed = borrowed(_token);
+        uint256 _tvl = pool.tvl(_token, periodId);
+        return _borrowed.mul(oracle.decimals()).div(_tvl);
+    }
 }

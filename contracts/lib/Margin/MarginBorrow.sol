@@ -5,6 +5,52 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 abstract contract MarginBorrow {
+    /** @dev Borrow a specified number of the given asset against the collateral */
+    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
+        uint256 periodId = pool.currentPeriodId();
+        require(_amount > 0, "Amount must be greater than 0");
+        require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
+        require(pool.liquidity(_borrowed, periodId) >= _amount, "Amount to borrow exceeds available liquidity");
+        require(_collateral != _borrowed, "Cannot borrow against the same asset");
+
+        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
+        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
+
+        require(borrowAccount.collateral > 0 && borrowAccount.collateral >= minCollateral(_collateral), "Not enough collateral to borrow against");
+
+        _borrow(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
+
+        emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
+    }
+
+    /** @dev Require that the borrow is not instantly liquidatable and update the balances */
+    function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
+        if (_borrowAccount.borrowed == 0) _borrowAccount.initialBorrowTime = block.timestamp;
+
+        // Require that the borrowed amount will be above the required margin level
+        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
+        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
+        require(
+            _marginLevel(
+                _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
+                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
+            ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
+        );
+
+        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
+        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].add(_amount);
+        _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
+        _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
+        _borrowAccount.borrowTime = block.timestamp;
+
+        pool.claim(_borrowed, _amount);
+    }
+
+    /** @dev Gets the minimum amount of collateral required to borrow a token */
+    function minCollateral(IERC20 _token) public view returns (uint256) {
+        return MinCollateral[_token];
+    }
+
     /** @dev Repay the borrowed amount for the given asset and collateral */
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         // If the period has entered the epilogue phase, then anyone may repay the account
@@ -77,22 +123,17 @@ abstract contract MarginBorrow {
         }
     }
 
-    /** @dev Borrow a specified number of the given asset against the collateral */
-    function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
+    /** @dev Return the total amount of a given asset borrowed */
+    function borrowed(IERC20 _token) public view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        require(_amount > 0, "Amount must be greater than 0");
-        require(!pool.isPrologue(periodId) && !pool.isEpilogue(periodId), "Cannot borrow during the prologue or epilogue");
-        require(pool.liquidity(_borrowed, periodId) >= _amount, "Amount to borrow exceeds available liquidity");
-        require(_collateral != _borrowed, "Cannot borrow against the same asset");
+        return BorrowPeriods[periodId][_token].totalBorrowed;
+    }
 
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
-
-        require(borrowAccount.collateral > 0 && borrowAccount.collateral >= minCollateral(_collateral), "Not enough collateral to borrow against");
-
-        _borrow(borrowAccount, borrowPeriod, _collateral, _borrowed, _amount);
-
-        emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
+    /** @dev Get the most recent borrow time for a given account */
+    function minBorrowTimeRemaining(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
+        return borrowAccount.borrowTime;
     }
 
     event Borrow(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);

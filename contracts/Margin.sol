@@ -22,46 +22,12 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Getters ========
 
-    /** @dev Return the total amount of a given asset borrowed */
-    function borrowed(IERC20 _token) public view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        return BorrowPeriods[periodId][_token].totalBorrowed;
-    }
-
-    /** @dev Get the margin level of the given account */
-    function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
-        BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
-        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
-    }
-
-    /** @dev Get the percentage of the pool of a given token being utilized by borrowers */
-    function utilizationRate(IERC20 _token) public view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        uint256 _borrowed = borrowed(_token);
-        uint256 _tvl = pool.tvl(_token, periodId);
-        return _borrowed.mul(oracle.decimals()).div(_tvl);
-    }
-
 
     // ======== Deposit and withdraw ========
 
 
     // ======== Borrow ========
 
-    /** @dev Get the most recent borrow time for a given account */
-    function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
-        return borrowAccount.borrowTime;
-    }
-
-    /** @dev Get the initial borrow time of the account */
-    function initialBorrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
-        return borrowAccount.initialBorrowTime;
-    }
 
     // **** I think I would like a number of the total collateral borrowed too just to be difficult
 

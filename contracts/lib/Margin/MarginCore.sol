@@ -43,16 +43,6 @@ abstract contract MarginCore is Ownable {
 
     // ======== Getters ========
 
-    /** @dev Gets the minimum amount of collateral required to borrow a token */
-    function minCollateral(IERC20 _token) public view returns (uint256) {
-        return MinCollateral[_token];
-    }
-
-    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view virtual returns (uint256);
-
-    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed */
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view virtual returns (uint256);
 
     // ======== Setters and modifiers ========
 
@@ -83,32 +73,6 @@ abstract contract MarginCore is Ownable {
 
     // ======== Calculation assistances ========
 
-    function _calculateMarginLevel(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) internal view returns (uint256) {
-        uint256 retValue;
-        { retValue = oracle.decimals(); }
-        { retValue = retValue.mul(_deposited.add(_currentBorrowPrice)); }
-        { retValue = retValue.div(_initialBorrowPrice.add(_interest)); }
-        
-        return retValue;
-    }
-
-    /** @dev Calculate the margin level from the given requirements - returns the value multiplied by decimals */
-    function _marginLevel(
-        uint256 _deposited, uint256 _initialBorrowPrice, uint256 _amountBorrowed,
-        IERC20 _collateral, IERC20 _borrowed, uint256 _interest
-    ) internal view returns (uint256) {
-        if (_amountBorrowed == 0) return oracle.decimals().mul(999);
-
-        uint256 currentBorrowPrice;
-        { currentBorrowPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amountBorrowed).div(oracle.decimals()); }
-        
-        return _calculateMarginLevel(_deposited, currentBorrowPrice, _initialBorrowPrice, _interest);
-    }
-
-    /** @dev Return the minimum margin level in terms of decimals */
-    function _minMarginLevel() internal view returns (uint256) {
-        return minMarginThreshold.add(100).mul(oracle.decimals()).div(100);
-    }
 
     // ======== Utils ========
 
@@ -124,33 +88,4 @@ abstract contract MarginCore is Ownable {
 
     // ======== Core helpers ========
 
-    /** @dev Require that the borrow is not instantly liquidatable and update the balances */
-    function _borrow(BorrowAccount storage _borrowAccount, BorrowPeriod storage _borrowPeriod, IERC20 _collateral, IERC20 _borrowed, uint256 _amount) internal {
-        if (_borrowAccount.borrowed == 0) _borrowAccount.initialBorrowTime = block.timestamp;
-
-        // Require that the borrowed amount will be above the required margin level
-        uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
-        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
-        require(
-            _marginLevel(
-                _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
-                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
-            ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
-        );
-
-        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.add(_amount);
-        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].add(_amount);
-        _borrowAccount.initialPrice = _borrowAccount.initialPrice.add(borrowInitialPrice);
-        _borrowAccount.borrowed = _borrowAccount.borrowed.add(_amount);
-        _borrowAccount.borrowTime = block.timestamp;
-
-        pool.claim(_borrowed, _amount);
-    }
-
-    /** @dev Get the interest and borrowed current price to help the balance function */
-    function _balanceOfHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
-        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
-        uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
-        return (interest, borrowedCurrentPrice);
-    }
 }
