@@ -2,8 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "./MarginInterest.sol";
 
-abstract contract MarginBalance {
+abstract contract MarginBalance is MarginInterest {
+    using SafeMath for uint256;
+
     /** @dev Get the collateral of an account for a given pool and period id */
     function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256) {
         BorrowPeriod storage borrowPeriod = BorrowPeriods[_periodId][_borrowed];
@@ -38,8 +42,8 @@ abstract contract MarginBalance {
 
     /** @dev Get the interest and borrowed current price to help the balance function */
     function _balanceOfHelper(IERC20 _collateral, IERC20 _borrowed, BorrowAccount memory _borrowAccount) internal view returns (uint256, uint256) {
-        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
+        uint256 _interest = interest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
-        return (interest, borrowedCurrentPrice);
+        return (_interest, borrowedCurrentPrice);
     }
 }
