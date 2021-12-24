@@ -19,7 +19,6 @@ abstract contract LPoolAccount is LPoolApproved, LPoolPeriod {
     /** @dev Returns the value of the tokens for a given period for a given token once they are redeemed */
     function redeemValue(IERC20 _token, uint256 _amount, uint256 _periodId) public view onlyApproved(_token) returns (uint256) {
         StakingPeriod storage period = StakingPeriods[_periodId][_token];
-        if (isPrologue(_periodId)) return _amount;
         return _amount.mul(period.liquidity).div(period.totalDeposited);
     }
 
