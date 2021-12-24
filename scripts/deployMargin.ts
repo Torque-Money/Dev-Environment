@@ -7,9 +7,9 @@ export default async function main() {
     const marginConfig = {
         oracle: config.oracleAddress,
         pool: config.poolAddress,
-        minBorrowLength: 5 * 60,
-        maxInterestPercent: 5,
-        minMarginThreshold: 5,
+        minMarginThreshold: 5, // 5%
+        minBorrowLength: 86400, // 1 day
+        maxInterestPercent: 15, // 15%
     };
     const Margin = await hre.ethers.getContractFactory("Margin");
     const margin = await Margin.deploy(...Object.values(marginConfig));
