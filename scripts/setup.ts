@@ -15,6 +15,16 @@ async function main() {
     await deployPool();
     await deployOracle();
     await deployMargin();
+
+    await deployYield();
+    await deployToken();
+    await deployDao();
+    await deployTimelock();
+
+    await approve();
+    await fund();
+
+    await handover();
 }
 
 main()
