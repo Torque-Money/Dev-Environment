@@ -20,7 +20,7 @@ contract YieldApproved is Ownable, IYield {
     mapping(uint256 => mapping(address => mapping(IERC20 => bool))) private Yields; // Period id => account => token => has yielded
 
     mapping(IERC20 => uint256) private NumYields;
-    uint256 public slashingRate;
+    uint256 public slashingRate; // Number of redeems before a slash (WHY DONT I JUST MAKE IT TIME PERIOD BEFORE SLASH ???)
 
     constructor(LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_) {
         pool = pool_; 
@@ -47,6 +47,8 @@ contract YieldApproved is Ownable, IYield {
         uint256 stakedReward = staked.mul(interestRate.mul(utilizationRate)).div(oracle.decimals().mul(oracle.decimals()));
         uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
 
+        // **** Perhaps there is a more continuous way of doing this, e.g. by having it as a hyperbola and changing the scale factor
+        // e.g. amount * rate / (rate + num)
         uint256 slash = NumYields[_token].mul(slashingRate).div(100);
         if (slash == 0) slash = 1;
         uint256 totalYield = stakedReward.add(borrowedReward).div(slash);
