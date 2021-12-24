@@ -66,41 +66,6 @@ contract Margin is Ownable, MarginCore {
 
     // ======== Deposit and withdraw ========
 
-    /** @dev Deposit the given amount of collateral to borrow against a specified asset */
-    function deposit(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        require(_amount > 0, "Amount must be greater than 0");
-        uint256 periodId = pool.currentPeriodId();
-
-        // Store funds in the account for the given asset they wish to borrow
-        _collateral.safeTransferFrom(_msgSender(), address(this), _amount);
-
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_msgSender()][_collateral];
-
-        borrowAccount.collateral = borrowAccount.collateral.add(_amount);
-        emit Deposit(_msgSender(), periodId, _collateral, _borrowed, _amount);
-    }
-
-    /** @dev Get the collateral of an account for a given pool and period id */
-    function collateralOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external view returns (uint256) {
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[_periodId][_borrowed];
-        BorrowAccount storage borrowAccount = borrowPeriod.collateral[_account][_collateral];
-
-        return borrowAccount.collateral;
-    }
-
-    /** @dev Withdraw collateral from the account if the account has no debt */
-    function withdraw(IERC20 _collateral, IERC20 _borrowed, uint256 _amount, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
-        BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_msgSender()][_collateral];
-
-        require(borrowAccount.borrowed == 0, "Cannot withdraw with outstanding debt, repay first");
-        require(borrowAccount.collateral >= _amount, "Insufficient balance to withdraw");
-
-        borrowAccount.collateral = borrowAccount.collateral.sub(_amount);
-        _collateral.safeTransfer(_msgSender(), _amount);
-
-        emit Withdraw(_msgSender(), _periodId, _collateral, _borrowed, _amount);
-    }
 
     // ======== Borrow ========
 
@@ -122,20 +87,6 @@ contract Margin is Ownable, MarginCore {
         emit Borrow(_msgSender(), periodId, _collateral, _borrowed, _amount);
     }
 
-    /** @dev Get the debt of a given account */
-    function debtOf(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
-        return borrowAccount.borrowed;
-    }
-
-    /** @dev Return the total debt of a given asset for a given account */
-    function debtOf(address _account, IERC20 _borrowed) external view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        BorrowPeriod storage borrowPeriod = BorrowPeriods[periodId][_borrowed];
-        return borrowPeriod.borrowed[_account];
-    }
-
     /** @dev Get the most recent borrow time for a given account */
     function borrowTime(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
@@ -151,16 +102,6 @@ contract Margin is Ownable, MarginCore {
     }
 
     // ======== Repay and withdraw ========
-
-    /** @dev Check the current margin balance of an account */
-    function balanceOf(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) public view returns (uint256) {
-        BorrowAccount storage borrowAccount = BorrowPeriods[_periodId][_borrowed].collateral[_account][_collateral];
-
-        (uint256 interest, uint256 borrowedCurrentPrice) = _balanceOfHelper(_collateral, _borrowed, borrowAccount);
-        if (!pool.isCurrentPeriod(_periodId)) return borrowAccount.collateral.sub(interest);
-
-        return borrowAccount.collateral.add(borrowedCurrentPrice).sub(borrowAccount.initialPrice).sub(interest);
-    }
 
     /** @dev Repay the borrowed amount for the given asset and collateral */
     function repay(address _account, IERC20 _collateral, IERC20 _borrowed, uint256 _periodId) external onlyApproved(_collateral) onlyApproved(_borrowed) {
