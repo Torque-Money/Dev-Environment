@@ -6,10 +6,10 @@ export default async function main() {
     // Deploy the timelock
     const timelockConfig = {
         minDelay: 259200,
-        proposers: [config.daoAddress],
+        proposers: [config.governanceAddress],
         executors: [hre.ethers.constants.AddressZero],
     };
-    const Timelock = await hre.ethers.getContractFactory("TimelockController");
+    const Timelock = await hre.ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(...Object.values(timelockConfig));
     await timelock.deployed();
 

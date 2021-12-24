@@ -1,7 +1,7 @@
 import hre from "hardhat";
 
 import approve from "./approve";
-import deployDao from "./deployDao";
+import deployGovernance from "./deployGovernance";
 import deployMargin from "./deployMargin";
 import deployOracle from "./deployOracle";
 import deployPool from "./deployPool";
@@ -20,7 +20,7 @@ async function main() {
     // DAO
     await deployToken();
     await deployYield();
-    await deployDao();
+    await deployGovernance();
     await deployTimelock();
 
     // Setup

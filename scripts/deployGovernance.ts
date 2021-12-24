@@ -9,7 +9,7 @@ export default async function main() {
     const timelockAddress = await getFutureAddress(signer, 1);
 
     const blocktime = hre.ethers.BigNumber.from(2); // Seconds
-    const governorConfig = {
+    const governanceConfig = {
         token: config.tokenAddress,
         timelock: timelockAddress,
         quorumFraction: 6,
@@ -17,12 +17,12 @@ export default async function main() {
         votingPeriod: hre.ethers.BigNumber.from(604800).div(blocktime),
         proposalThreshold: 2,
     };
-    const Governor = await hre.ethers.getContractFactory("DAO");
-    const governor = await Governor.deploy(...Object.values(governorConfig));
-    await governor.deployed();
+    const Governance = await hre.ethers.getContractFactory("Governance");
+    const governance = await Governance.deploy(...Object.values(governanceConfig));
+    await governance.deployed();
 
-    console.log(`Deployed governor to ${governor.address}`);
-    config.daoAddress = governor.address;
+    console.log(`Deployed governor to ${governance.address}`);
+    config.governanceAddress = governance.address;
 
     fs.writeFileSync("config.json", JSON.stringify(config));
 }

@@ -1,6 +1,7 @@
 import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
+import getFutureAddress from "../utils/getFutureAddress";
 
 export default async function main() {
     // Deploy the liquidity pool
@@ -19,6 +20,10 @@ export default async function main() {
         await pool.approveToken(approved.address);
     }
     console.log("Approved tokens for use with the pool");
+
+    const marginAddress = getFutureAddress(hre.ethers.provider.getSigner(), 0);
+    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED")), marginAddress);
+    console.log(`Approved margin to use pool`);
 
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
