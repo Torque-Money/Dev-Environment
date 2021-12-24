@@ -13,6 +13,11 @@ abstract contract MarginInterest {
         return utilization.mul(maxInterestPercent).div(100).div(pool.periodLength());
     }
 
+    /** @dev Set the maximum interest percent */
+    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner {
+        maxInterestPercent = _maxInterestPercent;
+    }
+
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
         interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod) */
     function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override returns (uint256) {

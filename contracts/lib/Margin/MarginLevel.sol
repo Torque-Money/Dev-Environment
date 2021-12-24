@@ -4,6 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 abstract contract MarginLevel {
+    uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
+
+    /** @dev Set the minimum margin level */
+    function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner {
+        minMarginThreshold = _minMarginThreshold;
+    }
+
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];

@@ -5,6 +5,37 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 abstract contract MarginBorrow {
+    uint256 public minBorrowLength;
+    mapping(IERC20 => uint256) private MinCollateral;
+
+    /** @dev Set the minimum borrow length */
+    function setMinBorrowLength(uint256 _minBorrowLength) external onlyOwner {
+        minBorrowLength = _minBorrowLength;
+    }
+
+    /** @dev Get the most recent borrow time for a given account */
+    function minBorrowTimeRemaining(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
+        return borrowAccount.borrowTime;
+    }
+
+    /** @dev Gets the minimum amount of collateral required to borrow a token */
+    function minCollateral(IERC20 _token) public view returns (uint256) {
+        return MinCollateral[_token];
+    }
+
+    /** @dev Set the minimum amount of collateral for a given token required to borrow against */
+    function setMinCollateral(IERC20 _token, uint256 _amount) external onlyApproved(_token) onlyOwner {
+        MinCollateral[_token] = _amount;
+    }
+
+    /** @dev Return the total amount of a given asset borrowed */
+    function borrowed(IERC20 _token) public view returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        return BorrowPeriods[periodId][_token].totalBorrowed;
+    }
+
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         uint256 periodId = pool.currentPeriodId();
@@ -44,11 +75,6 @@ abstract contract MarginBorrow {
         _borrowAccount.borrowTime = block.timestamp;
 
         pool.claim(_borrowed, _amount);
-    }
-
-    /** @dev Gets the minimum amount of collateral required to borrow a token */
-    function minCollateral(IERC20 _token) public view returns (uint256) {
-        return MinCollateral[_token];
     }
 
     /** @dev Repay the borrowed amount for the given asset and collateral */
@@ -121,19 +147,6 @@ abstract contract MarginBorrow {
 
             _borrowAccount.collateral = _borrowAccount.collateral.sub(reward);
         }
-    }
-
-    /** @dev Return the total amount of a given asset borrowed */
-    function borrowed(IERC20 _token) public view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        return BorrowPeriods[periodId][_token].totalBorrowed;
-    }
-
-    /** @dev Get the most recent borrow time for a given account */
-    function minBorrowTimeRemaining(address _account, IERC20 _collateral, IERC20 _borrowed) external view returns (uint256) {
-        uint256 periodId = pool.currentPeriodId();
-        BorrowAccount storage borrowAccount = BorrowPeriods[periodId][_borrowed].collateral[_account][_collateral];
-        return borrowAccount.borrowTime;
     }
 
     event Borrow(address indexed account, uint256 indexed periodId, IERC20 collateral, IERC20 borrowed, uint256 amount);
