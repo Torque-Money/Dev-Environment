@@ -3,8 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./MarginLevel.sol";
+import "./MarginLiquidate.sol";
+import "./MarginAccount.sol";
 
-abstract contract MarginBorrow {
+abstract contract MarginBorrow is MarginLevel, MarginLiquidate, MarginAccount {
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         uint256 periodId = pool.currentPeriodId();
@@ -29,11 +32,11 @@ abstract contract MarginBorrow {
 
         // Require that the borrowed amount will be above the required margin level
         uint256 borrowInitialPrice = oracle.pairPrice(_borrowed, _collateral).mul(_amount).div(oracle.decimals());
-        uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
+        uint256 _interest = interest(_borrowed, _borrowAccount.initialPrice.add(borrowInitialPrice), _borrowAccount.initialBorrowTime);
         require(
             _marginLevel(
                 _borrowAccount.collateral, _borrowAccount.initialPrice.add(borrowInitialPrice),
-                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, interest
+                _borrowAccount.borrowed.add(_amount), _collateral, _borrowed, _interest
             ) > _minMarginLevel(), "This deposited collateral is not enough to exceed minimum margin level"
         );
 
@@ -59,16 +62,16 @@ abstract contract MarginBorrow {
         require(block.timestamp > borrowAccount.borrowTime + minBorrowLength || pool.isEpilogue(_periodId),
                 "Cannot repay until minimum borrow period is over or epilogue has started");
 
-        pool.unclaim(_borrowed, _borrowAccount.collateral);
+        pool.unclaim(_borrowed, borrowAccount.collateral);
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
         if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
         else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
 
         // Update the borrowed
-        _borrowAccount.initialPrice = 0;
-        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
-        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
-        _borrowAccount.borrowed = 0;
+        borrowAccount.initialPrice = 0;
+        borrowPeriod.totalBorrowed = borrowPeriod.totalBorrowed.sub(borrowAccount.borrowed);
+        borrowPeriod.borrowed[_msgSender()] = borrowPeriod.borrowed[_msgSender()].sub(borrowAccount.borrowed);
+        borrowAccount.borrowed = 0;
 
         emit Repay(_msgSender(), _periodId, _collateral, _borrowed, balAfterRepay);
     }
