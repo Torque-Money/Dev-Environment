@@ -68,8 +68,8 @@ abstract contract MarginBorrow is MarginLiquidate, MarginAccount, MarginBalance 
 
         pool.unclaim(_borrowed, borrowAccount.collateral);
         uint256 balAfterRepay = balanceOf(_account, _collateral, _borrowed, _periodId);
-        if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
-        else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowPeriod, borrowAccount);
+        if (balAfterRepay > borrowAccount.collateral) _repayGreater(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
+        else _repayLessEqual(_account, _collateral, _borrowed, balAfterRepay, borrowAccount);
 
         // Update the borrowed
         borrowAccount.initialPrice = 0;
@@ -83,7 +83,7 @@ abstract contract MarginBorrow is MarginLiquidate, MarginAccount, MarginBalance 
     /** @dev Amount the user has to repay the protocol */
     function _repayLessEqual(
         address _account, IERC20 _collateral, IERC20 _borrowed,
-        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
+        uint256 _balAfterRepay, BorrowAccount storage _borrowAccount
     ) internal {
         uint256 repayAmount = _borrowAccount.collateral.sub(_balAfterRepay);
         _borrowAccount.collateral = _balAfterRepay;
@@ -107,7 +107,7 @@ abstract contract MarginBorrow is MarginLiquidate, MarginAccount, MarginBalance 
     /** @dev Convert the accounts tokens back to the deposited asset */
     function _repayGreater(
         address _account, IERC20 _collateral, IERC20 _borrowed,
-        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
+        uint256 _balAfterRepay, BorrowAccount storage _borrowAccount
     ) internal {
         uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.decimals());
 
