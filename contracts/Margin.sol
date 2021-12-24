@@ -1,6 +1,22 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-contract Margin {
-    constructor() {}
+import "./LPool.sol";
+import "./Oracle.sol";
+import "./lib/Margin/MarginBorrow.sol";
+import "./lib/Margin/MarginBalance.sol";
+
+contract Margin is MarginBalance, MarginBorrow {
+    constructor(
+        Oracle oracle_,
+        LPool pool_,
+        uint256 minMarginThreshold_,
+        uint256 minBorrowLength_,
+        uint256 maxInterestPercent_ 
+    )
+    MarginCore(oracle_, pool_)
+    MarginLevel(minMarginThreshold_)
+    MarginBorrowHelper(minBorrowLength_)
+    MarginInterest(maxInterestPercent_)
+    {}
 }
