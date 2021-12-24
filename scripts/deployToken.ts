@@ -3,8 +3,6 @@ import fs from "fs";
 import config from "../config.json";
 
 export default async function main() {
-    await hre.run("compile");
-
     // Deploy the token
     const tokenConfig = {
         tokenAmount: hre.ethers.BigNumber.from(10).pow(18).mul(1000),

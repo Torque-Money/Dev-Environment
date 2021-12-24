@@ -3,8 +3,6 @@ import config from "../config.json";
 import fs from "fs";
 
 export default async function main() {
-    await hre.run("compile");
-
     // Deploy and setup the oracle contract
     const oracleConfig = {
         decimals: (1e12).toString(),

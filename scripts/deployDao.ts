@@ -4,8 +4,6 @@ import fs from "fs";
 import getFutureAddress from "../utils/getFutureAddress";
 
 export default async function main() {
-    await hre.run("compile");
-
     // Deploy the governor - deploy directly before the timelock
     const signer = hre.ethers.provider.getSigner();
     const timelockAddress = await getFutureAddress(signer, 1);

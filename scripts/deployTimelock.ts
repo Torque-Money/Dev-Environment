@@ -3,8 +3,6 @@ import config from "../config.json";
 import fs from "fs";
 
 export default async function main() {
-    await hre.run("compile");
-
     // Deploy the timelock
     const timelockConfig = {
         minDelay: 1,
