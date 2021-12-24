@@ -4,10 +4,18 @@ import fs from "fs";
 
 export default async function main() {
     // Deploy and setup the oracle contract
+    const Median = await hre.ethers.getContractFactory("Median");
+    const median = await Median.deploy();
+    await median.deployed();
+
     const oracleConfig = {
         decimals: (1e12).toString(),
     };
-    const Oracle = await hre.ethers.getContractFactory("Oracle");
+    const Oracle = await hre.ethers.getContractFactory("Oracle", {
+        libraries: {
+            Median: median.address,
+        },
+    });
     const oracle = await Oracle.deploy(...Object.values(oracleConfig));
     await oracle.deployed();
     console.log(`Oracle deployed to ${oracle.address}`);
