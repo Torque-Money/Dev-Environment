@@ -38,4 +38,9 @@ abstract contract MarginLiquidate {
 
         event FlashLiquidation(address indexed account, uint256 indexed periodId, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
     }
+
+    /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
+    function compensationPercentage() public view override returns (uint256) {
+        return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
+    }
 }

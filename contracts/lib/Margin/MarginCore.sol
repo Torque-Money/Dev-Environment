@@ -33,8 +33,6 @@ abstract contract MarginCore is Ownable {
     uint256 public minBorrowLength;
     uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
 
-    uint256 public maxInterestPercent;
-
     constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
         oracle = oracle_;
         pool = pool_;
@@ -154,64 +152,5 @@ abstract contract MarginCore is Ownable {
         uint256 interest = calculateInterest(_borrowed, _borrowAccount.initialPrice, _borrowAccount.initialBorrowTime);
         uint256 borrowedCurrentPrice = oracle.pairPrice(_borrowed, _collateral).mul(_borrowAccount.borrowed).div(oracle.decimals());
         return (interest, borrowedCurrentPrice);
-    }
-
-    /** @dev Convert the accounts tokens back to the deposited asset */
-    function _repayGreater(
-        address _account, IERC20 _collateral, IERC20 _borrowed,
-        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
-    ) internal {
-        uint256 payout = oracle.pairPrice(_collateral, _borrowed).mul(_balAfterRepay.sub(_borrowAccount.collateral)).div(oracle.decimals());
-        pool.unclaim(_borrowed, _borrowAccount.collateral);
-
-        // Get the amount in borrowed assets that the earned balance is worth and swap them for the given asset
-        pool.withdraw(_borrowed, payout);
-        uint256 amountOut = _swap(_borrowed, _collateral, payout);
-
-        // Provide a reward to the user who repayed the account if they are not the account owner
-        _borrowAccount.collateral = _borrowAccount.collateral.add(amountOut);
-        if (_account != _msgSender()) {
-            uint256 reward = amountOut.mul(compensationPercentage()).div(100);
-            _collateral.safeTransfer(_msgSender(), reward);
-
-            _borrowAccount.collateral = _borrowAccount.collateral.sub(reward);
-        }
-
-        // Update the borrowed
-        _borrowAccount.initialPrice = 0;
-        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
-        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
-        _borrowAccount.borrowed = 0;
-    }
-
-    /** @dev Amount the user has to repay the protocol */
-    function _repayLessEqual(
-        address _account, IERC20 _collateral, IERC20 _borrowed,
-        uint256 _balAfterRepay, BorrowPeriod storage _borrowPeriod, BorrowAccount storage _borrowAccount
-    ) internal {
-        uint256 repayAmount = _borrowAccount.collateral.sub(_balAfterRepay);
-        _borrowAccount.collateral = _balAfterRepay;
-
-        // Swap the repay value back for the borrowed asset
-        uint256 amountOut = _swap(_collateral, _borrowed, repayAmount);
-
-        // Provide a reward to the user who repayed the account if they are not the account owner
-        uint256 reward = 0;
-        if (_account != _msgSender()) {
-            reward = amountOut.mul(compensationPercentage()).div(100);
-            _borrowed.safeTransfer(_msgSender(), reward);
-        }
-
-        // Return the assets back to the pool
-        uint256 depositValue = amountOut.sub(reward);
-        _borrowed.safeApprove(address(pool), depositValue);
-        pool.deposit(_borrowed, depositValue);
-        pool.unclaim(_borrowed, _borrowAccount.collateral);
-
-        // Update the borrowed
-        _borrowAccount.initialPrice = 0;
-        _borrowPeriod.totalBorrowed = _borrowPeriod.totalBorrowed.sub(_borrowAccount.borrowed);
-        _borrowPeriod.borrowed[_msgSender()] = _borrowPeriod.borrowed[_msgSender()].sub(_borrowAccount.borrowed);
-        _borrowAccount.borrowed = 0;
     }
 }

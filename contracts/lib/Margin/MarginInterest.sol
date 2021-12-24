@@ -1,0 +1,24 @@
+//SPDX-License-Identifier: GPL-3.0-only
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+abstract contract MarginInterest {
+    uint256 public maxInterestPercent;
+
+    /** @dev Get the interest rate for a given asset per second
+        interest = maxInterestRate * totalBorrowed / (totalBorrowed + liquidity) */
+    function interestRate(IERC20 _token) public view returns (uint256) {
+        uint256 utilization = utilizationRate(_token);
+        return utilization.mul(maxInterestPercent).div(100).div(pool.periodLength());
+    }
+
+    /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
+        interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod) */
+    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override returns (uint256) {
+        uint256 retValue;
+        { retValue = _initialBorrow.mul(interestRate(_borrowed)); }
+        { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
+        return retValue;
+    }
+}
