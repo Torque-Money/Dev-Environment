@@ -20,15 +20,17 @@ contract YieldApproved is Ownable, IYield {
     mapping(uint256 => mapping(address => mapping(IERC20 => bool))) private Yields; // Period id => account => token => has yielded
 
     uint256 public immutable slashingRate;
+    uint256 public immutable slashOffset;
     uint256 public immutable deployTime;
 
-    constructor(LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_) {
+    constructor(LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_, uint256 slashOffset_) {
         pool = pool_; 
         margin = margin_;
         oracle = oracle_;
         token = token_;
-        
+
         slashingRate = slashingRate_;
+        slashOffset = slashOffset_;
         deployTime = block.timestamp;
     }
 
@@ -45,7 +47,7 @@ contract YieldApproved is Ownable, IYield {
         uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
 
         uint256 yieldRaw = stakedReward.add(borrowedReward);
-        uint256 yieldSlashed = yieldRaw.mul(slashingRate).div(slashingRate.add(block.timestamp).sub(deployTime));
+        uint256 yieldSlashed = yieldRaw.mul(slashingRate).div(slashingRate.add(block.timestamp).add(slashOffset).sub(deployTime));
 
         return yieldSlashed;
     }
