@@ -22,7 +22,7 @@ export default async function main() {
     console.log("Approved tokens for use with the pool");
 
     const marginAddress = getFutureAddress(hre.ethers.provider.getSigner(), 0);
-    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED")), marginAddress);
+    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), marginAddress);
     console.log(`Approved margin to use pool`);
 
     fs.writeFileSync("config.json", JSON.stringify(config));

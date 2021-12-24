@@ -13,7 +13,7 @@ describe("DAO", async () => {
         // Initialize the contracts
         const signer = ethers.provider.getSigner();
         const signerAddress = await signer.getAddress();
-        const dao = new ethers.Contract(config.daoAddress, DAO.abi, signer);
+        const dao = new ethers.Contract(config.governanceAddress, DAO.abi, signer);
         const timelock = new ethers.Contract(config.timelockAddress, Timelock.abi, signer);
         const testToken = new ethers.Contract(config.approved[0].address, ERC20.abi, signer);
         const token = new ethers.Contract(config.tokenAddress, ERC20Votes.abi, signer);
