@@ -4,10 +4,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./MarginCore.sol";
+import "./MarginLevel.sol";
 
-abstract contract MarginLiquidate is MarginCore {
+abstract contract MarginLiquidate is MarginLevel {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     /** @dev Check if an account is liquidatable */
     function isLiquidatable(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (bool) {
@@ -39,12 +40,12 @@ abstract contract MarginLiquidate is MarginCore {
         borrowAccount.initialPrice = 0;
 
         emit FlashLiquidation(_account, periodId, _msgSender(), _collateral, _borrowed, borrowAccount.collateral);
-
-        event FlashLiquidation(address indexed account, uint256 indexed periodId, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
     }
 
     /** @dev Get the percentage rewarded to a user who performed an autonomous operation */
-    function compensationPercentage() public view override returns (uint256) {
+    function compensationPercentage() public view returns (uint256) {
         return minMarginThreshold.mul(100).div(minMarginThreshold.add(100)).div(10);
     }
+
+    event FlashLiquidation(address indexed account, uint256 indexed periodId, address liquidator, IERC20 collateral, IERC20 borrowed, uint256 amount);
 }

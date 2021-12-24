@@ -7,7 +7,7 @@ import "./MarginLevel.sol";
 import "./MarginLiquidate.sol";
 import "./MarginAccount.sol";
 
-abstract contract MarginBorrow is MarginLevel, MarginLiquidate, MarginAccount {
+abstract contract MarginBorrow is MarginLiquidate, MarginAccount {
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         uint256 periodId = pool.currentPeriodId();
