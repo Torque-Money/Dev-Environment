@@ -4,11 +4,16 @@ import fs from "fs";
 
 export default async function main() {
     // Deploy the yield approval
+    const percentAfterTimeframe = hre.ethers.BigNumber.from(10);
+    const timeframe = hre.ethers.BigNumber.from(3.154e7);
+    const slashingRate = percentAfterTimeframe.mul(timeframe).div(hre.ethers.BigNumber.from(100).sub(percentAfterTimeframe)); // slash < percentage * timeframe / (1 - percentage) (solve for p)
+
     const yieldApprovedConfig = {
         pool: config.poolAddress,
         margin: config.marginAddress,
         oracle: config.oracleAddress,
-        // LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_
+        token: config.tokenAddress,
+        slashingRate: slashingRate,
     };
     const YieldApproved = await hre.ethers.getContractFactory("YieldApproved");
     const yieldApproved = await YieldApproved.deploy(...Object.values(yieldApprovedConfig));

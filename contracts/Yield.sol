@@ -19,8 +19,8 @@ contract YieldApproved is Ownable, IYield {
 
     mapping(uint256 => mapping(address => mapping(IERC20 => bool))) private Yields; // Period id => account => token => has yielded
 
-    mapping(IERC20 => uint256) private NumYields;
-    uint256 public slashingRate; // Number of redeems before a slash (WHY DONT I JUST MAKE IT TIME PERIOD BEFORE SLASH ???)
+    uint256 public immutable slashingRate;
+    uint256 public immutable deployTime;
 
     constructor(LPool pool_, Margin margin_, Oracle oracle_, IERC20 token_, uint256 slashingRate_) {
         pool = pool_; 
@@ -28,11 +28,7 @@ contract YieldApproved is Ownable, IYield {
         oracle = oracle_;
         token = token_;
         slashingRate = slashingRate_;
-    }
-
-    /** @dev Set the slashing rate of the protocol */
-    function setSlashingRate(uint256 _slashingRate) external onlyOwner {
-        slashingRate = _slashingRate;
+        deployTime = block.timestamp;
     }
 
     /** @dev Get the yield amount owed to a user */
@@ -47,13 +43,10 @@ contract YieldApproved is Ownable, IYield {
         uint256 stakedReward = staked.mul(interestRate.mul(utilizationRate)).div(oracle.decimals().mul(oracle.decimals()));
         uint256 borrowedReward = borrowed.mul(interestRate).div(oracle.decimals());
 
-        // **** Perhaps there is a more continuous way of doing this, e.g. by having it as a hyperbola and changing the scale factor
-        // e.g. amount * rate / (rate + num)
-        uint256 slash = NumYields[_token].mul(slashingRate).div(100);
-        if (slash == 0) slash = 1;
-        uint256 totalYield = stakedReward.add(borrowedReward).div(slash);
+        uint256 yieldRaw = stakedReward.add(borrowedReward);
+        uint256 yieldSlashed = yieldRaw.mul(slashingRate).div(slashingRate.add(block.timestamp).sub(deployTime));
 
-        return totalYield;
+        return yieldSlashed;
     }
 
     /** @dev Calculate the yield for the given account and token and update their yield status */
@@ -67,7 +60,6 @@ contract YieldApproved is Ownable, IYield {
         uint256 totalYield = getYield(_account, _token);
 
         Yields[periodId][_account][_token] = true;
-        NumYields[_token] = NumYields[_token].add(1);
         return totalYield;
     }
 }

@@ -18,8 +18,8 @@ async function main() {
     await deployMargin();
 
     // DAO
-    await deployYield();
     await deployToken();
+    await deployYield();
     await deployDao();
     await deployTimelock();
 
