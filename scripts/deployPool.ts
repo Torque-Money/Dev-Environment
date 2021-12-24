@@ -1,18 +1,15 @@
 import hre from "hardhat";
 import config from "../config.json";
 import fs from "fs";
-import getFutureAddress from "../utils/getFutureAddress";
 
 export default async function main() {
     // Deploy the liquidity pool - this should be done before deploying any other contract, and needs to be deployed before the margin
     const signer = hre.ethers.provider.getSigner();
-    const preMarginAddress = await getFutureAddress(signer, 2);
 
     const poolConfig = {
-        periodLength: 60 * 60,
-        cooldownLength: 20 * 60,
-        taxPercent: 2,
-        marginAddress: preMarginAddress,
+        periodLength: 2.628e6, // 1 month
+        cooldownLength: 86400, // 1 day
+        taxPercent: 5, // 5%
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(poolConfig));

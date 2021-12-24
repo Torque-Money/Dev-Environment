@@ -13,8 +13,8 @@ import handover from "./handover";
 
 async function main() {
     // Protocol
-    await deployPool();
     await deployOracle();
+    await deployPool();
     await deployMargin();
 
     // DAO

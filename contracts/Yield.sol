@@ -35,14 +35,9 @@ contract YieldApproved is Ownable, IYield {
         slashingRate = _slashingRate;
     }
 
-    /** @dev Calculate the yield for the given account and token and update their yield status */
-    function yield(address _account, IERC20 _token) external override returns (uint256) {
+    /** @dev Get the yield amount owed to a user */
+    function getYield(address _account, IERC20 _token) public view override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
-        require(pool.isApproved(_token), "This token has not been approved");
-        require(_msgSender() == address(token), "Only the token may call yield");
-        require(!pool.isPrologue(periodId), "Cannot claim yield during prologue");
-        require(!Yields[periodId][_account][_token], "Yield has already been claimed for this token");
-
         uint256 interestRate = margin.interestRate(_token).mul(pool.periodLength());
         uint256 utilizationRate = margin.utilizationRate(_token);
 
@@ -55,6 +50,19 @@ contract YieldApproved is Ownable, IYield {
         uint256 slash = NumYields[_token].mul(slashingRate).div(100);
         if (slash == 0) slash = 1;
         uint256 totalYield = stakedReward.add(borrowedReward).div(slash);
+
+        return totalYield;
+    }
+
+    /** @dev Calculate the yield for the given account and token and update their yield status */
+    function yield(address _account, IERC20 _token) external override returns (uint256) {
+        uint256 periodId = pool.currentPeriodId();
+        require(pool.isApproved(_token), "This token has not been approved");
+        require(_msgSender() == address(token), "Only the token may call yield");
+        require(!pool.isPrologue(periodId), "Cannot claim yield during prologue");
+        require(!Yields[periodId][_account][_token], "Yield has already been claimed for this token");
+
+        uint256 totalYield = getYield(_account, _token);
 
         Yields[periodId][_account][_token] = true;
         NumYields[_token] = NumYields[_token].add(1);
