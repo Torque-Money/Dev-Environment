@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./MarginCore.sol";
+import "./MarginInterest.sol";
 
-abstract contract MarginLevel is MarginCore {
-    uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
+abstract contract MarginLevel is MarginInterest {
+    uint256 public minMarginThreshold; // Stored as the percentage above equilibrium
 
     /** @dev Set the minimum margin level */
     function setMinMarginThreshold(uint256 _minMarginThreshold) external onlyOwner {
@@ -15,13 +15,16 @@ abstract contract MarginLevel is MarginCore {
     /** @dev Get the margin level of the given account */
     function marginLevel(address _account, IERC20 _collateral, IERC20 _borrowed) public view returns (uint256) {
         BorrowAccount storage borrowAccount = BorrowPeriods[pool.currentPeriodId()][_borrowed].collateral[_account][_collateral];
-        uint256 interest = calculateInterest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
-        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, interest);
+        uint256 _interest = interest(_borrowed, borrowAccount.initialPrice, borrowAccount.initialBorrowTime);
+        return _marginLevel(borrowAccount.collateral, borrowAccount.initialPrice, borrowAccount.borrowed, _collateral, _borrowed, _interest);
     }
 
     /** @dev Calculate the margin level */
-    function _calculateMarginLevel(uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest) internal view returns (uint256) {
+    function _calculateMarginLevel(
+        uint256 _deposited, uint256 _currentBorrowPrice, uint256 _initialBorrowPrice, uint256 _interest
+    ) internal view returns (uint256) {
         uint256 retValue;
+
         { retValue = oracle.decimals(); }
         { retValue = retValue.mul(_deposited.add(_currentBorrowPrice)); }
         { retValue = retValue.div(_initialBorrowPrice.add(_interest)); }
