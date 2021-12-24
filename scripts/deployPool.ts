@@ -3,7 +3,7 @@ import config from "../config.json";
 import fs from "fs";
 
 export default async function main() {
-    // Deploy the liquidity pool - this should be done before deploying any other contract, and needs to be deployed before the margin
+    // Deploy the liquidity pool
     const poolConfig = {
         periodLength: 2.628e6, // 1 month
         cooldownLength: 86400, // 1 day
