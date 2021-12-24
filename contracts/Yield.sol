@@ -43,7 +43,7 @@ contract YieldApproved is Ownable, IYield {
         require(!pool.isPrologue(periodId), "Cannot claim yield during prologue");
         require(!Yields[periodId][_account][_token], "Yield has already been claimed for this token");
 
-        uint256 interestRate = margin.calculateInterestRate(_token).mul(pool.periodLength());
+        uint256 interestRate = margin.interestRate(_token).mul(pool.periodLength());
         uint256 utilizationRate = margin.utilizationRate(_token);
 
         uint256 staked = pool.balanceOf(_account, _token, periodId);
