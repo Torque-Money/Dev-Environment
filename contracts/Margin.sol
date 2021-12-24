@@ -4,9 +4,8 @@ pragma solidity ^0.8.0;
 import "./LPool.sol";
 import "./Oracle.sol";
 import "./lib/Margin/MarginBorrow.sol";
-import "./lib/Margin/MarginBalance.sol";
 
-contract Margin is MarginBalance, MarginBorrow {
+contract Margin is MarginBorrow {
     constructor(
         Oracle oracle_,
         LPool pool_,

@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./MarginLevel.sol";
 import "./MarginLiquidate.sol";
 import "./MarginAccount.sol";
+import "./MarginBalance.sol";
 
-abstract contract MarginBorrow is MarginLiquidate, MarginAccount {
+abstract contract MarginBorrow is MarginLiquidate, MarginAccount, MarginBalance {
     /** @dev Borrow a specified number of the given asset against the collateral */
     function borrow(IERC20 _collateral, IERC20 _borrowed, uint256 _amount) external onlyApproved(_collateral) onlyApproved(_borrowed) {
         uint256 periodId = pool.currentPeriodId();
