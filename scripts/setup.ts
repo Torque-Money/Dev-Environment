@@ -1,4 +1,5 @@
 import hre from "hardhat";
+
 import approve from "./approve";
 import deployDao from "./deployDao";
 import deployMargin from "./deployMargin";
@@ -10,7 +11,11 @@ import deployYield from "./deployYield";
 import fund from "./fund";
 import handover from "./handover";
 
-async function main() {}
+async function main() {
+    await deployPool();
+    await deployOracle();
+    await deployMargin();
+}
 
 main()
     .then(() => process.exit(0))
