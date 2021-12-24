@@ -12,15 +12,18 @@ import fund from "./fund";
 import handover from "./handover";
 
 async function main() {
+    // Protocol
     await deployPool();
     await deployOracle();
     await deployMargin();
 
+    // DAO
     await deployYield();
     await deployToken();
     await deployDao();
     await deployTimelock();
 
+    // Setup
     await approve();
     await fund();
 
