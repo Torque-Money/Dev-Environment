@@ -3,6 +3,7 @@ import config from "../config.json";
 
 export default async function main() {
     // Hand the contracts over to the DAO, approve funds to exit, and renounce admin of the timelock
+    // **** Quickly do this tommorow
 }
 
 main()
