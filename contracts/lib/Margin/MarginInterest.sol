@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./MarginCore.sol";
 
-abstract contract MarginInterest {
+abstract contract MarginInterest is MarginCore {
     uint256 public maxInterestPercent;
 
     /** @dev Get the interest rate for a given asset per second
@@ -13,18 +14,18 @@ abstract contract MarginInterest {
         return utilization.mul(maxInterestPercent).div(100).div(pool.periodLength());
     }
 
-    /** @dev Set the maximum interest percent */
-    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner {
-        maxInterestPercent = _maxInterestPercent;
-    }
-
     /** @dev Calculate the interest at the current time for a given asset from the amount initially borrowed
         interest = maxInterestPercent * priceBorrowedInitially * interestRate * (timeBorrowed / interestPeriod) */
-    function calculateInterest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override returns (uint256) {
+    function interest(IERC20 _borrowed, uint256 _initialBorrow, uint256 _borrowTime) public view override returns (uint256) {
         uint256 retValue;
         { retValue = _initialBorrow.mul(interestRate(_borrowed)); }
         { retValue = retValue.mul(block.timestamp.sub(_borrowTime)).div(oracle.decimals()); }
         return retValue;
+    }
+
+    /** @dev Set the maximum interest percent */
+    function setMaxInterestPercent(uint256 _maxInterestPercent) external onlyOwner {
+        maxInterestPercent = _maxInterestPercent;
     }
 
     /** @dev Get the percentage of the pool of a given token being utilized by borrowers */

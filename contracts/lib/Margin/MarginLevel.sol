@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./MarginCore.sol";
 
-abstract contract MarginLevel {
+abstract contract MarginLevel is MarginCore {
     uint256 public minMarginThreshold; // Stored as the percentage above equilibrium threshold
 
     /** @dev Set the minimum margin level */

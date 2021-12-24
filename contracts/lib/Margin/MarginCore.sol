@@ -2,14 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "../Oracle.sol";
-import "../LPool.sol";
+import "../../Oracle.sol";
+import "../../LPool.sol";
 
 abstract contract MarginCore is Ownable {
-    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     Oracle public immutable oracle;
@@ -25,15 +23,14 @@ abstract contract MarginCore is Ownable {
     struct BorrowPeriod {
         uint256 totalBorrowed;
         mapping(address => mapping(IERC20 => BorrowAccount)) collateral; // account => token => borrow - the same account can have different borrows with different collaterals independently
-        mapping(address => uint256) borrowed;
+        mapping(address => uint256) borrowed; // Store the total of the asset borrowed for each account
     }
 
-    constructor(Oracle oracle_, LPool pool_, uint256 minBorrowLength_, uint256 maxInterestPercent_, uint256 minMarginThreshold_) {
+    mapping(uint256 => mapping(IERC20 => BorrowPeriod)) internal BorrowPeriods;
+
+    constructor(Oracle oracle_, LPool pool_) {
         oracle = oracle_;
         pool = pool_;
-        minBorrowLength = minBorrowLength_;
-        maxInterestPercent = maxInterestPercent_;
-        minMarginThreshold = minMarginThreshold_;
     }
 
     modifier onlyApproved(IERC20 _token) {
