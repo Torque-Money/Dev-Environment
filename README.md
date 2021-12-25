@@ -1,5 +1,11 @@
 # Torque Money Whitepaper
 
+## Changes between v1 and v2
+
+-   Removed the need for periods - instead the system will work of a continuous debt based system
+-   The new system will involve continuous liquidity and no more stakers seperate from the borrow (potentially)
+-   Instead of having minimum stakers, stakers will be able to withdraw whenever they want as long as there is liquidity to support them, if there is not they must wait until there is
+
 ## Code
 
 -   [Protocol repository](https://github.com/Terragonn/Torque-Protocol-V1)
