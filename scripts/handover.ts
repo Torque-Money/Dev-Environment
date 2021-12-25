@@ -14,15 +14,19 @@ export default async function main() {
     // Set pool admin as timelock and revoke admin and default admin roles
     await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), timelock.address);
     await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
+    console.log("Granted timelock pool admin role and removed owner access");
 
     // Set margin owner as timelock
     await margin.transferOwnership(timelock.address);
+    console.log("Transferred margin ownership to timelock");
 
     // Set the token owner as the timelock
     await token.transferOwnership(timelock.address);
+    console.log("Transferred token ownership to timelock");
 
     // Remove priveliges from the timelock
     await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
+    console.log("Renounced admin role from timelock");
 }
 
 if (require.main === module)
