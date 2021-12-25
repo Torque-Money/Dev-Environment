@@ -17,7 +17,7 @@ async function main() {
     await deployPool();
     await deployMargin();
 
-    // DAO
+    // Governance
     await deployToken();
     await deployYield();
     await deployGovernance();
