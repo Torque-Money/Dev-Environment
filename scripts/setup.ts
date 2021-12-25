@@ -14,20 +14,20 @@ import handover from "./handover";
 async function main() {
     // Protocol
     await deployOracle();
-    await deployPool();
-    await deployMargin();
+    // await deployPool();
+    // await deployMargin();
 
     // DAO
-    await deployToken();
-    await deployYield();
-    await deployGovernance();
-    await deployTimelock();
+    // await deployToken();
+    // await deployYield();
+    // await deployGovernance();
+    // await deployTimelock();
 
     // Setup
-    await approve();
-    await fund();
+    // await approve();
+    // await fund();
 
-    await handover();
+    // await handover();
 }
 
 main()
