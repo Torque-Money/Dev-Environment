@@ -9,10 +9,7 @@ export default async function main() {
     const yieldApprovalAddress = await getFutureAddress(signer, 1);
 
     const tokenConfig = {
-        tokenAmount: hre.ethers.BigNumber.from(10).pow(18).mul(1000),
-        yieldSlashRate: 10000,
-        yieldReward: hre.ethers.BigNumber.from(10).pow(18).mul(5),
-        yieldApproval: yieldApprovalAddress,
+        initialSupply: hre.ethers.BigNumber.from(10).pow(18).mul(1000),
     };
     const Token = await hre.ethers.getContractFactory("Token");
     const token = await Token.deploy(...Object.values(tokenConfig));
