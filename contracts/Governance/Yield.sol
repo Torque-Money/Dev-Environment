@@ -4,10 +4,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./LPool.sol";
-import "./Margin.sol";
-import "./Oracle.sol";
-import "./lib/IYield.sol";
+import "../LPool/LPool.sol";
+import "../Margin/Margin.sol";
+import "../Oracle.sol";
+import "./IYield.sol";
 
 contract YieldApproved is IYield, Context {
     using SafeMath for uint256;
