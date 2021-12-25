@@ -25,7 +25,7 @@ export default async function main() {
     console.log("Transferred token ownership to timelock");
 
     // Remove priveliges from the timelock
-    await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
+    await timelock.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
     console.log("Renounced admin role from timelock");
 }
 
