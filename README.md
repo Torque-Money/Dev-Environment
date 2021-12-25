@@ -4,7 +4,8 @@
 
 -   Removed the need for periods - instead the system will work of a continuous debt based system
 -   The new system will involve continuous liquidity and no more stakers seperate from the borrow (potentially)
--   Instead of having minimum stakers, stakers will be able to withdraw whenever they want as long as there is liquidity to support them, if there is not they must wait until there is
+-   Borrowers will lock their funds into a seperate pool, however stakers will not be able to redeem their funds without sufficient liquidity
+-   Stakers on investing will receive LP tokens to represent their investment - with this it will allow any holder to unlock that same collateral, pegging it to the price. However the benefit it brings is that instead of unlocking liquidity from the pool, users will just trade the token which represents this, helping to keep locked liquidity by incentivizing the trading of an appreciation asset (as the value of the pools stake increases)
 
 ## Code
 
