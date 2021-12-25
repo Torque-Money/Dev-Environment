@@ -8,6 +8,8 @@ export default async function main() {
         minDelay: 259200,
         proposers: [config.governanceAddress],
         executors: [hre.ethers.constants.AddressZero],
+        taxPercentage: 5,
+        taxCooldown: 2.628e6,
     };
     const Timelock = await hre.ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(...Object.values(timelockConfig));
