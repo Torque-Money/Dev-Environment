@@ -24,8 +24,8 @@ async function main() {
     await deployTimelock();
 
     // Setup
-    await approve();
     await fund();
+    await approve();
 
     await handover();
 }
