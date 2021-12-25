@@ -38,7 +38,9 @@ contract YieldApproved is IYield, Context {
     function getYield(address _account, IERC20 _token) public view override returns (uint256) {
         uint256 periodId = pool.currentPeriodId();
         uint256 interestRate = margin.interestRate(_token).mul(pool.periodLength());
+        if (interestRate == 0) interestRate = 1;
         uint256 utilizationRate = margin.utilizationRate(_token);
+        if (utilizationRate == 0) utilizationRate = 1;
 
         uint256 staked = pool.balanceOf(_account, _token, periodId);
         uint256 borrowed = margin.debtOf(_account, _token);
