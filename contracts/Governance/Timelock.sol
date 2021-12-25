@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/governance/TimelockController.sol";
-import "./lib/TimelockTax.sol";
+import "./TimelockTax.sol";
 
 contract Timelock is TimelockController, TimelockTax {
     constructor(

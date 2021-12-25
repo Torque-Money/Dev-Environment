@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "./LPool.sol";
-import "./Oracle.sol";
-import "./lib/Margin/MarginBorrow.sol";
+import "../LPool/LPool.sol";
+import "../Oracle.sol";
+import "./MarginBorrow.sol";
 
 contract Margin is MarginBorrow {
     constructor(
