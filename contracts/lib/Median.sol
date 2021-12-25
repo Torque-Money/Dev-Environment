@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 library Median {
     using SafeMath for uint256;
 
-    function min(uint256[] memory _array, uint256 _start) public pure returns (uint256) {
+    function min(uint256[] memory _array, uint256 _start) internal pure returns (uint256) {
         uint256 _min = 2 ** 256 - 1;
         uint256 index = _start;
 
@@ -20,7 +20,7 @@ library Median {
         return index;
     }
 
-    function swap(uint256[] memory _array, uint256 _i, uint256 _j) public pure {
+    function swap(uint256[] memory _array, uint256 _i, uint256 _j) internal pure {
         (_array[_i], _array[_j]) = (_array[_j], _array[_i]);
     }
 
@@ -34,7 +34,7 @@ library Median {
         }
     }
 
-    function median(uint256[] memory _array) public pure returns(uint256) {
+    function median(uint256[] memory _array) internal pure returns(uint256) {
         uint256 length = _array.length;
         sort(_array);
         return length.mod(2) == 0 ? _array[length.div(2).sub(1)].add(_array[length.div(2)]).div(2) : _array[length.div(2)];
