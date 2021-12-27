@@ -52,11 +52,12 @@ abstract contract LPoolApproved is LPoolCore {
         emit TokenApproved(_token, LPToken);
     } 
 
-    // Get the LP token equivalent of a given token
+    // Get the LP token that corresponds to the given token
     function getLPTokenFromToken(IERC20 _token) public view approvedTokenOnly(_token) returns (LPoolToken) {
         return _tokenToLPToken[_token];
     }
 
+    // Get the token that corresponds to the given LP token
     function getTokenFromLPToken(LPoolToken _token) public view approvedLPTokenOnly(_token) returns (IERC20) {
         return _LPTokenToToken[_token];
     }
