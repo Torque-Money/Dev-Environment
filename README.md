@@ -1,5 +1,12 @@
 # Torque Money Whitepaper
 
+## Changes between v1 and v2
+
+-   Removed the need for periods - instead the system will work of a continuous debt based system
+-   The new system will involve continuous liquidity and no more stakers seperate from the borrow (potentially)
+-   Borrowers will lock their funds into a seperate pool, however stakers will not be able to redeem their funds without sufficient liquidity
+-   Stakers on investing will receive LP tokens to represent their investment - with this it will allow any holder to unlock that same collateral, pegging it to the price. However the benefit it brings is that instead of unlocking liquidity from the pool, users will just trade the token which represents this, helping to keep locked liquidity by incentivizing the trading of an appreciation asset (as the value of the pools stake increases)
+
 ## Code
 
 -   [Protocol repository](https://github.com/Terragonn/Torque-Protocol-V1)
