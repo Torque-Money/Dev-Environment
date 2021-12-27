@@ -11,6 +11,8 @@ abstract contract LPoolApproved is LPoolCore {
     using SafeERC20 for IERC20;
 
     mapping(IERC20 => bool) private _approved;
+    mapping(IERC20 => IERC20) private _tokenToLPToken;
+    mapping(IERC20 => IERC20) private _LPTokenToToken;
 
     modifier approvedOnly(IERC20 _token) {
         require(isApproved(_token), "Only approved tokens are allowed");
@@ -22,12 +24,17 @@ abstract contract LPoolApproved is LPoolCore {
         return _approved[_token];
     }
 
-    // Approve a token for use with the pool
+    // Approve a token for use with the pool and create a new LP token
     function approve(IERC20 _token) external onlyRole(POOL_ADMIN) {
         require(!isApproved(_token), "This token has already been approved");
         _approved[_token] = true;
+
+        address newFarmToken = address(new PoolToken(_ltName, _ltSymbol, 0)); 
+
         emit TokenApproved(_token);
     } 
+
+    // Get the equivalent token
 
     event TokenApproved(IERC20 token);
 }
