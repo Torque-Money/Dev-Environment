@@ -40,7 +40,7 @@ abstract contract LPoolApproved is LPoolCore {
 
     // Approve a token for use with the pool and create a new LP token
     function approve(IERC20 _token, string memory _name, string memory _symbol) external onlyRole(POOL_ADMIN) {
-        require(!isApprovedToken(_token) && !isLPToken(LPoolToken(address(_token))), "This token is already in use with the pool");
+        require(!isApprovedToken(_token) && !isLPToken(LPoolToken(address(_token))), "This token is already approved by the pool");
         _approvedTokens[_token] = true;
 
         LPoolToken LPToken = new LPoolToken(_name, _symbol); 
