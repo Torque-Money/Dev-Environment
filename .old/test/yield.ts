@@ -1,10 +1,10 @@
 import { ethers, network } from "hardhat";
-import Token from "../artifacts/contracts/Token.sol/Token.json";
-import LPool from "../artifacts/contracts/LPool.sol/LPool.json";
-import config from "../config.json";
+import Token from "../../artifacts/contracts/Token.sol/Token.json";
+import LPool from "../../artifacts/contracts/LPool.sol/LPool.json";
+import config from "../../config.json";
 import { expect } from "chai";
-import resetTime from "../utils/resetTime";
-import timeTravel from "../utils/timeTravel";
+import resetTime from "../../utils/resetTime";
+import timeTravel from "../../utils/timeTravel";
 
 describe("Yield", async () => {
     it("Should stake tokens, reap yield, unstake tokens", async () => {
