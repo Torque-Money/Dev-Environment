@@ -10,20 +10,19 @@ import "./LPoolToken.sol";
 abstract contract LPoolApproved is LPoolCore {
     using SafeMath for uint256; 
     using SafeERC20 for IERC20;
-    using SafeERC20 for LPoolToken;
 
     mapping(IERC20 => bool) private _approvedTokens;
-    mapping(LPoolToken => bool) private _approvedLPTokens;
+    mapping(IERC20 => bool) private _approvedLPTokens;
 
-    mapping(IERC20 => LPoolToken) private _tokenToLPToken;
-    mapping(LPoolToken => IERC20) private _LPTokenToToken;
+    mapping(IERC20 => IERC20) private _tokenToLPToken;
+    mapping(IERC20 => IERC20) private _LPTokenToToken;
 
     modifier approvedTokenOnly(IERC20 _token) {
         require(isApprovedToken(_token), "Only approved tokens may be used");
         _;
     }
 
-    modifier approvedLPTokenOnly(LPoolToken _token) {
+    modifier approvedLPTokenOnly(IERC20 _token) {
         require(isLPToken(_token), "Only LP tokens may be used");
         _;
     }
@@ -34,16 +33,16 @@ abstract contract LPoolApproved is LPoolCore {
     }
 
     // Check if a given token is an LP token
-    function isLPToken(LPoolToken _token) public view returns (bool) {
+    function isLPToken(IERC20 _token) public view returns (bool) {
         return _approvedLPTokens[_token];
     }
 
     // Approve a token for use with the pool and create a new LP token
     function approve(IERC20 _token, string memory _name, string memory _symbol) external onlyRole(POOL_ADMIN) {
-        require(!isApprovedToken(_token) && !isLPToken(LPoolToken(address(_token))), "This token is already approved by the pool");
+        require(!isApprovedToken(_token) && !isLPToken(_token), "This token is already approved by the pool");
         _approvedTokens[_token] = true;
 
-        LPoolToken LPToken = new LPoolToken(_name, _symbol); 
+        IERC20 LPToken = IERC20(address(new LPoolToken(_name, _symbol))); 
         _approvedLPTokens[LPToken] = true;
 
         _tokenToLPToken[_token] = LPToken;
@@ -53,14 +52,14 @@ abstract contract LPoolApproved is LPoolCore {
     } 
 
     // Get the LP token that corresponds to the given token
-    function getLPTokenFromToken(IERC20 _token) public view approvedTokenOnly(_token) returns (LPoolToken) {
+    function getLPTokenFromToken(IERC20 _token) public view approvedTokenOnly(_token) returns (IERC20) {
         return _tokenToLPToken[_token];
     }
 
     // Get the token that corresponds to the given LP token
-    function getTokenFromLPToken(LPoolToken _token) public view approvedLPTokenOnly(_token) returns (IERC20) {
+    function getTokenFromLPToken(IERC20 _token) public view approvedLPTokenOnly(_token) returns (IERC20) {
         return _LPTokenToToken[_token];
     }
 
-    event TokenApproved(IERC20 token, LPoolToken LPToken);
+    event TokenApproved(IERC20 token, IERC20 LPToken);
 }
