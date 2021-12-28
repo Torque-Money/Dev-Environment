@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolManipulation.sol";
 
 abstract contract LPoolInterest is LPoolManipulation {
+    using SafeMath for uint256;
+
     uint256 public maxInterestMin;
     uint256 public maxInterestMax;
 
@@ -32,8 +34,15 @@ abstract contract LPoolInterest is LPoolManipulation {
         maxUtilization = _maxUtilization;
     }
 
-    // Get the interest rate for a given asset
+    // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset on a per block basis
     function interestRate(IERC20 _token) public view returns (uint256, uint256) {
-        
+        uint256 valueLocked = tvl(_token);
+        uint256 utilized = valueLocked.sub(liquidity(_token));
+
+        uint256 maxInterest;
+        if (utilized > maxUtilization) maxInterest = maxInterestMax;
+        else maxInterest = maxInterestMin;
+
+        return (utilized.mul(maxInterest), valueLocked); // Numerator and denominator of ratio
     }
 }
