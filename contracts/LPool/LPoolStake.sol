@@ -26,7 +26,7 @@ abstract contract LPoolStake is LPoolManipulation {
         emit Stake(_msgSender(), _token, _amount, reward);
     }
 
-    function _redeemValue(LPoolToken _LPToken, uint256 _amount) internal view onlyLPToken(_lpToken) returns (uint256) {
+    function _redeemValue(LPoolToken _LPToken, uint256 _amount) internal view onlyLPToken(_LPToken) returns (uint256) {
         IERC20 approvedToken = tokenFromLPToken(IERC20(address(_lpToken)));
         uint256 totalSupply = _LPToken.totalSupply();
         uint256 totalValue = tvl(approvedToken);
