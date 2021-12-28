@@ -10,28 +10,35 @@ abstract contract LPoolManipulation is LPoolApproved {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    mapping(address => uint256) private _claimed;
-    uint256 private _totalClaimed;
+    mapping(address => mapping(IERC20 => uint256)) private _claimed;
+    mapping(IERC20 => uint256) private _totalClaimed;
 
     // Get the available liquidity of the pool
     function liquidity(IERC20 _token) public view returns (uint256) {
         uint256 balance = _token.balanceOf(address(this));
-        return balance.sub(_totalClaimed);
+        uint256 claimed = _totalClaimed[_token];
+        return balance.sub(claimed);
     }
 
     // Get the utlization percentage of the pool
-    function utilization(IERC20 _token) public returns (uint256) {
-
+    function utilization(IERC20 _token) public view returns (uint256) {
+        uint256 balance = _token.balanceOf(address(this));
+        uint256 claimed = _totalClaimed[_token];
+        return claimed.mul(100).div(balance);
     }
 
     // Claim an amount of a given token
-    function claim(IERC20 _token) external onlyRole(POOL_APPROVED) {
-
+    function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) {
+        require(_amount <= liquidity(_token), "Cannot claim more than total liquidity");
+        _claimed[_msgSender()][_token] = _claimed[_msgSender()][_token].add(_amount);
+        _totalClaimed[_token] = _totalClaimed[_token].add(_amount);
     }
 
     // Unclaim an amount of a given token
-    function unclaim(IERC20 _token) external onlyRole(POOL_APPROVED) {
-
+    function unclaim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) {
+        require(_amount <= _claimed[_msgSender()][_token], "Cannot unclaim more than your claim");
+        _claimed[_msgSender()][_token] = _claimed[_msgSender()][_token].sub(_amount);
+        _totalClaimed[_token] = _totalClaimed[_token].sub(_amount);
     }
 
     // Deposit a given amount of collateral into the pool
