@@ -19,7 +19,8 @@ abstract contract IsoMarginInterest is IsoMarginCore {
         maxInterestRate = _maxInterestRate;
     }
 
-    // Calculate the interest rate on a per block basis ?
-    function interestRate(IERC20 _token) public view onlyApprovedToken(_token) returns (uint256) {
+    // Calculate the interest rate on a per block basis - returns numerator and denominator
+    function interestRate(IERC20 _token) public view onlyApprovedToken(_token) returns (uint256, uint256) {
+        // **** This should be calculated per block
     }
 }
