@@ -29,9 +29,9 @@ abstract contract MarketLinkPrice is MarketLinkRouter {
         uint256 swappedAmount = router.getAmountsOut(_amount, path)[1];
 
         if (token2IsLP) {
-            // **** I need to be able to determine the stake value algorithmically somehow - I must do this the manual way by adding another hook
-        } else {
-            return swappedAmount;
+            swappedAmount = pool.stakeValue(IERC20(path[1]), swappedAmount);
         }
+
+        return swappedAmount;
     }
 }
