@@ -30,7 +30,7 @@ abstract contract MarketLinkSwap is MarketLinkRouter {
             path[1] = address(_tokenOut);
         }
 
-        _tokenIn.safeApprove(address(router), _amountIn);
+        IERC20(path[0]).safeApprove(address(router), _amountIn);
         uint256 amountOut = router.swapExactTokensForTokens(_amountIn, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         if (tokenOutIsLP) {
