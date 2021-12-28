@@ -11,12 +11,17 @@ abstract contract MarketLinkPrice is MarketLinkRouter {
     // Get the price between any 
     function swapPrice(
         IERC20 _token1, uint256 _amount, IERC20 _token2
-    ) external view onlyApprovedOrLPToken(_token1) onlyApprovedOrLPToken(_token2) returns (uint256) {
-        bool token1IsLP = pool.isLPToken(_token1);
-        bool token2IsLP = pool.isLPToken(_token2);
+    ) external view onlyApprovedOrLPToken(_token1) onlyApprovedToken(_token2) returns (uint256) {
+        address[] memory path = new address[](2);
+        path[1] = address(_token2);
 
-        address[] memory pair = new address[](2);
+        if (pool.isLPToken(_token1)) {
+            _amount = pool.redeemValue(_token1, _amount);
+            path[0] = address(pool.tokenFromLPToken(_token1));
+        } else {
+            path[0] = address(_token1);
+        }
 
-        // **** Now we want to be able to get the prices of the converted tokens - if they are LP tokens then reconvert to the price in terms of them
+        return router.getAmountsOut(_amount, path)[1];
     }
 }
