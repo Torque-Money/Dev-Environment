@@ -43,7 +43,12 @@ abstract contract LPoolManipulation is LPoolApproved {
 
     // Deposit a given amount of collateral into the pool
     function deposit(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) {
+        require(isApprovedToken(_token) || isLPToken(_token), "May only deposit approved tokens to the pool");
+        if (isApprovedToken(_token)) {
 
+        } else {
+            // Manually burn the tokens and reconvert them to the appropriate asset
+        }
     }
 
     // Withdraw a given amount of collateral from the pool

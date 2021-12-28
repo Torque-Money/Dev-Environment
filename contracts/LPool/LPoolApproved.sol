@@ -17,7 +17,7 @@ abstract contract LPoolApproved is LPoolCore {
         _;
     }
 
-    modifier approvedLPTokenOnly(IERC20 _token) {
+    modifier LPTokenOnly(IERC20 _token) {
         require(isLPToken(_token), "Only LP tokens may be used");
         _;
     }
@@ -52,7 +52,7 @@ abstract contract LPoolApproved is LPoolCore {
     }
 
     // Get the token that corresponds to the given LP token
-    function getTokenFromLPToken(IERC20 _token) public view approvedLPTokenOnly(_token) returns (IERC20) {
+    function getTokenFromLPToken(IERC20 _token) public view LPTokenOnly(_token) returns (IERC20) {
         return _LPTokenToToken[_token];
     }
 
