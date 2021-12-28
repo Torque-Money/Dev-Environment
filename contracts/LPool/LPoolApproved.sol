@@ -2,15 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolCore.sol";
 import "./LPoolToken.sol";
 
 abstract contract LPoolApproved is LPoolCore {
-    using SafeMath for uint256; 
-    using SafeERC20 for IERC20;
-
     mapping(IERC20 => bool) private _approvedTokens;
     mapping(IERC20 => bool) private _approvedLPTokens;
 
