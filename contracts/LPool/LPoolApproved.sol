@@ -22,11 +22,6 @@ abstract contract LPoolApproved is LPoolCore {
         _;
     }
 
-    modifier onlyLPOrApprovedToken(IERC20 _token) {
-        require(isApprovedToken(_token) || isLPToken(_token), "Only LP tokens or approved tokens may be used");
-        _;
-    }
-
     // Check if a token regular token is approved
     function isApprovedToken(IERC20 _token) public view returns (bool) {
         return _approvedTokens[_token];
