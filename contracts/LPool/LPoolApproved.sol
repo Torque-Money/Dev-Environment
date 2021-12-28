@@ -12,12 +12,12 @@ abstract contract LPoolApproved is LPoolCore {
     mapping(IERC20 => IERC20) private _tokenToLPToken;
     mapping(IERC20 => IERC20) private _LPTokenToToken;
 
-    modifier approvedTokenOnly(IERC20 _token) {
+    modifier onlyApprovedToken(IERC20 _token) {
         require(isApprovedToken(_token), "Only approved tokens may be used");
         _;
     }
 
-    modifier LPTokenOnly(IERC20 _token) {
+    modifier onlyLPToken(IERC20 _token) {
         require(isLPToken(_token), "Only LP tokens may be used");
         _;
     }
@@ -47,12 +47,12 @@ abstract contract LPoolApproved is LPoolCore {
     } 
 
     // Get the LP token that corresponds to the given token
-    function getLPTokenFromToken(IERC20 _token) public view approvedTokenOnly(_token) returns (IERC20) {
+    function getLPTokenFromToken(IERC20 _token) public view onlyApprovedToken(_token) returns (IERC20) {
         return _tokenToLPToken[_token];
     }
 
     // Get the token that corresponds to the given LP token
-    function getTokenFromLPToken(IERC20 _token) public view LPTokenOnly(_token) returns (IERC20) {
+    function getTokenFromLPToken(IERC20 _token) public view onlyLPToken(_token) returns (IERC20) {
         return _LPTokenToToken[_token];
     }
 
