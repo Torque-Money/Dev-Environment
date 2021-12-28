@@ -31,17 +31,17 @@ abstract contract MarketLinkSwap is MarketLinkRouter {
         }
 
         _tokenIn.safeApprove(address(router), _amountIn);
-        uint256 swappedAmount = router.swapExactTokensForTokens(_amountIn, 0, path, address(this), block.timestamp + 1 hours)[1];
+        uint256 amountOut = router.swapExactTokensForTokens(_amountIn, 0, path, address(this), block.timestamp + 1 hours)[1];
 
         if (tokenOutIsLP) {
-            swappedAmount = pool.stake(IERC20(path[1]), swappedAmount);
+            amountOut = pool.stake(IERC20(path[1]), amountOut);
         }
 
-        _tokenOut.safeTransfer(_msgSender(), swappedAmount);
+        _tokenOut.safeTransfer(_msgSender(), amountOut);
 
-        emit Swap(_msgSender(), _tokenIn, _amountIn, _tokenOut, swappedAmount);
+        emit Swap(_msgSender(), _tokenIn, _amountIn, _tokenOut, amountOut);
 
-        return swappedAmount;
+        return amountOut;
     }
 
     event Swap(address indexed account, IERC20 tokenIn, uint256 amountIn, IERC20 tokenOut, uint256 amountOut);
