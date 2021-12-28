@@ -20,7 +20,6 @@ abstract contract IsoMarginInterest is IsoMarginCore {
     }
 
     // Calculate the interest rate on a per block basis ?
-    function interestRate(IERC20 _token) public view returns (uint256) {
-        // **** How do I do interest rates for LP tokens and such ????
+    function interestRate(IERC20 _token) public view onlyApprovedToken(_token) returns (uint256) {
     }
 }

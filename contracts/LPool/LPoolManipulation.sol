@@ -25,12 +25,6 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
         return tvl(_token).sub(claimed);
     }
 
-    // Get the utlization percentage of the pool
-    function utilization(IERC20 _token) public view returns (uint256) {
-        uint256 claimed = _totalClaimed[_token];
-        return claimed.mul(100).div(tvl(_token));
-    }
-
     // Claim an amount of a given token
     function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApprovedToken(_token) {
         require(_amount <= liquidity(_token), "Cannot claim more than total liquidity");
