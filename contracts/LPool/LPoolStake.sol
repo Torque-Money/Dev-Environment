@@ -20,7 +20,7 @@ abstract contract LPoolStake is LPoolManipulation {
     }
 
     // Stake tokens and receive LP tokens that represent the users share in the pool
-    function stake(IERC20 _token, uint256 _amount) external onlyApprovedToken(_token) {
+    function stake(IERC20 _token, uint256 _amount) external onlyApprovedToken(_token) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(LPTokenFromToken(_token)));
 
         uint256 value = stakeValue(_token, _amount);
@@ -30,6 +30,8 @@ abstract contract LPoolStake is LPoolManipulation {
         LPToken.mint(_msgSender(), value);
 
         emit Stake(_msgSender(), _token, _amount, value);
+
+        return value;
     }
 
     // Get the value for redeeming LP tokens for the underlying asset
@@ -41,7 +43,7 @@ abstract contract LPoolStake is LPoolManipulation {
     }
 
     // Redeem LP tokens for the underlying asset
-    function redeem(IERC20 _token, uint256 _amount) external onlyLPToken(_token) {
+    function redeem(IERC20 _token, uint256 _amount) external onlyLPToken(_token) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(_token));
         IERC20 approvedToken = tokenFromLPToken(_token);
 
@@ -51,6 +53,8 @@ abstract contract LPoolStake is LPoolManipulation {
         approvedToken.safeTransfer(_msgSender(), value);
 
         emit Redeem(_msgSender(), _token, _amount, value);
+
+        return value;
     }
 
     event Stake(address indexed account, IERC20 token, uint256 amount, uint256 value);
