@@ -8,7 +8,7 @@ import "./MarketLinkRouter.sol";
 abstract contract MarketLinkPrice is MarketLinkRouter {
     using SafeMath for uint256;
 
-    // Get the price between an LP token or approved token and another approved token
+    // Get the price between an LP token or regular token and another token
     function swapPrice(IERC20 _token1, uint256 _amount, IERC20 _token2) external view returns (uint256) {
         address[] memory path = new address[](2);
         path[1] = address(_token2);
