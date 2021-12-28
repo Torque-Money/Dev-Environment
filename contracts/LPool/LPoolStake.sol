@@ -26,17 +26,17 @@ abstract contract LPoolStake is LPoolManipulation {
         emit Stake(_msgSender(), _token, _amount, reward);
     }
 
-    function _redeemValue(IERC20 _token, LPoolToken _lpToken, uint256 _amount) internal view onlyApprovedToken(_token) onlyLPToken(_lpToken) returns (uint256) {
-        uint256 totalSupply = _lpToken.totalSupply();
-        uint256 totalValue = tvl(_token);
+    function _redeemValue(LPoolToken _LPToken, uint256 _amount) internal view onlyLPToken(_lpToken) returns (uint256) {
+        IERC20 approvedToken = tokenFromLPToken(IERC20(address(_lpToken)));
+        uint256 totalSupply = _LPToken.totalSupply();
+        uint256 totalValue = tvl(approvedToken);
         return _amount.mul(totalValue).div(totalSupply);
     }
 
     // Get the value for redeeming LP tokens for the underlying asset
     function redeemValue(IERC20 _token, uint256 _amount) public view onlyLPToken(_token) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(_token));
-        IERC20 approvedToken = tokenFromLPToken(_token);
-        return _redeemValue(approvedToken, LPToken, _amount);
+        return _redeemValue(LPToken, _amount);
     }
 
     // Redeem LP tokens for the underlying asset
@@ -44,7 +44,7 @@ abstract contract LPoolStake is LPoolManipulation {
         LPoolToken LPToken = LPoolToken(address(_token));
         IERC20 approvedToken = tokenFromLPToken(_token);
 
-        uint256 value = _redeemValue(approvedToken, LPToken, _amount);
+        uint256 value = _redeemValue(LPToken, _amount);
 
         LPToken.burn(_msgSender(), _amount);
         approvedToken.safeTransfer(_msgSender(), value);
