@@ -12,13 +12,8 @@ abstract contract MarketLinkCore is Ownable {
         pool = pool_;
     }
 
-    modifier onlyApprovedToken(IERC20 _token) {
-        require(pool.isApprovedToken(_token), "Only approved tokens may be used");
-        _;
-    }
-
-    modifier onlyLPToken(IERC20 _token) {
-        require(pool.isLPToken(_token), "Only LP tokens may be used");
+    modifier onlyApprovedOrLPToken(IERC20 _token) {
+        require(pool.isApprovedToken(_token) || pool.isLPToken(_token), "Only pool or LP tokens may be used");
         _;
     }
 

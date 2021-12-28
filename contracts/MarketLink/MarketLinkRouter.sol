@@ -17,6 +17,7 @@ abstract contract MarketLinkRouter is MarketLinkCore {
         require(!_addedRouters[_router], "Router has already been added");
         _routers.push(_router);
         _addedRouters[_router] = true;
+        emit AddRouter(_router);
     }
 
     // Get a pseudo-random router
@@ -24,4 +25,6 @@ abstract contract MarketLinkRouter is MarketLinkCore {
         uint256 index = block.timestamp.mod(_routers.length);
         return _routers[index];
     }
+
+    event AddRouter(UniswapV2Router02 router);
 }
