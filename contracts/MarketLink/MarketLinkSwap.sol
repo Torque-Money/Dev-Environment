@@ -12,6 +12,8 @@ abstract contract MarketLinkSwap is MarketLinkRouter {
 
     // Swap between an LP token or regular token with another LP token or regular token
     function swap(IERC20 _tokenIn, uint256 _amountIn, IERC20 _tokenOut) external returns (uint256) {
+        // **** Add special cases for if it is the same token
+
         _tokenIn.safeTransferFrom(_msgSender(), address(this), _amountIn);
 
         address[] memory path = new address[](2);

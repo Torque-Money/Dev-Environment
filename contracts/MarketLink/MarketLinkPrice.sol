@@ -23,7 +23,12 @@ abstract contract MarketLinkPrice is MarketLinkRouter {
             path[1] = address(_tokenOut);
         }
 
-        uint256 swappedAmount = router.getAmountsOut(_amountIn, path)[1];
+        uint256 swappedAmount;
+        if (path[0] == path[1]) {
+            swappedAmount = _amountIn;
+        } else {
+            swappedAmount = router.getAmountsOut(_amountIn, path)[1];
+        }
 
         if (tokenOutIsLP) {
             swappedAmount = pool.stakeValue(IERC20(path[1]), swappedAmount);
