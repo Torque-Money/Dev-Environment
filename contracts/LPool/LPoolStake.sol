@@ -7,9 +7,24 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolApproved.sol";
 
 abstract contract LPoolStake is LPoolApproved {
-    // Stake
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
-    // Redeem value
+    // Stake tokens and receive LP tokens that represent the users share in the pool
+    function stake(IERC20 _token, uint256 _amount) external onlyApprovedToken(_token) {
 
-    // Redeem
+    }
+
+    // Get the value for redeeming LP tokens for the underlying asset
+    function redeemValue(IERC20 _token, uint256 _amount) public view onlyLPToken(_token) returns (uint256) {
+
+    }
+
+    // Redeem LP tokens for the underlying asset
+    function redeem(IERC20 _token, uint256 _amount) external onlyLPToken(_token) {
+
+    }
+
+    event Stake();
+    event Redeem();
 }
