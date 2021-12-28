@@ -7,5 +7,9 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolApproved.sol";
 
 abstract contract LPoolStake is LPoolApproved {
+    // Stake
 
+    // Redeem value
+
+    // Redeem
 }
