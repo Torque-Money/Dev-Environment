@@ -18,4 +18,9 @@ abstract contract IsoMarginInterest is IsoMarginCore {
     function setMaxInterestRate(uint256 _maxInterestRate) external onlyOwner {
         maxInterestRate = _maxInterestRate;
     }
+
+    // Calculate the interest rate on a per block basis ?
+    function interestRate(IERC20 _token) public view returns (uint256) {
+        // **** How do I do interest rates for LP tokens and such ????
+    }
 }
