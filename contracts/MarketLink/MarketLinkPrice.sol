@@ -19,10 +19,19 @@ abstract contract MarketLinkPrice is MarketLinkRouter {
             path[0] = address(_token1);
         }
 
-        path[1] = address(_token2);
+        bool token2IsLP = pool.isLPToken(_token2);
+        if (token2IsLP) {
+            path[1] = address(pool.tokenFromLPToken(_token2));
+        } else {
+            path[1] = address(_token2);
+        }
 
-        // Now we need to consider what happens if the second token is also an LP token - do we support this or not ?
+        uint256 swappedAmount = router.getAmountsOut(_amount, path)[1];
 
-        return router.getAmountsOut(_amount, path)[1];
+        if (token2IsLP) {
+            // **** I need to be able to determine the stake value algorithmically somehow - I must do this the manual way by adding another hook
+        } else {
+            return swappedAmount;
+        }
     }
 }
