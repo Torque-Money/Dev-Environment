@@ -13,10 +13,13 @@ abstract contract LPoolInterest is LPoolManipulation {
 
     uint256 public maxUtilization;
 
-    constructor(uint256 maxInterestMin_, uint256 maxInterestMax_, uint256 maxUtilization_) {
+    uint256 public blocksPerCompound;
+
+    constructor(uint256 maxInterestMin_, uint256 maxInterestMax_, uint256 maxUtilization_, uint256 blocksPerCompound_) {
         maxInterestMin = maxInterestMin_;
         maxInterestMax = maxInterestMax_;
         maxUtilization = maxUtilization_;
+        blocksPerCompound = blocksPerCompound_;
     }
 
     // Set the max interest for minimum utilization
@@ -34,7 +37,7 @@ abstract contract LPoolInterest is LPoolManipulation {
         maxUtilization = _maxUtilization;
     }
 
-    // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset on a per block basis
+    // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
     function interestRate(IERC20 _token) public view returns (uint256, uint256) {
         uint256 valueLocked = tvl(_token);
         uint256 utilized = valueLocked.sub(liquidity(_token));
@@ -44,5 +47,18 @@ abstract contract LPoolInterest is LPoolManipulation {
         else maxInterest = maxInterestMin;
 
         return (utilized.mul(maxInterest), valueLocked); // Numerator and denominator of ratio
+    }
+
+    // Get the interest on a given asset for a given number of blocks
+    function interest(IERC20 _token, uint256 _initialBorrow, uint256 _borrowBlock) external view returns (uint256) {
+        uint256 blocksSince = block.number.sub(_borrowBlock);
+
+        (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(_token);
+
+        // **** Potential problem regarding overflow ?
+        uint256 interestNumerator = blocksPerCompound.mul(interestRateDenominator).add(interestRateNumerator) ** blocksSince;
+        uint256 interestDenominator = blocksPerCompound.mul(interestRateDenominator) ** blocksSince;
+
+        return _initialBorrow.mul(interestNumerator).div(interestDenominator);
     }
 }
