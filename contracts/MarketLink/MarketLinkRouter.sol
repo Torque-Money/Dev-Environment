@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "./MarketLinkCore.sol";
 import "../lib/UniswapV2Router02.sol";
+import "./MarketLinkCore.sol";
 
 abstract contract MarketLinkRouter is MarketLinkCore {
     UniswapV2Router02 public router;
