@@ -18,11 +18,11 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
     }
 
-    function _repayGreater() internal {
+    function _repayGreater(IERC20 collateral_, IERC20 borrowed_) internal {
 
     }
 
-    function _repayLessOrEqual() internal {
+    function _repayLessOrEqual(IERC20 collateral_, IERC20 borrowed_) internal {
 
     }
 
@@ -32,8 +32,8 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         require(amountBorrowed > 0, "Cannot repay an account that has no debt");
 
         uint256 afterRepayCollateral = collateralAfterRepay(collateral_, borrowed_);
-        if (afterRepayCollateral <= collateral(collateral_, borrowed_, _msgSender())) _repayLessOrEqual();
-        else _repayGreater();
+        if (afterRepayCollateral <= collateral(collateral_, borrowed_, _msgSender())) _repayLessOrEqual(collateral_, borrowed_);
+        else _repayGreater(collateral_, borrowed_);
 
         _setInitialBorrowPrice(collateral_, borrowed_, 0);
         _setBorrowed(collateral_, borrowed_, 0);
