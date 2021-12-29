@@ -22,12 +22,19 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
+
+        // **** There has to be a better way of transferring this money rather than reconverting all over the place ?
+        // uint256 payoutAmount = currentBorrowPrice.sub(initialBorrowPrice).sub(interest);
+        // pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
+        // pool.withdraw(borrowed_, payoutAmount);
     }
 
     function _repayLessOrEqual(IERC20 collateral_, IERC20 borrowed_) internal {
         uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
+
+        // **** WORK IN PROGRESS
     }
 
     // Repay the accounts borrowed amount
