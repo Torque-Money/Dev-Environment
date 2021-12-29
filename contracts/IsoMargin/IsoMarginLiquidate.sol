@@ -21,5 +21,5 @@ abstract contract IsoMarginLiquidate is IsoMarginRepay {
         // **** Should be robust enough to deal with even TRULY undercollateralized loans
     }
 
-    event Liquidated();
+    event Liquidated(address indexed account, IERC20 collateral, IERC20 borrowed, uint256 amount, address liquidator, uint256 fee);
 }
