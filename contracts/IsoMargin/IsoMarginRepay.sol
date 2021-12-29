@@ -19,11 +19,15 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
     }
 
     function _repayGreater(IERC20 collateral_, IERC20 borrowed_) internal {
-
+        uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
+        uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
+        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
     }
 
     function _repayLessOrEqual(IERC20 collateral_, IERC20 borrowed_) internal {
-
+        uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
+        uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
+        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
     }
 
     // Repay the accounts borrowed amount

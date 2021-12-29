@@ -23,6 +23,7 @@ abstract contract IsoMarginBorrow is IsoMarginMargin {
     // Allow a user to borrow against their collateral
     function borrow(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) external onlyLPOrApprovedToken(collateral_) onlyApprovedToken(borrowed_) {
         require(amount_ >= minCollateral(collateral_), "Not enough collateral to support the minimum collateral requirement");
+        require(collateral_ != borrowed_, "Cannot borrow against the same asset");
 
         if (borrowed(collateral_, borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(collateral_, borrowed_, block.number);
         uint256 initialBorrowPrice = marketLink.swapPrice(borrowed_, amount_, collateral_);
