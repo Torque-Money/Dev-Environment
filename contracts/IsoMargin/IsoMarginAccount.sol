@@ -38,7 +38,7 @@ abstract contract IsoMarginAccount is IsoMarginPool {
 
         setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(isolatedMargin.borrowed).add(amount_));
         _borrowed[borrowed_][_msgSender()] = _borrowed[borrowed_][_msgSender()].sub(isolatedMargin.borrowed).add(amount_);
-        isolatedMargin.borrowed = isolatedMargin.borrowed.sub(isolatedMargin.borrowed).add(amount_);
+        isolatedMargin.borrowed = amount_;
     }
 
     // Get the collateral of a given account for a given asset
@@ -57,8 +57,30 @@ abstract contract IsoMarginAccount is IsoMarginPool {
 
         setTotalCollateral(collateral_, totalCollateral(collateral_).sub(isolatedMargin.collateral).add(amount_));
         _collateral[collateral_][_msgSender()] = _collateral[collateral_][_msgSender()].sub(isolatedMargin.collateral).add(amount_);
-        isolatedMargin.collateral = isolatedMargin.collateral.sub(isolatedMargin.collateral).add(amount_);
+        isolatedMargin.collateral = amount_;
     }
 
-    // **** Add getters and setters for the rest of these too
+    // Get the initial borrow price for an account
+    function _initialBorrowPrice(IERC20 collateral_, IERC20 borrowed_) internal view returns (uint256) {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+        return isolatedMargin.initialBorrowPrice;
+    }
+
+    // Set the initial borrow price for an account
+    function _setInitialBorrowPrice(IERC20 collateral_, IERC20 borrowed_, uint256 price_) internal {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+        isolatedMargin.initialBorrowPrice = price_;
+    }
+
+    // Get the initial borrow block for an ccount
+    function _initialBorrowBlock(IERC20 collateral_, IERC20 borrowed_) internal view returns (uint256) {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+        return isolatedMargin.initialBorrowBlock;
+    }
+
+    // Set the initial borrow price for an account
+    function _setInitialBorrowBlock(IERC20 collateral_, IERC20 borrowed_, uint256 block_) internal {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+        isolatedMargin.initialBorrowBlock = block_;
+    }
 }
