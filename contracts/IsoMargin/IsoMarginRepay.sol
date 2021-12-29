@@ -18,6 +18,7 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
     }
 
+    // Repay an accounts debt when the margin value is greater
     function _repayGreater(IERC20 collateral_, IERC20 borrowed_) internal {
         uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
@@ -26,11 +27,12 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
         uint256 payoutAmount = marketLink.swapPrice(collateral_, currentBorrowPrice.sub(initialBorrowPrice).sub(interest), borrowed_);
         pool.withdraw(borrowed_, payoutAmount);
-        uint256 paidOut = marketLink.swap(borrowed_, payoutAmount, collateral_);
+        uint256 paidOut = _swap(borrowed_, payoutAmount, collateral_);
 
         _setCollateral(collateral_, borrowed_, collateral(collateral_, borrowed_, _msgSender()).add(paidOut));
     }
 
+    // Repay an accounts debt when the margin value is less than
     function _repayLessOrEqual(IERC20 collateral_, IERC20 borrowed_) internal {
         uint256 initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
@@ -38,7 +40,7 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
 
         pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
         uint256 repayAmount = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
-        uint256 swappedAmount = marketLink.swap(collateral_, repayAmount, borrowed_);
+        uint256 swappedAmount = _swap(collateral_, repayAmount, borrowed_);
         pool.deposit(borrowed_, swappedAmount);
 
         _setCollateral(collateral_, borrowed_, collateral(collateral_, borrowed_, _msgSender()).sub(repayAmount));
