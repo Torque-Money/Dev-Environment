@@ -12,12 +12,13 @@ abstract contract IsoMarginLiquidate is IsoMarginRepay {
 
     // Get the fee for liquidating an undercollateralized account
     function liquidationFee(IERC20 collateral_, IERC20 borrowed_, address account_) public view returns (uint256) {
-
+        uint256 percentReward = minMarginLevel.mul(100).div(minMarginLevel.add(100));
+        return collateral(collateral_, borrowed_, account_).mul(percentReward).div(100);
     }
 
     // Liquidate an undercollateralized account
     function liquidate(IERC20 collateral_, IERC20 borrowed_, address account_) external {
-        
+        // **** Should be robust enough to deal with even TRULY undercollateralized loans
     }
 
     event Liquidated();
