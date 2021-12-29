@@ -27,8 +27,18 @@ abstract contract IsoMarginAccount is IsoMarginPool {
         return _borrowed[_token][_account];
     }
 
+    // Get the borrowed for a given account against some collateral for a given asset
+    function borrowed(IERC20 _collateral, IERC20 _borrowed, address _account) external view returns (uint256) {
+        return _isolatedMargins[_borrowed][_account][_collateral].borrowed;
+    }
+
     // Get the collateral of a given account for a given asset
     function collateral(IERC20 _token, address _account) external view returns (uint256) {
         return _collateral[_token][_account];
+    }
+
+    // Get the collateral for a given account against some borrowed asset
+    function collateral(IERC20 _collateral, IERC20 _borrowed, address _account) external view returns (uint256) {
+        return _isolatedMargins[_borrowed][_account][_collateral].collateral;
     }
 }
