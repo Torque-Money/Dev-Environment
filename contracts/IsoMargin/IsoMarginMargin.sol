@@ -8,5 +8,25 @@ import "./IsoMarginAccount.sol";
 abstract contract IsoMarginMargin is IsoMarginAccount {
     using SafeMath for uint256;
 
-    // **** Get the margin levels and such here
+    uint256 public minMarginLevel; // Percentage above 1 that the margin level may hover above before liquidation
+
+    // Set the min margin level percent threshold before liquidation
+    function setMinMarginLevel(uint256 minMarginLevel_) external onlyOwner {
+        minMarginLevel = minMarginLevel_;
+    }
+
+    // Return the numerator and denominator of the margin level
+    function marginLevel(IERC20 collateral_, IERC20 borrowed_) public view returns (uint256, uint256) {
+        uint256 _collateral = collateral(collateral_, borrowed_, _msgSender());
+        uint256 _initialBorrowValue = _initialBorrowPrice(collateral_, borrowed_);
+        uint256 currentBorrowValue = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
+        uint256 interest = pool.interest(borrowed_, _initialBorrowValue, _initialBorrowBlock(collateral_, borrowed_));
+
+        return (currentBorrowValue.add(_collateral), _initialBorrowValue.add(interest)); 
+    }
+
+    // Check if an account is undercollateralized
+    function uncollateralized() public view returns (bool) {
+
+    }
 }

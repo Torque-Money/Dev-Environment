@@ -22,7 +22,9 @@ abstract contract IsoMarginCollateral is IsoMarginAccount {
         uint256 currentCollateral = collateral(collateral_, borrowed_, _msgSender());
         require(amount_ <= currentCollateral, "Not enough collateral to withdraw");
         uint256 debt = borrowed(collateral_, borrowed_, _msgSender());
+
         require(debt == 0, "Cannot withdraw with outstanding debt"); // **** Potentially change this in the future to the user only being able to withdraw an amount that prevents liquidation
+        // **** As long as it is above the margin level it will be perfectly fine to withdraw
 
         _setCollateral(collateral_, borrowed_, currentCollateral.sub(amount_));
         collateral_.safeTransfer(_msgSender(), amount_);
