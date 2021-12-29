@@ -19,7 +19,12 @@ abstract contract IsoMarginCollateral is IsoMarginAccount {
 
     // Withdraw collateral from the given margin account
     function withdrawCollateral(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) external {
-        
+        uint256 currentCollateral = collateral(collateral_, borrowed_, _msgSender());
+        require(amount_ <= currentCollateral, "Not enough collateral to withdraw");
+
+        _setCollateral(collateral_, borrowed_, currentCollateral.sub(amount_));
+        collateral_.safeTransfer(_msgSender(), amount_);
+        emit WithdrawCollateral(_msgSender(), collateral_, borrowed_, amount_);
     }
 
     event AddedCollateral(address indexed account, IERC20 collateral, IERC20 borrowed, uint256 amount);
