@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IsoMarginAccount.sol";
+import "./IsoMarginMargin.sol";
 
-abstract contract IsoMarginCollateral is IsoMarginAccount {
+abstract contract IsoMarginCollateral is IsoMarginMargin {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -21,12 +21,10 @@ abstract contract IsoMarginCollateral is IsoMarginAccount {
     function withdrawCollateral(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) external {
         uint256 currentCollateral = collateral(collateral_, borrowed_, _msgSender());
         require(amount_ <= currentCollateral, "Not enough collateral to withdraw");
-        uint256 debt = borrowed(collateral_, borrowed_, _msgSender());
-
-        require(debt == 0, "Cannot withdraw with outstanding debt"); // **** Potentially change this in the future to the user only being able to withdraw an amount that prevents liquidation
-        // **** As long as it is above the margin level it will be perfectly fine to withdraw
 
         _setCollateral(collateral_, borrowed_, currentCollateral.sub(amount_));
+        require(!underCollateralized(collateral_, borrowed_), "Cannot withdraw an amount that results in an undercollateralized borrow");
+
         collateral_.safeTransfer(_msgSender(), amount_);
         emit WithdrawCollateral(_msgSender(), collateral_, borrowed_, amount_);
     }

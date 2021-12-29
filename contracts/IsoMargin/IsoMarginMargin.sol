@@ -26,7 +26,7 @@ abstract contract IsoMarginMargin is IsoMarginAccount {
     }
 
     // Check if an account is undercollateralized
-    function uncollateralized(IERC20 collateral_, IERC20 borrowed_) public view returns (bool) {
+    function underCollateralized(IERC20 collateral_, IERC20 borrowed_) public view returns (bool) {
         (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(collateral_, borrowed_);
         uint256 lhs = minMarginLevel.mul(marginDenominator);
         uint256 rhs = marginNumerator.mul(100);
