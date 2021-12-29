@@ -23,8 +23,8 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
 
-        uint256 payoutAmount = marketLink.swapPrice(collateral_, currentBorrowPrice.sub(initialBorrowPrice).sub(interest), borrowed_);
         pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
+        uint256 payoutAmount = marketLink.swapPrice(collateral_, currentBorrowPrice.sub(initialBorrowPrice).sub(interest), borrowed_);
         pool.withdraw(borrowed_, payoutAmount);
         uint256 paidOut = marketLink.swap(borrowed_, payoutAmount, collateral_);
 
@@ -36,7 +36,12 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
 
-        // **** WORK IN PROGRESS (reverse of the other one)
+        pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
+        uint256 repayAmount = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
+        uint256 swappedAmount = marketLink.swap(collateral_, repayAmount, borrowed_);
+        pool.deposit(borrowed_, swappedAmount);
+
+        _setCollateral(collateral_, borrowed_, collateral(collateral_, borrowed_, _msgSender()).sub(repayAmount));
     }
 
     // Repay the accounts borrowed amount
