@@ -9,33 +9,45 @@ import "./LPoolManipulation.sol";
 abstract contract LPoolInterest is LPoolManipulation {
     using SafeMath for uint256;
 
-    uint256 public maxInterestMin;
-    uint256 public maxInterestMax;
-
-    uint256 public maxUtilization;
-
     uint256 public blocksPerCompound;
 
-    constructor(uint256 maxInterestMin_, uint256 maxInterestMax_, uint256 maxUtilization_, uint256 blocksPerCompound_) {
-        maxInterestMin = maxInterestMin_;
-        maxInterestMax = maxInterestMax_;
-        maxUtilization = maxUtilization_;
+    mapping(IERC20 => uint256) private _maxInterestMin;
+    mapping(IERC20 => uint256) private _maxInterestMax;
+
+    mapping(IERC20 => uint256) private _maxUtilization;
+
+    constructor(uint256 blocksPerCompound_) {
         blocksPerCompound = blocksPerCompound_;
     }
 
-    // Set the max interest for minimum utilization
-    function setMaxInterestMin(uint256 _maxInterestMin) external onlyRole(POOL_ADMIN) {
-        maxInterestMin = _maxInterestMin;
+    // Get the max interest for minimum utilization for the given token
+   function maxInterestMin(IERC20 _token) public view returns (uint256) {
+       return _maxInterestMin[_token];
+   }
+
+    // Set the max interest for minimum utilization for the given token
+    function setMaxInterestMin(IERC20 _token, uint256 _percent) external onlyRole(POOL_ADMIN) {
+        _maxInterestMin[_token] = _percent;
     }
 
-    // Set the max interest for maximum utilization
-    function setMaxInterestMax(uint256 _maxInterestMax) external onlyRole(POOL_ADMIN) {
-        maxInterestMax = _maxInterestMax;
+    // Get the max interest for maximum utilization for the given token
+    function maxInterestMax(IERC20 _token) public view returns (uint256) {
+        return _maxInterestMax[_token];
     }
 
-    // Set the max utilization threshold
-    function setMaxUtilization(uint256 _maxUtilization) external onlyRole(POOL_ADMIN) {
-        maxUtilization = _maxUtilization;
+    // Set the max interest for maximum utilization for the given token
+    function setMaxInterestMax(IERC20 _token, uint256 _percent) external onlyRole(POOL_ADMIN) {
+        _maxInterestMax[_token] = _percent;
+    }
+
+    // Get the max utilization threshold for the given token
+    function maxUtilization(IERC20 _token) public view returns (uint256) {
+        return _maxUtilization[_token];
+    }
+
+    // Set the max utilization threshold for the given token
+    function setMaxUtilization(IERC20 _token, uint256 _percent) external onlyRole(POOL_ADMIN) {
+        _maxUtilization[_token] = _percent;
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
@@ -44,8 +56,8 @@ abstract contract LPoolInterest is LPoolManipulation {
         uint256 utilized = valueLocked.sub(liquidity(_token));
 
         uint256 maxInterest;
-        if (utilized > maxUtilization) maxInterest = maxInterestMax;
-        else maxInterest = maxInterestMin;
+        if (utilized > maxUtilization(_token)) maxInterest = maxInterestMax(_token);
+        else maxInterest = maxInterestMin(_token);
 
         return (utilized.mul(maxInterest), valueLocked); // Numerator and denominator of ratio
     }
