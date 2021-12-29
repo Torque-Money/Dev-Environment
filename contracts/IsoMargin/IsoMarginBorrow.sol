@@ -25,12 +25,12 @@ abstract contract IsoMarginBorrow is IsoMarginMargin {
         require(amount_ >= minCollateral(collateral_), "Not enough collateral to support the minimum collateral requirement");
         require(collateral_ != borrowed_, "Cannot borrow against the same asset");
 
-        if (borrowed(collateral_, borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(collateral_, borrowed_, block.number);
+        if (borrowed(collateral_, borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(collateral_, borrowed_, block.number, _msgSender());
         uint256 initialBorrowPrice = marketLink.swapPrice(borrowed_, amount_, collateral_);
-        _setInitialBorrowPrice(collateral_, borrowed_, _initialBorrowPrice(collateral_, borrowed_).add(initialBorrowPrice));
+        _setInitialBorrowPrice(collateral_, borrowed_, _initialBorrowPrice(collateral_, borrowed_, _msgSender()).add(initialBorrowPrice), _msgSender());
 
         pool.claim(borrowed_, amount_);
-        _setBorrowed(collateral_, borrowed_, borrowed(collateral_, borrowed_, _msgSender()).add(amount_));
+        _setBorrowed(collateral_, borrowed_, borrowed(collateral_, borrowed_, _msgSender()).add(amount_), _msgSender());
         
         emit Borrow(_msgSender(), collateral_, borrowed_, amount_);
     }
