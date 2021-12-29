@@ -18,7 +18,22 @@ abstract contract IsoMarginLiquidate is IsoMarginRepay {
 
     // Liquidate an undercollateralized account
     function liquidate(IERC20 collateral_, IERC20 borrowed_, address account_) external {
-        // **** Should be robust enough to deal with even TRULY undercollateralized loans
+        require(underCollateralized(collateral_, borrowed_, account_), "Only undercollateralized accounts may be liquidated");
+
+        uint256 accountCollateral = collateral(collateral_, borrowed_, account_);
+        uint256 fee = liquidationFee(collateral_, borrowed_, account_);
+        accountCollateral = accountCollateral.sub(fee);
+        collateral_.safeTransfer(_msgSender(), fee);
+
+        uint256 swapAmount = _swap(collateral_, accountCollateral, borrowed_);
+        pool.deposit(borrowed_, swapAmount);
+
+        // **** This is entirely WRONG because it needs to consider the account (and thus ALL of them do)
+        _setInitialBorrowPrice(collateral_, borrowed_, 0);
+        _setBorrowed(collateral_, borrowed_, 0);
+        _setCollateral(collateral_, borrowed_, 0);
+
+        emit Liquidated(account_, collateral_, borrowed_, accountCollateral, _msgSender(), fee);
     }
 
     event Liquidated(address indexed account, IERC20 collateral, IERC20 borrowed, uint256 amount, address liquidator, uint256 fee);
