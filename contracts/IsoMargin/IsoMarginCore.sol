@@ -19,33 +19,33 @@ abstract contract IsoMarginCore is Ownable {
     }
 
     // Set the pool to use
-    function setPool(LPool _pool) external onlyOwner {
-        pool = _pool;
+    function setPool(LPool pool_) external onlyOwner {
+        pool = pool_;
     }
 
     // Set the market link to use
-    function setMarketLink(MarketLink _marketLink) external onlyOwner {
-        marketLink = _marketLink;
+    function setMarketLink(MarketLink marketLink_) external onlyOwner {
+        marketLink = marketLink_;
     }
 
-    modifier onlyApprovedToken(IERC20 _token) {
-        require(pool.isApprovedToken(_token), "Only approved tokens may be used");
+    modifier onlyApprovedToken(IERC20 token_) {
+        require(pool.isApprovedToken(token_), "Only approved tokens may be used");
         _;
     }
 
-    modifier onlyLPToken(IERC20 _token) {
-        require(pool.isLPToken(_token), "Only LP tokens may be used");
+    modifier onlyLPToken(IERC20 token_) {
+        require(pool.isLPToken(token_), "Only LP tokens may be used");
         _;
     }
 
-    modifier onlyLPOrApprovedToken(IERC20 _token) {
-        require(pool.isApprovedToken(_token) || pool.isLPToken(_token), "Only approved tokens or LP tokens may be used");
+    modifier onlyLPOrApprovedToken(IERC20 token_) {
+        require(pool.isApprovedToken(token_) || pool.isLPToken(token_), "Only approved tokens or LP tokens may be used");
         _;
     }
 
     // Approve the market link to swap and swap between two assets
-    function _swap(IERC20 _tokenIn, uint256 _amountIn, IERC20 _tokenOut) internal returns (uint256) {
-        _tokenIn.safeApprove(address(marketLink), _amountIn);
-        return marketLink.swap(_tokenIn, _amountIn, _tokenOut);
+    function _swap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
+        tokenIn_.safeApprove(address(marketLink), amountIn_);
+        return marketLink.swap(tokenIn_, amountIn_, tokenOut_);
     }
 }

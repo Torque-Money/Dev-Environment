@@ -6,28 +6,28 @@ import "./MarketLinkRouter.sol";
 
 abstract contract MarketLinkPrice is MarketLinkRouter {
     // Get the price between an LP token or regular token and another LP token or regular token
-    function swapPrice(IERC20 _tokenIn, uint256 _amountIn, IERC20 _tokenOut) external view returns (uint256) {
+    function swapPrice(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) external view returns (uint256) {
         address[] memory path = new address[](2);
 
-        if (pool.isLPToken(_tokenIn)) {
-            _amountIn = pool.redeemValue(_tokenIn, _amountIn);
-            path[0] = address(pool.tokenFromLPToken(_tokenIn));
+        if (pool.isLPToken(tokenIn_)) {
+            amountIn_ = pool.redeemValue(tokenIn_, amountIn_);
+            path[0] = address(pool.tokenFromLPToken(tokenIn_));
         } else {
-            path[0] = address(_tokenIn);
+            path[0] = address(tokenIn_);
         }
 
-        bool tokenOutIsLP = pool.isLPToken(_tokenOut);
+        bool tokenOutIsLP = pool.isLPToken(tokenOut_);
         if (tokenOutIsLP) {
-            path[1] = address(pool.tokenFromLPToken(_tokenOut));
+            path[1] = address(pool.tokenFromLPToken(tokenOut_));
         } else {
-            path[1] = address(_tokenOut);
+            path[1] = address(tokenOut_);
         }
 
         uint256 swappedAmount;
         if (path[0] == path[1]) {
-            swappedAmount = _amountIn;
+            swappedAmount = amountIn_;
         } else {
-            swappedAmount = router.getAmountsOut(_amountIn, path)[1];
+            swappedAmount = router.getAmountsOut(amountIn_, path)[1];
         }
 
         if (tokenOutIsLP) {

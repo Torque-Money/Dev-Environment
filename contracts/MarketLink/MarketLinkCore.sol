@@ -13,7 +13,7 @@ abstract contract MarketLinkCore is Ownable {
     }
 
     // Set the liquidity pool
-    function setPool(LPool _pool) external onlyOwner {
-        pool = _pool;
+    function setPool(LPool pool_) external onlyOwner {
+        pool = pool_;
     }
 }

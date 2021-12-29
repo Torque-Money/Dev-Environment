@@ -11,40 +11,40 @@ abstract contract MarketLinkSwap is MarketLinkRouter {
     using SafeERC20 for IERC20;
 
     // Swap between an LP token or regular token with another LP token or regular token
-    function swap(IERC20 _tokenIn, uint256 _amountIn, IERC20 _tokenOut) external returns (uint256) {
-        _tokenIn.safeTransferFrom(_msgSender(), address(this), _amountIn);
+    function swap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) external returns (uint256) {
+        tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
 
         address[] memory path = new address[](2);
 
-        if (pool.isLPToken(_tokenIn)) {
-            _amountIn = pool.redeem(_tokenIn, _amountIn);
-            path[0] = address(pool.tokenFromLPToken(_tokenIn));
+        if (pool.isLPToken(tokenIn_)) {
+            amountIn_ = pool.redeem(tokenIn_, amountIn_);
+            path[0] = address(pool.tokenFromLPToken(tokenIn_));
         } else {
-            path[0] = address(_tokenIn);
+            path[0] = address(tokenIn_);
         }
 
-        bool tokenOutIsLP = pool.isLPToken(_tokenOut);
+        bool tokenOutIsLP = pool.isLPToken(tokenOut_);
         if (tokenOutIsLP) {
-            path[1] = address(pool.tokenFromLPToken(_tokenOut));
+            path[1] = address(pool.tokenFromLPToken(tokenOut_));
         } else {
-            path[1] = address(_tokenOut);
+            path[1] = address(tokenOut_);
         }
 
         uint256 amountOut;
         if (path[0] == path[1]) {
-            amountOut = _amountIn;
+            amountOut = amountIn_;
         } else {
-            IERC20(path[0]).safeApprove(address(router), _amountIn);
-            amountOut = router.swapExactTokensForTokens(_amountIn, 0, path, address(this), block.timestamp + 1 hours)[1];
+            IERC20(path[0]).safeApprove(address(router), amountIn_);
+            amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1 hours)[1];
         }
 
         if (tokenOutIsLP) {
             amountOut = pool.stake(IERC20(path[1]), amountOut);
         }
 
-        _tokenOut.safeTransfer(_msgSender(), amountOut);
+        tokenOut_.safeTransfer(_msgSender(), amountOut);
 
-        emit Swap(_msgSender(), _tokenIn, _amountIn, _tokenOut, amountOut);
+        emit Swap(_msgSender(), tokenIn_, amountIn_, tokenOut_, amountOut);
 
         return amountOut;
     }

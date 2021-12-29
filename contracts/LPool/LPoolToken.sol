@@ -9,11 +9,11 @@ contract LPoolToken is ERC20, Ownable {
         ERC20(name_, symbol_)
     {}
 
-    function mint(address _account, uint256 _amount) external onlyOwner {
-        _mint(_account, _amount);
+    function mint(address account_, uint256 amount_) external onlyOwner {
+        _mint(account_, amount_);
     }
 
-    function burn(address _account, uint256 _amount) external onlyOwner {
-        _burn(_account, _amount);
+    function burn(address account_, uint256 amount_) external onlyOwner {
+        _burn(account_, amount_);
     }
 }

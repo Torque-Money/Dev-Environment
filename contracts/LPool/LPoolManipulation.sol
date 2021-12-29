@@ -15,46 +15,46 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
     mapping(IERC20 => uint256) private _totalClaimed;
 
     // Return the total value locked of a given asset
-    function tvl(IERC20 _token) public view returns (uint256) {
-        return _token.balanceOf(address(this));
+    function tvl(IERC20 token_) public view returns (uint256) {
+        return token_.balanceOf(address(this));
     }
 
     // Get the available liquidity of the pool
-    function liquidity(IERC20 _token) public view returns (uint256) {
-        uint256 claimed = _totalClaimed[_token];
-        return tvl(_token).sub(claimed);
+    function liquidity(IERC20 token_) public view returns (uint256) {
+        uint256 claimed = _totalClaimed[token_];
+        return tvl(token_).sub(claimed);
     }
 
     // Claim an amount of a given token
-    function claim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApprovedToken(_token) {
-        require(_amount <= liquidity(_token), "Cannot claim more than total liquidity");
-        _claimed[_msgSender()][_token] = _claimed[_msgSender()][_token].add(_amount);
-        _totalClaimed[_token] = _totalClaimed[_token].add(_amount);
-        emit Claim(_msgSender(), _token, _amount);
+    function claim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+        require(amount_ <= liquidity(token_), "Cannot claim more than total liquidity");
+        _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].add(amount_);
+        _totalClaimed[token_] = _totalClaimed[token_].add(amount_);
+        emit Claim(_msgSender(), token_, amount_);
     }
 
     // Unclaim an amount of a given token
-    function unclaim(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApprovedToken(_token) {
-        require(_amount <= _claimed[_msgSender()][_token], "Cannot unclaim more than your claim");
-        _claimed[_msgSender()][_token] = _claimed[_msgSender()][_token].sub(_amount);
-        _totalClaimed[_token] = _totalClaimed[_token].sub(_amount);
-        emit Unclaim(_msgSender(), _token, _amount);
+    function unclaim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+        require(amount_ <= _claimed[_msgSender()][token_], "Cannot unclaim more than your claim");
+        _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].sub(amount_);
+        _totalClaimed[token_] = _totalClaimed[token_].sub(amount_);
+        emit Unclaim(_msgSender(), token_, amount_);
     }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApprovedToken(_token) {
-        uint256 tax = taxPercent.mul(_amount).div(100);
-        _token.safeTransferFrom(_msgSender(), taxAccount, tax);
+    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+        uint256 tax = taxPercent.mul(amount_).div(100);
+        token_.safeTransferFrom(_msgSender(), taxAccount, tax);
 
-        uint256 taxedAmount = _amount.sub(tax);
-        _token.safeTransferFrom(_msgSender(), address(this), taxedAmount);
-        emit Deposit(_msgSender(), _token, taxedAmount, tax, taxAccount);
+        uint256 taxedAmount = amount_.sub(tax);
+        token_.safeTransferFrom(_msgSender(), address(this), taxedAmount);
+        emit Deposit(_msgSender(), token_, taxedAmount, tax, taxAccount);
     }
 
     // Withdraw a given amount of collateral from the pool
-    function withdraw(IERC20 _token, uint256 _amount) external onlyRole(POOL_APPROVED) onlyApprovedToken(_token) {
-        _token.safeTransfer(_msgSender(), _amount);
-        emit Withdraw(_msgSender(), _token, _amount);
+    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+        token_.safeTransfer(_msgSender(), amount_);
+        emit Withdraw(_msgSender(), token_, amount_);
     }
 
     event Claim(address indexed account, IERC20 token, uint256 amount);

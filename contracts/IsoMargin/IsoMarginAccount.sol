@@ -23,22 +23,22 @@ abstract contract IsoMarginAccount is IsoMarginPool {
     mapping(IERC20 => mapping(address => uint256)) private _collateral;
 
     // Get the borrowed for a given account for a given asset
-    function borrowed(IERC20 _token, address _account) external view returns (uint256) {
-        return _borrowed[_token][_account];
+    function borrowed(IERC20 token_, address account_) external view returns (uint256) {
+        return _borrowed[token_][account_];
     }
 
     // Get the borrowed for a given account against some collateral for a given asset
-    function borrowed(IERC20 _collateral, IERC20 _borrowed, address _account) external view returns (uint256) {
-        return _isolatedMargins[_borrowed][_account][_collateral].borrowed;
+    function borrowed(IERC20 collateral_, IERC20 borrowed_, address account_) external view returns (uint256) {
+        return _isolatedMargins[borrowed_][account_][collateral_].borrowed;
     }
 
     // Get the collateral of a given account for a given asset
-    function collateral(IERC20 _token, address _account) external view returns (uint256) {
-        return _collateral[_token][_account];
+    function collateral(IERC20 token_, address account_) external view returns (uint256) {
+        return _collateral[token_][account_];
     }
 
     // Get the collateral for a given account against some borrowed asset
-    function collateral(IERC20 _collateral, IERC20 _borrowed, address _account) external view returns (uint256) {
-        return _isolatedMargins[_borrowed][_account][_collateral].collateral;
+    function collateral(IERC20 collateral_, IERC20 borrowed_, address account_) external view returns (uint256) {
+        return _isolatedMargins[borrowed_][account_][collateral_].collateral;
     }
 }

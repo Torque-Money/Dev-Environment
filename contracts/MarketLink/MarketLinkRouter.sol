@@ -8,7 +8,7 @@ abstract contract MarketLinkRouter is MarketLinkCore {
     UniswapV2Router02 public router;
 
     // Set the router
-    function setRouter(UniswapV2Router02 _router) external onlyOwner {
-        router = _router;
+    function setRouter(UniswapV2Router02 router_) external onlyOwner {
+        router = router_;
     }
 }
