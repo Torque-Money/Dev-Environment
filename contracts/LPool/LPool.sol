@@ -5,11 +5,8 @@ import "./LPoolStake.sol";
 import "./LPoolInterest.sol";
 
 contract LPool is LPoolStake, LPoolInterest {
-    constructor(
-        uint256 taxPercent_, uint256 maxInterestMin_,
-        uint256 maxInterestMax_, uint256 maxUtilization_
-    )
+    constructor(uint256 taxPercent_, uint256 blocksPerCompound_)
         LPoolTax(taxPercent_)
-        LPoolInterest(maxInterestMin_, maxInterestMax_, maxUtilization_)
+        LPoolInterest(blocksPerCompound_)
     {}
 }
