@@ -28,8 +28,18 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
 
     // Repay the accounts borrowed amount
     function repay(IERC20 collateral_, IERC20 borrowed_) external {
-        
+        uint256 amountBorrowed = borrowed(collateral_, borrowed_, _msgSender());
+        require(amountBorrowed > 0, "Cannot repay an account that has no debt");
+
+        uint256 afterRepayCollateral = collateralAfterRepay(collateral_, borrowed_);
+        if (afterRepayCollateral <= collateral(collateral_, borrowed_, _msgSender())) _repayLessOrEqual();
+        else _repayGreater();
+
+        _setInitialBorrowPrice(collateral_, borrowed_, 0);
+        _setBorrowed(collateral_, borrowed_, 0);
+
+        emit Repay(_msgSender(), collateral_, borrowed_, afterRepayCollateral);
     }
 
-    event Repay();
+    event Repay(address indexed account, IERC20 collateral, IERC20 borrowed, uint256 afterRepayCollateral);
 }
