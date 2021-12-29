@@ -9,12 +9,12 @@ abstract contract IsoMarginPool is IsoMarginCore {
     mapping(IERC20 => uint256) private _totalCollateral;
 
     // Get the total borrowed of a given asset
-    function totalBorrowed(IERC20 token_) external view returns (uint256) {
+    function totalBorrowed(IERC20 token_) public view returns (uint256) {
         return _totalBorrowed[token_];
     }
 
     // Get the total collateral of a given asset
-    function totalCollateral(IERC20 token_) external view returns (uint256) {
+    function totalCollateral(IERC20 token_) public view returns (uint256) {
         return _totalCollateral[token_];
     }
 

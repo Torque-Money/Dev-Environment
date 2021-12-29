@@ -32,6 +32,15 @@ abstract contract IsoMarginAccount is IsoMarginPool {
         return _isolatedMargins[borrowed_][account_][collateral_].borrowed;
     }
 
+    // Set the amount the user has borrowed
+    function _setBorrowed(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) internal {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+
+        setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(isolatedMargin.borrowed).add(amount_));
+        _borrowed[borrowed_][_msgSender()] = _borrowed[borrowed_][_msgSender()].sub(isolatedMargin.borrowed).add(amount_);
+        isolatedMargin.borrowed = isolatedMargin.borrowed.sub(isolatedMargin.borrowed).add(amount_);
+    }
+
     // Get the collateral of a given account for a given asset
     function collateral(IERC20 token_, address account_) external view returns (uint256) {
         return _collateral[token_][account_];
@@ -41,4 +50,15 @@ abstract contract IsoMarginAccount is IsoMarginPool {
     function collateral(IERC20 collateral_, IERC20 borrowed_, address account_) external view returns (uint256) {
         return _isolatedMargins[borrowed_][account_][collateral_].collateral;
     }
+
+    // Set the collateral for a user
+    function _setCollateral(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) internal {
+        IsolatedMargin storage isolatedMargin = _isolatedMargins[collateral_][_msgSender()][borrowed_];
+
+        setTotalCollateral(collateral_, totalCollateral(collateral_).sub(isolatedMargin.collateral).add(amount_));
+        _collateral[collateral_][_msgSender()] = _collateral[collateral_][_msgSender()].sub(isolatedMargin.collateral).add(amount_);
+        isolatedMargin.collateral = isolatedMargin.collateral.sub(isolatedMargin.collateral).add(amount_);
+    }
+
+    // **** Add getters and setters for the rest of these too
 }
