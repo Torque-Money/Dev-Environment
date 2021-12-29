@@ -59,7 +59,7 @@ abstract contract LPoolInterest is LPoolManipulation {
         if (utilized > maxUtilization(_token)) maxInterest = maxInterestMax(_token);
         else maxInterest = maxInterestMin(_token);
 
-        return (utilized.mul(maxInterest), valueLocked); // Numerator and denominator of ratio
+        return (utilized.mul(maxInterest), valueLocked.mul(100)); // Numerator and denominator of ratio
     }
 
     // Get the interest on a given asset for a given number of blocks
