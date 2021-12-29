@@ -18,11 +18,11 @@ abstract contract IsoMarginMargin is IsoMarginAccount {
     // Return the numerator and denominator of the margin level
     function marginLevel(IERC20 collateral_, IERC20 borrowed_) public view returns (uint256, uint256) {
         uint256 _collateral = collateral(collateral_, borrowed_, _msgSender());
-        uint256 _initialBorrowValue = _initialBorrowPrice(collateral_, borrowed_);
-        uint256 currentBorrowValue = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
-        uint256 interest = pool.interest(borrowed_, _initialBorrowValue, _initialBorrowBlock(collateral_, borrowed_));
+        uint256 _initialBorrowPrice = _initialBorrowPrice(collateral_, borrowed_);
+        uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
+        uint256 interest = pool.interest(borrowed_, _initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
 
-        return (currentBorrowValue.add(_collateral), _initialBorrowValue.add(interest)); 
+        return (currentBorrowPrice.add(_collateral), _initialBorrowPrice.add(interest)); 
     }
 
     // Check if an account is undercollateralized
