@@ -13,7 +13,7 @@ abstract contract IsoMarginCollateral is IsoMarginMargin {
     // Add collateral to the account for the specified asset to borrow against
     function addCollateral(IERC20 collateral_, IERC20 borrowed_, uint256 amount_) external onlyLPOrApprovedToken(collateral_) onlyApprovedToken(borrowed_) {
         collateral_.safeTransferFrom(_msgSender(), address(this), amount_);
-        _setCollateral(collateral_, borrowed_, collateral(collateral_, borrowed_, _msgSender()).add(amount_));
+        _setCollateral(collateral_, borrowed_, collateral(collateral_, borrowed_, _msgSender()).add(amount_), _msgSender());
         emit AddedCollateral(_msgSender(), collateral_, borrowed_, amount_);
     }
 
@@ -22,8 +22,8 @@ abstract contract IsoMarginCollateral is IsoMarginMargin {
         uint256 currentCollateral = collateral(collateral_, borrowed_, _msgSender());
         require(amount_ <= currentCollateral, "Not enough collateral to withdraw");
 
-        _setCollateral(collateral_, borrowed_, currentCollateral.sub(amount_));
-        require(!underCollateralized(collateral_, borrowed_), "Cannot withdraw an amount that results in an undercollateralized borrow");
+        _setCollateral(collateral_, borrowed_, currentCollateral.sub(amount_), _msgSender());
+        require(!underCollateralized(collateral_, borrowed_, _msgSender()), "Cannot withdraw an amount that results in an undercollateralized borrow");
 
         collateral_.safeTransfer(_msgSender(), amount_);
         emit WithdrawCollateral(_msgSender(), collateral_, borrowed_, amount_);
