@@ -30,6 +30,7 @@ abstract contract IsoMarginMargin is IsoMarginAccount {
         (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(collateral_, borrowed_);
         uint256 lhs = minMarginLevel.mul(marginDenominator);
         uint256 rhs = marginNumerator.mul(100);
+        
         return rhs > lhs;
     }
 }
