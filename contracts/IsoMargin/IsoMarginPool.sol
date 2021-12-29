@@ -19,12 +19,12 @@ abstract contract IsoMarginPool is IsoMarginCore {
     }
 
     // Set the total borrowed of a given asset
-    function setTotalBorrowed(IERC20 _token, uint256 _amount) external {
-
+    function setTotalBorrowed(IERC20 _token, uint256 _amount) public {
+        _totalBorrowed[_token] = _amount;
     }
 
     // Set the total borrowed of a given asset
-    function setTotalCollateral(IERC20 _token, uint256 _amount) external {
-
+    function setTotalCollateral(IERC20 _token, uint256 _amount) public {
+        _totalCollateral[_token] = _amount;
     }
 }
