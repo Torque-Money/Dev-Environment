@@ -7,6 +7,12 @@
 -   Borrowers will lock their funds into a seperate pool, however stakers will not be able to redeem their funds without sufficient liquidity
 -   Stakers on investing will receive LP tokens to represent their investment - with this it will allow any holder to unlock that same collateral, pegging it to the price. However the benefit it brings is that instead of unlocking liquidity from the pool, users will just trade the token which represents this, helping to keep locked liquidity by incentivizing the trading of an appreciation asset (as the value of the pools stake increases)
 
+## TODO
+
+-   Add in repayment distribution feature where voters can only vote and stakers of the governance token get paid out (needs good community support for voters to willingly vote without payment)
+-   Add in the better yield farming distributor based on the utilization rate
+-   We can value crypto companies, where the value of the token is derived from the price of the company someone would be willing to buy it at to receive its cashflow and assets
+
 ## Code
 
 -   [Protocol repository](https://github.com/Terragonn/Torque-Protocol-V1)
