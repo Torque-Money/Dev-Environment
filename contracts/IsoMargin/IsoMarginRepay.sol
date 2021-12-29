@@ -38,8 +38,6 @@ abstract contract IsoMarginRepay is IsoMarginMargin {
         uint256 currentBorrowPrice = marketLink.swapPrice(borrowed_, borrowed(collateral_, borrowed_, _msgSender()), collateral_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(collateral_, borrowed_));
 
-        // **** I need to seriously consider different overflow and underflow cases regarding this...
-
         pool.unclaim(borrowed_, collateral(collateral_, borrowed_, _msgSender()));
         uint256 repayAmount = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
         uint256 swappedAmount = _swap(collateral_, repayAmount, borrowed_);
