@@ -12,6 +12,8 @@
 -   Add in repayment distribution feature where voters can only vote and stakers of the governance token get paid out (needs good community support for voters to willingly vote without payment)
 -   Add in the better yield farming distributor based on the utilization rate
 -   We can value crypto companies, where the value of the token is derived from the price of the company someone would be willing to buy it at to receive its cashflow and assets
+-   Upgrade price feeds to use [Chainlink price feeds](https://docs.chain.link/docs/get-the-latest-price/)
+-   Replace the swap functions with a collateral market resistant option + change the payback system to not use a swap at the DEX incase of low liquidity (and maybe not even the redeem function)
 
 ## Code
 
