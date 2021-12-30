@@ -5,15 +5,32 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./OracleCore.sol";
 
-abstract contract OracleAssets is OracleCore {
+abstract contract OracleTokens is OracleCore {
+    mapping(IERC20 => bool) private _supported;
     mapping(IERC20 => AggregatorV3Interface) private _priceFeed;
     mapping(IERC20 => AggregatorV3Interface) private _reservePriceFeed;
     mapping(IERC20 => uint256) private _decimals;
 
-    // Set the price feed for a given asset
-    function setPriceFeed(IERC20 token_, AggregatorV3Interface priceFeed_, AggregatorV3Interface reservePriceFeed_) external onlyOwner {
+    modifier onlySupported(IERC20 token_) {
+        require(isAssetSupported(token_), "Only supported tokens may be used");
+        _;
+    }
+
+    // Check if an asset is supported by the oracle
+    function isAssetSupported(IERC20 token_) public view returns (bool) {
+        return _supported[token_];
+    }
+
+    // Set the price feed for a given asset along with the decimals and if it is supported
+    function setPriceFeed(
+        IERC20 token_, AggregatorV3Interface priceFeed_, 
+        AggregatorV3Interface reservePriceFeed_, uint256 correctDecimals_,
+        bool supported_
+    ) external onlyOwner {
         _priceFeed[token_] = priceFeed_;
         _reservePriceFeed[token_] = reservePriceFeed_;
+        _decimals[token_] = correctDecimals_;
+        _supported[token_] = supported_;
     }
 
     // Get the price feed for a given asset
@@ -24,11 +41,6 @@ abstract contract OracleAssets is OracleCore {
     // Get the reserve price feed for a given asset
     function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
         return _reservePriceFeed[token_];
-    }
-
-    // Get the correct decimals for the given asset
-    function setDecimals(IERC20 token_, uint256 decimals_) external onlyOwner {
-        _decimals[token_] = decimals_;
     }
 
     // Get the correct decimals for a given asset
