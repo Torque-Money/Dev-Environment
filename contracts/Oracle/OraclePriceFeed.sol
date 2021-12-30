@@ -9,7 +9,7 @@ import "./OracleTokens.sol";
 abstract contract OraclePriceFeed is OracleTokens {
     using SafeMath for uint256;
 
-    // Get the price of an asset in terms of the stablecoin
+    // Get the price of an asset in terms of the default stablecoin
     function price(IERC20 token_, uint256 amount_) external view onlySupported(token_) returns (uint256) {
         if (pool.isLPToken(token_)) {
             IERC20 underlying = pool.tokenFromLPToken(token_);
@@ -18,9 +18,6 @@ abstract contract OraclePriceFeed is OracleTokens {
             token_ = underlying;
             amount_ = redeemValue;
         }
-
-        // **** We also need to check the decimals from the amount interfering with our own custom decimals at this point I believe ????
-        // **** Perhaps I made a mistake here and I should just be using the universal feeds for everything instead of this custom mapped oracle ?
 
         AggregatorV3Interface feed = priceFeed(token_);
         (,int result,,,) = feed.latestRoundData();
@@ -33,6 +30,6 @@ abstract contract OraclePriceFeed is OracleTokens {
         }
         if (result <= 0) result = 0;
 
-        return amount_.mul(uint256(result)).mul(10 ** decimals(token_)).div(_decimals);
+        return uint256(result).mul(10 ** decimals(defaultStablecoin)).div(10 ** _decimals).mul(amount_).div(10 ** decimals(token_));
     }
 }

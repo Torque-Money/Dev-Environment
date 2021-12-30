@@ -11,6 +11,8 @@ abstract contract OracleTokens is OracleCore {
     mapping(IERC20 => AggregatorV3Interface) private _reservePriceFeed;
     mapping(IERC20 => uint256) private _decimals;
 
+    IERC20 public defaultStablecoin;
+
     modifier onlySupported(IERC20 token_) {
         require(isAssetSupported(token_), "Only supported tokens may be used");
         _;
@@ -30,6 +32,11 @@ abstract contract OracleTokens is OracleCore {
         _reservePriceFeed[token_] = reservePriceFeed_;
         _decimals[token_] = correctDecimals_;
         _supported[token_] = true;
+    }
+
+    // Set the default stablecoin to convert the prices into
+    function setDefaultStablecoin(IERC20 token_) external onlyOwner onlySupported(token_) {
+        defaultStablecoin = token_;
     }
 
     // Get the price feed for a given asset
