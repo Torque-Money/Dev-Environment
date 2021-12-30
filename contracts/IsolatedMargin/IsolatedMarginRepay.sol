@@ -21,7 +21,18 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
     // Repay when the collateral price is less than or equal
     function _repayLessOrEqual(IERC20 borrowed_, address account_) internal {
+        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
+        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
 
+        pool.unclaim(borrowed_, borrowed(borrowed_, account_));
+
+        uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
+        IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
+        for (uint i = 0; i < ownedTokens.length; i++) {
+            uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
+            // if (price <= repayPrice) // **** We need to make sure that we have enough to satisfy the overcollateralized threshold but not too much
+        }
     }
 
     // Repay when the collateral price is higher

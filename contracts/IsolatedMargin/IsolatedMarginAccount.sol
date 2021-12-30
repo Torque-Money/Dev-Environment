@@ -54,13 +54,25 @@ abstract contract IsolatedMarginAccount is MarginPool {
         return account.collateralAmounts[collateral_];
     }
 
+    // Get the tokens used as collateral for a given account
+    function collateralTokens(IERC20 borrowed_, address account_) public view returns (IERC20[] memory) {
+        Account storage account = _accounts[borrowed_][account_];
+        return account.collateralTokens;
+    }
+
+    // Get the price of a token used as collateral for the asset borrowed for an account
+    function collateralPrice(IERC20 borrowed_, IERC20 collateral_, address account_) public view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return oracle.price(collateral_, account.collateralAmounts[collateral_]);
+    }
+
     // Get the total collateral price for a given account and asset borrowed
     function collateralPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[borrowed_][account_];
         uint256 totalPrice = 0;
         IERC20[] memory tokens = account.collateralTokens;
         for (uint i = 0; i < tokens.length; i++) {
-            totalPrice = totalPrice.add(oracle.price(tokens[i], account.collateralAmounts[tokens[i]]));
+            totalPrice = totalPrice.add(collateralPrice(borrowed_, tokens[i], account_));
         }
         return totalPrice;
     }
