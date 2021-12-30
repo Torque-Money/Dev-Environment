@@ -20,6 +20,7 @@ abstract contract OraclePriceFeed is OracleTokens {
         }
 
         // **** We also need to check the decimals from the amount interfering with our own custom decimals at this point I believe ????
+        // **** Perhaps I made a mistake here and I should just be using the universal feeds for everything instead of this custom mapped oracle ?
 
         AggregatorV3Interface feed = priceFeed(token_);
         (,int result,,,) = feed.latestRoundData();
