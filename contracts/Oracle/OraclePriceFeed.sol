@@ -28,7 +28,7 @@ abstract contract OraclePriceFeed is OracleTokens {
             (,result,,,) = feed.latestRoundData();
             _decimals = feed.decimals();
         }
-        if (result <= 0) result = 0;
+        if (result <= 0) return 0;
 
         return uint256(result).mul(10 ** decimals(defaultStablecoin)).div(10 ** _decimals).mul(amount_).div(10 ** decimals(token_));
     }
