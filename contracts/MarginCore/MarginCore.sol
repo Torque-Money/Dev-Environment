@@ -8,7 +8,7 @@ import "../Oracle/Oracle.sol";
 import "../FlashSwap/FlashSwap.sol";
 import "../LPool/LPool.sol";
 
-abstract contract IsoMarginCore is Ownable {
+abstract contract CrossMarginCore is Ownable {
     using SafeERC20 for IERC20;
 
     LPool public pool;

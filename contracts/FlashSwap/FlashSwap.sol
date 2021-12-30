@@ -6,6 +6,6 @@ import "./FlashSwapTokens.sol";
 
 contract FlashSwap is FlashSwapTokens {
     constructor(LPool pool_)
-        SwapCore(pool_)
+        FlashSwapCore(pool_)
     {}
 }
