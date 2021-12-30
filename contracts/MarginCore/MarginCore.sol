@@ -6,19 +6,23 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../Oracle/Oracle.sol";
 import "../FlashSwap/FlashSwap.sol";
+import "../FlashSwap/IFlashSwap.sol";
 import "../LPool/LPool.sol";
 
-abstract contract CrossMarginCore is Ownable {
+abstract contract MarginCore is Ownable {
     using SafeERC20 for IERC20;
 
     LPool public pool;
     Oracle public oracle;
     FlashSwap public flashSwap;
 
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_) {
+    IFlashSwap public defaultFlashSwap;
+
+    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, IFlashSwap defaultFlashSwap_) {
         pool = pool_;
         oracle = oracle_;
         flashSwap = flashSwap_;
+        defaultFlashSwap = defaultFlashSwap_;
     }
 
     // Set the pool to use
@@ -36,6 +40,11 @@ abstract contract CrossMarginCore is Ownable {
         flashSwap = flashSwap_;
     }
 
+    // Set the default flash swap to use
+    function setDefaultFlashSwap(IFlashSwap flashSwap_) external onlyOwner {
+        defaultFlashSwap = flashSwap_;
+    }
+
     modifier onlyApprovedToken(IERC20 token_) {
         require(pool.isApprovedToken(token_), "Only approved tokens may be used");
         _;
@@ -51,9 +60,14 @@ abstract contract CrossMarginCore is Ownable {
         _;
     }
 
-    // Approve the flash swap to use tokens
-    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
-        tokenIn_.safeApprove(address(swap), amountIn_);
-        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_);
+    // Approve the flash swap to use tokens and execute swap
+    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, IFlashSwap flashSwap_, bytes calldata data_) internal returns (uint256) {
+        tokenIn_.safeApprove(address(flashSwap), amountIn_);
+        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, flashSwap_, data_);
+    }
+
+    // Execute the flash swap with the default flash swap
+    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, bytes calldata data_) internal returns (uint256) {
+        return _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, defaultFlashSwap, data_);
     }
 }
