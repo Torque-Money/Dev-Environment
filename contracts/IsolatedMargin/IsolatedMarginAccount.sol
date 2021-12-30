@@ -21,8 +21,6 @@ abstract contract IsolatedMarginCollateral is MarginPool {
     }
 
     mapping(IERC20 => mapping(address => Account)) private _accounts;
-
-    mapping(IERC20 => mapping(address => uint256)) private _borrowed;
     mapping(IERC20 => mapping(address => uint256)) private _collateral;
 
     // Set the collateral for a given asset
@@ -44,7 +42,7 @@ abstract contract IsolatedMarginCollateral is MarginPool {
 
         account.collateralAmounts[collateral_] = amount_;
         setTotalCollateral(collateral_, totalCollateral(collateral_).sub(_collateral[borrowed_][account_]).add(amount_));
-        _collateral[borrowed_][account_] = _collateral[borrowed_][account_];
+        _collateral[borrowed_][account_] = _collateral[borrowed_][account_].sub(_collateral[borrowed_][account_]).add(amount_);
     }
 
     // Get the collateral for a given asset for a given account
@@ -67,6 +65,20 @@ abstract contract IsolatedMarginCollateral is MarginPool {
             totalPrice = totalPrice.add(oracle.price(tokens[i], account.collateralAmounts[tokens[i]]));
         }
         return totalPrice;
+    }
+
+    // Get the borrowed for a given account
+    function borrowed(IERC20 borrowed_, address account_) external view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return account.borrowed;
+    }
+
+    // Set the amount the user has borrowed
+    function _setBorrowed(IERC20 borrowed_, uint256 amount_, address account_) internal {
+        Account storage account = _accounts[borrowed_][account_];
+
+        setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowed).add(amount_));
+        account.borrowed = amount_;
     }
 
     // Get the initial borrow price for an account
