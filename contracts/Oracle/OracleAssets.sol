@@ -16,12 +16,12 @@ abstract contract OracleAssets is OracleCore {
     }
 
     // Get the price feed for a given asset
-    function priceFeed(IERC20 token_) public returns (AggregatorV3Interface) {
+    function priceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
         return _priceFeed[token_];
     }
 
     // Get the reserve price feed for a given asset
-    function reservePriceFeed(IERC20 token_) public returns (AggregatorV3Interface) {
+    function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
         return _reservePriceFeed[token_];
     }
 }
