@@ -13,7 +13,7 @@ abstract contract SwapAssets is SwapCore, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     // Swap one asset for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out
-    // **** I MIGHT NEED TO PREVENT REENTRANCY ON THIS
+    // **** I MIGHT NEED TO PREVENT REENTRANCY ON THIS - LOOK INTO POSSIBLE REENTRANCY ATTACKS
     function flashSwap(
         IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, ISwap flashSwap_, bytes calldata data_
     ) external nonReentrant returns (uint256) {
