@@ -8,5 +8,8 @@ import "./IsolatedMarginLevel.sol";
 abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     using SafeMath for uint256;
 
-    // Get the accounts collateral after repay
+    // Get the accounts collateral price after repay
+    function collateralAfterRepay(IERC20 borrowed_, address account_) public view returns (uint256) {
+
+    }
 }
