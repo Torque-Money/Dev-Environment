@@ -17,7 +17,17 @@ abstract contract IsolatedMarginBorrow is IsolatedMarginLevel {
 
     // Borrow against collateral
     function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedToken(borrowed_) {
+        require(collateralPrice(borrowed_, _msgSender()) >= minCollateral, "Collateral price must be greater than minimum");
+
+        if (borrowed(borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
+
+        pool.claim(borrowed_, amount_);
+        _setBorrowed(borrowed_, borrowed(borrowed_, _msgSender()).add(amount_), _msgSender());
+
+        uint256 initialBorrowPrice = borrowedPrice(borrowed_, _msgSender());
+        _setInitialBorrowPrice(borrowed_, _initialBorrowPrice(borrowed_, _msgSender()).add(initialBorrowPrice), _msgSender());
         
+        emit Borrow(_msgSender(), borrowed_, amount_);
     }
 
     event Borrow(address indexed account, IERC20 borrowed, uint256 amount);
