@@ -4,11 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./IFlashSwap.sol";
 import "../lib/UniswapV2Router02.sol";
 import "../LPool/LPool.sol";
 
 contract FlashSwapDefault is IFlashSwap, Ownable {
+    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     UniswapV2Router02 public router; 
@@ -32,31 +34,34 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
         address,
-        IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_,
+        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_,
         uint256, bytes calldata
     ) external override returns (uint256) {
         address[] memory path = new address[](2);
-
-        if (pool.isLPToken(tokenIn_)) {
-            amountIn_ = pool.redeem(tokenIn_, amountIn_);
-            path[0] = address(pool.tokenFromLPToken(tokenIn_));
-        } else {
-            path[0] = address(tokenIn_);
-        }
-
         bool tokenOutIsLP = pool.isLPToken(tokenOut_);
-        if (tokenOutIsLP) {
-            path[1] = address(pool.tokenFromLPToken(tokenOut_));
-        } else {
-            path[1] = address(tokenOut_);
-        }
 
-        uint256 amountOut;
-        if (path[0] == path[1]) {
-            amountOut = amountIn_;
-        } else {
-            IERC20(path[0]).safeApprove(address(router), amountIn_);
-            amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1 hours)[1];
+        uint256 amountOut = 0;
+
+        for (uint i = 0; i < tokenIn_.length; i++) {
+            if (pool.isLPToken(tokenIn_[i])) {
+                amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
+                path[0] = address(pool.tokenFromLPToken(tokenIn_[i]));
+            } else {
+                path[0] = address(tokenIn_[i]);
+            }
+
+            if (tokenOutIsLP) {
+                path[1] = address(pool.tokenFromLPToken(tokenOut_));
+            } else {
+                path[1] = address(tokenOut_);
+            }
+
+            if (path[0] == path[1]) {
+                amountOut = amountOut.add(amountIn_[i]);
+            } else {
+                IERC20(path[0]).safeApprove(address(router), amountIn_[i]);
+                amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_[i], 0, path, address(this), block.timestamp + 1 hours)[1]);
+            }
         }
 
         if (tokenOutIsLP) {

@@ -10,12 +10,14 @@ import "./FlashSwapCore.sol";
 abstract contract FlashSwapTokens is FlashSwapCore, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    // Swap one asset for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out
+    // Swap a group of assets for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out
     function flashSwap(
-        IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_,
+        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_,
         uint256 minAmountOut_, IFlashSwap flashSwap_, bytes calldata data_
     ) external nonReentrant returns (uint256) {
-        tokenIn_.safeTransferFrom(_msgSender(), address(flashSwap_), amountIn_);
+        for (uint i = 0; i < tokenIn_.length; i++) {
+            tokenIn_[i].safeTransferFrom(_msgSender(), address(flashSwap_), amountIn_[i]);
+        }
 
         uint256 amountOut = flashSwap_.flashSwap(_msgSender(), tokenIn_, amountIn_, tokenOut_, minAmountOut_, data_);
         require(amountOut >= minAmountOut_ && tokenOut_.balanceOf(address(this)) >= minAmountOut_, "Amount swapped is less than minimum amount out");
@@ -26,5 +28,5 @@ abstract contract FlashSwapTokens is FlashSwapCore, ReentrancyGuard {
         return amountOut;
     }
 
-    event FlashSwap(IERC20 tokenIn, uint256 amountIn, IERC20 tokenOut, uint256 amountOut, IFlashSwap flashSwap, bytes data);
+    event FlashSwap(IERC20[] tokenIn, uint256[] amountIn, IERC20 tokenOut, uint256 amountOut, IFlashSwap flashSwap, bytes data);
 }
