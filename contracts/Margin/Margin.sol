@@ -61,7 +61,7 @@ abstract contract Margin is Ownable {
     }
 
     // Approve the flash swap to use tokens and execute swap
-    function _flashSwap(IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, IFlashSwap flashSwap_, bytes calldata data_) internal returns (uint256) {
+    function _flashSwap(IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
         for (uint i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
@@ -70,6 +70,6 @@ abstract contract Margin is Ownable {
 
     // Execute the flash swap with the default flash swap
     function _flashSwaps(IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_, uint256 minAmountOut_) internal returns (uint256) {
-        return _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, defaultFlashSwap, bytes(""));
+        return _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, defaultFlashSwap, "");
     }
 }
