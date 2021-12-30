@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IsolatedMarginLevel.sol";
+import "./IsolatedMarginBorrow.sol";
 
-abstract contract IsolatedMarginCollateral is IsolatedMarginLevel {
+abstract contract IsolatedMarginCollateral is IsolatedMarginBorrow {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -24,6 +24,8 @@ abstract contract IsolatedMarginCollateral is IsolatedMarginLevel {
 
         _setCollateral(borrowed_, collateral_, collateral(borrowed_, collateral_, _msgSender()).sub(amount_), _msgSender());
         require(!underCollateralized(borrowed_, _msgSender()), "Cannot withdraw an amount that results in an undercollateralized borrow");
+        require(borrowed(borrowed_, _msgSender()) == 0 || collateral(borrowed_, collateral_, _msgSender()) >= minMarginLevel,
+                "Whilst borrowing collateral must be greater than minimum");
 
         collateral_.safeTransfer(_msgSender(), amount_);
         emit WithdrawCollateral(_msgSender(), borrowed_, collateral_, amount_);

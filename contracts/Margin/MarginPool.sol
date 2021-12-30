@@ -9,22 +9,22 @@ abstract contract MarginPool is Margin {
     mapping(IERC20 => uint256) private _totalCollateral;
 
     // Get the total borrowed of a given asset
-    function totalBorrowed(IERC20 token_) public view returns (uint256) {
-        return _totalBorrowed[token_];
+    function totalBorrowed(IERC20 borrowed_) public view returns (uint256) {
+        return _totalBorrowed[borrowed_];
     }
 
     // Get the total collateral of a given asset
-    function totalCollateral(IERC20 token_) public view returns (uint256) {
-        return _totalCollateral[token_];
+    function totalCollateral(IERC20 collateral_) public view returns (uint256) {
+        return _totalCollateral[collateral_];
     }
 
     // Set the total borrowed of a given asset
-    function setTotalBorrowed(IERC20 token_, uint256 amount_) public {
-        _totalBorrowed[token_] = amount_;
+    function setTotalBorrowed(IERC20 borrowed_, uint256 amount_) public {
+        _totalBorrowed[borrowed_] = amount_;
     }
 
     // Set the total collateral of a given asset
-    function setTotalCollateral(IERC20 token_, uint256 amount_) public {
-        _totalCollateral[token_] = amount_;
+    function setTotalCollateral(IERC20 collateral_, uint256 amount_) public {
+        _totalCollateral[collateral_] = amount_;
     }
 }
