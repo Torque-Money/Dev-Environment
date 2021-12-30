@@ -52,7 +52,7 @@ abstract contract IsoMarginCore is Ownable {
     }
 
     // Approve the flash swap to use tokens
-    function _swap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
+    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
         tokenIn_.safeApprove(address(swap), amountIn_);
         return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_);
     }
