@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-interface ISwap {
+interface IFlashSwap {
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
         address initiator_, IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, bytes calldata data_
