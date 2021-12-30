@@ -68,4 +68,28 @@ abstract contract IsolatedMarginCollateral is MarginPool {
         }
         return totalPrice;
     }
+
+    // Get the initial borrow price for an account
+    function _initialBorrowPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return account.initialBorrowPrice;
+    }
+
+    // Set the initial borrow price for an account
+    function _setInitialBorrowPrice(IERC20 borrowed_, uint256 price_, address account_) internal {
+        Account storage account = _accounts[borrowed_][account_];
+        account.initialBorrowPrice = price_;
+    }
+
+    // Get the initial borrow block for an ccount
+    function _initialBorrowBlock(IERC20 borrowed_, address account_) internal view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return account.initialBorrowBlock;
+    }
+
+    // Set the initial borrow price for an account
+    function _setInitialBorrowBlock(IERC20 borrowed_, uint256 block_, address account_) internal {
+        Account storage account = _accounts[borrowed_][account_];
+        account.initialBorrowBlock = block_;
+    }
 }
