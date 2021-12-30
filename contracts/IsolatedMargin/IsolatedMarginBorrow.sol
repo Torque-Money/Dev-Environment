@@ -15,5 +15,10 @@ abstract contract IsolatedMarginBorrow is IsolatedMarginLevel {
         minCollateral = minCollateral_;
     }
 
+    // Borrow against collateral
+    function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedToken(borrowed_) {
+        
+    }
 
+    event Borrow(address indexed account, IERC20 borrowed, uint256 amount);
 }
