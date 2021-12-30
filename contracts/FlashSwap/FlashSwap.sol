@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "../LPool/LPool.sol";
-import "./SwapTokens.sol";
+import "./FlashSwapTokens.sol";
 
-contract Swap is SwapTokens {
+contract FlashSwap is FlashSwapTokens {
     constructor(LPool pool_)
         SwapCore(pool_)
     {}

@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../LPool/LPool.sol";
 
-abstract contract SwapCore is Ownable {
+abstract contract FlashSwapCore is Ownable {
     LPool public pool;
 
     constructor(LPool pool_) {
