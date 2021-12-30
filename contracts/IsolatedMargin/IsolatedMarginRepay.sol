@@ -17,4 +17,6 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
         return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
     }
+
+    // Repay a users accounts
 }
