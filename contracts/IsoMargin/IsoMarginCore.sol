@@ -15,10 +15,10 @@ abstract contract IsoMarginCore is Ownable {
     Oracle public oracle;
     FlashSwap public flashSwap;
 
-    constructor(LPool pool_, Oracle oracle_, Swap swap_) {
+    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_) {
         pool = pool_;
         oracle = oracle_;
-        swap = swap_;
+        flashSwap = flashSwap_;
     }
 
     // Set the pool to use
@@ -31,9 +31,9 @@ abstract contract IsoMarginCore is Ownable {
         oracle = oracle_;
     }
 
-    // Set the swap to use
-    function setSwap(Swap swap_) external onlyOwner {
-        swap = swap_;
+    // Set the flash swap to use
+    function setFlashSwap(FlashSwap flashSwap_) external onlyOwner {
+        flashSwap = flashSwap_;
     }
 
     modifier onlyApprovedToken(IERC20 token_) {
