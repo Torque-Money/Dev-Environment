@@ -18,7 +18,7 @@ abstract contract OracleTokens is OracleCore {
 
     // Check if an asset is supported by the oracle
     function isAssetSupported(IERC20 token_) public view returns (bool) {
-        return _supported[token_];
+        return _supported[token_] || _supported[pool.tokenFromLPToken(token_)];
     }
 
     // Set the price feed for a given asset along with the decimals

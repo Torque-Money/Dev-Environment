@@ -19,6 +19,8 @@ abstract contract OraclePriceFeed is OracleTokens {
             amount_ = redeemValue;
         }
 
+        // **** We also need to check the decimals from the amount interfering with our own custom decimals at this point I believe ????
+
         AggregatorV3Interface feed = priceFeed(token_);
         (,int result,,,) = feed.latestRoundData();
         uint256 _decimals = feed.decimals();
