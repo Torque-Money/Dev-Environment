@@ -2,13 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../Margin/MarginPool.sol";
 
-abstract contract IsolatedMarginCollateral is MarginPool {
+abstract contract IsolatedMarginAccount is MarginPool {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
 
     struct Account {
         IERC20[] collateralTokens;
