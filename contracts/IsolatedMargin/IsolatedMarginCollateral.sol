@@ -25,7 +25,7 @@ abstract contract IsolatedMarginCollateral is IsolatedMarginBorrow {
         _setCollateral(borrowed_, collateral_, collateral(borrowed_, collateral_, _msgSender()).sub(amount_), _msgSender());
         require(!underCollateralized(borrowed_, _msgSender()), "Cannot withdraw an amount that results in an undercollateralized borrow");
         require(borrowed(borrowed_, _msgSender()) == 0 || collateralPrice(borrowed_, _msgSender()) >= minMarginLevel,
-                "Whilst borrowing collateral price must be greater than minimum"); // **** Look into this one a bit more
+                "Cannot withdraw if new collateral is less than minimum borrow amount");
 
         collateral_.safeTransfer(_msgSender(), amount_);
         emit WithdrawCollateral(_msgSender(), borrowed_, collateral_, amount_);
