@@ -25,7 +25,7 @@ abstract contract IsolatedMarginLevel is IsolatedMarginAccount {
     function marginLevel(IERC20 borrowed_, address account_) public view returns (uint256, uint256) {
         uint256 accountPrice = collateralPrice(borrowed_, account_);
         uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
-        uint256 currentBorrowPrice = oracle.price(borrowed_, borrowed(borrowed_, account_));
+        uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
 
         return (currentBorrowPrice.add(accountPrice), initialBorrowPrice.add(interest)); 

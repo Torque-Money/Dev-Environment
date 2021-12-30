@@ -65,18 +65,24 @@ abstract contract IsolatedMarginAccount is MarginPool {
         return totalPrice;
     }
 
-    // Get the borrowed for a given account
-    function borrowed(IERC20 borrowed_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[borrowed_][account_];
-        return account.borrowed;
-    }
-
     // Set the amount the user has borrowed
     function _setBorrowed(IERC20 borrowed_, uint256 amount_, address account_) internal {
         Account storage account = _accounts[borrowed_][account_];
 
         setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowed).add(amount_));
         account.borrowed = amount_;
+    }
+
+    // Get the borrowed for a given account
+    function borrowed(IERC20 borrowed_, address account_) public view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return account.borrowed;
+    }
+
+    // Get the total price of the assets borrowed
+    function borrowedPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
+        Account storage account = _accounts[borrowed_][account_];
+        return oracle.price(borrowed_, account.borrowed);
     }
 
     // Get the initial borrow price for an account
