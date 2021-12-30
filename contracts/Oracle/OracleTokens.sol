@@ -21,16 +21,15 @@ abstract contract OracleTokens is OracleCore {
         return _supported[token_];
     }
 
-    // Set the price feed for a given asset along with the decimals and if it is supported
+    // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
         IERC20 token_, AggregatorV3Interface priceFeed_, 
-        AggregatorV3Interface reservePriceFeed_, uint256 correctDecimals_,
-        bool supported_
+        AggregatorV3Interface reservePriceFeed_, uint256 correctDecimals_
     ) external onlyOwner {
         _priceFeed[token_] = priceFeed_;
         _reservePriceFeed[token_] = reservePriceFeed_;
         _decimals[token_] = correctDecimals_;
-        _supported[token_] = supported_;
+        _supported[token_] = true;
     }
 
     // Get the price feed for a given asset
