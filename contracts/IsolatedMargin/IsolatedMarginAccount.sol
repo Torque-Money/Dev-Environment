@@ -66,7 +66,7 @@ abstract contract IsolatedMarginAccount is MarginPool {
     }
 
     // Get the borrowed for a given account
-    function borrowed(IERC20 borrowed_, address account_) external view returns (uint256) {
+    function borrowed(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[borrowed_][account_];
         return account.borrowed;
     }
