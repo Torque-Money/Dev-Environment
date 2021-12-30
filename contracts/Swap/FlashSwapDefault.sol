@@ -23,8 +23,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
-        address initiator_, IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, bytes calldata data_
-    ) external returns (uint256) {
+        address, IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, bytes calldata
+    ) external override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);

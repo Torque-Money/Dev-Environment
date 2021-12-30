@@ -7,13 +7,13 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./IFlashSwap.sol";
 import "./SwapCore.sol";
 
-abstract contract SwapAssets is SwapCore, ReentrancyGuard {
+abstract contract SwapTokens is SwapCore, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     // Swap one asset for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out
     function flashSwap(
         IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_,
-        uint256 minAmountOut_, ISwap flashSwap_, bytes calldata data_
+        uint256 minAmountOut_, IFlashSwap flashSwap_, bytes calldata data_
     ) external nonReentrant returns (uint256) {
         tokenIn_.safeTransferFrom(_msgSender(), address(flashSwap_), amountIn_);
 
@@ -26,5 +26,5 @@ abstract contract SwapAssets is SwapCore, ReentrancyGuard {
         return amountOut;
     }
 
-    event FlashSwap(IERC20 tokenIn, uint256 amountIn, IERC20 tokenOut, uint256 amountOut, ISwap flashSwap, bytes data);
+    event FlashSwap(IERC20 tokenIn, uint256 amountIn, IERC20 tokenOut, uint256 amountOut, IFlashSwap flashSwap, bytes data);
 }
