@@ -9,7 +9,7 @@ import "../FlashSwap/FlashSwap.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "../LPool/LPool.sol";
 
-abstract contract MarginCore is Ownable {
+abstract contract Margin is Ownable {
     using SafeERC20 for IERC20;
 
     LPool public pool;
