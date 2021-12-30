@@ -35,8 +35,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_,
         uint256, bytes calldata
     ) external override returns (uint256) {
-        tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
-
         address[] memory path = new address[](2);
 
         if (pool.isLPToken(tokenIn_)) {
