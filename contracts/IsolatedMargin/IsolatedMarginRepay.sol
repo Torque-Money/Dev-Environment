@@ -20,8 +20,14 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     }
 
     // Repay when the collateral price is less than or equal
+    function _repayLessOrEqual(IERC20 borrowed_, address account_) internal {
+
+    }
 
     // Repay when the collateral price is higher
+    function _repayGreater(IERC20 borrowed_, address account_) internal {
+
+    }
 
     // Repay a users account with custom flash swap
     function repay(IERC20 borrowed_, IFlashSwap flashSwap_, bytes memory data_) public {
@@ -34,7 +40,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         _setInitialBorrowPrice(borrowed_, 0, _msgSender());
         _setBorrowed(borrowed_, 0, _msgSender());
 
-        emit Repay(_msgSender(), borrowed_, newCollateralPrice);
+        emit Repay(_msgSender(), borrowed_, newCollateralPrice, flashSwap_, data_);
     }
 
     // Repay a users accounts
