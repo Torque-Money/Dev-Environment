@@ -4,18 +4,21 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "../MarketLink/MarketLink.sol";
+import "../Oracle/Oracle.sol";
+import "../Swap/Swap.sol";
 import "../LPool/LPool.sol";
 
 abstract contract IsoMarginCore is Ownable {
     using SafeERC20 for IERC20;
 
     LPool public pool;
-    MarketLink public marketLink;
+    Oracle public oracle;
+    Swap public swap;
 
-    constructor(LPool pool_, MarketLink marketLink_) {
+    constructor(LPool pool_, Oracle oracle_, Swap swap_) {
         pool = pool_;
-        marketLink = marketLink_;
+        oracle = oracle_;
+        swap = swap_;
     }
 
     // Set the pool to use
@@ -23,9 +26,14 @@ abstract contract IsoMarginCore is Ownable {
         pool = pool_;
     }
 
-    // Set the market link to use
-    function setMarketLink(MarketLink marketLink_) external onlyOwner {
-        marketLink = marketLink_;
+    // Set the oracle to use
+    function setOracle(Oracle oracle_) external onlyOwner {
+        oracle = oracle_;
+    }
+
+    // Set the swap to use
+    function setSwap(Swap swap_) external onlyOwner {
+        swap = swap_;
     }
 
     modifier onlyApprovedToken(IERC20 token_) {

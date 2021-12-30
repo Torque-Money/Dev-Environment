@@ -30,6 +30,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         path[1] = address(tokenOut_);
 
         tokenIn_.safeApprove(address(router), amountIn_);
-        return router.swapExactTokensForTokens(amountIn_, minAmountOut_, path, _msgSender(), block.timestamp + 1 hours)[1];
+        return router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1 hours)[1];
+
+        // **** I NEED TO ADD THE OTHER STUFF IN AS WELL INCLUDING THE LP TOKENS
     }
 }
