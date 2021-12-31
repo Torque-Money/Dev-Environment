@@ -5,25 +5,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./lib/IYield.sol";
 
 contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
-    IYield public yield;
-
     constructor(uint256 initialSupply_) ERC20("Torque", "TAU") ERC20Permit("TAU") {
         _mint(owner(), initialSupply_);
-    }
-
-    /** @dev Set the yield approval function */
-    function setYield(IYield _yield) external onlyOwner {
-        yield = _yield;
-    }
-
-    /** @dev Yield new tokens as a reward to the yielder */
-    function claimYield(IERC20 _token) external {
-        address account = _msgSender();
-        uint256 _yield = yield.yield(account, _token);
-        _mint(account, _yield);
     }
 
     function _afterTokenTransfer(address _from, address _to, uint256 _amount)
