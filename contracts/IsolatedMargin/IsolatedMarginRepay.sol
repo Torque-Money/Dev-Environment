@@ -57,7 +57,6 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
-
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
         uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
@@ -70,6 +69,14 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
     // Repay when the collateral price is higher
     function _repayGreater(IERC20 borrowed_, address account_) internal {
+        // **** We are straight up just going to give the user the portion of the asset they are entitled to to avoid problems
+
+        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
+        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
+        pool.unclaim(borrowed_, borrowed(borrowed_, account_));
+
+        uint256 payoutAmount = currentBorrowPrice.sub(initialBorrowPrice).sub(interest;
 
     }
 
