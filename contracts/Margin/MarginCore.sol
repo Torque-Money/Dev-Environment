@@ -18,13 +18,15 @@ abstract contract MarginCore is Ownable {
     Oracle public oracle;
     FlashSwap public flashSwap;
 
-    uint256 public swapTolerance;
+    uint256 public swapToleranceNumerator;
+    uint256 public swapToleranceDenominator;
 
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapTolerance_) {
+    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_) {
         pool = pool_;
         oracle = oracle_;
         flashSwap = flashSwap_;
-        swapTolerance = swapTolerance_;
+        swapToleranceNumerator = swapToleranceNumerator_;
+        swapToleranceDenominator = swapToleranceDenominator_;
     }
 
     // Set the pool to use
@@ -43,8 +45,9 @@ abstract contract MarginCore is Ownable {
     }
 
     // Set the swap tolerance
-    function setSwapTolerance(uint256 swapTolerance_) external onlyOwner {
-        swapTolerance = swapTolerance_;
+    function setSwapTolerance(uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_) external onlyOwner {
+        swapToleranceNumerator = swapToleranceNumerator_;
+        swapToleranceDenominator = swapToleranceDenominator_;
     }
 
     // Approve the flash swap to use tokens and execute swap
