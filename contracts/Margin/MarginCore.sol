@@ -57,7 +57,8 @@ abstract contract MarginCore is Ownable {
         for (uint i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
-        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_,
-                    minAmountOut_.mul(swapToleranceDenominator.sub(swapToleranceNumerator)).div(swapToleranceDenominator), flashSwap_, data_);
+        return flashSwap.flashSwap(
+            tokenIn_, amountIn_, tokenOut_, minAmountOut_.mul(swapToleranceDenominator.sub(swapToleranceNumerator)).div(swapToleranceDenominator), flashSwap_, data_
+        );
     }
 }
