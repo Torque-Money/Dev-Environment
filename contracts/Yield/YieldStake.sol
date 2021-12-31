@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./YieldRates.sol";
 
-// **** Might want to split this one up into multiple classes e.g. YieldAccount.sol, stake, unstake
-
 abstract contract YieldStake is YieldRates {
     function stake(IERC20 token_, uint256 amount_) external {
 
