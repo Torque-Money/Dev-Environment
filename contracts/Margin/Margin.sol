@@ -69,6 +69,6 @@ abstract contract Margin is Ownable {
         for (uint i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
-        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_.mul(swapTolerance).div(100), flashSwap_, data_);
+        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_.mul(uint256(100).sub(swapTolerance)).div(100), flashSwap_, data_);
     }
 }
