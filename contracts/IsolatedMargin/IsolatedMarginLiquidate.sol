@@ -27,16 +27,26 @@ abstract contract IsolatedMarginLiquidate is IsolatedMarginLevel {
         require(underCollateralized(borrowed_, account_), "Only undercollateralized accounts may be liquidated");
 
         uint256 accountCollateral = collateral(borrowed_, account_);
+        uint256 minAmountOut = oracle.amount(borrowed_, collateralPrice(borrowed_, account_));
+        minAmountOut = uint256(100).sub(liquidationFeePercent).mul(minAmountOut).div(100);
 
-        uint256 swapAmount = _swap(collateral_, accountCollateral, borrowed_);
-        pool.deposit(borrowed_, swapAmount);
+        IERC20[] memory swapTokens = collateralTokens(borrowed_, account_);
+        uint256[] memory swapTokenAmounts = new uint256[](swapTokens.length);
+        for (uint i = 0; i < swapTokens.length; i++) {
+            swapTokenAmounts[i] = collateral(borrowed_, swapTokens[i], account_);
+        }
 
-        _setInitialBorrowPrice(collateral_, borrowed_, 0, account_);
-        _setBorrowed(collateral_, borrowed_, 0, account_);
-        _setCollateral(collateral_, borrowed_, 0, account_);
+        uint256 amountOut = _flashSwap(swapTokens, swapTokenAmounts, borrowed_, minAmountOut, flashSwap_, data_);
+        pool.deposit(borrowed_, amountOut);
 
-        emit Liquidated(account_, collateral_, borrowed_, accountCollateral, _msgSender(), fee);
+        _setInitialBorrowPrice(borrowed_, 0, account_);
+        _setBorrowed(borrowed_, 0, account_);
+        for (uint i = 0; i < swapTokens.length; i++) {
+            _setCollateral(borrowed_, swapTokens[i], 0, account_);
+        }
+
+        emit Liquidated(account_, borrowed_, accountCollateral, _msgSender());
     }
 
-    event Liquidated(address indexed account, IERC20 collateral, IERC20 borrowed, uint256 amount, address liquidator, uint256 fee);
+    event Liquidated(address indexed account, IERC20 borrowed, uint256 amount, address liquidator);
 }
