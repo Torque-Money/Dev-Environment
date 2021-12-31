@@ -9,6 +9,10 @@ import "../FlashSwap/IFlashSwap.sol";
 abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     using SafeMath for uint256;
 
+    mapping(uint256 => IERC20) private _swapTokens;
+    mapping(uint256 => uint256) private _swapTokenAmounts;
+    uint256 private _swapTokensLength;
+
     // Get the accounts collateral price after repay
     function collateralPriceAfterRepay(IERC20 borrowed_, address account_) public view returns (uint256) {
         uint256 _collateral = collateral(borrowed_, account_);
@@ -20,7 +24,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     }
 
     // Repay when the collateral price is less than or equal
-    function _repayLessOrEqual(IERC20 borrowed_, address account_) internal {
+    function _repayLessOrEqual(IERC20 borrowed_, address account_, IFlashSwap flashSwap_, bytes memory data_) internal {
         uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
@@ -29,10 +33,31 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
         uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
         IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
+
+        _swapTokensLength = 0;
+
         for (uint i = 0; i < ownedTokens.length; i++) {
+            _swapTokens[i] = ownedTokens[i];
             uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
-            // if (price <= repayPrice) // **** We need to make sure that we have enough to satisfy the overcollateralized threshold but not too much
+            _swapTokensLength = _swapTokensLength.add(1);
+
+            uint256 collateralAmount = collateral(borrowed_, ownedTokens[i], account_);
+            if (price <= repayPrice) {
+                _swapTokenAmounts[i] = collateralAmount;
+                repayPrice = repayPrice.sub(collateralAmount);
+            } else {
+                _swapTokenAmounts[i] = repayPrice.mul(collateralAmount).div(price); // **** Make sure that this is overcollateralized though
+                break;
+            }
         }
+
+        IERC20[] memory swapTokens = new IERC20[](_swapTokensLength);
+        uint256[] memory swapTokenAmounts = new uint256[](_swapTokensLength);
+        for (uint i = 0; i < _swapTokensLength; i++) {
+            swapTokens[i] = _swapTokens[i];
+            swapTokenAmounts[i] = _swapTokenAmounts[i];
+        }
+        // _flashSwap(swapTokens, _swapTokenAmounts, borrowed_, minAmountOut_, flashSwap_, data_);
     }
 
     // Repay when the collateral price is higher
