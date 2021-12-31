@@ -38,7 +38,7 @@ abstract contract LPoolInterest is LPoolManipulation {
     }
 
     // Set the max interest for maximum utilization for the given token
-    function setMaxInterestMax(IERC20 token_, uint256 percent_) external onlyRole(POOL_ADMIN) {
+    function setMaxInterestMax(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
             _maxInterestMax[token_[i]] = percent_[i];
         }
@@ -50,7 +50,7 @@ abstract contract LPoolInterest is LPoolManipulation {
     }
 
     // Set the max utilization threshold for the given token
-    function setMaxUtilization(IERC20 token_, uint256 percent_) external onlyRole(POOL_ADMIN) {
+    function setMaxUtilization(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
             _maxUtilization[token_[i]] = percent_[i];
         }
