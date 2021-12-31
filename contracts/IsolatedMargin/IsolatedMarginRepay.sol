@@ -15,7 +15,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
     // **** This is not even being properly considered at all - how can I make it so that it is ?
     // Get the accounts collateral price after repay
-    function collateralPriceAfterRepay(IERC20 borrowed_, address account_) public view returns (uint256) {
+    function realizedCollateralPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         uint256 _collateral = collateral(borrowed_, account_);
         uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
@@ -24,21 +24,22 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
     }
 
-    function _accumulatePriceInCollateral(IERC20 borrowed_, address account_, uint256 borrowedPrice_) internal returns (IERC20[] memory, uint256[] memory) {
+    function _repayCollateral(IERC20 borrowed_, address account_, uint256 repayPrice_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
         IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
         _swapTokensLength = 0;
 
+        // **** DONT FORGET TO UPDATE THE BALANCES HERE
         for (uint i = 0; i < ownedTokens.length; i++) {
             _swapTokens[i] = ownedTokens[i];
             uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
             _swapTokensLength = _swapTokensLength.add(1);
 
             uint256 collateralAmount = collateral(borrowed_, ownedTokens[i], account_);
-            if (price <= borrowedPrice_) {
+            if (price <= repayPrice_) {
                 _swapTokenAmounts[i] = collateralAmount;
-                borrowedPrice_ = borrowedPrice_.sub(collateralAmount);
+                repayPrice_ = repayPrice_.sub(collateralAmount);
             } else {
-                _swapTokenAmounts[i] = borrowedPrice_.mul(collateralAmount).div(price); // **** Make sure that this is overcollateralized though
+                _swapTokenAmounts[i] = repayPrice_.mul(collateralAmount).div(price); // **** Make sure that this is overcollateralized though
                 break;
             }
         }
@@ -50,7 +51,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
             swapTokenAmounts[i] = _swapTokenAmounts[i];
         }
 
-        return (swapTokens, swapTokenAmounts);
+        return _flashSwap(swapTokens, swapTokenAmounts, borrowed_, oracle.amount(borrowed_, repayPrice_), flashSwap_, data_);
     }
 
     // Repay when the collateral price is less than or equal
@@ -61,10 +62,9 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
         uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
-        (IERC20[] memory swapTokens, uint256[] memory swapTokenAmounts) = _accumulatePriceInCollateral(borrowed_, account_, repayPrice);
+        uint256 amountOut = _repayCollateral(borrowed_, account_, repayPrice, flashSwap_, data_);
 
-        uint256 swappedOut = _flashSwap(swapTokens, swapTokenAmounts, borrowed_, oracle.amount(borrowed_, repayPrice), flashSwap_, data_);
-        pool.deposit(borrowed_, swappedOut);        
+        pool.deposit(borrowed_, amountOut);
     }
 
     // Repay when the collateral price is higher
@@ -74,8 +74,11 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
-        uint256 payoutAmount = currentBorrowPrice.sub(initialBorrowPrice).sub(interest);
-        pool.withdraw(borrowed_, oracle.amount(borrowed_, payoutAmount));
+        uint256 payoutPrice = currentBorrowPrice.sub(initialBorrowPrice).sub(interest);
+        uint256 payoutAmount = oracle.amount(borrowed_, payoutPrice);
+
+        pool.withdraw(borrowed_, payoutAmount);
+        _setCollateral(borrowed_, borrowed_, collateral(borrowed_, borrowed_, account_).add(payoutAmount), account_);
     }
 
     // Repay a users account with custom flash swap
