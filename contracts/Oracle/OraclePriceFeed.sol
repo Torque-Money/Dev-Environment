@@ -34,7 +34,7 @@ abstract contract OraclePriceFeed is OracleTokens {
     }
 
     // Get the amount of an asset from the price
-    function amount(IERC20 token_, uint256 price_) external view onlySupported(token_) returns (uint256) {
+    function amount(IERC20 token_, uint256 price_) external view returns (uint256) {
         uint256 tokenPrice = price(token_, 10 ** decimals(token_));
         return price_.mul(10 ** decimals(token_)).div(tokenPrice);
     }

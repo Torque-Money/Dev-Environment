@@ -14,25 +14,25 @@ abstract contract OracleTokens is OracleCore {
     IERC20 public defaultStablecoin;
 
     modifier onlySupported(IERC20 token_) {
-        require(isAssetSupported(token_), "Only supported tokens may be used");
+        require(isSupported(token_), "Only supported tokens may be used");
         _;
     }
 
     // Check if an asset is supported by the oracle
-    function isAssetSupported(IERC20 token_) public view returns (bool) {
+    function isSupported(IERC20 token_) public view returns (bool) {
         return _supported[token_] || _supported[pool.tokenFromLPToken(token_)];
     }
 
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
         IERC20[] memory token_, AggregatorV3Interface[] memory priceFeed_, 
-        AggregatorV3Interface[] memory reservePriceFeed_, uint256[] memory correctDecimals_
+        AggregatorV3Interface[] memory reservePriceFeed_, uint256[] memory correctDecimals_, bool[] memory supported_
     ) external onlyOwner {
         for (uint i = 0; i < token_.length; i++) {
             _priceFeed[token_[i]] = priceFeed_[i];
             _reservePriceFeed[token_[i]] = reservePriceFeed_[i];
             _decimals[token_[i]] = correctDecimals_[i];
-            _supported[token_[i]] = true;
+            _supported[token_[i]] = supported_[i];
         }
     }
 
