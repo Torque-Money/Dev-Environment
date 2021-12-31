@@ -37,9 +37,12 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
             uint256 collateralAmount = collateral(borrowed_, ownedTokens[i], account_);
             if (price <= repayPrice_) {
                 _swapTokenAmounts[i] = collateralAmount;
+                _setCollateral(borrowed_, ownedTokens[i], 0, account_);
                 repayPrice_ = repayPrice_.sub(collateralAmount);
             } else {
-                _swapTokenAmounts[i] = repayPrice_.mul(collateralAmount).div(price); // **** Make sure that this is overcollateralized though
+                uint256 amountOut = repayPrice_.mul(collateralAmount).div(price);
+                _swapTokenAmounts[i] = amountOut; // **** Make sure that this is overcollateralized though
+                _setCollateral(borrowed_, ownedTokens[i], collateralAmount.sub(amountOut), account_);
                 break;
             }
         }
@@ -85,7 +88,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     function repay(IERC20 borrowed_, IFlashSwap flashSwap_, bytes memory data_) public {
         require(borrowed(borrowed_, _msgSender()) > 0, "Cannot repay an account that has no debt");
 
-        uint256 newCollateralPrice = collateralPriceAfterRepay(borrowed_, _msgSender());
+        uint256 newCollateralPrice = realizedCollateralPrice(borrowed_, _msgSender());
         if (newCollateralPrice <= collateralPrice(borrowed_, _msgSender())) _repayLessOrEqual(borrowed_, _msgSender(), flashSwap_, data_);
         else _repayGreater(borrowed_, _msgSender());
 
