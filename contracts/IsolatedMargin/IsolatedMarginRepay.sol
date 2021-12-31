@@ -13,8 +13,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     mapping(uint256 => uint256) private _swapTokenAmounts;
     uint256 private _swapTokensLength;
 
-    // **** This is not even being properly considered at all - how can I make it so that it is ?
-    // Get the accounts collateral price after repay
+    // Estimate the accounts collateral after repayment
     function realizedCollateralPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         uint256 _collateral = collateral(borrowed_, account_);
         uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
@@ -25,10 +24,9 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     }
 
     function _repayCollateral(IERC20 borrowed_, address account_, uint256 repayPrice_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
-        IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
         _swapTokensLength = 0;
 
-        // **** DONT FORGET TO UPDATE THE BALANCES HERE
+        IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
         for (uint i = 0; i < ownedTokens.length; i++) {
             _swapTokens[i] = ownedTokens[i];
             uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
