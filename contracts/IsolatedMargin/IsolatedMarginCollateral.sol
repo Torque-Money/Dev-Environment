@@ -11,7 +11,7 @@ abstract contract IsolatedMarginCollateral is IsolatedMarginBorrow {
     using SafeERC20 for IERC20;
 
     // Deposit collateral into the specified account
-    function depositCollateral(IERC20 borrowed_, IERC20 collateral_, uint256 amount_) external onlyLPOrApprovedToken(collateral_) onlyApprovedToken(borrowed_) {
+    function depositCollateral(IERC20 borrowed_, IERC20 collateral_, uint256 amount_) external onlyApproved(collateral_) onlyPA(borrowed_) {
         collateral_.safeTransferFrom(_msgSender(), address(this), amount_);
         _setCollateral(borrowed_, collateral_, amount_, _msgSender());
         emit DepositCollateral(_msgSender(), borrowed_, collateral_, amount_);
