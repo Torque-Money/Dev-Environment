@@ -25,13 +25,15 @@ abstract contract OracleTokens is OracleCore {
 
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
-        IERC20 token_, AggregatorV3Interface priceFeed_, 
-        AggregatorV3Interface reservePriceFeed_, uint256 correctDecimals_
+        IERC20[] memory token_, AggregatorV3Interface[] memory priceFeed_, 
+        AggregatorV3Interface[] memory reservePriceFeed_, uint256[] memory correctDecimals_
     ) external onlyOwner {
-        _priceFeed[token_] = priceFeed_;
-        _reservePriceFeed[token_] = reservePriceFeed_;
-        _decimals[token_] = correctDecimals_;
-        _supported[token_] = true;
+        for (uint i = 0; i < token_.length; i++) {
+            _priceFeed[token_[i]] = priceFeed_[i];
+            _reservePriceFeed[token_[i]] = reservePriceFeed_[i];
+            _decimals[token_[i]] = correctDecimals_[i];
+            _supported[token_[i]] = true;
+        }
     }
 
     // Set the default stablecoin to convert the prices into
