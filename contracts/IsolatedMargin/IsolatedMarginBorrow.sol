@@ -10,6 +10,10 @@ abstract contract IsolatedMarginBorrow is IsolatedMarginLevel {
 
     uint256 public minCollateral;
 
+    constructor(uint256 minCollateral_) {
+        minCollateral = minCollateral_;
+    }
+
     // Set the minimum account collateral required to borrow against
     function setMinCollateral(uint256 minCollateral_) external onlyOwner {
         minCollateral = minCollateral_;

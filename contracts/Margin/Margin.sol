@@ -7,8 +7,4 @@ import "../LPool/LPool.sol";
 import "./MarginApproved.sol";
 import "./MarginPool.sol";
 
-abstract contract Margin is MarginApproved, MarginPool {
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapTolerance_)
-        MarginCore(pool_, oracle_, flashSwap_, swapTolerance_)
-    {}
-}
+abstract contract Margin is MarginApproved, MarginPool {}
