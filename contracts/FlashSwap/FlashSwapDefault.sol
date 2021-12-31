@@ -44,20 +44,20 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         uint256 minTokenOut_, bytes memory data_
     ) external override returns (uint256) {
         address[] memory path = new address[](2);
-        bool tokenOutIsLP = pool.isLPToken(tokenOut_);
+        bool tokenOutIsLP = pool.isLP(tokenOut_);
 
         uint256 amountOut = 0;
 
         for (uint i = 0; i < tokenIn_.length; i++) {
-            if (pool.isLPToken(tokenIn_[i])) {
+            if (pool.isLP(tokenIn_[i])) {
                 amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
-                path[0] = address(pool.tokenFromLPToken(tokenIn_[i]));
+                path[0] = address(pool.PAFromLP(tokenIn_[i]));
             } else {
                 path[0] = address(tokenIn_[i]);
             }
 
             if (tokenOutIsLP) {
-                path[1] = address(pool.tokenFromLPToken(tokenOut_));
+                path[1] = address(pool.PAFromLP(tokenOut_));
             } else {
                 path[1] = address(tokenOut_);
             }
