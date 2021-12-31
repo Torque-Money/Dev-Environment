@@ -26,8 +26,10 @@ abstract contract LPoolInterest is LPoolManipulation {
    }
 
     // Set the max interest for minimum utilization for the given token
-    function setMaxInterestMin(IERC20 token_, uint256 percent_) external onlyRole(POOL_ADMIN) {
-        _maxInterestMin[token_] = percent_;
+    function setMaxInterestMin(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
+        for (uint i = 0; i < token_.length; i++) {
+            _maxInterestMin[token_[i]] = percent_[i];
+        }
     }
 
     // Get the max interest for maximum utilization for the given token
@@ -37,7 +39,9 @@ abstract contract LPoolInterest is LPoolManipulation {
 
     // Set the max interest for maximum utilization for the given token
     function setMaxInterestMax(IERC20 token_, uint256 percent_) external onlyRole(POOL_ADMIN) {
-        _maxInterestMax[token_] = percent_;
+        for (uint i = 0; i < token_.length; i++) {
+            _maxInterestMax[token_[i]] = percent_[i];
+        }
     }
 
     // Get the max utilization threshold for the given token
@@ -47,7 +51,9 @@ abstract contract LPoolInterest is LPoolManipulation {
 
     // Set the max utilization threshold for the given token
     function setMaxUtilization(IERC20 token_, uint256 percent_) external onlyRole(POOL_ADMIN) {
-        _maxUtilization[token_] = percent_;
+        for (uint i = 0; i < token_.length; i++) {
+            _maxUtilization[token_[i]] = percent_[i];
+        }
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
