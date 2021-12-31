@@ -63,10 +63,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
         (IERC20[] memory swapTokens, uint256[] memory swapTokenAmounts) = _accumulatePriceInCollateral(borrowed_, account_, repayPrice);
 
-        uint256 borrowedTokenPrice = oracle.price(borrowed_, 10 ** oracle.decimals(borrowed_));
-        uint256 minAmountOut = repayPrice.mul(10 ** oracle.decimals(borrowed_)).div(borrowedTokenPrice);
-
-        uint256 swappedOut = _flashSwap(swapTokens, swapTokenAmounts, borrowed_, minAmountOut, flashSwap_, data_);
+        uint256 swappedOut = _flashSwap(swapTokens, swapTokenAmounts, borrowed_, oracle.amount(borrowed_, repayPrice), flashSwap_, data_);
         pool.deposit(borrowed_, swappedOut);        
     }
 
@@ -78,10 +75,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
         uint256 payoutAmount = currentBorrowPrice.sub(initialBorrowPrice).sub(interest);
-        uint256 borrowedTokenPrice = oracle.price(borrowed_, 10 ** oracle.decimals(borrowed_));
-
-        uint256 amountOut = payoutAmount.mul(10 ** oracle.decimals(borrowed_)).div(borrowedTokenPrice);
-        pool.withdraw(borrowed_, amountOut);
+        pool.withdraw(borrowed_, oracle.amount(borrowed_, payoutAmount));
     }
 
     // Repay a users account with custom flash swap
