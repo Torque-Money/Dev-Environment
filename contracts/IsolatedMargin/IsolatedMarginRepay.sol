@@ -60,11 +60,11 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
-        uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice); // **** This is the price we need to repay
+        uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
         (IERC20[] memory swapTokens, uint256[] memory swapTokenAmounts) = _accumulatePriceInCollateral(borrowed_, account_, repayPrice);
 
-        uint256 tokenPrice = oracle.price(borrowed_, 10 ** oracle.decimals(borrowed_));
-        uint256 minAmountOut = repayPrice.mul(10 ** oracle.decimals(borrowed_)).div(tokenPrice);
+        uint256 borrowedTokenPrice = oracle.price(borrowed_, 10 ** oracle.decimals(borrowed_));
+        uint256 minAmountOut = repayPrice.mul(10 ** oracle.decimals(borrowed_)).div(borrowedTokenPrice);
         _flashSwap(swapTokens, swapTokenAmounts, borrowed_, minAmountOut, flashSwap_, data_);
     }
 
