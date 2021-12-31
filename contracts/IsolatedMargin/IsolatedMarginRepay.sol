@@ -23,7 +23,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
     }
 
-    function _repayCollateral(IERC20 borrowed_, address account_, uint256 repayPrice_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
+    function _sellOffCollateral(IERC20 borrowed_, address account_, uint256 repayPrice_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
         _swapTokensLength = 0;
 
         IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
@@ -63,7 +63,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
         uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
-        uint256 amountOut = _repayCollateral(borrowed_, account_, repayPrice, flashSwap_, data_);
+        uint256 amountOut = _sellOffCollateral(borrowed_, account_, repayPrice, flashSwap_, data_);
 
         pool.deposit(borrowed_, amountOut);
     }
