@@ -16,11 +16,11 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     // Estimate the accounts collateral after repayment
     function realizedCollateralPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         uint256 _collateral = collateral(borrowed_, account_);
-        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 _initialBorrowPrice = initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
-        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
+        uint256 interest = pool.interest(borrowed_, _initialBorrowPrice, initialBorrowBlock(borrowed_, account_));
 
-        return _collateral.add(currentBorrowPrice).sub(initialBorrowPrice).sub(interest);
+        return _collateral.add(currentBorrowPrice).sub(_initialBorrowPrice).sub(interest);
     }
 
     function _sellOffCollateral(IERC20 borrowed_, address account_, uint256 repayPrice_, IFlashSwap flashSwap_, bytes memory data_) internal returns (uint256) {
@@ -57,12 +57,12 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
     // Repay when the collateral price is less than or equal
     function _repayLessOrEqual(IERC20 borrowed_, address account_, IFlashSwap flashSwap_, bytes memory data_) internal {
-        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 _initialBorrowPrice = initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
-        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
+        uint256 interest = pool.interest(borrowed_, _initialBorrowPrice, initialBorrowBlock(borrowed_, account_));
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
-        uint256 repayPrice = initialBorrowPrice.add(interest).sub(currentBorrowPrice);
+        uint256 repayPrice = _initialBorrowPrice.add(interest).sub(currentBorrowPrice);
         uint256 amountOut = _sellOffCollateral(borrowed_, account_, repayPrice, flashSwap_, data_);
 
         pool.deposit(borrowed_, amountOut);
@@ -70,12 +70,12 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
 
     // Repay when the collateral price is higher
     function _repayGreater(IERC20 borrowed_, address account_) internal {
-        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 _initialBorrowPrice = initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
-        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
+        uint256 interest = pool.interest(borrowed_, _initialBorrowPrice, initialBorrowBlock(borrowed_, account_));
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
 
-        uint256 payoutPrice = currentBorrowPrice.sub(initialBorrowPrice).sub(interest);
+        uint256 payoutPrice = currentBorrowPrice.sub(_initialBorrowPrice).sub(interest);
         uint256 payoutAmount = oracle.amount(borrowed_, payoutPrice);
 
         pool.withdraw(borrowed_, payoutAmount);

@@ -24,8 +24,8 @@ abstract contract IsolatedMarginBorrow is IsolatedMarginLevel {
         pool.claim(borrowed_, amount_);
         _setBorrowed(borrowed_, borrowed(borrowed_, _msgSender()).add(amount_), _msgSender());
 
-        uint256 initialBorrowPrice = borrowedPrice(borrowed_, _msgSender());
-        _setInitialBorrowPrice(borrowed_, _initialBorrowPrice(borrowed_, _msgSender()).add(initialBorrowPrice), _msgSender());
+        uint256 _initialBorrowPrice = borrowedPrice(borrowed_, _msgSender());
+        _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
         
         emit Borrow(_msgSender(), borrowed_, amount_);
     }

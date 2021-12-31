@@ -98,7 +98,7 @@ abstract contract IsolatedMarginAccount is MarginPool {
     }
 
     // Get the initial borrow price for an account
-    function _initialBorrowPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
+    function initialBorrowPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[borrowed_][account_];
         return account.initialBorrowPrice;
     }
@@ -110,7 +110,7 @@ abstract contract IsolatedMarginAccount is MarginPool {
     }
 
     // Get the initial borrow block for an ccount
-    function _initialBorrowBlock(IERC20 borrowed_, address account_) internal view returns (uint256) {
+    function initialBorrowBlock(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[borrowed_][account_];
         return account.initialBorrowBlock;
     }

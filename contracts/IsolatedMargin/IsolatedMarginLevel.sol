@@ -24,11 +24,11 @@ abstract contract IsolatedMarginLevel is IsolatedMarginAccount {
     // Return the numerator and denominator of the margin level
     function marginLevel(IERC20 borrowed_, address account_) public view returns (uint256, uint256) {
         uint256 accountPrice = collateralPrice(borrowed_, account_);
-        uint256 initialBorrowPrice = _initialBorrowPrice(borrowed_, account_);
+        uint256 _initialBorrowPrice = initialBorrowPrice(borrowed_, account_);
         uint256 currentBorrowPrice = borrowedPrice(borrowed_, account_);
-        uint256 interest = pool.interest(borrowed_, initialBorrowPrice, _initialBorrowBlock(borrowed_, account_));
+        uint256 interest = pool.interest(borrowed_, _initialBorrowPrice, initialBorrowBlock(borrowed_, account_));
 
-        return (currentBorrowPrice.add(accountPrice), initialBorrowPrice.add(interest)); 
+        return (currentBorrowPrice.add(accountPrice), _initialBorrowPrice.add(interest)); 
     }
 
     // Check if an account is undercollateralized
