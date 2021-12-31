@@ -18,15 +18,12 @@ abstract contract Margin is Ownable {
     Oracle public oracle;
     FlashSwap public flashSwap;
 
-    IFlashSwap public defaultFlashSwap;
-
     uint256 public swapTolerance;
 
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, IFlashSwap defaultFlashSwap_, uint256 swapTolerance_) {
+    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapTolerance_) {
         pool = pool_;
         oracle = oracle_;
         flashSwap = flashSwap_;
-        defaultFlashSwap = defaultFlashSwap_;
         swapTolerance = swapTolerance_;
     }
 
@@ -43,11 +40,6 @@ abstract contract Margin is Ownable {
     // Set the flash swap to use
     function setFlashSwap(FlashSwap flashSwap_) external onlyOwner {
         flashSwap = flashSwap_;
-    }
-
-    // Set the default flash swap to use
-    function setDefaultFlashSwap(IFlashSwap flashSwap_) external onlyOwner {
-        defaultFlashSwap = flashSwap_;
     }
 
     // Set the swap tolerance

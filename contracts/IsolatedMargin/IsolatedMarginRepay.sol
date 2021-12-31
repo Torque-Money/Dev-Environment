@@ -96,10 +96,5 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         emit Repay(_msgSender(), borrowed_, newCollateralPrice, flashSwap_, data_);
     }
 
-    // Repay a users accounts
-    function repay(IERC20 borrowed_) external {
-        repay(borrowed_, defaultFlashSwap, ""); 
-    }
-
     event Repay(address indexed account, IERC20 borrowed, uint256 newCollateralPrice, IFlashSwap flashSwap, bytes data);
 }

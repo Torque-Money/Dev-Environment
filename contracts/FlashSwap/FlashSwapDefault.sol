@@ -31,11 +31,17 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         pool = pool_;
     }
 
+    function _bytesToAddress(bytes memory source_) internal pure returns (address addr) {
+        assembly {
+            addr := mload(add(source_, 0x14))
+        }
+    }
+
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
         address,
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_,
-        uint256, bytes memory
+        uint256 minTokenOut_, bytes memory data_
     ) external override returns (uint256) {
         address[] memory path = new address[](2);
         bool tokenOutIsLP = pool.isLPToken(tokenOut_);
@@ -66,6 +72,12 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
         if (tokenOutIsLP) {
             amountOut = pool.stake(IERC20(path[1]), amountOut);
+        }
+
+        address rewarded = _bytesToAddress(data_);
+        if (rewarded != _bytesToAddress("")) {
+            tokenOut_.safeTransfer(rewarded, amountOut.sub(minTokenOut_));
+            amountOut = minTokenOut_;
         }
 
         tokenOut_.safeTransfer(_msgSender(), amountOut);
