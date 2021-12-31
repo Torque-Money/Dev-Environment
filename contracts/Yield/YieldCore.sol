@@ -1,7 +1,9 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "../LPool/LPool.sol";
+import "../Governance/Token.sol";
 
 contract YieldCore is Ownable {
     ERC20Votes public token;
