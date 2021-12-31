@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./Margin.sol";
+import "./MarginCore.sol";
 
-abstract contract MarginPool is Margin {
+abstract contract MarginPool is MarginCore {
     mapping(IERC20 => uint256) private _totalBorrowed;
     mapping(IERC20 => uint256) private _totalCollateral;
 

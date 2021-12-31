@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MarginCore.sol";
 
-abstract contract Margin is MarginCore {
+abstract contract MarginApproved is MarginCore {
     mapping(IERC20 => bool) private _approved;
 
     modifier onlyPA(IERC20 token_) {
