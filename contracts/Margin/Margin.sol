@@ -4,12 +4,14 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../Oracle/Oracle.sol";
 import "../FlashSwap/FlashSwap.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "../LPool/LPool.sol";
 
 abstract contract Margin is Ownable {
+    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     LPool public pool;
@@ -18,11 +20,14 @@ abstract contract Margin is Ownable {
 
     IFlashSwap public defaultFlashSwap;
 
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, IFlashSwap defaultFlashSwap_) {
+    uint256 public swapTolerance;
+
+    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, IFlashSwap defaultFlashSwap_, uint256 swapTolerance_) {
         pool = pool_;
         oracle = oracle_;
         flashSwap = flashSwap_;
         defaultFlashSwap = defaultFlashSwap_;
+        swapTolerance = swapTolerance_;
     }
 
     // Set the pool to use
@@ -45,6 +50,11 @@ abstract contract Margin is Ownable {
         defaultFlashSwap = flashSwap_;
     }
 
+    // Set the swap tolerance
+    function setSwapTolerance(uint256 swapTolerance_) external onlyOwner {
+        swapTolerance = swapTolerance_;
+    }
+
     modifier onlyApprovedToken(IERC20 token_) {
         require(pool.isApprovedToken(token_), "Only approved tokens may be used");
         _;
@@ -65,6 +75,6 @@ abstract contract Margin is Ownable {
         for (uint i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
-        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, flashSwap_, data_);
+        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_.mul(swapTolerance).div(100), flashSwap_, data_);
     }
 }
