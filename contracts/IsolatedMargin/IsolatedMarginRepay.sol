@@ -70,7 +70,7 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         require(borrowed(borrowed_, _msgSender()) > 0, "Cannot repay an account that has no debt");
 
         uint256 newCollateralPrice = collateralPriceAfterRepay(borrowed_, _msgSender());
-        if (newCollateralPrice <= collateralPrice(borrowed_, _msgSender())) _repayLessOrEqual(borrowed_, _msgSender());
+        if (newCollateralPrice <= collateralPrice(borrowed_, _msgSender())) _repayLessOrEqual(borrowed_, _msgSender(), flashSwap_, data_);
         else _repayGreater(borrowed_, _msgSender());
 
         _setInitialBorrowPrice(borrowed_, 0, _msgSender());
