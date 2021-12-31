@@ -14,7 +14,7 @@ abstract contract YieldAccount is YieldCore {
     }
 
     mapping(IERC20 => mapping(address => Account)) private _accounts;
-    mapping(address => uint256) private _owedBalance;
+    mapping(address => uint256) private _owedBalances;
     mapping(IERC20 => uint256) private _totalStaked;
 
     // Return the amount of the token staked for a given account
@@ -30,13 +30,13 @@ abstract contract YieldAccount is YieldCore {
     }
 
     // Get the owed balance of the account
-    function owedBalance(address account_) public view returns (uint256) {
-        return _owedBalance[account_];
+    function _owedBalance(address account_) internal view returns (uint256) {
+        return _owedBalances[account_];
     }
 
     // Set the owed balance of an account
     function _setOwedBalance(uint256 amount_, address account_) internal {
-        _owedBalance[account_] = amount_;
+        _owedBalances[account_] = amount_;
     }
 
     // Get the block of when the initial stake was made
@@ -52,7 +52,7 @@ abstract contract YieldAccount is YieldCore {
     }
 
     // Get the total amount of a given token staked
-    function totalStaked(IERC20 token_) public view returns (uint256) {
+    function totalStaked(IERC20 token_) external view returns (uint256) {
         return _totalStaked[token_];
     }
 }
