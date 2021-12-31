@@ -41,8 +41,9 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
                 repayPrice_ = repayPrice_.sub(collateralAmount);
             } else {
                 uint256 amountOut = repayPrice_.mul(collateralAmount).div(price);
-                _swapTokenAmounts[i] = amountOut; // **** Make sure that this is overcollateralized though
+                _swapTokenAmounts[i] = amountOut;
                 _setCollateral(borrowed_, ownedTokens[i], collateralAmount.sub(amountOut), account_);
+                // **** Make sure that this is overcollateralized though
                 break;
             }
         }
