@@ -26,7 +26,7 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
     }
 
     // Claim an amount of a given token
-    function claim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+    function claim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
         require(amount_ <= liquidity(token_), "Cannot claim more than total liquidity");
         _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].add(amount_);
         _totalClaimed[token_] = _totalClaimed[token_].add(amount_);
@@ -34,7 +34,7 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
     }
 
     // Unclaim an amount of a given token
-    function unclaim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+    function unclaim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
         require(amount_ <= _claimed[_msgSender()][token_], "Cannot unclaim more than your claim");
         _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].sub(amount_);
         _totalClaimed[token_] = _totalClaimed[token_].sub(amount_);
@@ -42,7 +42,7 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
     }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
         uint256 tax = taxPercent.mul(amount_).div(100);
         token_.safeTransferFrom(_msgSender(), taxAccount, tax);
 
@@ -52,7 +52,7 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
     }
 
     // Withdraw a given amount of collateral from the pool
-    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedToken(token_) {
+    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
         token_.safeTransfer(_msgSender(), amount_);
         emit Withdraw(_msgSender(), token_, amount_);
     }

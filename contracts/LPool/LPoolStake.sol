@@ -12,16 +12,16 @@ abstract contract LPoolStake is LPoolManipulation {
     using SafeERC20 for IERC20;
 
     // Return the amount of tokens received for staking a given amount of tokens
-    function stakeValue(IERC20 token_, uint256 amount_) public view onlyApprovedToken(token_) returns (uint256) {
-        LPoolToken LPToken = LPoolToken(address(LPTokenFromToken(token_)));
+    function stakeValue(IERC20 token_, uint256 amount_) public view returns (uint256) {
+        LPoolToken LPToken = LPoolToken(address(LPFromPA(token_)));
         uint256 totalSupply = LPToken.totalSupply();
         uint256 totalValue = tvl(token_);
         return amount_.mul(totalSupply).div(totalValue);
     }
 
     // Stake tokens and receive LP tokens that represent the users share in the pool
-    function stake(IERC20 token_, uint256 amount_) external onlyApprovedToken(token_) returns (uint256) {
-        LPoolToken LPToken = LPoolToken(address(LPTokenFromToken(token_)));
+    function stake(IERC20 token_, uint256 amount_) external onlyPA(token_) returns (uint256) {
+        LPoolToken LPToken = LPoolToken(address(LPFromPA(token_)));
 
         uint256 value = stakeValue(token_, amount_);
         require(value > 0, "Not enough tokens staked");
@@ -35,7 +35,7 @@ abstract contract LPoolStake is LPoolManipulation {
     }
 
     // Get the value for redeeming LP tokens for the underlying asset
-    function redeemValue(IERC20 token_, uint256 amount_) public view onlyLPToken(token_) returns (uint256) {
+    function redeemValue(IERC20 token_, uint256 amount_) public view returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(token_));
         uint256 totalSupply = LPToken.totalSupply();
         uint256 totalValue = tvl(token_);
@@ -43,9 +43,9 @@ abstract contract LPoolStake is LPoolManipulation {
     }
 
     // Redeem LP tokens for the underlying asset
-    function redeem(IERC20 token_, uint256 amount_) external onlyLPToken(token_) returns (uint256) {
+    function redeem(IERC20 token_, uint256 amount_) external onlyLP(token_) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(token_));
-        IERC20 approvedToken = tokenFromLPToken(token_);
+        IERC20 approvedToken = PAFromLP(token_);
 
         uint256 value = redeemValue(LPToken, amount_);
 
