@@ -37,6 +37,7 @@ abstract contract IsolatedMarginLiquidate is IsolatedMarginLevel {
         }
 
         uint256 amountOut = _flashSwap(swapTokens, swapTokenAmounts, borrowed_, minAmountOut, flashSwap_, data_);
+        pool.unclaim(borrowed_, borrowed(borrowed_, account_));
         pool.deposit(borrowed_, amountOut);
 
         _setInitialBorrowPrice(borrowed_, 0, account_);
