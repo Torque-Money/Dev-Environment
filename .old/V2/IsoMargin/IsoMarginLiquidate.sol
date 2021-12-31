@@ -28,7 +28,6 @@ abstract contract IsoMarginLiquidate is IsoMarginRepay {
         uint256 swapAmount = _swap(collateral_, accountCollateral, borrowed_);
         pool.deposit(borrowed_, swapAmount);
 
-        // **** This is entirely WRONG because it needs to consider the account (and thus ALL of them do)
         _setInitialBorrowPrice(collateral_, borrowed_, 0, account_);
         _setBorrowed(collateral_, borrowed_, 0, account_);
         _setCollateral(collateral_, borrowed_, 0, account_);
