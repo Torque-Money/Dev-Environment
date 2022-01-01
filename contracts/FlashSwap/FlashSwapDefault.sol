@@ -52,18 +52,21 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             if (pool.isLP(tokenIn_[i])) {
                 amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
                 path[0] = address(pool.PAFromLP(tokenIn_[i]));
+                
             } else {
                 path[0] = address(tokenIn_[i]);
             }
 
             if (tokenOutIsLP) {
                 path[1] = address(pool.PAFromLP(tokenOut_));
+
             } else {
                 path[1] = address(tokenOut_);
             }
 
             if (path[0] == path[1]) {
                 amountOut = amountOut.add(amountIn_[i]);
+
             } else {
                 IERC20(path[0]).safeApprove(address(router), amountIn_[i]);
                 amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_[i], 0, path, address(this), block.timestamp + 1 hours)[1]);
