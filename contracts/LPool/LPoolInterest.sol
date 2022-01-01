@@ -12,11 +12,16 @@ abstract contract LPoolInterest is LPoolManipulation {
     uint256 public blocksPerCompound;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMin;
-    mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax; // **** Set these percents as actual numerater and denominator pairs too
+    mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
     constructor(uint256 blocksPerCompound_) {
+        blocksPerCompound = blocksPerCompound_;
+    }
+
+    // Set the blocks per compound
+    function setBlocksPerCompound(uint256 blocksPerCompound_) external onlyRole(POOL_ADMIN) {
         blocksPerCompound = blocksPerCompound_;
     }
 
