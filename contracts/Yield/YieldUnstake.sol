@@ -18,19 +18,28 @@ abstract contract YieldStake is YieldAccount, YieldRates {
     
     // Unstake tokens
     function unstake(IERC20 token_, uint256 amount_) external {
-        // **** I need to cash the users rewards into the owed balance and reset the block
-        // uint256 owed = owedBalance(token_, _msgSender());
-        // **** How will this owed thing work depending on how much they cash out - only perform a yield on the amount that they chose using custom yield ?
+        uint256 currentStaked = staked(token_, _msgSender());
+        require(amount_ <= currentStaked, "Cannot unstake more than amount staked");
+
+        uint256 owed = _owedBalance(token_, _msgSender());
+        uint256 yield = _yield(token_, initialStakeBlock(token_, _msgSender()), amount_);
+        _setOwedBalance(token_, owed.add(yield), _msgSender());
+
+        _setInitialStakeBlock(token_, block.number, _msgSender());
+        _setStaked(token_, currentStaked.sub(amount_), _msgSender());
+        emit Unstake(_msgSender(), token_, amount_);
     }
 
     // Claim yield rewards for a given account
     function claimYield(IERC20 token_) external {
         uint256 owed = owedBalance(token_, _msgSender());
         token.mint(_msgSender(), owed);
+
         _setOwedBalance(token_, 0, _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
+        emit ClaimYield(_msgSender(), token_, owed);
     }
 
-    event Unstake();
-    event Claim();
+    event Unstake(address indexed account, IERC20 token, uint256 amount);
+    event ClaimYield(address indexed account, IERC20 token, uint256 amount);
 }
