@@ -6,16 +6,16 @@ import "../LPool/LPool.sol";
 import "../Governance/Token.sol";
 
 contract YieldCore is Ownable {
-    ERC20Votes public token;
+    Token public token;
     LPool public pool;
 
-    constructor(ERC20Votes token_, LPool pool_) {
+    constructor(Token token_, LPool pool_) {
         token = token_;
         pool = pool_;
     }
 
     // Set the yield distribution token
-    function setToken(ERC20Votes token_) external onlyOwner {
+    function setToken(Token token_) external onlyOwner {
         token = token_;
     }
 

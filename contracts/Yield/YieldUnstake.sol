@@ -23,7 +23,10 @@ abstract contract YieldStake is YieldAccount, YieldRates {
 
     // Claim yield rewards for a given account
     function claimYield(IERC20 token_) external {
-        // **** I need to update the balance and reset the block
+        uint256 owed = owedBalance(token_, _msgSender());
+        token.mint(_msgSender(), owed);
+        _setOwedBalance(token_, 0, _msgSender());
+        _setInitialStakeBlock(token_, block.number, _msgSender());
     }
 
     event Unstake();
