@@ -24,11 +24,9 @@ export default async function main() {
 
     const pool = await hre.ethers.getContractAt("LPool", config.poolAddress);
     const oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
-    const flashSwap = await hre.ethers.getContractAt("FlashSwap", config.flashSwapAddress);
     const flashSwapDefault = await hre.ethers.getContractAt("FlashSwapDefault", config.flashSwapDefaultAddress);
     const isolatedMargin = await hre.ethers.getContractAt("IsolatedMargin", config.isolatedMarginAddress);
     const token = await hre.ethers.getContractAt("Token", config.tokenAddress);
-    const governor = await hre.ethers.getContractAt("Governor", config.governorAddress);
     const timelock = await hre.ethers.getContractAt("Timelock", config.timelockAddress);
     const _yield = await hre.ethers.getContractAt("Yield", config.yieldAddress);
 
@@ -64,11 +62,20 @@ export default async function main() {
     await oracle.transferOwnership(timelock.address);
 
     // ======== Setup the flash swap ========
+    await flashSwapDefault.transferOwnership(timelock.address);
 
     // ======== Setup the isolated margin ========
     await isolatedMargin.approve(approvedTokens, supported);
 
     await isolatedMargin.transferOwnership(timelock.address);
+
+    // ======== Setup the token ========
+    await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), timelock.address);
+    await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_MINTER_ROLE")), _yield.address);
+    await token.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), signerAddress);
+
+    // ======== Setup the timelock ========
+    await timelock.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
 
     // ======== Setup the yield ========
     const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.PAToLP(approved)));
