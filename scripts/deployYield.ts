@@ -1,6 +1,5 @@
-import hre, { ethers } from "hardhat";
+import hre from "hardhat";
 import fs from "fs";
-import { getContractAddress } from "ethers/lib/utils";
 import config from "../config.json";
 
 export default async function main() {
