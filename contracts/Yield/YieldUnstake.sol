@@ -19,6 +19,8 @@ abstract contract YieldStake is YieldAccount, YieldRates {
     // Unstake tokens
     function unstake(IERC20 token_, uint256 amount_) external {
         // **** I need to cash the users rewards into the owed balance and reset the block
+        // uint256 owed = owedBalance(token_, _msgSender());
+        // **** How will this owed thing work depending on how much they cash out - only perform a yield on the amount that they chose using custom yield ?
     }
 
     // Claim yield rewards for a given account
