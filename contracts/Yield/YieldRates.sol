@@ -12,11 +12,11 @@ abstract contract YieldRates is YieldCore {
     mapping(IERC20 => FractionMath.Fraction) private _rates; 
 
     // Set the yield rates for tokens on a per block basis
-    function setRates(IERC20[] memory tokens_, uint256[] memory rateNumerators_, uint256[] memory rateDenominators_) external onlyOwner {
-        for (uint i = 0; i < tokens_.length; i++) {
-            _rates[tokens_[i]].numerator = rateNumerators_[i];
-            _rates[tokens_[i]].denominator = rateDenominators_[i];
-            emit RateChange(tokens_[i], rateNumerators_[i], rateDenominators_[i]);
+    function setRates(IERC20[] memory token_, uint256[] memory rateNumerator_, uint256[] memory rateDenominator_) external onlyOwner {
+        for (uint i = 0; i < token_.length; i++) {
+            _rates[token_[i]].numerator = rateNumerator_[i];
+            _rates[token_[i]].denominator = rateDenominator_[i];
+            emit RateChange(token_[i], rateNumerator_[i], rateDenominator_[i]);
         }
     }
 
