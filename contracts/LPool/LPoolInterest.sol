@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../lib/FracExp.sol";
+import "../lib/FractionMath.sol";
 import "./LPoolManipulation.sol";
 
 abstract contract LPoolInterest is LPoolManipulation {
@@ -73,6 +73,6 @@ abstract contract LPoolInterest is LPoolManipulation {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
         uint256 precision = 12; // Precision is calculated as the log of the maximum expected number of blocks borrowed for
-        return FracExp.fracExp(initialBorrow_, blocksPerCompound.mul(interestRateDenominator).div(interestRateNumerator), blocksSinceBorrow, precision);
+        return FractionMath.fracExp(initialBorrow_, blocksPerCompound.mul(interestRateDenominator).div(interestRateNumerator), blocksSinceBorrow, precision);
     }
 }

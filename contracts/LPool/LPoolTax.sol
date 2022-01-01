@@ -1,20 +1,28 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "../lib/FractionMath.sol";
 import "./LPoolCore.sol";
 
 abstract contract LPoolTax is LPoolCore {
-    uint256 public taxPercent;
+    FractionMath.Fraction private _taxPercent;
     address public taxAccount;
 
-    constructor(uint256 taxPercent_) {
-        taxPercent = taxPercent_;
+    constructor(uint256 taxPercentNumerator_, uint256 taxPercentDenominator_) {
+        _taxPercent.numerator = taxPercentNumerator_;
+        _taxPercent.denominator = taxPercentDenominator_;
         taxAccount = _msgSender();
     }
 
+    // Get the tax percentage
+    function taxPercentage() external view returns (uint256, uint256) {
+        return (_taxPercent.numerator, _taxPercent.denominator);
+    }
+
     // Set the tax percentage
-    function setTaxPercentage(uint256 taxPercent_) external onlyRole(POOL_ADMIN) {
-        taxPercent = taxPercent_;
+    function setTaxPercentage(uint256 taxPercentNumerator_, uint256 taxPercentDenominator_) external onlyRole(POOL_ADMIN) {
+        _taxPercent.numerator = taxPercentNumerator_;
+        _taxPercent.denominator = taxPercentDenominator_;
     }
 
     // Set the tax account
