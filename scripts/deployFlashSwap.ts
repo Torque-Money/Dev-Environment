@@ -12,7 +12,6 @@ export default async function main() {
     // @ts-ignore
     config.flashSwapAddress = flashSwap.address;
     console.log("Deployed: Flash swap");
-    fs.writeFileSync("config.json", JSON.stringify(config));
 
     const constructorArgs2 = {
         router: config.defaultRouterAddress,
@@ -24,6 +23,7 @@ export default async function main() {
     // @ts-ignore
     config.flashSwapDefaultAddress = flashSwapDefault.address;
     console.log("Deployed: Flash swap default");
+
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
 
