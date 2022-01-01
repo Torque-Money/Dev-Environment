@@ -24,6 +24,13 @@ export default async function main() {
 
     const pool = hre.ethers.getContractAt("LPool", config.poolAddress);
     const oracle = hre.ethers.getContractAt("Oracle", config.oracleAddress);
+    const flashSwap = hre.ethers.getContractAt("FlashSwap", config.flashSwapAddress);
+    const flashSwapDefault = hre.ethers.getContractAt("FlashSwapDefault", config.flashSwapDefaultAddress);
+    const isolatedMargin = hre.ethers.getContractAt("IsolatedMargin", config.isolatedMarginAddress);
+    const token = hre.ethers.getContractAt("Token", config.tokenAddress);
+    const governor = hre.ethers.getContractAt("Governor", config.governorAddress);
+    const timelock = hre.ethers.getContractAt("Timelock", config.timelockAddress);
+    const _yield = hre.ethers.getContractAt("Yield", config.yieldAddress);
 
     // Approve tokens for use with the contracts
 
