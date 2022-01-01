@@ -8,11 +8,11 @@ export default async function main() {
         taxPercentDenominator: 100,
         blocksPerCompound: 2.628e6 / config.avgBlockTime,
     };
-    const Pool = await hre.ethers.getContractFactory("LPool");
-    const pool = await Pool.deploy(...Object.values(constructorArgs));
+    const IsolatedMargin = await hre.ethers.getContractFactory("IsolatedMargin");
+    const isolatedMargin = await IsolatedMargin.deploy(...Object.values(constructorArgs));
     // @ts-ignore
-    config.poolAddress = pool.address;
-    console.log("Deployed: Pool");
+    config.isolatedMarginAddress = isolatedMargin.address;
+    console.log("Deployed: Isolated margin");
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
 

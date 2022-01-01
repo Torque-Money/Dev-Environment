@@ -4,15 +4,14 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        taxPercentNumerator: 5,
-        taxPercentDenominator: 100,
-        blocksPerCompound: 2.628e6 / config.avgBlockTime,
+        // @ts-ignore
+        pool: config.poolAddress,
     };
-    const Pool = await hre.ethers.getContractFactory("LPool");
-    const pool = await Pool.deploy(...Object.values(constructorArgs));
+    const Oracle = await hre.ethers.getContractFactory("Oracle");
+    const oracle = await Oracle.deploy(...Object.values(constructorArgs));
     // @ts-ignore
-    config.poolAddress = pool.address;
-    console.log("Deployed: Pool");
+    config.oracleAddress = oracle.address;
+    console.log("Deployed: Oracle");
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
 
