@@ -6,9 +6,13 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
-contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable {
+contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable { // **** This should be changed to access control
     constructor(uint256 initialSupply_) ERC20("Torque", "TAU") ERC20Permit("TAU") {
         _mint(owner(), initialSupply_);
+    }
+
+    function mint(address _to, uint256 _amount) external onlyOwner {
+        _mint(_to, _amount);
     }
 
     function _afterTokenTransfer(address _from, address _to, uint256 _amount)
