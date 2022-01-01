@@ -32,6 +32,8 @@ export default async function main() {
     const timelock = await hre.ethers.getContractAt("Timelock", config.timelockAddress);
     const _yield = await hre.ethers.getContractAt("Yield", config.yieldAddress);
 
+    // **** Dont forget to grant permissions to all of the different roles
+
     // ======== Setup the pool ========
     const approvedTokens = config.approved.map((approved) => approved.address);
     const approvedNames = config.approved.map((approved) => "Torque Market Neutral " + approved.name);
@@ -47,6 +49,10 @@ export default async function main() {
     const maxUtilizationDenominator = Array(approvedTokens.length).fill(100);
     await pool.setMaxUtilization(approvedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
+    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), isolatedMargin.address);
+    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), timelock.address);
+    await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
+
     // ======== Setup the oracle ========
     const priceFeeds = config.approved.map((approved) => approved.priceFeed);
     const reservePriceFeeds = config.approved.map((approved) => approved.reservePriceFeed);
@@ -55,16 +61,20 @@ export default async function main() {
     await oracle.setPriceFeed(approvedTokens, priceFeeds, reservePriceFeeds, correctDecimals, supported);
     await oracle.setDefaultStablecoin(approvedTokens[0]);
 
+    await oracle.transferOwnership(timelock.address);
+
+    // ======== Setup the flash swap ========
+
     // ======== Setup the isolated margin ========
     await isolatedMargin.approve(approvedTokens, supported);
+
+    await isolatedMargin.transferOwnership(timelock.address);
 
     // ======== Setup the yield ========
     const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.PAToLP(approved)));
     const rateNumerators = Array(lpTokens.length).fill(10);
     const rateDenominators = Array(lpTokens.length).fill(100);
     await _yield.setRates(lpTokens, rateNumerators, rateDenominators);
-
-    // Hand ownership over to the DAO
 }
 
 if (require.main === module)
