@@ -48,8 +48,23 @@ export default async function main() {
     await pool.setMaxUtilization(approvedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
     // ======== Setup the oracle ========
+    const priceFeeds = config.approved.map((approved) => approved.priceFeed);
+    const reservePriceFeeds = config.approved.map((approved) => approved.reservePriceFeed);
+    const correctDecimals = config.approved.map((approved) => approved.decimals);
+    const supported = Array(approvedTokens.length).fill(true);
+    await oracle.setPriceFeed(approvedTokens, priceFeeds, reservePriceFeeds, correctDecimals, supported);
+    await oracle.setDefaultStablecoin(approvedTokens[0]);
 
-    // Remove ownership of the contracts
+    // ======== Setup the isolated margin ========
+    await isolatedMargin.approve(approvedTokens, supported);
+
+    // ======== Setup the yield ========
+    const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.PAToLP(approved)));
+    const rateNumerators = Array(lpTokens.length).fill(10);
+    const rateDenominators = Array(lpTokens.length).fill(100);
+    await _yield.setRates(lpTokens, rateNumerators, rateDenominators);
+
+    // Hand ownership over to the DAO
 }
 
 if (require.main === module)
