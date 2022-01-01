@@ -47,6 +47,8 @@ export default async function main() {
     const maxUtilizationDenominator = Array(approvedTokens.length).fill(100);
     await pool.setMaxUtilization(approvedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
+    // ======== Setup the oracle ========
+
     // Remove ownership of the contracts
 }
 
