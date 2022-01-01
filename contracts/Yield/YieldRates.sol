@@ -22,13 +22,13 @@ abstract contract YieldRates is YieldCore {
 
     // Get the yield rate numerator and denominator for the given token
     function getRate(IERC20 token_) public view returns (uint256, uint256) {
-        Fraction memory rate = _rates[token_];
+        FractionMath.Fraction memory rate = _rates[token_];
         return (rate.numerator, rate.denominator);
     }
 
     // Get the yield owed to a given balance
     function _yield(IERC20 token_, uint256 initialStakeBlock_, uint256 staked_) internal view returns (uint256) {
-        Fraction memory rate = _rates[token_];
+        FractionMath.Fraction memory rate = _rates[token_];
         return block.number.sub(initialStakeBlock_).mul(staked_).mul(rate.numerator).div(rate.denominator);
     }
 
