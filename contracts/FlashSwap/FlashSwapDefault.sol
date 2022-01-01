@@ -45,14 +45,13 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     ) external override returns (uint256) {
         address[] memory path = new address[](2);
         bool tokenOutIsLP = pool.isLP(tokenOut_);
-
         uint256 amountOut = 0;
 
         for (uint i = 0; i < tokenIn_.length; i++) {
             if (pool.isLP(tokenIn_[i])) {
                 amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
                 path[0] = address(pool.PAFromLP(tokenIn_[i]));
-                
+
             } else {
                 path[0] = address(tokenIn_[i]);
             }
@@ -73,9 +72,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             }
         }
 
-        if (tokenOutIsLP) {
-            amountOut = pool.stake(IERC20(path[1]), amountOut);
-        }
+        if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
 
         address rewarded = _bytesToAddress(data_);
         if (rewarded != _bytesToAddress("")) {
