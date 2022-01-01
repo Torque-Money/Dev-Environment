@@ -13,13 +13,13 @@ import "./IsolatedMarginLiquidate.sol";
 contract IsolatedMargin is IsolatedMarginBorrow, IsolatedMarginRepay, IsolatedMarginLiquidate {
     constructor(
         LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_,
-        uint256 minMarginLevel_,
+        uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_,
         uint256 minCollateral_,
-        uint256 liquidationFeePercent_
+        uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_
     )
         MarginCore(pool_, oracle_, flashSwap_, swapToleranceNumerator_, swapToleranceDenominator_)
-        IsolatedMarginLevel(minMarginLevel_)
+        IsolatedMarginLevel(minMarginLevelNumerator_, minMarginLevelDenominator_)
         IsolatedMarginBorrow(minCollateral_)
-        IsolatedMarginLiquidate(liquidationFeePercent_)
+        IsolatedMarginLiquidate(liquidationFeePercentNumerator_, liquidationFeePercentDenominator_)
     {}
 }

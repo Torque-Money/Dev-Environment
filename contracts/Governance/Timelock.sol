@@ -9,10 +9,10 @@ contract Timelock is TimelockController, TimelockTax {
         uint256 minDelay_,
         address[] memory proposers_,
         address[] memory executors_,
-        uint256 taxPercentage_,
+        uint256 taxPercentageNumerator_, uint256 taxPercentageDenominator_,
         uint256 taxCooldown_
     )
         TimelockController(minDelay_, proposers_, executors_)
-        TimelockTax(taxPercentage_, taxCooldown_)
+        TimelockTax(taxPercentageNumerator_, taxPercentageDenominator_, taxCooldown_)
     {}
 }
