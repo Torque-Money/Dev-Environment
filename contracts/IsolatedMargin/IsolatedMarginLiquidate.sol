@@ -19,15 +19,15 @@ abstract contract IsolatedMarginLiquidate is IsolatedMarginLevel {
         _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
 
-    // Set the liquidation fee percent
-    function setLiquidationFeePercent(uint256 liquidationFeePercent_) external onlyOwner {
-        _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
-        _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
+    // Get the liquidation fee percent
+    function liquidationFeePercent() external view returns (uint256, uint256) {
+        return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
-    // Get the liquidation fee percent
-    function liquidationFeePercent() external view returns (uint256) {
-        return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
+    // Set the liquidation fee percent
+    function setLiquidationFeePercent(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) external onlyOwner {
+        _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
+        _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
 
     // Liquidate an undercollateralized account
