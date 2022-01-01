@@ -80,7 +80,7 @@ abstract contract LPoolInterest is LPoolManipulation {
         uint256 maxInterestNumerator;
         uint256 maxInterestDenominator;
 
-        if (utilized > tvl(token_).mul(maxUtilizationNumerator).div(maxUtilizationDenominator)) (maxInterestNumerator, maxInterestDenominator) = maxInterestMax(token_);
+        if (utilized.mul(maxUtilizationDenominator) > tvl(token_).mul(maxUtilizationNumerator)) (maxInterestNumerator, maxInterestDenominator) = maxInterestMax(token_);
         else (maxInterestNumerator, maxInterestDenominator) = maxInterestMin(token_);
 
         return (utilized.mul(maxInterestNumerator), valueLocked.mul(maxInterestDenominator));
