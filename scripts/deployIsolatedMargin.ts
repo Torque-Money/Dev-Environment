@@ -4,9 +4,19 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        taxPercentNumerator: 5,
-        taxPercentDenominator: 100,
-        blocksPerCompound: 2.628e6 / config.avgBlockTime,
+        // @ts-ignore
+        pool: config.poolAddress,
+        // @ts-ignore
+        oracle: config.oracleAddress,
+        // @ts-ignore
+        flashSwap: config.flashSwapAddress,
+        swapToleranceNumerator: 3,
+        swapToleranceDenominator: 200,
+        minMarginLevelNumerator: 105,
+        minMarginLevelDenominator: 100,
+        minCollateral: hre.ethers.BigNumber.from(100).mul(10).pow(18),
+        liquidationFeePercentNumerator: 5,
+        liquidationFeePercentDenominator: 100,
     };
     const IsolatedMargin = await hre.ethers.getContractFactory("IsolatedMargin");
     const isolatedMargin = await IsolatedMargin.deploy(...Object.values(constructorArgs));
