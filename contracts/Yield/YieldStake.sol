@@ -12,15 +12,11 @@ abstract contract YieldStake is YieldUnstake {
 
     // Stake tokens for a yield
     function stake(IERC20 token_, uint256 amount_) external {
-        uint256 currentStaked = staked(token_, _msgSender());
-
-        uint256 owed = _owedBalance(token_, _msgSender());
-        uint256 yield = _yield(token_, initialStakeBlock(token_, _msgSender()), currentStaked);
-        _setOwedBalance(token_, owed.add(yield), _msgSender()); 
+        _setOwedBalance(token_, owedBalance(token_, _msgSender()), _msgSender()); 
         _setInitialStakeBlock(token_, block.number, _msgSender());
 
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
-        _setStaked(token_, currentStaked.add(yield), _msgSender());
+        _setStaked(token_, staked(token_, _msgSender()).add(amount_), _msgSender());
 
         emit Stake(_msgSender(), token_, amount_);
     }

@@ -23,11 +23,9 @@ abstract contract YieldUnstake is YieldAccount, YieldRates {
         uint256 currentStaked = staked(token_, _msgSender());
         require(amount_ <= currentStaked, "Cannot unstake more than amount staked");
 
-        uint256 owed = _owedBalance(token_, _msgSender());
-        uint256 yield = _yield(token_, initialStakeBlock(token_, _msgSender()), amount_);
-        _setOwedBalance(token_, owed.add(yield), _msgSender());
         token_.safeTransfer(_msgSender(), amount_);
 
+        _setOwedBalance(token_, owedBalance(token_, _msgSender()), _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
         _setStaked(token_, currentStaked.sub(amount_), _msgSender());
         emit Unstake(_msgSender(), token_, amount_);
