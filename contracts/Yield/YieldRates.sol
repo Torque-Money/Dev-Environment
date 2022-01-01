@@ -3,17 +3,13 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../lib/FractionMath.sol";
 import "./YieldCore.sol";
 
 abstract contract YieldRates is YieldCore {
     using SafeMath for uint256;
 
-    struct Fraction {
-        uint256 numerator;
-        uint256 denominator;
-    }
-
-    mapping(IERC20 => Fraction) private _rates; 
+    mapping(IERC20 => FractionMath.Fraction) private _rates; 
 
     // Set the yield rates for tokens on a per block basis
     function setRates(IERC20[] memory tokens_, uint256[] memory ratesNumerator_, uint256[] memory ratesDenominator_) external onlyOwner {
