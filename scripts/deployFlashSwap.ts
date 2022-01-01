@@ -3,9 +3,7 @@ import fs from "fs";
 import config from "../config.json";
 
 export default async function main() {
-    const constructorArgs1 = {
-        pool: config.poolAddress,
-    };
+    const constructorArgs1 = {};
     const FlashSwap = await hre.ethers.getContractFactory("FlashSwap");
     const flashSwap = await FlashSwap.deploy(...Object.values(constructorArgs1));
     config.flashSwapAddress = flashSwap.address;
