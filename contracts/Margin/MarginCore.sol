@@ -18,6 +18,11 @@ abstract contract MarginCore is Ownable {
     Oracle public oracle;
     FlashSwap public flashSwap;
 
+    struct Fraction {
+        uint256 numerator;
+        uint256 denominator;
+    }
+
     uint256 public swapToleranceNumerator;
     uint256 public swapToleranceDenominator;
 

@@ -1,7 +1,12 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-library FracExp {
+library FractionMath {
+    struct Fraction {
+        uint256 numerator;
+        uint256 denominator;
+    }
+
     // https://ethereum.stackexchange.com/a/10432
     // Computes `k * (1+1/q) ^ N`, with precision `p`. The higher
     // the precision, the higher the gas cost. It should be
