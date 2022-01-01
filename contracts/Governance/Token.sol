@@ -1,17 +1,23 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol"; // **** I want to make this into an ownable so we can control who may mint and who may not
+import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
-contract Token is ERC20, ERC20Permit, ERC20Votes, Ownable { // **** This should be changed to access control
+contract Token is ERC20, ERC20Permit, ERC20Votes, AccessControl {
+    bytes32 public constant TOKEN_ADMIN = keccak256("TOKEN_ADMIN_ROLE");
+    bytes32 public constant TOKEN_MINTER = keccak256("TOKEN_MINTER_ROLE");
+
     constructor(uint256 initialSupply_) ERC20("Torque", "TAU") ERC20Permit("TAU") {
-        _mint(owner(), initialSupply_);
+        _setRoleAdmin(TOKEN_ADMIN, TOKEN_ADMIN);
+        _setRoleAdmin(TOKEN_MINTER, TOKEN_ADMIN);
+        _grantRole(TOKEN_ADMIN, _msgSender());
+        _mint(_msgSender(), initialSupply_);
     }
 
-    function mint(address _to, uint256 _amount) external onlyOwner {
+    function mint(address _to, uint256 _amount) external onlyRole(TOKEN_MINTER) {
         _mint(_to, _amount);
     }
 
