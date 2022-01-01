@@ -12,7 +12,7 @@ abstract contract LPoolInterest is LPoolManipulation {
     uint256 public blocksPerCompound;
 
     mapping(IERC20 => uint256) private _maxInterestMin;
-    mapping(IERC20 => uint256) private _maxInterestMax;
+    mapping(IERC20 => uint256) private _maxInterestMax; // **** Set these percents as actual numerater and denominator pairs too
 
     mapping(IERC20 => uint256) private _maxUtilization;
 

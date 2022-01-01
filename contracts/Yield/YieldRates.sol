@@ -2,24 +2,38 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./YieldCore.sol";
 
 abstract contract YieldRates is YieldCore {
-    mapping(IERC20 => uint256) private _ratesNumerator; 
-    mapping(IERC20 => uint256) private _ratesDenominator; 
+    using SafeMath for uint256;
 
-    // Set the yield rates for tokens
+    struct Fraction {
+        uint256 numerator;
+        uint256 denominator;
+    }
+
+    mapping(IERC20 => Fraction) private _rates; 
+
+    // Set the yield rates for tokens on a per block basis
     function setRates(IERC20[] memory tokens_, uint256[] memory ratesNumerator_, uint256[] memory ratesDenominator_) external onlyOwner {
         for (uint i = 0; i < tokens_.length; i++) {
-            _ratesNumerator[tokens_[i]] = ratesNumerator_[i];
-            _ratesDenominator[tokens_[i]] = ratesDenominator_[i];
+            _rates[tokens_[i]].numerator = ratesNumerator_[i];
+            _rates[tokens_[i]].denominator = ratesDenominator_[i];
             emit RateChange(tokens_[i], ratesNumerator_[i], ratesDenominator_[i]);
         }
     }
 
     // Get the yield rate numerator and denominator for the given token
     function getRate(IERC20 token_) public view returns (uint256, uint256) {
-        return (_ratesNumerator[token_], _ratesDenominator[token_]);
+        Fraction memory rate = _rates[token_];
+        return (rate.numerator, rate.denominator);
+    }
+
+    // Get the yield owed to a given balance
+    function _yield(IERC20 token_, uint256 initialStakeBlock_, uint256 staked_) internal view returns (uint256) {
+        Fraction memory rate = _rates[token_];
+        return block.number.sub(initialStakeBlock_).mul(staked_).mul(rate.numerator).div(rate.denominator);
     }
 
     event RateChange(IERC20 token, uint256 rateNumerator, uint256 rateDenominator);

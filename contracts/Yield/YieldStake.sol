@@ -10,10 +10,5 @@ abstract contract YieldStake is YieldAccount, YieldRates {
 
     }
 
-    function stakeValue(IERC20 token_, uint256 amount_) public view returns (uint256) {
-        
-    }
-
     event Stake();
-    event Unstake();
 }
