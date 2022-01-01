@@ -4,12 +4,10 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        // @ts-ignore
         pool: config.poolAddress,
     };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(constructorArgs));
-    // @ts-ignore
     config.oracleAddress = oracle.address;
     console.log("Deployed: Oracle");
     fs.writeFileSync("config.json", JSON.stringify(config));

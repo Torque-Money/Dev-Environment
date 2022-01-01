@@ -24,5 +24,14 @@
             "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
             "reservePriceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc"
         }
-    ]
+    ],
+    "poolAddress": "",
+    "oracleAddress": "",
+    "flashSwapAddress": "",
+    "flashSwapDefaultAddress": "",
+    "isolatedMarginAddress": "",
+    "tokenAddress": "",
+    "governorAddress": "",
+    "timelockAddress": "",
+    "yieldAddress": ""
 }

@@ -9,7 +9,6 @@ export default async function main() {
     };
     const Token = await hre.ethers.getContractFactory("Token");
     const token = await Token.deploy(...Object.values(constructorArgs1));
-    // @ts-ignore
     config.tokenAddress = token.address;
     console.log("Deployed: Governance token");
 
@@ -30,7 +29,6 @@ export default async function main() {
     };
     const Governor = await hre.ethers.getContractFactory("Governor");
     const governor = await Governor.deploy(...Object.values(constructorArgs2));
-    // @ts-ignore
     config.governorAddress = governor.address;
     console.log("Deployed: Governor");
 
@@ -44,7 +42,6 @@ export default async function main() {
     };
     const Timelock = await hre.ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(...Object.values(constructorArgs3));
-    // @ts-ignore
     config.timelockAddress = timelock.address;
     console.log("Deployed: Timelock");
 

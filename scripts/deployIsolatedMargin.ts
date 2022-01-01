@@ -4,11 +4,8 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        // @ts-ignore
         pool: config.poolAddress,
-        // @ts-ignore
         oracle: config.oracleAddress,
-        // @ts-ignore
         flashSwap: config.flashSwapAddress,
         swapToleranceNumerator: 3,
         swapToleranceDenominator: 200,
@@ -20,7 +17,6 @@ export default async function main() {
     };
     const IsolatedMargin = await hre.ethers.getContractFactory("IsolatedMargin");
     const isolatedMargin = await IsolatedMargin.deploy(...Object.values(constructorArgs));
-    // @ts-ignore
     config.isolatedMarginAddress = isolatedMargin.address;
     console.log("Deployed: Isolated margin");
     fs.writeFileSync("config.json", JSON.stringify(config));

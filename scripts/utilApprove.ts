@@ -13,9 +13,7 @@ export default async function main() {
         const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
         const tokenBalance = await token.balanceOf(signerAddress);
 
-        // @ts-ignore
         await token.approve(config.poolAddress, tokenBalance);
-        // @ts-ignore
         await token.approve(config.isolatedMarginAddress, tokenBalance);
 
         console.log(`Approve: Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);

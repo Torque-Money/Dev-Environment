@@ -18,6 +18,13 @@ export default async function main() {
     await deployGovernance();
     await deployYield();
 
+    // Get the deployer contracts
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
+    const pool = hre.ethers.getContractAt("LPool", config.poolAddress);
+    const oracle = hre.ethers.getContractAt("Oracle", config.oracleAddress);
+
     // Approve tokens for use with the contracts
 
     // Remove ownership of the contracts
