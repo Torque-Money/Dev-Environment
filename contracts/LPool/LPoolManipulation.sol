@@ -43,7 +43,8 @@ abstract contract LPoolManipulation is LPoolApproved, LPoolTax {
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
     function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
-        uint256 tax = taxPercent.mul(amount_).div(100);
+        (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
+        uint256 tax = taxPercentNumerator.mul(amount_).div(taxPercentDenominator);
         token_.safeTransferFrom(_msgSender(), taxAccount, tax);
 
         uint256 taxedAmount = amount_.sub(tax);

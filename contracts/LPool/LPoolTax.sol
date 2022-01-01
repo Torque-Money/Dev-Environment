@@ -15,7 +15,7 @@ abstract contract LPoolTax is LPoolCore {
     }
 
     // Get the tax percentage
-    function taxPercentage() external view returns (uint256, uint256) {
+    function taxPercentage() public view returns (uint256, uint256) {
         return (_taxPercent.numerator, _taxPercent.denominator);
     }
 
