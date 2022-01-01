@@ -29,14 +29,16 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
         IERC20[] memory ownedTokens = collateralTokens(borrowed_, account_);
         for (uint i = 0; i < ownedTokens.length; i++) {
             _swapTokens[i] = ownedTokens[i];
-            uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
             _swapTokensLength = _swapTokensLength.add(1);
 
+            uint256 price = collateralPrice(borrowed_, ownedTokens[i], account_);
             uint256 collateralAmount = collateral(borrowed_, ownedTokens[i], account_);
+
             if (price <= repayPrice_) {
                 _swapTokenAmounts[i] = collateralAmount;
                 _setCollateral(borrowed_, ownedTokens[i], 0, account_);
-                repayPrice_ = repayPrice_.sub(collateralAmount);
+                repayPrice_ = repayPrice_.sub(price);
+
             } else {
                 uint256 amountOut = repayPrice_.mul(collateralAmount).div(price);
                 _swapTokenAmounts[i] = amountOut;
@@ -83,18 +85,18 @@ abstract contract IsolatedMarginRepay is IsolatedMarginLevel {
     }
 
     // Repay a users account with custom flash swap
-    function repay(IERC20 borrowed_, IFlashSwap flashSwap_, bytes memory data_) public {
+    function repay(IERC20 borrowed_, IFlashSwap flashSwap_, bytes memory data_) external {
         require(borrowed(borrowed_, _msgSender()) > 0, "Cannot repay an account that has no debt");
 
-        uint256 newCollateralPrice = realizedCollateralPrice(borrowed_, _msgSender());
-        if (newCollateralPrice <= collateralPrice(borrowed_, _msgSender())) _repayLessOrEqual(borrowed_, _msgSender(), flashSwap_, data_);
+        uint256 realizedPrice = realizedCollateralPrice(borrowed_, _msgSender());
+        if (realizedPrice <= collateralPrice(borrowed_, _msgSender())) _repayLessOrEqual(borrowed_, _msgSender(), flashSwap_, data_);
         else _repayGreater(borrowed_, _msgSender());
 
         _setInitialBorrowPrice(borrowed_, 0, _msgSender());
         _setBorrowed(borrowed_, 0, _msgSender());
 
-        emit Repay(_msgSender(), borrowed_, newCollateralPrice, flashSwap_, data_);
+        emit Repay(_msgSender(), borrowed_, flashSwap_, data_);
     }
 
-    event Repay(address indexed account, IERC20 borrowed, uint256 newCollateralPrice, IFlashSwap flashSwap, bytes data);
+    event Repay(address indexed account, IERC20 borrowed, IFlashSwap flashSwap, bytes data);
 }
