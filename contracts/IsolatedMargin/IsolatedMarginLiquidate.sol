@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "../lib/FractionMath.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "./IsolatedMarginLevel.sol";
 
@@ -11,15 +12,22 @@ abstract contract IsolatedMarginLiquidate is IsolatedMarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    uint256 public liquidationFeePercent;
+    FractionMath.Fraction private _liquidationFeePercent;
 
-    constructor(uint256 liquidationFeePercent_) {
-        liquidationFeePercent = liquidationFeePercent_;
+    constructor(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) {
+        _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
+        _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
 
     // Set the liquidation fee percent
     function setLiquidationFeePercent(uint256 liquidationFeePercent_) external onlyOwner {
-        liquidationFeePercent = liquidationFeePercent_;
+        _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
+        _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
+    }
+
+    // Get the liquidation fee percent
+    function liquidationFeePercent() external view returns (uint256) {
+        return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
     // Liquidate an undercollateralized account
@@ -28,7 +36,7 @@ abstract contract IsolatedMarginLiquidate is IsolatedMarginLevel {
 
         uint256 accountCollateral = collateral(borrowed_, account_);
         uint256 minAmountOut = oracle.amount(borrowed_, collateralPrice(borrowed_, account_));
-        minAmountOut = uint256(100).sub(liquidationFeePercent).mul(minAmountOut).div(100);
+        minAmountOut = _liquidationFeePercent.denominator.sub(_liquidationFeePercent.numerator).mul(minAmountOut).div(_liquidationFeePercent.denominator);
 
         IERC20[] memory swapTokens = collateralTokens(borrowed_, account_);
         uint256[] memory swapTokenAmounts = new uint256[](swapTokens.length);

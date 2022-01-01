@@ -8,7 +8,7 @@ import "./IsolatedMarginLevel.sol";
 abstract contract IsolatedMarginBorrow is IsolatedMarginLevel {
     using SafeMath for uint256;
 
-    uint256 public minCollateral;
+    uint256 public minCollateral; // In terms of the oracles default stablecoin
 
     constructor(uint256 minCollateral_) {
         minCollateral = minCollateral_;
