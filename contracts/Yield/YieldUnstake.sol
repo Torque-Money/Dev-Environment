@@ -32,13 +32,15 @@ abstract contract YieldUnstake is YieldAccount, YieldRates {
     }
 
     // Claim yield rewards for a given account
-    function claimYield(IERC20 token_) external {
+    function claimYield(IERC20 token_) external returns (uint256) {
         uint256 owed = owedBalance(token_, _msgSender());
         token.mint(_msgSender(), owed);
 
         _setOwedBalance(token_, 0, _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
         emit ClaimYield(_msgSender(), token_, owed);
+
+        return owed;
     }
 
     event Unstake(address indexed account, IERC20 token, uint256 amount);
