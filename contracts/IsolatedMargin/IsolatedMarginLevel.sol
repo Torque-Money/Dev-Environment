@@ -14,7 +14,8 @@ abstract contract IsolatedMarginLevel is IsolatedMarginAccount {
     FractionMath.Fraction private _minMarginLevel; // Percentage that the margin level may hover above before liquidation (should be above 100)
 
     constructor(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) {
-        _minMarginLevel = minMarginLevel_;
+        _minMarginLevel.numerator = minMarginLevelNumerator_;
+        _minMarginLevel.denominator = minMarginLevelDenominator_;
     }
 
     // Get the min margin level percent
@@ -23,8 +24,9 @@ abstract contract IsolatedMarginLevel is IsolatedMarginAccount {
     }
 
     // Set the min margin level percent threshold before liquidation
-    function setMinMarginLevel(uint256 minMarginLevelNumerator_, uint256 minMarginLevelNumerator_) external onlyOwner {
-        minMarginLevel = minMarginLevel_;
+    function setMinMarginLevel(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) external onlyOwner {
+        _minMarginLevel.numerator = minMarginLevelNumerator_;
+        _minMarginLevel.denominator = minMarginLevelDenominator_;
     }
 
     // Return the numerator and denominator of the margin level
