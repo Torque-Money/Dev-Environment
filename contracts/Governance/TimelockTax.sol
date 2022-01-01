@@ -34,17 +34,17 @@ contract TimelockTax is Context {
         return (_taxPercentage.numerator, _taxPercentage.denominator);
     }
 
-    /** @dev Transfer the tax account */
+    //  Transfer the tax account
     function setTaxAccount(address _account) external onlyTax {
         taxAccount = _account;
     }
 
-    /** @dev Claim tax for a given token */
+    // @dev Claim tax for a given token
     function claimTax(IERC20 _token) external onlyTax {
         require(block.timestamp >= lastTax.add(taxCooldown));
 
         uint256 bal = _token.balanceOf(address(this));
-        uint256 tax = bal.mul(taxPercentage).div(100);
+        uint256 tax = bal.mul(_taxPercentage.numerator).div(_taxPercentage.denominator);
         _token.safeTransfer(taxAccount, tax);
 
         lastTax = block.timestamp;
