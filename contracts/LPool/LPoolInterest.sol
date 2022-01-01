@@ -11,48 +11,51 @@ abstract contract LPoolInterest is LPoolManipulation {
 
     uint256 public blocksPerCompound;
 
-    mapping(IERC20 => uint256) private _maxInterestMin;
-    mapping(IERC20 => uint256) private _maxInterestMax; // **** Set these percents as actual numerater and denominator pairs too
+    mapping(IERC20 => FractionMath.Fraction) private _maxInterestMin;
+    mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax; // **** Set these percents as actual numerater and denominator pairs too
 
-    mapping(IERC20 => uint256) private _maxUtilization;
+    mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
     constructor(uint256 blocksPerCompound_) {
         blocksPerCompound = blocksPerCompound_;
     }
 
     // Get the max interest for minimum utilization for the given token
-   function maxInterestMin(IERC20 token_) public view returns (uint256) {
-       return _maxInterestMin[token_];
+   function maxInterestMin(IERC20 token_) public view returns (uint256, uint256) {
+       return (_maxInterestMin[token_].numerator, _maxInterestMin[token_].denominator);
    }
 
     // Set the max interest for minimum utilization for the given token
-    function setMaxInterestMin(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
+    function setMaxInterestMin(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxInterestMin[token_[i]] = percent_[i];
+            _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
+            _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
         }
     }
 
     // Get the max interest for maximum utilization for the given token
-    function maxInterestMax(IERC20 token_) public view returns (uint256) {
-        return _maxInterestMax[token_];
+    function maxInterestMax(IERC20 token_) public view returns (uint256, uint256) {
+        return (_maxInterestMax[token_].numerator, _maxInterestMax[token_].denominator);
     }
 
     // Set the max interest for maximum utilization for the given token
-    function setMaxInterestMax(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
+    function setMaxInterestMax(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxInterestMax[token_[i]] = percent_[i];
+            _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
+            _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
         }
     }
 
     // Get the max utilization threshold for the given token
-    function maxUtilization(IERC20 token_) public view returns (uint256) {
-        return _maxUtilization[token_];
+    function maxUtilization(IERC20 token_) public view returns (uint256, uint256) {
+        return (_maxUtilization[token_].numerator, _maxUtilization[token_].denominator);
     }
 
     // Set the max utilization threshold for the given token
-    function setMaxUtilization(IERC20[] memory token_, uint256[] memory percent_) external onlyRole(POOL_ADMIN) {
+    function setMaxUtilization(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxUtilization[token_[i]] = percent_[i];
+            _maxUtilization[token_[i]].numerator = percentNumerator_[i];
+            _maxUtilization[token_[i]].denominator = percentDenominator_[i];
         }
     }
 
@@ -61,11 +64,15 @@ abstract contract LPoolInterest is LPoolManipulation {
         uint256 valueLocked = tvl(token_);
         uint256 utilized = valueLocked.sub(liquidity(token_));
 
-        uint256 maxInterest;
-        if (utilized > maxUtilization(token_)) maxInterest = maxInterestMax(token_);
-        else maxInterest = maxInterestMin(token_);
+        (uint256 maxUtilizationNumerator, uint256 maxUtilizationDenominator) = maxUtilization(token_);
 
-        return (utilized.mul(maxInterest), valueLocked.mul(100)); // Numerator and denominator of ratio
+        uint256 maxInterestNumerator;
+        uint256 maxInterestDenominator;
+
+        if (utilized > tvl(token_).mul(maxUtilizationNumerator).div(maxUtilizationDenominator)) (maxInterestNumerator, maxInterestDenominator) = maxInterestMax(token_);
+        else (maxInterestNumerator, maxInterestDenominator) = maxInterestMin(token_);
+
+        return (utilized.mul(maxInterestNumerator), valueLocked.mul(maxInterestDenominator));
     }
 
     // Get the interest on a given asset for a given number of blocks
