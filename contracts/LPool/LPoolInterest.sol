@@ -33,8 +33,10 @@ abstract contract LPoolInterest is LPoolManipulation {
     // Set the max interest for minimum utilization for the given token
     function setMaxInterestMin(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
-            _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
+            if (isPA(token_[i])) {
+                _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
+                _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 
@@ -46,8 +48,10 @@ abstract contract LPoolInterest is LPoolManipulation {
     // Set the max interest for maximum utilization for the given token
     function setMaxInterestMax(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
-            _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
+            if (isPA(token_[i])) {
+                _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
+                _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 
@@ -59,8 +63,10 @@ abstract contract LPoolInterest is LPoolManipulation {
     // Set the max utilization threshold for the given token
     function setMaxUtilization(IERC20[] memory token_, uint256[] memory percentNumerator_, uint256[] memory percentDenominator_) external onlyRole(POOL_ADMIN) {
         for (uint i = 0; i < token_.length; i++) {
-            _maxUtilization[token_[i]].numerator = percentNumerator_[i];
-            _maxUtilization[token_[i]].denominator = percentDenominator_[i];
+            if (isPA(token_[i])) {
+                _maxUtilization[token_[i]].numerator = percentNumerator_[i];
+                _maxUtilization[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 

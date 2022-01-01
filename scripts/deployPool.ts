@@ -6,7 +6,7 @@ export default async function main() {
     const constructorArgs = {
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
-        blocksPerCompound: ethers.BigNumber.from(2.628e6).div(config.avgBlockTime),
+        blocksPerCompound: ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(constructorArgs));
