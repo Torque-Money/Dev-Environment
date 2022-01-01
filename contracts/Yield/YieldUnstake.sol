@@ -2,12 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./YieldAccount.sol";
 import "./YieldRates.sol";
 
-abstract contract YieldStake is YieldAccount, YieldRates {
+abstract contract YieldUnstake is YieldAccount, YieldRates {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     // Get the owed balance distributed to an account
     function owedBalance(IERC20 token_, address account_) public view returns (uint256) {
@@ -24,6 +26,7 @@ abstract contract YieldStake is YieldAccount, YieldRates {
         uint256 owed = _owedBalance(token_, _msgSender());
         uint256 yield = _yield(token_, initialStakeBlock(token_, _msgSender()), amount_);
         _setOwedBalance(token_, owed.add(yield), _msgSender());
+        token_.safeTransfer(_msgSender(), amount_);
 
         _setInitialStakeBlock(token_, block.number, _msgSender());
         _setStaked(token_, currentStaked.sub(amount_), _msgSender());
