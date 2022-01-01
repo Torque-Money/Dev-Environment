@@ -9,14 +9,18 @@ export default async function main() {
 
     // Fund the accounts and approve pool and margin protocols to spend
     for (const approved of config.approved) {
-        // Approve pools to use tokens
-        const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
-        const tokenBalance = await token.balanceOf(signerAddress);
+        // Fund account with tokens
+        await hre.network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [approved.whale],
+        });
+        const tokenSigner = await hre.ethers.getSigner(approved.whale);
+        const token = new hre.ethers.Contract(approved.address, ERC20.abi, tokenSigner);
 
-        await token.approve(config.poolAddress, tokenBalance);
-        await token.approve(config.marginAddress, tokenBalance);
+        const tokenBalance = await token.balanceOf(tokenSigner.address);
+        await token.transfer(signerAddress, tokenBalance);
 
-        console.log(`Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
+        console.log(`Fund: Transferred ${tokenBalance.toString()} of tokens with address ${approved.address} to ${signerAddress}`);
     }
 }
 
