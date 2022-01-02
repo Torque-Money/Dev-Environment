@@ -70,22 +70,28 @@ abstract contract LPoolInterest is LPoolManipulation {
         }
     }
 
+    // Helper to calculate the interest rate when the amount borrowed is above the max utilization rate
     function _interestRateMax(
         uint256 valueLocked,
         uint256 utilized,
         FractionMath.Fraction memory utilization,
         FractionMath.Fraction memory interestMin,
         FractionMath.Fraction memory interestMax
-    ) internal view returns (uint256, uint256) {
+    ) internal pure returns (uint256, uint256) {
         uint256 numerator;
         { numerator = utilized.mul(interestMax.numerator).mul(utilization.denominator).mul(interestMin.denominator); }
         { numerator = numerator.add(utilization.numerator.mul(interestMin.numerator).mul(valueLocked).mul(interestMax.denominator)); }
         { numerator = numerator.mul(utilization.denominator).mul(interestMax.denominator); }
-        { numerator = numerator.sub(utilization.numerator.mul(interestMax.numerator).mul(valueLocked)
-                        .mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator)); }
 
-        uint256 denominator = valueLocked.mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator)
-                                .mul(utilization.denominator).mul(interestMax.denominator);
+        uint256 numeratorSub;
+        { numeratorSub = utilization.numerator.mul(interestMax.numerator).mul(valueLocked); }
+        { numeratorSub = numeratorSub.mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator); }
+        { numerator = numerator.sub(numeratorSub); }
+
+        uint256 denominator;
+        { denominator = valueLocked.mul(interestMax.denominator).mul(utilization.denominator); }
+        { denominator = denominator.mul(interestMin.denominator).mul(utilization.denominator).mul(interestMax.denominator); }
+
         return (numerator, denominator);
     }
 
@@ -98,7 +104,8 @@ abstract contract LPoolInterest is LPoolManipulation {
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
-        if (utilized.mul(utilization.denominator) > tvl(token_).mul(utilization.numerator)) return _interestRateMax(valueLocked, utilized, utilization, interestMin, interestMax);
+        if (utilized.mul(utilization.denominator) > tvl(token_).mul(utilization.numerator))
+            return _interestRateMax(valueLocked, utilized, utilization, interestMin, interestMax);
         else return (utilized.mul(interestMin.numerator), valueLocked.mul(interestMin.denominator));
     }
 
