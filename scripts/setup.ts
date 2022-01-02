@@ -30,8 +30,6 @@ export default async function main() {
     const timelock = await hre.ethers.getContractAt("Timelock", config.timelockAddress);
     const _yield = await hre.ethers.getContractAt("Yield", config.yieldAddress);
 
-    // **** Dont forget to grant permissions to all of the different roles
-
     // ======== Setup the pool ========
     const approvedTokens = config.approved.map((approved) => approved.address);
     const approvedNames = config.approved.map((approved) => "Torque Market Neutral " + approved.name);
@@ -46,10 +44,12 @@ export default async function main() {
     const maxUtilizationNumerator = Array(approvedTokens.length).fill(60);
     const maxUtilizationDenominator = Array(approvedTokens.length).fill(100);
     await pool.setMaxUtilization(approvedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
+    console.log("Setup pool: Finished setting tokens up");
 
     await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), isolatedMargin.address);
     await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), timelock.address);
     await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
+    console.log("Setup pool: Finishing assigning roles");
 
     // ======== Setup the oracle ========
     const priceFeeds = config.approved.map((approved) => approved.priceFeed);
@@ -58,24 +58,31 @@ export default async function main() {
     const supported = Array(approvedTokens.length).fill(true);
     await oracle.setPriceFeed(approvedTokens, priceFeeds, reservePriceFeeds, correctDecimals, supported);
     await oracle.setDefaultStablecoin(approvedTokens[0]);
+    console.log("Setup oracle: Finished adding supported tokens");
 
     await oracle.transferOwnership(timelock.address);
+    console.log("Setup oracle: Finished transferring ownership");
 
-    // ======== Setup the flash swap ========
+    // ======== Setup the flash swap default ========
     await flashSwapDefault.transferOwnership(timelock.address);
+    console.log("Setup flash swap default: Finished transferring ownership");
 
     // ======== Setup the isolated margin ========
     await isolatedMargin.approve(approvedTokens, supported);
+    console.log("Setup isolated margin: Finished approving collateral tokens");
 
     await isolatedMargin.transferOwnership(timelock.address);
+    console.log("Setup isolated margin: Finished transferring ownership");
 
     // ======== Setup the token ========
     await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), timelock.address);
     await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_MINTER_ROLE")), _yield.address);
     await token.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), signerAddress);
+    console.log("Setup token: Finishing assigning roles");
 
     // ======== Setup the timelock ========
     await timelock.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
+    console.log("Setup timelock: Finishing assigning roles");
 
     // ======== Setup the yield ========
     const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.LPFromPA(approved)));
