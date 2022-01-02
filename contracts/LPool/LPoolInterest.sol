@@ -88,7 +88,7 @@ abstract contract LPoolInterest is LPoolManipulation {
                 .sub(maxUtilizationNumerator
                     .mul(maxInterestMaxNumerator).mul(valueLocked).mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator)
                 );
-            uint256 denominator = valueLocked.mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maInterestMinDenominator).mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator);
+            uint256 denominator = valueLocked.mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator).mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator);
             return (numerator, denominator);
         }
         else {
