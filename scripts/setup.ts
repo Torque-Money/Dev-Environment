@@ -31,19 +31,19 @@ export default async function main() {
     const _yield = await hre.ethers.getContractAt("Yield", config.yieldAddress);
 
     // ======== Setup the pool ========
-    const approvedTokens = config.approved.map((approved) => approved.address);
-    const approvedNames = config.approved.map((approved) => "Torque Market Neutral " + approved.name);
-    const approvedSymbols = config.approved.map((approved) => "tmn" + approved.symbol);
-    await pool.approve(approvedTokens, approvedNames, approvedSymbols);
-    const maxInterestMinNumerator = Array(approvedTokens.length).fill(15);
-    const maxInterestMinDenominator = Array(approvedTokens.length).fill(100);
-    await pool.setMaxInterestMin(approvedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
-    const maxInterestMaxNumerator = Array(approvedTokens.length).fill(45);
-    const maxInterestMaxDenominator = Array(approvedTokens.length).fill(100);
-    await pool.setMaxInterestMax(approvedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
-    const maxUtilizationNumerator = Array(approvedTokens.length).fill(60);
-    const maxUtilizationDenominator = Array(approvedTokens.length).fill(100);
-    await pool.setMaxUtilization(approvedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
+    const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
+    const approvedNames = config.approved.map((approved) => "Torque Leveraged " + approved.name);
+    const approvedSymbols = config.approved.map((approved) => "tl" + approved.symbol);
+    await pool.approve(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
+    const maxInterestMinNumerator = Array(leveragePoolApprovedTokens.length).fill(15);
+    const maxInterestMinDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    await pool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
+    const maxInterestMaxNumerator = Array(leveragePoolApprovedTokens.length).fill(45);
+    const maxInterestMaxDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    await pool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
+    const maxUtilizationNumerator = Array(leveragePoolApprovedTokens.length).fill(60);
+    const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    await pool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
     console.log("Setup pool: Finished setting tokens up");
 
     await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), isolatedMargin.address);
@@ -53,12 +53,13 @@ export default async function main() {
     console.log("Setup pool: Finishing assigning roles");
 
     // ======== Setup the oracle ========
+    const oracleApproved = config.approved.map((approved) => approved.address);
     const priceFeeds = config.approved.map((approved) => approved.priceFeed);
     const reservePriceFeeds = config.approved.map((approved) => approved.reservePriceFeed);
     const correctDecimals = config.approved.map((approved) => approved.decimals);
-    const supported = Array(approvedTokens.length).fill(true);
-    await oracle.setPriceFeed(approvedTokens, priceFeeds, reservePriceFeeds, correctDecimals, supported);
-    await oracle.setDefaultStablecoin(approvedTokens[0]);
+    const oracleSupported = Array(oracleApproved.length).fill(true);
+    await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported);
+    await oracle.setDefaultStablecoin(oracleApproved[0]);
     console.log("Setup oracle: Finished adding supported tokens");
 
     await oracle.transferOwnership(timelock.address);
@@ -69,7 +70,9 @@ export default async function main() {
     console.log("Setup flash swap default: Finished transferring ownership");
 
     // ======== Setup the isolated margin ========
-    await isolatedMargin.approve(approvedTokens, supported);
+    const marginApproved = config.approved.filter((approved) => approved.margin).map((approved) => approved.address);
+    const marginSupported = Array(marginApproved.length).fill(true);
+    await isolatedMargin.approve(marginApproved, marginSupported);
     console.log("Setup isolated margin: Finished approving collateral tokens");
 
     await isolatedMargin.transferOwnership(timelock.address);
@@ -86,7 +89,7 @@ export default async function main() {
     console.log("Setup timelock: Finishing assigning roles");
 
     // ======== Setup the yield ========
-    const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.LPFromPA(approved)));
+    const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => pool.LPFromPA(approved)));
     const rateNumerators = Array(lpTokens.length).fill(10);
     const rateDenominators = Array(lpTokens.length).fill(100);
     await _yield.setRates(lpTokens, rateNumerators, rateDenominators);
