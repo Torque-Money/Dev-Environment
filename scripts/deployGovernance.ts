@@ -5,7 +5,7 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs1 = {
-        initialSupply: ethers.BigNumber.from(1000000000).mul(10).pow(18),
+        initialSupply: ethers.BigNumber.from(10).pow(18).mul(1000000000),
     };
     const Token = await hre.ethers.getContractFactory("Token");
     const token = await Token.deploy(...Object.values(constructorArgs1));
@@ -27,14 +27,14 @@ export default async function main() {
         votingPeriod: hre.ethers.BigNumber.from(604800).div(config.avgBlockTime),
         proposalThreshold: 2,
     };
-    const Governor = await hre.ethers.getContractFactory("Governor");
-    const governor = await Governor.deploy(...Object.values(constructorArgs2));
-    config.governorAddress = governor.address;
-    console.log("Deployed: Governor");
+    const Governance = await hre.ethers.getContractFactory("Governance");
+    const governance = await Governance.deploy(...Object.values(constructorArgs2));
+    config.governanceAddress = governance.address;
+    console.log("Deployed: Governance");
 
     const constructorArgs3 = {
         minDelay: 259200,
-        proposers: [governor.address],
+        proposers: [governance.address],
         executors: [hre.ethers.constants.AddressZero],
         taxPercentageNumerator: 5,
         taxPercentageDenominator: 100,
