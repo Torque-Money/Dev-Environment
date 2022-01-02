@@ -75,25 +75,24 @@ abstract contract LPoolInterest is LPoolManipulation {
         uint256 valueLocked = tvl(token_);
         uint256 utilized = valueLocked.sub(liquidity(token_));
 
-        (uint256 maxUtilizationNumerator, uint256 maxUtilizationDenominator) = maxUtilization(token_);
+        FractionMath.Fraction memory utilization = _maxUtilization[token_];
+        FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
+        FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
-        if (utilized.mul(maxUtilizationDenominator) > tvl(token_).mul(maxUtilizationNumerator)) {
-            (uint256 maxInterestMinNumerator, uint256 maxInterestMinDenominator) = maxInterestMin(token_);
-            (uint256 maxInterestMaxNumerator, uint256 maxInterestMaxDenominator) = maxInterestMax(token_);
+        if (utilized.mul(utilization.denominator) > tvl(token_).mul(utilization.numerator)) {
+            uint256 numerator;
+            { numerator = utilized.mul(interestMax.numerator).mul(utilization.denominator).mul(interestMin.denominator); }
+            { numerator = numerator.add(utilization.numerator.mul(interestMin.numerator).mul(valueLocked).mul(interestMax.denominator)); }
+            { numerator = numerator.mul(utilization.denominator).mul(interestMax.denominator); }
+            { numerator = numerator.sub(utilization.numerator.mul(interestMax.numerator).mul(valueLocked)
+                            .mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator)); }
 
-            uint256 numerator = utilized
-                .mul(maxInterestMaxNumerator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator)
-                .add(maxUtilizationNumerator.mul(maxInterestMinNumerator).mul(valueLocked).mul(maxInterestMaxDenominator))
-                .mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator)
-                .sub(maxUtilizationNumerator
-                    .mul(maxInterestMaxNumerator).mul(valueLocked).mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator)
-                );
-            uint256 denominator = valueLocked.mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator).mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator);
+            uint256 denominator = valueLocked.mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator)
+                                    .mul(utilization.denominator).mul(interestMax.denominator);
             return (numerator, denominator);
         }
         else {
-            (uint256 maxInterestNumerator, uint256 maxInterestDenominator) = maxInterestMin(token_);
-            return (utilized.mul(maxInterestNumerator), valueLocked.mul(maxInterestDenominator));
+            return (utilized.mul(interestMin.numerator), valueLocked.mul(interestMin.denominator));
         }
     }
 
