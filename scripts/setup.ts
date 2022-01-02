@@ -78,7 +78,7 @@ export default async function main() {
     await timelock.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
 
     // ======== Setup the yield ========
-    const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.PAToLP(approved)));
+    const lpTokens = await Promise.all(approvedTokens.map((approved) => pool.LPFromPA(approved)));
     const rateNumerators = Array(lpTokens.length).fill(10);
     const rateDenominators = Array(lpTokens.length).fill(100);
     await _yield.setRates(lpTokens, rateNumerators, rateDenominators);
