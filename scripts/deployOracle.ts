@@ -4,7 +4,7 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        pool: config.poolAddress,
+        pool: config.leveragePoolAddress,
     };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(constructorArgs));

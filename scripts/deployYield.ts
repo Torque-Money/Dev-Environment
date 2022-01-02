@@ -5,7 +5,6 @@ import config from "../config.json";
 export default async function main() {
     const constructorArgs = {
         token: config.tokenAddress,
-        pool: config.poolAddress,
     };
     const Yield = await hre.ethers.getContractFactory("Yield");
     const _yield = await Yield.deploy(...Object.values(constructorArgs));

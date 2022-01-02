@@ -2,25 +2,17 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "../LPool/LPool.sol";
 import "../Governance/Token.sol";
 
 contract YieldCore is Ownable {
     Token public token;
-    LPool public pool;
 
-    constructor(Token token_, LPool pool_) {
+    constructor(Token token_) {
         token = token_;
-        pool = pool_;
     }
 
     // Set the yield distribution token
     function setToken(Token token_) external onlyOwner {
         token = token_;
-    }
-
-    // Set the pool to use
-    function setPool(LPool pool_) external onlyOwner {
-        pool = pool_;
     }
 }

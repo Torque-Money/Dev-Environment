@@ -4,7 +4,7 @@ import config from "../config.json";
 
 export default async function main() {
     const constructorArgs = {
-        pool: config.poolAddress,
+        pool: config.leveragePoolAddress,
         oracle: config.oracleAddress,
         flashSwap: config.flashSwapAddress,
         swapToleranceNumerator: 3,

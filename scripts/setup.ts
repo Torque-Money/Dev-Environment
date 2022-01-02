@@ -22,7 +22,7 @@ export default async function main() {
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    const pool = await hre.ethers.getContractAt("LPool", config.poolAddress);
+    const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
     const oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
     const flashSwapDefault = await hre.ethers.getContractAt("FlashSwapDefault", config.flashSwapDefaultAddress);
     const isolatedMargin = await hre.ethers.getContractAt("IsolatedMargin", config.isolatedMarginAddress);
@@ -34,22 +34,22 @@ export default async function main() {
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
     const approvedNames = config.approved.map((approved) => "Torque Leveraged " + approved.name);
     const approvedSymbols = config.approved.map((approved) => "tl" + approved.symbol);
-    await pool.approve(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
+    await leveragePool.approve(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
     const maxInterestMinNumerator = Array(leveragePoolApprovedTokens.length).fill(15);
     const maxInterestMinDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
-    await pool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
+    await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
     const maxInterestMaxNumerator = Array(leveragePoolApprovedTokens.length).fill(45);
     const maxInterestMaxDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
-    await pool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
+    await leveragePool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
     const maxUtilizationNumerator = Array(leveragePoolApprovedTokens.length).fill(60);
     const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
-    await pool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
+    await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
     console.log("Setup pool: Finished setting tokens up");
 
-    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), isolatedMargin.address);
-    await pool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), timelock.address);
-    await pool.setTaxAccount(timelock.address);
-    await pool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), isolatedMargin.address);
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), timelock.address);
+    await leveragePool.setTaxAccount(timelock.address);
+    await leveragePool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
     console.log("Setup pool: Finishing assigning roles");
 
     // ======== Setup the oracle ========
@@ -89,7 +89,7 @@ export default async function main() {
     console.log("Setup timelock: Finishing assigning roles");
 
     // ======== Setup the yield ========
-    const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => pool.LPFromPA(approved)));
+    const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => leveragePool.LPFromPA(approved)));
     const rateNumerators = Array(lpTokens.length).fill(10);
     const rateDenominators = Array(lpTokens.length).fill(100);
     await _yield.setRates(lpTokens, rateNumerators, rateDenominators);

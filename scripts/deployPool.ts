@@ -10,7 +10,7 @@ export default async function main() {
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(constructorArgs));
-    config.poolAddress = pool.address;
+    config.leveragePoolAddress = pool.address;
     console.log("Deployed: Pool");
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
