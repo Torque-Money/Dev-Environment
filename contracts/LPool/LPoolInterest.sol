@@ -77,13 +77,24 @@ abstract contract LPoolInterest is LPoolManipulation {
 
         (uint256 maxUtilizationNumerator, uint256 maxUtilizationDenominator) = maxUtilization(token_);
 
-        uint256 maxInterestNumerator;
-        uint256 maxInterestDenominator;
+        if (utilized.mul(maxUtilizationDenominator) > tvl(token_).mul(maxUtilizationNumerator)) {
+            (uint256 maxInterestMinNumerator, uint256 maxInterestMinDenominator) = maxInterestMin(token_);
+            (uint256 maxInterestMaxNumerator, uint256 maxInterestMaxDenominator) = maxInterestMax(token_);
 
-        if (utilized.mul(maxUtilizationDenominator) > tvl(token_).mul(maxUtilizationNumerator)) (maxInterestNumerator, maxInterestDenominator) = maxInterestMax(token_);
-        else (maxInterestNumerator, maxInterestDenominator) = maxInterestMin(token_);
-
-        return (utilized.mul(maxInterestNumerator), valueLocked.mul(maxInterestDenominator));
+            uint256 numerator = utilized
+                .mul(maxInterestMaxNumerator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator)
+                .add(maxUtilizationNumerator.mul(maxInterestMinNumerator).mul(valueLocked).mul(maxInterestMaxDenominator))
+                .mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator)
+                .sub(maxUtilizationNumerator
+                    .mul(maxInterestMaxNumerator).mul(valueLocked).mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maxInterestMinDenominator)
+                );
+            uint256 denominator = valueLocked.mul(maxInterestMaxDenominator).mul(maxUtilizationDenominator).mul(maInterestMinDenominator).mul(maxUtilizationDenominator).mul(maxInterestMaxDenominator);
+            return (numerator, denominator);
+        }
+        else {
+            (uint256 maxInterestNumerator, uint256 maxInterestDenominator) = maxInterestMin(token_);
+            return (utilized.mul(maxInterestNumerator), valueLocked.mul(maxInterestDenominator));
+        }
     }
 
     // Get the interest on a given asset for a given number of blocks
