@@ -8,7 +8,7 @@ export default async function main() {
     const timelock = await hre.ethers.getContractAt("Timelock", config.timelockAddress);
 
     await timelock.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE")), signerAddress);
-    console.log("Setup timelock: Finishing assigning roles");
+    console.log("Setup: Timelock");
 }
 
 if (require.main === module)
