@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import config from "../config.json";
+import config from "../../config.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 export default async function main() {
@@ -13,7 +13,7 @@ export default async function main() {
         const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
         const tokenBalance = await token.balanceOf(signerAddress);
 
-        await token.approve(config.poolAddress, tokenBalance);
+        await token.approve(config.leveragePoolAddress, tokenBalance);
         await token.approve(config.isolatedMarginAddress, tokenBalance);
 
         console.log(`Approve: Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);

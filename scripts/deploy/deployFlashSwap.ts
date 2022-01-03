@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import fs from "fs";
-import config from "../config.json";
+import config from "../../config.json";
 
 export default async function main() {
     const constructorArgs1 = {};
