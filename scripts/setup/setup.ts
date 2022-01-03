@@ -1,10 +1,9 @@
 import hre from "hardhat";
-import fs from "fs";
-import config from "../config.json";
+import config from "../../config.json";
 
 import deployPool from "./deployPool";
 import deployOracle from "./deployOracle";
-import deployFlashSwap from "./deploy/deployFlashSwap";
+import deployFlashSwap from "../deploy/deployFlashSwap";
 import deployIsolatedMargin from "./deployIsolatedMargin";
 import deployGovernance from "./deployGovernance";
 import deployYield from "./deployYield";
