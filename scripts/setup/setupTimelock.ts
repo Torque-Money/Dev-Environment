@@ -2,7 +2,6 @@ import hre from "hardhat";
 import config from "../../config.json";
 
 export default async function main() {
-    // Get the deployer contracts
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
