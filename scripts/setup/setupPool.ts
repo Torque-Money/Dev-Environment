@@ -25,6 +25,7 @@ export default async function main() {
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), config.timelockAddress);
     await leveragePool.setTaxAccount(config.timelockAddress);
     await leveragePool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
+
     console.log("Setup: Leverage pool");
 }
 
