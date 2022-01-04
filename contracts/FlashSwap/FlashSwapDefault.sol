@@ -133,15 +133,15 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
                 IERC20 inToken = inSet.keyAtIndex(j);
                 uint256 amountIn = inAmounts[inToken];
 
-                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);    // Get the minimum tokens in to achieve the minimum amount out
-                if (minIn >= amountIn) {                                        // If the minimum amount is LESS than the amount we have
+                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);    // Get the minimum collateral to achieve the minimum amount out
+                if (minIn >= amountIn) {                                        // If the minimum amount is GREATER than the amount we have
                     uint256 out = _flashSwap(inToken, amountIn, outToken);      // Swap the full amount of collateral we have since it is "not enough" to satisfy the amount out
 
                     finalAmounts[outToken] = finalAmounts[outToken].add(out);
                     inAmounts[inToken] = 0;
                     inSet.remove(inToken);
 
-                    if (out >= minAmountOut) break;                             // If the amount out we have is greater than the amount we need
+                    if (out >= minAmountOut) break;                             // If the amount out we have is greater than the amount we need (shouldnt ever be greater)
                     else minAmountOut = minAmountOut.sub(out);
 
                 } else {
@@ -156,11 +156,13 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         }
 
         uint256[] memory amountsOut = new uint256[](tokenOut_.length);
-        for (uint i = 0; i < amountsOut.length; i++) {
+        for (uint i = 0; i < tokenOut_.length; i++) {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
 
-        // **** We also need to iterate over the remaining collateral and return it back to the sender if it is there
+        for (uint i = 0; i < tokenIn_.length; i++) {
+            
+        }
 
         return amountsOut;
     }
