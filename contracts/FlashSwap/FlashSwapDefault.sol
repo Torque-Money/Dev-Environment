@@ -122,7 +122,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             }
         }
 
-        uint256[] memory amountsOut = new uint256[](tokenOut_.length);
+        uint256[] memory amountsOut = new uint256[](tokenOut_.length);          // The final amounts of output tokens
         for (uint i = 0; i < tokenOut_.length; i++) {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
