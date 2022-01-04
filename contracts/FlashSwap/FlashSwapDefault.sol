@@ -102,7 +102,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     ) external override returns (uint256[] memory) {
         // Get indexes for in and out storages
         uint256 inIndex = _index++;
-        uint256 outIndex = _index++;
         uint256 finalIndex = _index++;
 
         // Move in tokens and amounts to a set and a mapping
@@ -114,22 +113,12 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             inAmounts[token] = amountIn_[i];
         }
 
-        // Move out tokens and amounts to a set and a mapping
-        TokenSet.Set storage outSet = _sets[outIndex];
-        mapping(IERC20 => uint256) storage outAmounts = _amounts[outIndex];
-        for (uint i = 0; i < tokenOut_.length; i++) {
-            IERC20 token = tokenOut_[i];
-            outSet.insert(token);
-            outAmounts[token] = minAmountOut_[i];
-        }
-
-        // **** We can probably get rid of this out amounts one and then the index for it too
-
+        // Store final amounts of tokens
         mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
 
-        for (uint i = 0; i < outSet.count(); i++) {
-            IERC20 outToken = outSet.keyAtIndex(i);
-            uint256 minAmountOut = outAmounts[outToken];
+        for (uint i = 0; i < tokenOut_.length; i++) {
+            IERC20 outToken = tokenOut_[i];
+            uint256 minAmountOut = minAmountOut_[i];
 
             for (uint j = 0; j < inSet.count(); j++) {
                 IERC20 inToken = inSet.keyAtIndex(j);
