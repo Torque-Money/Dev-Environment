@@ -100,9 +100,12 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_,
         uint256[] memory minAmountOut_, bytes memory data_
     ) external override returns (uint256[] memory) {
+        // Get indexes for in and out storages
         uint256 inIndex = _index++;
         uint256 outIndex = _index++;
+        uint256 finalIndex = _index++;
 
+        // Move in tokens and amounts to a set and a mapping
         TokenSet.Set storage inSet = _sets[inIndex];
         mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
         for (uint i = 0; i < tokenIn_.length; i++) {
@@ -111,13 +114,16 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             inAmounts[token] = amountIn_[i];
         }
 
+        // Move out tokens and amounts to a set and a mapping
         TokenSet.Set storage outSet = _sets[outIndex];
-        mapping(IERC20 => uint256) storage outAmounts = _amounts[inIndex];
+        mapping(IERC20 => uint256) storage outAmounts = _amounts[outIndex];
         for (uint i = 0; i < tokenOut_.length; i++) {
             IERC20 token = tokenOut_[i];
             outSet.insert(token);
             outAmounts[token] = minAmountOut_[i];
         }
+
+        mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
 
         for (uint i = 0; i < outSet.count(); i++) {
             IERC20 outToken = outSet.keyAtIndex(i);
@@ -131,7 +137,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
                 if (minIn >= amountIn) {
                     uint256 out = _flashSwap(inToken, amountIn, outToken);
 
-                    outAmounts[outToken] = outAmounts[outToken].add(out);
+                    finalAmounts[outToken] = finalAmounts[outToken].add(out);
 
                     inSet.remove(inToken);
 
@@ -139,14 +145,20 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
                     else minAmountOut = minAmountOut.sub(out);
 
                 } else {
-                    uint256 out = _flashSwap(minIn, amountIn, outToken);
+                    uint256 out = _flashSwap(inToken, minIn, outToken);
 
-                    outAmounts[outToken] = outAmounts[outToken].add(out);
+                    finalAmounts[outToken] = finalAmounts[outToken].add(out);
 
                     break;
                 }
             }
         }
 
+        uint256[] memory amountsOut = new uint256[](tokenOut_.length);
+        for (uint i = 0; i < amountsOut.length; i++) {
+            amountsOut[i] = finalAmounts[tokenOut_[i]];
+        }
+
+        return amountsOut;
     }
 }
