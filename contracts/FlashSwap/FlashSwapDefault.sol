@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/UniswapV2Router02.sol";
-import "../LPool/LPool.sol";
 import "../lib/Set.sol";
 import "./IFlashSwap.sol";
 
@@ -16,25 +15,18 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     using TokenSet for TokenSet.Set;
 
     UniswapV2Router02 public router; 
-    LPool public pool;
 
     mapping(uint256 => TokenSet.Set) private _sets;
     mapping(uint256 => mapping(IERC20 => uint256)) private _amounts;
     uint256 private _index;
 
-    constructor(UniswapV2Router02 router_, LPool pool_) {
+    constructor(UniswapV2Router02 router_) {
         router = router_;
-        pool = pool_;
     }
 
     // Set the router to be used for the swap
     function setRouter(UniswapV2Router02 router_) external onlyOwner {
         router = router_;
-    }
-
-    // Set the pool
-    function setPool(LPool pool_) external onlyOwner {
-        pool = pool_;
     }
 
     function _bytesToAddress(bytes memory source_) internal pure returns (address addr) {
@@ -46,33 +38,18 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     // Wrapper for the swap
     function _swap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
         address[] memory path = new address[](2);
-        bool tokenOutIsLP = pool.isLP(tokenOut_);
-        uint256 amountOut = 0;
 
-        if (pool.isLP(tokenIn_)) {
-            amountIn_ = pool.redeem(tokenIn_, amountIn_);
-            path[0] = address(pool.PAFromLP(tokenIn_));
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
 
-        } else {
-            path[0] = address(tokenIn_);
-        }
-
-        if (tokenOutIsLP) {
-            path[1] = address(pool.PAFromLP(tokenOut_));
-
-        } else {
-            path[1] = address(tokenOut_);
-        }
-
+        uint256 amountOut;
         if (path[0] == path[1]) {
-            amountOut = amountOut.add(amountIn_);
+            amountOut = amountIn_;
 
         } else {
             IERC20(path[0]).safeApprove(address(router), amountIn_);
-            amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1 hours)[1]);
+            amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1)[1];
         }
-
-        if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
 
         tokenOut_.safeTransfer(_msgSender(), amountOut);
 
@@ -81,8 +58,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
     // Wrapper for the amounts out
     function _amountsIn(IERC20 tokenIn_, uint256 minAmountOut_, IERC20 tokenOut_) internal view returns (uint256) {
-        // **** Add in support for pool tokens
-
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
@@ -90,8 +65,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     }
 
     function _amountsOut(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal view returns (uint256) {
-        // **** Add in support for pool tokens
-
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
