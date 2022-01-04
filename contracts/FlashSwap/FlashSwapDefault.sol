@@ -123,6 +123,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             outAmounts[token] = minAmountOut_[i];
         }
 
+        // **** We can probably get rid of this out amounts one and then the index for it too
+
         mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
 
         for (uint i = 0; i < outSet.count(); i++) {
@@ -162,7 +164,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
         // Payout excess collateral to specified account from the data
         address rewarded = _bytesToAddress(data_);
-        for (uint i = 0; i < tokenIn_.length; i++) if (inAmounts[tokenIn_[i]] > 0) tokenIn_[i].safeTransfer(rewarded, inAmounts[tokenIn_[i]]);
+        for (uint i = 0; i < tokenIn_.length; i++)
+            if (inAmounts[tokenIn_[i]] > 0) tokenIn_[i].safeTransfer(rewarded, inAmounts[tokenIn_[i]]);
 
         return amountsOut;
     }
