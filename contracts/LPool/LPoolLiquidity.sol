@@ -19,7 +19,7 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit, LPoolLend {
     }
 
     // Get the available liquidity of the pool
-    function liquidity(IERC20 token_) public view override returns (uint256) {
+    function liquidity(IERC20 token_) public view override(LPoolClaim, LPoolDeposit, LPoolLend) returns (uint256) {
         uint256 claimed = totalClaimed(token_);
         uint256 _loaned = totalLoaned(token_);
         return tvl(token_).sub(claimed).sub(_loaned);

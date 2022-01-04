@@ -7,6 +7,6 @@ import "./YieldStake.sol";
 
 contract Yield is YieldStake {
     constructor(Token token_, LPool pool_)
-        YieldCore(token_, pool_)
+        YieldCore(token_)
     {}
 }

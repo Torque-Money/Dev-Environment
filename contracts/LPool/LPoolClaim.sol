@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolApproved.sol";
 
-abstract contract LPoolClaim is LPoolApproved  {
+abstract contract LPoolClaim is LPoolApproved {
     using SafeMath for uint256;
 
     mapping(address => mapping(IERC20 => uint256)) private _claimed;
