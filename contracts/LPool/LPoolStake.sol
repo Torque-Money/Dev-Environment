@@ -48,6 +48,7 @@ abstract contract LPoolStake is LPoolLiquidity {
         IERC20 approvedToken = PAFromLP(token_);
 
         uint256 value = redeemValue(LPToken, amount_);
+        require(value <= liquidity(approvedToken), "Not enough liquidity to redeem at this time");
 
         LPToken.burn(_msgSender(), amount_);
         approvedToken.safeTransfer(_msgSender(), value);

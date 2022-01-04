@@ -81,6 +81,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
     // Wrapper for the amounts out
     function _amountsIn(IERC20 tokenIn_, uint256 minAmountOut_, IERC20 tokenOut_) internal view returns (uint256) {
+        // **** Add in support for pool tokens
+
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
@@ -88,6 +90,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     }
 
     function _amountsOut(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal view returns (uint256) {
+        // **** Add in support for pool tokens
+
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
