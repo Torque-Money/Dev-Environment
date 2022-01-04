@@ -159,7 +159,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
 
-        // **** Look into a better way of getting the correct amount out too
+        // **** Look into a better way of getting the correct amount out too including excess
 
         return amountsOut;
     }
