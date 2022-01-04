@@ -40,7 +40,7 @@ abstract contract IsolatedMarginAccount is Margin {
 
         account.collateralAmounts[collateral_] = amount_;
         setTotalCollateral(collateral_, totalCollateral(collateral_).sub(_collateral[borrowed_][account_]).add(amount_));
-        _collateral[borrowed_][account_] = _collateral[borrowed_][account_].sub(_collateral[borrowed_][account_]).add(amount_);
+        _collateral[borrowed_][account_] = amount_;
     }
 
     // Get the collateral for a given asset for a given account
