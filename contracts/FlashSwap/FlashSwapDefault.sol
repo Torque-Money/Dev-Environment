@@ -76,12 +76,10 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     function _flashSwap(
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_, uint256[] memory minAmountOut_
     ) internal returns (uint256[] memory) {
-        // Get indexes for in and out storages
         uint256 inIndex = _index++;
         uint256 finalIndex = _index++;
 
-        // Move in tokens and amounts to a set and a mapping
-        TokenSet.Set storage inSet = _sets[inIndex];
+        TokenSet.Set storage inSet = _sets[inIndex];                            // Move in tokens and amounts to a set and a mapping
         mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
         for (uint i = 0; i < tokenIn_.length; i++) {
             IERC20 token = tokenIn_[i];
@@ -89,8 +87,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             inAmounts[token] = amountIn_[i];
         }
 
-        // Store final amounts of tokens
-        mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
+        mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex]; // Store final amounts of tokens
 
         for (uint i = 0; i < tokenOut_.length; i++) {                           // Iterate over output tokens first (all must be covered)
             IERC20 outToken = tokenOut_[i];
@@ -138,8 +135,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     ) external override returns (uint256[] memory) {
         uint256[] memory amountsOut = _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_);
 
-        // Payout excess collateral to specified account from the data
-        address rewarded = _bytesToAddress(data_);
+        address rewarded = _bytesToAddress(data_);                              // Payout excess collateral to specified account from the data
         for (uint i = 0; i < tokenIn_.length; i++) {
             IERC20 token = tokenIn_[i];
             uint256 tokenBalance = token.balanceOf(address(this));
