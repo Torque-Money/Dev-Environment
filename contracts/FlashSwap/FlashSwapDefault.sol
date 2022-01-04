@@ -127,26 +127,27 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
 
         for (uint i = 0; i < outSet.count(); i++) {
             IERC20 outToken = outSet.keyAtIndex(i);
-            uint256 minAmountOut = outAmounts[outToken]; // **** Careful of overflows
+            uint256 minAmountOut = outAmounts[outToken];
 
             for (uint j = 0; j < inSet.count(); j++) {
                 IERC20 inToken = inSet.keyAtIndex(j);
                 uint256 amountIn = inAmounts[inToken];
 
-                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);
-                if (minIn >= amountIn) {
-                    uint256 out = _flashSwap(inToken, amountIn, outToken);
+                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);    // Get the minimum tokens in to achieve the minimum amount out
+                if (minIn >= amountIn) {                                        // If the minimum amount is LESS than the amount we have
+                    uint256 out = _flashSwap(inToken, amountIn, outToken);      // Swap the full amount of collateral we have since it is "not enough" to satisfy the amount out
 
                     finalAmounts[outToken] = finalAmounts[outToken].add(out);
-
+                    inAmounts[inToken] = 0;
                     inSet.remove(inToken);
 
-                    if (out >= minAmountOut) break;
+                    if (out >= minAmountOut) break;                             // If the amount out we have is greater than the amount we need
                     else minAmountOut = minAmountOut.sub(out);
 
                 } else {
-                    uint256 out = _flashSwap(inToken, minIn, outToken);
+                    uint256 out = _flashSwap(inToken, minIn, outToken);         // Swap the minimum amount of collateral needed to get the min amount out
 
+                    inAmounts[inToken] = inAmounts[inToken].sub(minIn);
                     finalAmounts[outToken] = finalAmounts[outToken].add(out);
 
                     break;
@@ -159,7 +160,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
 
-        // **** Look into a better way of getting the correct amount out too including excess
+        // **** We also need to iterate over the remaining collateral and return it back to the sender if it is there
 
         return amountsOut;
     }
