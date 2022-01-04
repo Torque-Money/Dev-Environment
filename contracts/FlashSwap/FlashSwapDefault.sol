@@ -47,19 +47,52 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     function flashSwap(
         address,
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_,
-        uint256[] memory minTokenOut_, bytes memory data_
+        uint256[] memory minAmountOut_, bytes memory data_
     ) external override returns (uint256[] memory) {
-        // **** Game plan: for each amount out asset, iterate over the available collaterals and use them to pay off the full amount outs
-        // **** First I need to get the token in and token out into a set to be iterated over
-
         uint256 inIndex = _index++;
         uint256 outIndex = _index++;
 
         TokenSet.Set storage inSet = _sets[inIndex];
         mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
+        for (uint i = 0; i < tokenIn_.length; i++) {
+            IERC20 token = tokenIn_[i];
+            inSet.insert(token);
+            inAmounts[token] = amountIn_[i];
+        }
 
         TokenSet.Set storage outSet = _sets[outIndex];
         mapping(IERC20 => uint256) storage outAmounts = _amounts[inIndex];
+        for (uint i = 0; i < tokenOut_.length; i++) {
+            IERC20 token = tokenOut_[i];
+            outSet.insert(token);
+            outAmounts[token] = minAmountOut_[i];
+        }
+
+        // **** So now we need to iterate over all of the out tokens, and then we need to swap each collateral until the minimum amount is satisfied
+
+        for (uint i = 0; i < outSet.count(); i++) {
+            IERC20 outToken = outSet.keyAtIndex(i);
+            uint256 minAmountOut = outAmounts[outToken]; // **** Careful of overflows
+
+            address[] memory path = new address[](2);
+            path[1] = address(outToken);
+
+            for (uint j = 0; j < inSet.count(); j++) {
+                IERC20 inToken = inSet.keyAtIndex(j);
+                uint256 amountIn = inAmounts[inToken];
+
+                path[0] = address(inToken);
+
+                uint256 out = router.getAmountsOut(amountIn, path)[1];
+                if (out > minAmountOut)
+                    amountIn = minAmountOut.mul(amountIn).div(out); // **** Is there any way of rounding up to make sure we get more than necessary ?
+                }
+                out = router.swapExactTokensForTokens(amountIn, 0, path, address(this), block.timestamp.add(1))[1]; // **** I'm thinking regarding this, I could probs do some magic with swaptokensforexact
+                minAmountOut = minAmountOut.sub(out); // **** Careful of underflows
+
+                // **** Check the swap price, if it is greater then we will only take necessary amount and break, otherwise remove it all - maybe make an internal for LP etc
+            }
+        }
 
         // address[] memory path = new address[](2);
         // bool tokenOutIsLP = pool.isLP(tokenOut_);
