@@ -40,9 +40,9 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
         address,
-        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_,
-        uint256 minTokenOut_, bytes memory data_
-    ) external override returns (uint256) {
+        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_,
+        uint256[] memory minTokenOut_, bytes memory data_
+    ) external override returns (uint256[] memory) {
         address[] memory path = new address[](2);
         bool tokenOutIsLP = pool.isLP(tokenOut_);
         uint256 amountOut = 0;
