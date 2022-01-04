@@ -6,22 +6,10 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
-import "./LPoolClaim.sol";
 
-abstract contract LPoolManipulation is LPoolApproved, LPoolTax, LPoolClaim {
+abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-
-    // Return the total value locked of a given asset
-    function tvl(IERC20 token_) public view returns (uint256) {
-        return token_.balanceOf(address(this));
-    }
-
-    // Get the available liquidity of the pool
-    function liquidity(IERC20 token_) public view override returns (uint256) {
-        uint256 claimed = totalClaimed(token_);
-        return tvl(token_).sub(claimed);
-    }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
     function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
