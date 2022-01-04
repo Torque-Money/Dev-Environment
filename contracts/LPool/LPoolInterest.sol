@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
-import "./LPoolManipulation.sol";
+import "./LPoolLiquidity.sol";
 
-abstract contract LPoolInterest is LPoolManipulation {
+abstract contract LPoolInterest is LPoolLiquidity {
     using SafeMath for uint256;
 
     uint256 public blocksPerCompound;
