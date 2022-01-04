@@ -44,7 +44,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     }
 
     // Wrapper for the swap
-    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, bytes memory data_) internal returns (uint256) {
+    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
         address[] memory path = new address[](2);
         bool tokenOutIsLP = pool.isLP(tokenOut_);
         uint256 amountOut = 0;
@@ -75,7 +75,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
 
         tokenOut_.safeTransfer(_msgSender(), amountOut);
-        // **** Add in a min amount out for the swap too and pay out the difference
 
         return amountOut;
     }
@@ -159,6 +158,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         for (uint i = 0; i < amountsOut.length; i++) {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
+
+        // **** Look into a better way of getting the correct amount out too
 
         return amountsOut;
     }
