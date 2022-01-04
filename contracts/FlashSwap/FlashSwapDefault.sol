@@ -5,16 +5,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./IFlashSwap.sol";
 import "../lib/UniswapV2Router02.sol";
 import "../LPool/LPool.sol";
+import "../lib/Set.sol";
+import "./IFlashSwap.sol";
 
 contract FlashSwapDefault is IFlashSwap, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+    using TokenSet for TokenSet.Set;
 
     UniswapV2Router02 public router; 
     LPool public pool;
+
+    mapping(uint256 => TokenSet.Set) private _sets;
+    mapping(uint256 => mapping(IERC20 => uint256)) private _amounts;
+    uint256 private _index;
 
     constructor(UniswapV2Router02 router_, LPool pool_) {
         router = router_;
@@ -43,45 +49,57 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_,
         uint256[] memory minTokenOut_, bytes memory data_
     ) external override returns (uint256[] memory) {
-    //     address[] memory path = new address[](2);
-    //     bool tokenOutIsLP = pool.isLP(tokenOut_);
-    //     uint256 amountOut = 0;
+        // **** Game plan: for each amount out asset, iterate over the available collaterals and use them to pay off the full amount outs
+        // **** First I need to get the token in and token out into a set to be iterated over
 
-    //     for (uint i = 0; i < tokenIn_.length; i++) {
-    //         if (pool.isLP(tokenIn_[i])) {
-    //             amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
-    //             path[0] = address(pool.PAFromLP(tokenIn_[i]));
+        uint256 inIndex = _index++;
+        uint256 outIndex = _index++;
 
-    //         } else {
-    //             path[0] = address(tokenIn_[i]);
-    //         }
+        TokenSet.Set storage inSet = _sets[inIndex];
+        mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
 
-    //         if (tokenOutIsLP) {
-    //             path[1] = address(pool.PAFromLP(tokenOut_));
+        TokenSet.Set storage outSet = _sets[outIndex];
+        mapping(IERC20 => uint256) storage outAmounts = _amounts[inIndex];
 
-    //         } else {
-    //             path[1] = address(tokenOut_);
-    //         }
+        // address[] memory path = new address[](2);
+        // bool tokenOutIsLP = pool.isLP(tokenOut_);
+        // uint256 amountOut = 0;
 
-    //         if (path[0] == path[1]) {
-    //             amountOut = amountOut.add(amountIn_[i]);
+        // for (uint i = 0; i < tokenIn_.length; i++) {
+        //     if (pool.isLP(tokenIn_[i])) {
+        //         amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
+        //         path[0] = address(pool.PAFromLP(tokenIn_[i]));
 
-    //         } else {
-    //             IERC20(path[0]).safeApprove(address(router), amountIn_[i]);
-    //             amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_[i], 0, path, address(this), block.timestamp + 1 hours)[1]);
-    //         }
-    //     }
+        //     } else {
+        //         path[0] = address(tokenIn_[i]);
+        //     }
 
-    //     if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
+        //     if (tokenOutIsLP) {
+        //         path[1] = address(pool.PAFromLP(tokenOut_));
 
-    //     address rewarded = _bytesToAddress(data_);
-    //     if (rewarded != _bytesToAddress("")) {
-    //         tokenOut_.safeTransfer(rewarded, amountOut.sub(minTokenOut_));
-    //         amountOut = minTokenOut_;
-    //     }
+        //     } else {
+        //         path[1] = address(tokenOut_);
+        //     }
 
-    //     tokenOut_.safeTransfer(_msgSender(), amountOut);
+        //     if (path[0] == path[1]) {
+        //         amountOut = amountOut.add(amountIn_[i]);
 
-    //     return amountOut;
+        //     } else {
+        //         IERC20(path[0]).safeApprove(address(router), amountIn_[i]);
+        //         amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_[i], 0, path, address(this), block.timestamp + 1 hours)[1]);
+        //     }
+        // }
+
+        // if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
+
+        // address rewarded = _bytesToAddress(data_);
+        // if (rewarded != _bytesToAddress("")) {
+        //     tokenOut_.safeTransfer(rewarded, amountOut.sub(minTokenOut_));
+        //     amountOut = minTokenOut_;
+        // }
+
+        // tokenOut_.safeTransfer(_msgSender(), amountOut);
+
+        // return amountOut;
     }
 }
