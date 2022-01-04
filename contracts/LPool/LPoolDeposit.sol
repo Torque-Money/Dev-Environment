@@ -24,9 +24,12 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     // Withdraw a given amount of collateral from the pool
     function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
+        require(amount_ <= liquidity(token_), "Withdraw amount exceeds available liquidity");
         token_.safeTransfer(_msgSender(), amount_);
         emit Withdraw(_msgSender(), token_, amount_);
     }
+
+    function liquidity(IERC20 token_) public view virtual returns (uint256);
 
     event Deposit(address indexed account, IERC20 token, uint256 amount, uint256 tax, address taxAccount);
     event Withdraw(address indexed account, IERC20 token, uint256 amount);

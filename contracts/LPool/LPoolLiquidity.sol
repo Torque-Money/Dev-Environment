@@ -6,19 +6,22 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolClaim.sol";
 import "./LPoolDeposit.sol";
+import "./LPoolLend.sol";
 
-abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
+abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit, LPoolLend {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     // Return the total value locked of a given asset
     function tvl(IERC20 token_) public view returns (uint256) {
-        return token_.balanceOf(address(this));
+        uint256 _loaned = totalLoaned(token_);
+        return token_.balanceOf(address(this)).add(_loaned);
     }
 
     // Get the available liquidity of the pool
     function liquidity(IERC20 token_) public view override returns (uint256) {
         uint256 claimed = totalClaimed(token_);
-        return tvl(token_).sub(claimed);
+        uint256 _loaned = totalLoaned(token_);
+        return tvl(token_).sub(claimed).sub(_loaned);
     }
 }
