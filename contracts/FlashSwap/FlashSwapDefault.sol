@@ -160,9 +160,9 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
 
-        for (uint i = 0; i < tokenIn_.length; i++) {
-            
-        }
+        // Payout excess collateral to sender
+        address rewarded = _bytesToAddress(data_);
+        for (uint i = 0; i < tokenIn_.length; i++) if (inAmounts[tokenIn_[i]] > 0) tokenIn_[i].safeTransfer(rewarded, inAmounts[tokenIn_[i]]);
 
         return amountsOut;
     }
