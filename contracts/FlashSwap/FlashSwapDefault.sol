@@ -56,7 +56,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         return amountOut;
     }
 
-    // Wrapper for the amounts out
+    // Wrapper for the amounts in
     function _amountsIn(IERC20 tokenIn_, uint256 minAmountOut_, IERC20 tokenOut_) internal view returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
@@ -64,6 +64,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         return router.getAmountsIn(minAmountOut_, path)[0];
     }
 
+    // Wrapper for the amounts out
     function _amountsOut(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal view returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
@@ -71,6 +72,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         return router.getAmountsOut(amountIn_, path)[0];
     }
 
+    // Swap the input tokens to the minimum amount of output tokens required
     function _flashSwap(
         IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_, uint256[] memory minAmountOut_
     ) internal returns (uint256[] memory) {
