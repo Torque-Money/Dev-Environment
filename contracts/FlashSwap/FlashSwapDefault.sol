@@ -43,6 +43,57 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         }
     }
 
+    // Wrapper for the swap
+    function _flashSwap(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal returns (uint256) {
+        address[] memory path = new address[](2);
+        bool tokenOutIsLP = pool.isLP(tokenOut_);
+        uint256 amountOut = 0;
+
+        if (pool.isLP(tokenIn_)) {
+            amountIn_ = pool.redeem(tokenIn_, amountIn_);
+            path[0] = address(pool.PAFromLP(tokenIn_));
+
+        } else {
+            path[0] = address(tokenIn_);
+        }
+
+        if (tokenOutIsLP) {
+            path[1] = address(pool.PAFromLP(tokenOut_));
+
+        } else {
+            path[1] = address(tokenOut_);
+        }
+
+        if (path[0] == path[1]) {
+            amountOut = amountOut.add(amountIn_);
+
+        } else {
+            IERC20(path[0]).safeApprove(address(router), amountIn_);
+            amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1 hours)[1]);
+        }
+
+        if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
+
+        tokenOut_.safeTransfer(_msgSender(), amountOut);
+
+        return amountOut;
+    }
+
+    // Wrapper for the amounts out
+    function _amountsIn(IERC20 tokenIn_, uint256 minAmountOut_, IERC20 tokenOut_) internal view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+        return router.getAmountsIn(minAmountOut_, path)[0];
+    }
+
+    function _amountsOut(IERC20 tokenIn_, uint256 amountIn_, IERC20 tokenOut_) internal view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+        return router.getAmountsOut(amountIn_, path)[0];
+    }
+
     // Callback for swapping from one asset to another and return the amount of the asset swapped out for
     function flashSwap(
         address,
@@ -68,71 +119,34 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             outAmounts[token] = minAmountOut_[i];
         }
 
-        // **** So now we need to iterate over all of the out tokens, and then we need to swap each collateral until the minimum amount is satisfied
-
         for (uint i = 0; i < outSet.count(); i++) {
             IERC20 outToken = outSet.keyAtIndex(i);
             uint256 minAmountOut = outAmounts[outToken]; // **** Careful of overflows
-
-            address[] memory path = new address[](2);
-            path[1] = address(outToken);
 
             for (uint j = 0; j < inSet.count(); j++) {
                 IERC20 inToken = inSet.keyAtIndex(j);
                 uint256 amountIn = inAmounts[inToken];
 
-                path[0] = address(inToken);
+                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);
+                if (minIn >= amountIn) {
+                    uint256 out = _flashSwap(inToken, amountIn, outToken);
 
-                uint256 out = router.getAmountsOut(amountIn, path)[1];
-                if (out > minAmountOut)
-                    amountIn = minAmountOut.mul(amountIn).div(out); // **** Is there any way of rounding up to make sure we get more than necessary ?
+                    outAmounts[outToken] = outAmounts[outToken].add(out);
+
+                    inSet.remove(inToken);
+
+                    if (out >= minAmountOut) break;
+                    else minAmountOut = minAmountOut.sub(out);
+
+                } else {
+                    uint256 out = _flashSwap(minIn, amountIn, outToken);
+
+                    outAmounts[outToken] = outAmounts[outToken].add(out);
+
+                    break;
                 }
-                out = router.swapExactTokensForTokens(amountIn, 0, path, address(this), block.timestamp.add(1))[1]; // **** I'm thinking regarding this, I could probs do some magic with swaptokensforexact
-                minAmountOut = minAmountOut.sub(out); // **** Careful of underflows
-
-                // **** Check the swap price, if it is greater then we will only take necessary amount and break, otherwise remove it all - maybe make an internal for LP etc
             }
         }
 
-        // address[] memory path = new address[](2);
-        // bool tokenOutIsLP = pool.isLP(tokenOut_);
-        // uint256 amountOut = 0;
-
-        // for (uint i = 0; i < tokenIn_.length; i++) {
-        //     if (pool.isLP(tokenIn_[i])) {
-        //         amountIn_[i] = pool.redeem(tokenIn_[i], amountIn_[i]);
-        //         path[0] = address(pool.PAFromLP(tokenIn_[i]));
-
-        //     } else {
-        //         path[0] = address(tokenIn_[i]);
-        //     }
-
-        //     if (tokenOutIsLP) {
-        //         path[1] = address(pool.PAFromLP(tokenOut_));
-
-        //     } else {
-        //         path[1] = address(tokenOut_);
-        //     }
-
-        //     if (path[0] == path[1]) {
-        //         amountOut = amountOut.add(amountIn_[i]);
-
-        //     } else {
-        //         IERC20(path[0]).safeApprove(address(router), amountIn_[i]);
-        //         amountOut = amountOut.add(router.swapExactTokensForTokens(amountIn_[i], 0, path, address(this), block.timestamp + 1 hours)[1]);
-        //     }
-        // }
-
-        // if (tokenOutIsLP) amountOut = pool.stake(IERC20(path[1]), amountOut);
-
-        // address rewarded = _bytesToAddress(data_);
-        // if (rewarded != _bytesToAddress("")) {
-        //     tokenOut_.safeTransfer(rewarded, amountOut.sub(minTokenOut_));
-        //     amountOut = minTokenOut_;
-        // }
-
-        // tokenOut_.safeTransfer(_msgSender(), amountOut);
-
-        // return amountOut;
     }
 }
