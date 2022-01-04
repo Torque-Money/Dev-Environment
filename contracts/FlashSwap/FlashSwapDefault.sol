@@ -92,11 +92,11 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         // Store final amounts of tokens
         mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
 
-        for (uint i = 0; i < tokenOut_.length; i++) {
+        for (uint i = 0; i < tokenOut_.length; i++) {                           // Iterate over output tokens first (all must be covered)
             IERC20 outToken = tokenOut_[i];
             uint256 minAmountOut = minAmountOut_[i];
 
-            for (uint j = 0; j < inSet.count(); j++) {
+            for (uint j = 0; j < inSet.count(); j++) {                          // Iterate over input tokens second (not all necessary + available tokens change)
                 IERC20 inToken = inSet.keyAtIndex(j);
                 uint256 amountIn = inAmounts[inToken];
 
