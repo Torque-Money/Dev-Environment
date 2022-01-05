@@ -30,7 +30,7 @@ abstract contract MarginLiquidate is MarginRepay {
         _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
 
-    // Liquidate all undercollateralized accounts with the remaining collateral
+    // Liquidate all accounts that have not been repaid by the repay greater
     function _liquidate(address account_, IFlashSwap flashSwap_, bytes memory data_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
@@ -70,8 +70,8 @@ abstract contract MarginLiquidate is MarginRepay {
         _repayPayout(account_);
         _liquidate(account_, flashSwap_, data_);
 
-        emit Liquidated(account_, _msgSender());
+        emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
 
-    event Liquidated(address indexed account, address liquidator);
+    event Liquidated(address indexed account, address liquidator, IFlashSwap flashSwap, bytes data);
 }
