@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "./MarginLevel.sol";
 
-abstract contract MarginLiquidate is MarginLevel {
+abstract contract MarginRepay is MarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -62,14 +62,12 @@ abstract contract MarginLiquidate is MarginLevel {
             uint256 initialPrice = initialBorrowPrice(borrowed, account_);
             uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
 
-            if (currentPrice <= initialPrice.add(interest)) {
-                // **** Here all I will have to do is calculate the amount of the asset that needs to be returned to compensate
-                // **** ^ but what does this mean ?
-                // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
+            // **** Here all I will have to do is calculate the amount of the asset that needs to be returned to compensate
+            // **** ^ but what does this mean ?
+            // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
 
-                uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
-                uint256 repayAmount = oracle.amount(token_, repayPrice);
-            }
+            uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
+            uint256 repayAmount = oracle.amount(token_, repayPrice);
         }
 
         // **** Now we will go through and perform the swap
