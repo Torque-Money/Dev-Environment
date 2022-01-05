@@ -54,6 +54,11 @@ abstract contract MarginAccount is MarginPool {
         return totalPrice;
     }
 
+    // Get the collateral tokens list
+    function _collateralTokens(address account_) internal view returns (IERC20[] memory) {
+        return _accounts[account_].collateral.iterable();
+    }
+
     // Set the amount the user has borrowed
     function _setBorrowed(IERC20 borrowed_, uint256 amount_, address account_) internal {
         Account storage account = _accounts[account_];
@@ -74,6 +79,11 @@ abstract contract MarginAccount is MarginPool {
     // Get the total price of the assets borrowed
     function borrowedPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         return oracle.price(borrowed_, borrowed(borrowed_, account_));
+    }
+
+    // Get the borrowed tokens list
+    function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
+        return _accounts[account_].borrowed.iterable();
     }
 
     // Get the initial borrow price for an account

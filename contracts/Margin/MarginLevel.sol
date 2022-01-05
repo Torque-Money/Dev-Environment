@@ -31,7 +31,7 @@ abstract contract MarginLevel is MarginAccount {
     
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
-
+        
     }
 
     // Check whether an account is undercollateralized

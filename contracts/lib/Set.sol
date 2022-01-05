@@ -63,4 +63,8 @@ library TokenSet {
     function keyAtIndex(Set storage self, uint index) internal view returns(IERC20) {
         return self.keyList[index];
     }
+
+    function iterable(Set storage self) internal view returns(IERC20[] memory) {
+        return self.keyList;
+    }
 }
