@@ -79,24 +79,24 @@ abstract contract MarginAccount is MarginPool {
     // Get the initial borrow price for an account
     function initialBorrowPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.initialBorrowPrice;
+        return account.initialBorrowPrice[borrowed_];
     }
 
     // Set the initial borrow price for an account
     function _setInitialBorrowPrice(IERC20 borrowed_, uint256 price_, address account_) internal {
         Account storage account = _accounts[account_];
-        account.initialBorrowPrice = price_;
+        account.initialBorrowPrice[borrowed_] = price_;
     }
 
     // Get the initial borrow block for an ccount
     function initialBorrowBlock(IERC20 borrowed_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.initialBorrowBlock;
+        return account.initialBorrowBlock[borrowed_];
     }
 
     // Set the initial borrow price for an account
     function _setInitialBorrowBlock(IERC20 borrowed_, uint256 block_, address account_) internal {
         Account storage account = _accounts[account_];
-        account.initialBorrowBlock = block_;
+        account.initialBorrowBlock[borrowed_] = block_;
     }
 }
