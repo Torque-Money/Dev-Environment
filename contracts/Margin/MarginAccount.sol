@@ -76,9 +76,18 @@ abstract contract MarginAccount is MarginPool {
         return account.borrowedAmounts[borrowed_];
     }
 
-    // Get the total price of the assets borrowed
+    // Get the current price of an asset borrowed
     function borrowedPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
         return oracle.price(borrowed_, borrowed(borrowed_, account_));
+    }
+
+    // Get the total price of the assets borrowed
+    function borrowedPrice(address account_) public view returns (uint256) {
+        Account storage account = _accounts[account_];
+        uint256 totalPrice = 0;
+        for (uint i = 0; i < account.borrowed.count(); i++)
+            totalPrice = totalPrice.add(borrowedPrice(account.borrowed.keyAtIndex(i), account_));
+        return totalPrice;
     }
 
     // Get the borrowed tokens list
