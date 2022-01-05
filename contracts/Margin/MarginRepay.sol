@@ -65,6 +65,7 @@ abstract contract MarginLiquidate is MarginLevel {
             if (currentPrice <= initialPrice.add(interest)) {
                 // **** Here all I will have to do is calculate the amount of the asset that needs to be returned to compensate
                 // **** ^ but what does this mean ?
+                // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
 
                 uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
                 uint256 repayAmount = oracle.amount(token_, repayPrice);
