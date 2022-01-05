@@ -12,10 +12,7 @@ abstract contract MarginLiquidate is MarginLevel {
     using SafeERC20 for IERC20;
 
     // Payout the margin profits to the account
-    function _repayCompensate(address account_) internal {
-        // **** How do we unclaim the currently claimed collateral ?
-        // **** I could realistically collect the interest, borrow price, and initial borrow price then feed it into both ???
-
+    function _repayPayout(address account_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
@@ -24,8 +21,9 @@ abstract contract MarginLiquidate is MarginLevel {
             uint256 initialPrice = initialBorrowPrice(borrowed, account_);
             uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
 
-            if (currentPrice > initialPrice.add(interest)) {                                                        // Pay the user out what they are entitled to
+            if (currentPrice > initialPrice.add(interest)) {
                 uint256 payoutAmount = oracle.amount(borrowed, currentPrice.sub(initialPrice).sub(interest));
+                pool.unclaim(token_, borrowed(borrowed, account_));
                 pool.withdraw(borrowed, payoutAmount);
             }
         }
