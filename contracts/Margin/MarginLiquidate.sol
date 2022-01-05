@@ -42,7 +42,7 @@ abstract contract MarginLiquidate is MarginRepay {
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 amountBorrowed = borrowed(borrowed, account_);
+            uint256 amountBorrowed = borrowed(token, account_);
             if (amountBorrowed == 0) continue;
 
             uint256 currentPrice = borrowedPrice(token, account_);
@@ -64,7 +64,7 @@ abstract contract MarginLiquidate is MarginRepay {
         for (uint i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 
         uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, repayTokens, repayAmounts, flashSwap_, data_);
-        for (uint i = 0; i < amountOut; i++) pool.deposit(repayTokens[i], amountOut_[i]); 
+        for (uint i = 0; i < amountOut.length; i++) pool.deposit(repayTokens[i], amountOut[i]); 
     }
 
     // Liquidate an undercollateralized account
