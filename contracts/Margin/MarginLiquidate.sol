@@ -64,7 +64,10 @@ abstract contract MarginLiquidate is MarginRepay {
         for (uint i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 
         uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, repayTokens, repayAmounts, flashSwap_, data_);
-        for (uint i = 0; i < amountOut.length; i++) pool.deposit(repayTokens[i], amountOut[i]); 
+        for (uint i = 0; i < amountOut.length; i++) {
+            repayTokens[i].safeApprove(address(pool), amountOut[i]);
+            pool.deposit(repayTokens[i], amountOut[i]);
+        }
     }
 
     // Liquidate an undercollateralized account
