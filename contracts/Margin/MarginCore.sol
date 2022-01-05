@@ -57,14 +57,17 @@ abstract contract MarginCore is Ownable {
 
     // Approve the flash swap to use tokens and execute swap
     function _flashSwap(
-        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20 tokenOut_, uint256 minAmountOut_, IFlashSwap flashSwap_, bytes memory data_
-    ) internal returns (uint256) {
+        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_, uint256[] memory minAmountOut_, IFlashSwap flashSwap_, bytes memory data_
+    ) internal returns (uint256[] memory) {
         for (uint i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
+        for (uint i = 0; i < minAmountOut_.length; i++) {
+            minAmountOut_[i] = minAmountOut_[i].mul(_swapTolerance.denominator.sub(_swapTolerance.numerator)).div(_swapTolerance.denominator);
+        }
         return flashSwap.flashSwap(
             tokenIn_, amountIn_, tokenOut_,
-            minAmountOut_.mul(_swapTolerance.denominator.sub(_swapTolerance.numerator)).div(_swapTolerance.denominator),
+            minAmountOut_,
             flashSwap_, data_
         );
     }

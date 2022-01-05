@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/Set.sol";
-import "../Margin/Margin.sol";
+import "./MarginPool.sol";
 
-abstract contract MarginAccount is Margin {
+abstract contract MarginAccount is MarginPool {
     using SafeMath for uint256;
     using TokenSet for TokenSet.Set;
 
