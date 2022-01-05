@@ -66,6 +66,8 @@ abstract contract MarginRepay is MarginLevel {
             // **** ^ but what does this mean ?
             // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
 
+            // **** What I believe I will have to do is go through and work out manually how much of each asset is required to be swapped for the given assets using a price equality ?
+
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
             uint256 repayAmount = oracle.amount(token, repayPrice);
         }
