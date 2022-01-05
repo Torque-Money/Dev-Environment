@@ -12,16 +12,35 @@ abstract contract FlashSwap is Context, ReentrancyGuard {
 
     // Swap a group of assets for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out
     function flashSwap(
-        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_,
-        uint256[] memory minAmountOut_, IFlashSwap flashSwap_, bytes calldata data_
+        IERC20[] memory tokenIn_,
+        uint256[] memory amountIn_,
+        IERC20[] memory tokenOut_,
+        uint256[] memory minAmountOut_,
+        IFlashSwap flashSwap_,
+        bytes calldata data_
     ) external nonReentrant returns (uint256[] memory) {
-        for (uint i = 0; i < tokenIn_.length; i++) {
-            tokenIn_[i].safeTransferFrom(_msgSender(), address(flashSwap_), amountIn_[i]);
+        for (uint256 i = 0; i < tokenIn_.length; i++) {
+            tokenIn_[i].safeTransferFrom(
+                _msgSender(),
+                address(flashSwap_),
+                amountIn_[i]
+            );
         }
 
-        uint256[] memory amountOut = flashSwap_.flashSwap(_msgSender(), tokenIn_, amountIn_, tokenOut_, minAmountOut_, data_);
-        for (uint i = 0; i < amountOut.length; i++) {
-            require(amountOut[i] >= minAmountOut_[i] && tokenOut_[i].balanceOf(address(this)) >= minAmountOut_[i], "Amount swapped is less than minimum amount out");
+        uint256[] memory amountOut = flashSwap_.flashSwap(
+            _msgSender(),
+            tokenIn_,
+            amountIn_,
+            tokenOut_,
+            minAmountOut_,
+            data_
+        );
+        for (uint256 i = 0; i < amountOut.length; i++) {
+            require(
+                amountOut[i] >= minAmountOut_[i] &&
+                    tokenOut_[i].balanceOf(address(this)) >= minAmountOut_[i],
+                "Amount swapped is less than minimum amount out"
+            );
             tokenOut_[i].safeTransfer(_msgSender(), amountOut[i]);
         }
 
@@ -30,5 +49,12 @@ abstract contract FlashSwap is Context, ReentrancyGuard {
         return amountOut;
     }
 
-    event Swap(IERC20[] tokenIn, uint256[] amountIn, IERC20[] tokenOut, uint256[] amountOut, IFlashSwap flashSwap, bytes data);
+    event Swap(
+        IERC20[] tokenIn,
+        uint256[] amountIn,
+        IERC20[] tokenOut,
+        uint256[] amountOut,
+        IFlashSwap flashSwap,
+        bytes data
+    );
 }

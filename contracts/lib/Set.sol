@@ -27,9 +27,8 @@ THIS SOFTWARE IS NOT TESTED OR AUDITED. DO NOT USE FOR PRODUCTION.
 */
 
 library TokenSet {
-
     struct Set {
-        mapping(IERC20 => uint) keyPointers;
+        mapping(IERC20 => uint256) keyPointers;
         IERC20[] keyList;
     }
 
@@ -42,7 +41,7 @@ library TokenSet {
     function remove(Set storage self, IERC20 key) internal {
         require(exists(self, key), "Token does not exist in the set.");
         IERC20 keyToMove = self.keyList[count(self) - 1];
-        uint rowToReplace = self.keyPointers[key];
+        uint256 rowToReplace = self.keyPointers[key];
 
         self.keyPointers[keyToMove] = rowToReplace;
         self.keyList[rowToReplace] = keyToMove;
@@ -51,20 +50,28 @@ library TokenSet {
         self.keyList.pop();
     }
 
-    function count(Set storage self) internal view returns(uint) {
-        return(self.keyList.length);
+    function count(Set storage self) internal view returns (uint256) {
+        return (self.keyList.length);
     }
 
-    function exists(Set storage self, IERC20 key) internal view returns(bool) {
-        if(self.keyList.length == 0) return false;
+    function exists(Set storage self, IERC20 key) internal view returns (bool) {
+        if (self.keyList.length == 0) return false;
         return self.keyList[self.keyPointers[key]] == key;
     }
 
-    function keyAtIndex(Set storage self, uint index) internal view returns(IERC20) {
+    function keyAtIndex(Set storage self, uint256 index)
+        internal
+        view
+        returns (IERC20)
+    {
         return self.keyList[index];
     }
 
-    function iterable(Set storage self) internal view returns(IERC20[] memory) {
+    function iterable(Set storage self)
+        internal
+        view
+        returns (IERC20[] memory)
+    {
         return self.keyList;
     }
 }

@@ -9,7 +9,10 @@ abstract contract MarginApproved is MarginCore {
     mapping(IERC20 => bool) private _approvedBorrow;
 
     modifier onlyApprovedCollateral(IERC20 token_) {
-        require(isApprovedCollateral(token_), "Only approved tokens may be used");
+        require(
+            isApprovedCollateral(token_),
+            "Only approved tokens may be used"
+        );
         _;
     }
 
@@ -19,8 +22,11 @@ abstract contract MarginApproved is MarginCore {
     }
 
     // Approve a token for collateral
-    function approveCollateral(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
-        for (uint i = 0; i < token_.length; i++) {
+    function approveCollateral(IERC20[] memory token_, bool[] memory approved_)
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < token_.length; i++) {
             if (isApprovedCollateral(token_[i]) != approved_[i]) {
                 _approvedCollateral[token_[i]] = approved_[i];
                 emit ApproveCollateral(token_[i], approved_[i]);
@@ -29,8 +35,11 @@ abstract contract MarginApproved is MarginCore {
     }
 
     // Approve a token to be used for borrowing
-    function approveBorrow(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
-        for (uint i = 0; i < token_.length; i++) {
+    function approveBorrow(IERC20[] memory token_, bool[] memory approved_)
+        external
+        onlyOwner
+    {
+        for (uint256 i = 0; i < token_.length; i++) {
             if (isApprovedBorrow(token_[i]) != approved_[i]) {
                 _approvedBorrow[token_[i]] = approved_[i];
                 emit ApproveBorrow(token_[i], approved_[i]);

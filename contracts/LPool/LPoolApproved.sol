@@ -33,12 +33,18 @@ abstract contract LPoolApproved is LPoolCore {
     }
 
     // Approve a token for use with the pool and create a new LP token
-    function approve(IERC20[] memory token_, string[] memory name_, string[] memory symbol_) external onlyRole(POOL_ADMIN) {
-        for (uint i = 0; i < token_.length; i++) {
+    function approve(
+        IERC20[] memory token_,
+        string[] memory name_,
+        string[] memory symbol_
+    ) external onlyRole(POOL_ADMIN) {
+        for (uint256 i = 0; i < token_.length; i++) {
             if (!isPA(token_[i]) && !isLP(token_[i])) {
                 _PATokens[token_[i]] = true;
 
-                IERC20 LPToken = IERC20(address(new LPoolToken(name_[i], symbol_[i]))); 
+                IERC20 LPToken = IERC20(
+                    address(new LPoolToken(name_[i], symbol_[i]))
+                );
                 _LPTokens[LPToken] = true;
 
                 _PAToLP[token_[i]] = LPToken;
@@ -47,15 +53,25 @@ abstract contract LPoolApproved is LPoolCore {
                 emit TokenApproved(token_[i], LPToken);
             }
         }
-    } 
+    }
 
     // Get the LP token that corresponds to the given token
-    function LPFromPA(IERC20 token_) public view onlyPA(token_) returns (IERC20) {
+    function LPFromPA(IERC20 token_)
+        public
+        view
+        onlyPA(token_)
+        returns (IERC20)
+    {
         return _PAToLP[token_];
     }
 
     // Get the token that corresponds to the given LP token
-    function PAFromLP(IERC20 token_) public view onlyLP(token_) returns (IERC20) {
+    function PAFromLP(IERC20 token_)
+        public
+        view
+        onlyLP(token_)
+        returns (IERC20)
+    {
         return _LPToPA[token_];
     }
 

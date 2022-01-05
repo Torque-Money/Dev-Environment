@@ -24,10 +24,13 @@ abstract contract OracleTokens is Ownable {
 
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
-        IERC20[] memory token_, AggregatorV3Interface[] memory priceFeed_, 
-        AggregatorV3Interface[] memory reservePriceFeed_, uint256[] memory correctDecimals_, bool[] memory supported_
+        IERC20[] memory token_,
+        AggregatorV3Interface[] memory priceFeed_,
+        AggregatorV3Interface[] memory reservePriceFeed_,
+        uint256[] memory correctDecimals_,
+        bool[] memory supported_
     ) external onlyOwner {
-        for (uint i = 0; i < token_.length; i++) {
+        for (uint256 i = 0; i < token_.length; i++) {
             Token storage token = _tokens[token_[i]];
 
             token.priceFeed = priceFeed_[i];
@@ -43,17 +46,29 @@ abstract contract OracleTokens is Ownable {
     }
 
     // Set the default stablecoin to convert the prices into
-    function setDefaultStablecoin(IERC20 token_) external onlyOwner onlySupported(token_) {
+    function setDefaultStablecoin(IERC20 token_)
+        external
+        onlyOwner
+        onlySupported(token_)
+    {
         defaultStablecoin = token_;
     }
 
     // Get the price feed for a given asset
-    function priceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
+    function priceFeed(IERC20 token_)
+        public
+        view
+        returns (AggregatorV3Interface)
+    {
         return _tokens[token_].priceFeed;
     }
 
     // Get the reserve price feed for a given asset
-    function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
+    function reservePriceFeed(IERC20 token_)
+        public
+        view
+        returns (AggregatorV3Interface)
+    {
         return _tokens[token_].reservePriceFeed;
     }
 

@@ -21,7 +21,13 @@ abstract contract MarginCore is Ownable {
 
     FractionMath.Fraction private _swapTolerance;
 
-    constructor(LPool pool_, Oracle oracle_, FlashSwap flashSwap_, uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_) {
+    constructor(
+        LPool pool_,
+        Oracle oracle_,
+        FlashSwap flashSwap_,
+        uint256 swapToleranceNumerator_,
+        uint256 swapToleranceDenominator_
+    ) {
         pool = pool_;
         oracle = oracle_;
         flashSwap = flashSwap_;
@@ -50,25 +56,39 @@ abstract contract MarginCore is Ownable {
     }
 
     // Set the swap tolerance
-    function setSwapTolerance(uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_) external onlyOwner {
+    function setSwapTolerance(
+        uint256 swapToleranceNumerator_,
+        uint256 swapToleranceDenominator_
+    ) external onlyOwner {
         _swapTolerance.numerator = swapToleranceNumerator_;
         _swapTolerance.denominator = swapToleranceDenominator_;
     }
 
     // Approve the flash swap to use tokens and execute swap
     function _flashSwap(
-        IERC20[] memory tokenIn_, uint256[] memory amountIn_, IERC20[] memory tokenOut_, uint256[] memory minAmountOut_, IFlashSwap flashSwap_, bytes memory data_
+        IERC20[] memory tokenIn_,
+        uint256[] memory amountIn_,
+        IERC20[] memory tokenOut_,
+        uint256[] memory minAmountOut_,
+        IFlashSwap flashSwap_,
+        bytes memory data_
     ) internal returns (uint256[] memory) {
-        for (uint i = 0; i < tokenIn_.length; i++) {
+        for (uint256 i = 0; i < tokenIn_.length; i++) {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
-        for (uint i = 0; i < minAmountOut_.length; i++) {
-            minAmountOut_[i] = minAmountOut_[i].mul(_swapTolerance.denominator.sub(_swapTolerance.numerator)).div(_swapTolerance.denominator);
+        for (uint256 i = 0; i < minAmountOut_.length; i++) {
+            minAmountOut_[i] = minAmountOut_[i]
+                .mul(_swapTolerance.denominator.sub(_swapTolerance.numerator))
+                .div(_swapTolerance.denominator);
         }
-        return flashSwap.flashSwap(
-            tokenIn_, amountIn_, tokenOut_,
-            minAmountOut_,
-            flashSwap_, data_
-        );
+        return
+            flashSwap.flashSwap(
+                tokenIn_,
+                amountIn_,
+                tokenOut_,
+                minAmountOut_,
+                flashSwap_,
+                data_
+            );
     }
 }
