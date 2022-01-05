@@ -9,4 +9,8 @@ import "./MarginBorrow.sol";
 abstract contract MarginCollateral is MarginBorrow {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+
+    // Deposit collateral into the account
+
+    // Withdraw collateral from the account
 }
