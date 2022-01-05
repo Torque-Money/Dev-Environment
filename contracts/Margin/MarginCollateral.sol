@@ -20,7 +20,15 @@ abstract contract MarginCollateral is MarginBorrow, MarginLevel {
 
     // Withdraw collateral from the account
     function removeCollateral(IERC20 collateral_, uint256 amount_) external {
+        uint256 currentCollateral = collateral(collateral_, _msgSender());
+        require(amount_ <= currentCollateral, "Cannot remove more than available collateral");
 
+        _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
+        require(!underCollateralized(_msgSender()), "Removing collateral results in an undercollateralized account");
+        require(
+            borrowedPrice(account_) == 0 || collateralPrice(account_) >= minCollateralPrice,
+            "Cannot withdraw if new collateral price is less than minimum borrow price whilst borrowing"
+        );
     }
 
     event AddCollateral(address indexed account, IERC20 collateral, uint256 amount);
