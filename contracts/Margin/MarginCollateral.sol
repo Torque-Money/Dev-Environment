@@ -29,6 +29,9 @@ abstract contract MarginCollateral is MarginBorrow, MarginLevel {
             borrowedPrice(account_) == 0 || collateralPrice(account_) >= minCollateralPrice,
             "Cannot withdraw if new collateral price is less than minimum borrow price whilst borrowing"
         );
+
+        collateral_.safeTransfer(_msgSender(), amount_);
+        emit RemoveCollateral(_msgSender(), collateral_, amount_);
     }
 
     event AddCollateral(address indexed account, IERC20 collateral, uint256 amount);
