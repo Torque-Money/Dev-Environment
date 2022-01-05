@@ -17,13 +17,16 @@ abstract contract MarginLiquidate is MarginLevel {
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
+            uint256 amountBorrowed = borrowed(borrowed, account_);
+            if (amountBorrowed == 0) continue;          
+
             uint256 currentPrice = borrowedPrice(borrowed_, account_);
             uint256 initialPrice = initialBorrowPrice(borrowed, account_);
             uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
 
             if (currentPrice > initialPrice.add(interest)) {
                 uint256 payoutAmount = oracle.amount(borrowed, currentPrice.sub(initialPrice).sub(interest));
-                pool.unclaim(token_, borrowed(borrowed, account_));
+                pool.unclaim(token_, amountBorrowed);
                 pool.withdraw(borrowed, payoutAmount);
                 _setBorrowed(borrowed, 0, account_);
                 _setInitialBorrowPrice(borrowed, 0, account_);
@@ -33,7 +36,7 @@ abstract contract MarginLiquidate is MarginLevel {
 
     // Repay the losses incurred by the account
     function _repayLosses(address account_) internal {
-
+        // **** Now for the tricky part, we need to iterate over the entire account for where there has not been a collateral made ?
     }
 
     // Liquidate an undercollateralized account
