@@ -12,15 +12,10 @@ abstract contract MarginRepay is MarginLevel {
     using SafeERC20 for IERC20;
 
     // Payout the margin profits to the account
-    function _repayPayout(address account_) internal returns (uint256) {
-        uint256 numPayouts = 0;
-
+    function _repayPayout(address account_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
-
-            uint256 amountBorrowed = borrowed(token, account_);
-            if (amountBorrowed == 0) continue;          
 
             uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
@@ -28,7 +23,7 @@ abstract contract MarginRepay is MarginLevel {
 
             if (currentPrice > initialPrice.add(interest)) {
                 uint256 payoutAmount = oracle.amount(token, currentPrice.sub(initialPrice).sub(interest));
-                pool.unclaim(token, amountBorrowed);
+                pool.unclaim(token, borrowed(token, account_));
                 pool.withdraw(token, payoutAmount);
                 _setBorrowed(token, 0, account_);
                 _setInitialBorrowPrice(token, 0, account_);
@@ -36,8 +31,6 @@ abstract contract MarginRepay is MarginLevel {
                 numPayouts = numPayouts.add(1);
             }
         }
-
-        return numPayouts;
     }
 
     // Repay the losses incurred by the account

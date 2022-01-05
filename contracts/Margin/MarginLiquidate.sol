@@ -31,19 +31,14 @@ abstract contract MarginLiquidate is MarginRepay {
     }
 
     // Liquidate all undercollateralized accounts with the remaining collateral
-    function _liquidate(address account_, uint256 numPayouts_, IFlashSwap flashSwap_, bytes memory data_) internal {
+    function _liquidate(address account_, IFlashSwap flashSwap_, bytes memory data_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
-        uint256 numRepays = borrowedTokens.length.sub(numPayouts_);
-        IERC20[] memory repayTokens = new IERC20[](numRepays);
-        uint256[] memory repayAmounts = new uint256[](numRepays);
-        uint256 repayIndex = 0;
+        IERC20[] memory repayTokens = new IERC20[](borrowedTokens.length);
+        uint256[] memory repayAmounts = new uint256[](borrowedTokens.length);
 
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
-
-            uint256 amountBorrowed = borrowed(token, account_);
-            if (amountBorrowed == 0) continue;
 
             uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
@@ -53,13 +48,11 @@ abstract contract MarginLiquidate is MarginRepay {
             uint256 repayAmount = oracle.amount(token, repayPrice);
 
             (uint256 liqPercentNumerator, uint256 liqPercentDenominator) = liquidationFeePercent();
-            repayTokens[repayIndex] = token;
-            repayAmounts[repayIndex] = liqPercentDenominator.sub(liqPercentNumerator).mul(repayAmount).div(liqPercentDenominator);
-
-            repayIndex = repayIndex.add(1);
+            repayTokens[i] = token;
+            repayAmounts[i] = liqPercentDenominator.sub(liqPercentNumerator).mul(repayAmount).div(liqPercentDenominator);
         }
 
-        IERC20[] memory collateralTokens = _collateralTokens(account_);                     // Swap the collateral for the assets
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
         uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
         for (uint i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 
@@ -74,8 +67,8 @@ abstract contract MarginLiquidate is MarginRepay {
     function liquidate(address account_, IFlashSwap flashSwap_, bytes memory data_) external {
         require(underCollateralized(account_), "Only undercollateralized accounts may be liquidated");
 
-        uint256 numPayouts = _repayPayout(account_);
-        _liquidate(account_, numPayouts, flashSwap_, data_);
+        _repayPayout(account_);
+        _liquidate(account_, flashSwap_, data_);
 
         emit Liquidated(account_, _msgSender());
     }

@@ -125,6 +125,12 @@ abstract contract MarginAccount is MarginPool {
     // Check if an account is currently borrowing
     function isBorrowing(address account_) public view returns (bool) {
         Account storage account = _accounts[account_];
-        return account.hasBorrowed != 0;
+        return account.hasBorrowed > 0;
+    }
+
+    // Check if an account is currently borrowing a particular asset
+    function isBorrowing(IERC20 borrowed_ address account_) public view returns (bool) {
+        Account storage account = _accounts[account_];
+        return borrowed(borrowed_, account_) > 0;
     }
 }
