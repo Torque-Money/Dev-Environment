@@ -31,8 +31,8 @@ abstract contract MarginLiquidate is MarginLevel {
     }
 
     // Liquidate an undercollateralized account
-    function liquidate() external {
-
+    function liquidate(address account_) external {
+        require(underCollateralized(account_), "Only undercollateralized accounts may be liqudiated");
     }
 
     event Liquidated(address indexed account, address liquidator);
