@@ -67,6 +67,7 @@ abstract contract MarginRepay is MarginLevel {
             // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
 
             // **** What I believe I will have to do is go through and work out manually how much of each asset is required to be swapped for the given assets using a price equality ?
+            // **** Speaking of this, what would be the harm in having the swap function convert all to fiat and then convert that fiat to the desired assets ? Can I do that same thing here
 
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
             uint256 repayAmount = oracle.amount(token, repayPrice);
