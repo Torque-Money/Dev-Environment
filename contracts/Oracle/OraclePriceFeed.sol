@@ -11,14 +11,6 @@ abstract contract OraclePriceFeed is OracleTokens {
 
     // Get the price of an asset in terms of the default stablecoin
     function price(IERC20 token_, uint256 amount_) public view onlySupported(token_) returns (uint256) {
-        if (pool.isLP(token_)) {
-            IERC20 underlying = pool.PAFromLP(token_);
-            uint256 redeemValue = pool.redeemValue(token_, amount_);
-
-            token_ = underlying;
-            amount_ = redeemValue;
-        }
-
         AggregatorV3Interface feed = priceFeed(token_);
         (,int result,,,) = feed.latestRoundData();
         uint256 _decimals = feed.decimals();

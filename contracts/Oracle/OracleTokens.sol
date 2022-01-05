@@ -6,10 +6,14 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./OracleCore.sol";
 
 abstract contract OracleTokens is OracleCore {
-    mapping(IERC20 => bool) private _supported;
-    mapping(IERC20 => AggregatorV3Interface) private _priceFeed;
-    mapping(IERC20 => AggregatorV3Interface) private _reservePriceFeed;
-    mapping(IERC20 => uint256) private _decimals;
+    struct Token {
+        AggregatorV3Interface priceFeed;
+        AggregatorV3Interface reservePriceFeed;
+        uint256 decimals;
+        bool supported;
+    }
+
+    mapping(IERC20 => Token) private _tokens;
 
     IERC20 public defaultStablecoin;
 
@@ -18,22 +22,24 @@ abstract contract OracleTokens is OracleCore {
         _;
     }
 
-    // Check if an asset is supported by the oracle
-    function isSupported(IERC20 token_) public view returns (bool) {
-        return _supported[token_] || _supported[pool.PAFromLP(token_)];
-    }
-
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
         IERC20[] memory token_, AggregatorV3Interface[] memory priceFeed_, 
         AggregatorV3Interface[] memory reservePriceFeed_, uint256[] memory correctDecimals_, bool[] memory supported_
     ) external onlyOwner {
         for (uint i = 0; i < token_.length; i++) {
-            _priceFeed[token_[i]] = priceFeed_[i];
-            _reservePriceFeed[token_[i]] = reservePriceFeed_[i];
-            _decimals[token_[i]] = correctDecimals_[i];
-            _supported[token_[i]] = supported_[i];
+            Token storage token = _tokens[token_[i]];
+
+            token.priceFeed = priceFeed_[i];
+            token.reservePriceFeed = reservePriceFeed_[i];
+            token.decimals = correctDecimals_[i];
+            token.supported = supported_[i];
         }
+    }
+
+    // Check if an asset is supported by the oracle
+    function isSupported(IERC20 token_) public view returns (bool) {
+        return _tokens[token_].supported;
     }
 
     // Set the default stablecoin to convert the prices into
@@ -43,16 +49,16 @@ abstract contract OracleTokens is OracleCore {
 
     // Get the price feed for a given asset
     function priceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
-        return _priceFeed[token_];
+        return _tokens[token_].priceFeed;
     }
 
     // Get the reserve price feed for a given asset
     function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
-        return _reservePriceFeed[token_];
+        return _tokens[token_].reservePriceFeed;
     }
 
     // Get the correct decimals for a given asset
     function decimals(IERC20 token_) public view returns (uint256) {
-        return _decimals[token_];
+        return _tokens[token_].decimals;
     }
 }
