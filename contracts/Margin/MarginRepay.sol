@@ -25,6 +25,8 @@ abstract contract MarginLiquidate is MarginLevel {
                 uint256 payoutAmount = oracle.amount(borrowed, currentPrice.sub(initialPrice).sub(interest));
                 pool.unclaim(token_, borrowed(borrowed, account_));
                 pool.withdraw(borrowed, payoutAmount);
+                _setBorrowed(borrowed, 0, account_);
+                _setInitialBorrowPrice(borrowed, 0, account_);
             }
         }
     }
