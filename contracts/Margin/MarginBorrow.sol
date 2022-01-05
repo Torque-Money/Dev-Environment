@@ -20,7 +20,7 @@ abstract contract MarginBorrow is MarginAccount {
     }
 
     // Borrow against the collateral
-    function borrow(IERC20 borrowed_, uint256 amount_) external {
+    function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrow {
         require(collateralPrice(_msgSender()) >= minCollateralPrice, "Collateral price must be greater than minimum");
 
         if (borrowed(borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(borrowed_, block.number, _msgSender());

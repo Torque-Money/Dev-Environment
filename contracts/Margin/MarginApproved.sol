@@ -5,32 +5,49 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./MarginCore.sol";
 
 abstract contract MarginApproved is MarginCore {
-    mapping(IERC20 => bool) private _approved;
+    mapping(IERC20 => bool) private _approvedCollateral;
+    mapping(IERC20 => bool) private _approvedBorrow;
 
-    modifier onlyPA(IERC20 token_) {
-        require(pool.isPA(token_), "Only pool approved tokens may be used");
+    modifier onlyApprovedCollateral(IERC20 token_) {
+        require(isApprovedCollateral(token_), "Only approved tokens may be used");
         _;
     }
 
-    modifier onlyApproved(IERC20 token_) {
-        require(isApproved(token_), "Only approved tokens may be used");
+    modifier onlyApprovedBorrow(IERC20 token_) {
+        require(isApprovedBorrow(token_), "Only approved tokens may be used");
         _;
     }
 
-    // Approve a token for use with the pool and create a new LP token
-    function approve(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
+    // Approve a token for collateral
+    function approveCollateral(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
         for (uint i = 0; i < token_.length; i++) {
-            if (isApproved(token_[i]) != approved_[i]) {
-                _approved[token_[i]] = approved_[i];
-                emit ApprovedTokenUpdate(token_[i], approved_[i]);
+            if (isApprovedCollateral(token_[i]) != approved_[i]) {
+                _approvedCollateral[token_[i]] = approved_[i];
+                emit ApproveCollateral(token_[i], approved_[i]);
+            }
+        }
+    }
+
+    // Approve a token to be used for borrowing
+    function approveBorrow(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
+        for (uint i = 0; i < token_.length; i++) {
+            if (isApprovedBorrow(token_[i]) != approved_[i]) {
+                _approvedBorrow[token_[i]] = approved_[i];
+                emit ApproveBorrow(token_[i], approved_[i]);
             }
         }
     }
 
     // Check if a token is approved
-    function isApproved(IERC20 token_) public view returns (bool) {
-        return _approved[token_];
+    function isApprovedCollateral(IERC20 token_) public view returns (bool) {
+        return _approvedCollateral[token_];
     }
 
-    event ApprovedTokenUpdate(IERC20 token, bool approved);
+    // Check if a token is approved
+    function isApprovedBorrow(IERC20 token_) public view returns (bool) {
+        return _approvedBorrow[token_];
+    }
+
+    event ApproveCollateral(IERC20 token, bool approved);
+    event ApproveBorrow(IERC20 token, bool approved);
 }
