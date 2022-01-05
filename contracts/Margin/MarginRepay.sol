@@ -11,6 +11,16 @@ abstract contract MarginLiquidate is MarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    // Payout the margin profits to the account
+    function _repayCompensate(address account_) internal {
+
+    }
+
+    // Repay the losses incurred by the account
+    function _repayLosses(address account_) internal {
+
+    }
+
     // Liquidate an undercollateralized account
     function repay(address account_) external {
         require(isBorrowing(account_), "Cannot repay an account that has not borrowed");
@@ -19,5 +29,5 @@ abstract contract MarginLiquidate is MarginLevel {
         // **** Once I have iterated through all of these, I will next have to look at the amount of each that will have to be used to be repaid (try putting this in the oracle)
     }
 
-    event Repay(address indexed account, address liquidator);
+    event Repay(address indexed account);
 }
