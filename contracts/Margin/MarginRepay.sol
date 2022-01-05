@@ -22,18 +22,18 @@ abstract contract MarginRepay is MarginLevel {
             uint256 amountBorrowed = borrowed(borrowed, account_);
             if (amountBorrowed == 0) continue;          
 
-            uint256 currentPrice = borrowedPrice(borrowed_, account_);
+            uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(borrowed, account_);
             uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
 
             if (currentPrice > initialPrice.add(interest)) {
                 uint256 payoutAmount = oracle.amount(borrowed, currentPrice.sub(initialPrice).sub(interest));
-                pool.unclaim(token_, amountBorrowed);
+                pool.unclaim(token, amountBorrowed);
                 pool.withdraw(borrowed, payoutAmount);
                 _setBorrowed(borrowed, 0, account_);
                 _setInitialBorrowPrice(borrowed, 0, account_);
 
-                amountRepaid = amountRepaid.add(1);
+                numPayouts = numPayouts.add(1);
             }
         }
 
@@ -45,29 +45,29 @@ abstract contract MarginRepay is MarginLevel {
         // **** Now for the tricky part, we need to iterate over the entire account and swap the given assets for amounts that need to be repaid
         // **** We could actually just be lazy here and subtract the collateral manually and then add it to our list of out tokens (might be the best way)
 
-        IER20[] memory borrowedTokens = _borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         IERC20[] memory collateralTokens = _collateralTokens(account_);
 
         uint256 numRepays = borrowedTokens.length.add(collateralTokens.length).sub(numPayouts_);
-        IERC20[] memory repayTokens = new IERC20[](numpRepays);
-        uint256[] memory repayAmounts = new uint256[](numpRepays);
+        IERC20[] memory repayTokens = new IERC20[](numRepays);
+        uint256[] memory repayAmounts = new uint256[](numRepays);
 
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 amountBorrowed = borrowed(borrowed, account_);
+            uint256 amountBorrowed = borrowed(token, account_);
             if (amountBorrowed == 0) continue;
 
-            uint256 currentPrice = borrowedPrice(borrowed_, account_);
-            uint256 initialPrice = initialBorrowPrice(borrowed, account_);
-            uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
+            uint256 currentPrice = borrowedPrice(token, account_);
+            uint256 initialPrice = initialBorrowPrice(token, account_);
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             // **** Here all I will have to do is calculate the amount of the asset that needs to be returned to compensate
             // **** ^ but what does this mean ?
             // **** I dont think this is going to work - further investigation is required (this theory would suggest we just liquidate everything and dont get collateral back)
 
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
-            uint256 repayAmount = oracle.amount(token_, repayPrice);
+            uint256 repayAmount = oracle.amount(token, repayPrice);
         }
 
         // **** Now we will go through and perform the swap

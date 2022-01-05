@@ -12,10 +12,10 @@ abstract contract MarginCollateral is MarginBorrow, MarginLevel {
     using SafeERC20 for IERC20;
 
     // Deposit collateral into the account
-    function addCollateral(IERC20 collateral_, uint256 amount_) external onlyApprovedCollateral {
+    function addCollateral(IERC20 collateral_, uint256 amount_) external onlyApprovedCollateral(collateral_) {
         collateral_.safeTransferFrom(_msgSender(), address(this), amount_);
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).add(amount_), _msgSender());
-        emit AddCollateral(_msgSender(), collateral, amount_);
+        emit AddCollateral(_msgSender(), collateral_, amount_);
     }
 
     // Withdraw collateral from the account
@@ -26,7 +26,7 @@ abstract contract MarginCollateral is MarginBorrow, MarginLevel {
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
         require(!underCollateralized(_msgSender()), "Removing collateral results in an undercollateralized account");
         require(
-            !isBorrowing(account_) || collateralPrice(account_) >= minCollateralPrice,
+            !isBorrowing(_msgSender()) || collateralPrice(_msgSender()) >= minCollateralPrice,
             "Cannot withdraw if new collateral price is less than minimum borrow price whilst borrowing"
         );
 
