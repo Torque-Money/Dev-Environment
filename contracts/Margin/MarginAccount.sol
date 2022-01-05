@@ -42,8 +42,7 @@ abstract contract MarginAccount is Margin {
 
     // Get the price of a token used as collateral for the asset borrowed for an account
     function collateralPrice(IERC20 collateral_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[account_];
-        return oracle.price(collateral_, account.collateralAmounts[collateral_]);
+        return oracle.price(collateral_, collateral(collateral_, account_));
     }
 
     // Get the total collateral price for a given account and asset borrowed
@@ -57,45 +56,47 @@ abstract contract MarginAccount is Margin {
 
     // Set the amount the user has borrowed
     function _setBorrowed(IERC20 borrowed_, uint256 amount_, address account_) internal {
-        Account storage account = _accounts[borrowed_][account_];
+        Account storage account = _accounts[account_];
 
-        setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowed).add(amount_));
-        account.borrowed = amount_;
+        if (account.borrowedAmounts[borrowed_] == 0 && amount_ != 0) account.borrowed.insert(borrowed_);
+        else if (account.borrowedAmounts[borrowed_] != 0 && amount_ == 0) account.borrowed.remove(borrowed_);
+
+        setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
+        account.borrowedAmounts[borrowed_] = amount_;
     }
 
     // Get the borrowed for a given account
     function borrowed(IERC20 borrowed_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[borrowed_][account_];
-        return account.borrowed;
+        Account storage account = _accounts[account_];
+        return account.borrowedAmounts[borrowed_];
     }
 
     // Get the total price of the assets borrowed
     function borrowedPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[borrowed_][account_];
-        return oracle.price(borrowed_, account.borrowed);
+        return oracle.price(borrowed_, borrowed(borrowed_, account_));
     }
 
     // Get the initial borrow price for an account
     function initialBorrowPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[borrowed_][account_];
+        Account storage account = _accounts[account_];
         return account.initialBorrowPrice;
     }
 
     // Set the initial borrow price for an account
     function _setInitialBorrowPrice(IERC20 borrowed_, uint256 price_, address account_) internal {
-        Account storage account = _accounts[borrowed_][account_];
+        Account storage account = _accounts[account_];
         account.initialBorrowPrice = price_;
     }
 
     // Get the initial borrow block for an ccount
     function initialBorrowBlock(IERC20 borrowed_, address account_) public view returns (uint256) {
-        Account storage account = _accounts[borrowed_][account_];
+        Account storage account = _accounts[account_];
         return account.initialBorrowBlock;
     }
 
     // Set the initial borrow price for an account
     function _setInitialBorrowBlock(IERC20 borrowed_, uint256 block_, address account_) internal {
-        Account storage account = _accounts[borrowed_][account_];
+        Account storage account = _accounts[account_];
         account.initialBorrowBlock = block_;
     }
 }
