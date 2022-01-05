@@ -11,6 +11,10 @@ abstract contract MarginRepay is MarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    mapping(uint256 => IERC20[]) private _tempRepayTokens;
+    mapping(uint256 => uint256[]) private _tempRepayAmounts;
+    uint256 private _tempRepayIndex;
+
     // Payout the margin profits to the account
     function _repayPayout(address account_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
@@ -23,10 +27,13 @@ abstract contract MarginRepay is MarginLevel {
 
             if (currentPrice > initialPrice.add(interest)) {
                 uint256 payoutAmount = oracle.amount(token, currentPrice.sub(initialPrice).sub(interest));
+
                 pool.unclaim(token, borrowed(token, account_));
                 pool.withdraw(token, payoutAmount);
+
                 _setBorrowed(token, 0, account_);
                 _setInitialBorrowPrice(token, 0, account_);
+                _setCollateral(token, collateral(token, account_).add(payoutAmount), account_);
             }
         }
     }
@@ -60,8 +67,12 @@ abstract contract MarginRepay is MarginLevel {
     }
 
     // Repay the losses incurred by the account
-    function _repayLosses(address account_) internal {
+    function _repayLosses(address account_, IFlashSwap flashSwap_, bytes memory data_) internal {
         (IERC20[] memory repayTokens, uint256[] memory repayAmounts, uint256 totalRepayPrice) = _repayAmounts(account_);
+
+        IERC20[] storage tempRepayTokens = _tempRepayTokens[_tempRepayIndex];
+        uint256[] storage tempRepayAmounts = _tempRepayAmounts[_tempRepayIndex];
+        _tempRepayIndex = _tempRepayIndex.add(1);
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
         for (uint i = 0; i < collateralTokens.length; i++) {
@@ -71,16 +82,20 @@ abstract contract MarginRepay is MarginLevel {
             uint256 tokenAmount = collateral(token, account_);
 
             uint256 tokenPrice = collateralPrice(token, account_);
-            if (tokenPrice > totalRepayPrice) {                            // Amount of collateral exceeds amount to be repaid
-                uint256 correctedTokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
-                // **** Now we simply just need to add this to the list as well as the token of which it is
-                // **** DO NOT FORGET TO UPDATE THE COLLATERAL AMOUNTS as well as the repay price
+            if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
 
-            } else {                                                        // Amount of collateral does not exceed amount to be repaid
+            tempRepayTokens.push(token);
+            tempRepayAmounts.push(tokenAmount);
 
-                // **** Simply just add the full amount of the token
+            _setBorrowed(token, 0, account_);
+            _setInitialBorrowPrice(token, 0, account_);
+            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
+        }
 
-            }
+        uint256[] memory amountOut = _flashSwap(tempRepayTokens, tempRepayAmounts, repayTokens, repayAmounts, flashSwap_, data_);
+        for (uint i = 0; i < amountOut.length; i++) {
+            repayTokens[i].safeApprove(address(pool), amountOut[i]);
+            pool.deposit(repayTokens[i], amountOut[i]);
         }
     }
 
@@ -88,8 +103,8 @@ abstract contract MarginRepay is MarginLevel {
     function repay(IFlashSwap flashSwap_, bytes memory data_) external {
         require(isBorrowing(_msgSender()), "Cannot repay an account that has not borrowed");
 
-        // **** So my first step is going to be to iterate through everything and look at the gains that have been made
-        // **** Once I have iterated through all of these, I will next have to look at the amount of each that will have to be used to be repaid (try putting this in the oracle)
+        _repayPayout(_msgSender());
+        _repayLosses(_msgSender(), flashSwap_, data_);
 
         emit Repay(_msgSender(), flashSwap_, data_);
     }

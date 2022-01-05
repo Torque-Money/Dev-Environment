@@ -50,6 +50,10 @@ abstract contract MarginLiquidate is MarginRepay {
             (uint256 liqPercentNumerator, uint256 liqPercentDenominator) = liquidationFeePercent();
             repayTokens[i] = token;
             repayAmounts[i] = liqPercentDenominator.sub(liqPercentNumerator).mul(repayAmount).div(liqPercentDenominator);
+
+            _setBorrowed(token, 0, account_);
+            _setInitialBorrowPrice(token, 0, account_);
+            _setCollateral(token, 0, account_);
         }
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
