@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MarginBorrow.sol";
+import "./MarginLevel.sol";
 
-abstract contract MarginCollateral is MarginBorrow {
+abstract contract MarginCollateral is MarginBorrow, MarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
