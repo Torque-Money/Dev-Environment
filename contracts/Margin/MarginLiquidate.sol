@@ -33,6 +33,11 @@ abstract contract MarginLiquidate is MarginLevel {
     // Liquidate an undercollateralized account
     function liquidate(address account_) external {
         require(underCollateralized(account_), "Only undercollateralized accounts may be liquidated");
+
+        // **** So basically I am going to have to go through and check what collateral needs to be converted into which
+        // **** If one form of collateral is above value then we should send that amount to the user as collateral and then go through and wipe their assets out
+
+        // **** Pretty much doing the same thing that we're doing in the repayment except in this case we are taking all of the users collateral
     }
 
     event Liquidated(address indexed account, address liquidator);

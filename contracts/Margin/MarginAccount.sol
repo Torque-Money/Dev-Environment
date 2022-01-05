@@ -19,6 +19,8 @@ abstract contract MarginAccount is MarginPool {
 
         mapping(IERC20 => uint256) initialBorrowPrice;
         mapping(IERC20 => uint256) initialBorrowBlock;
+
+        uint256 hasBorrowed;                                        // Used to check if an account is currently borrowing or not
     }
 
     mapping(address => Account) private _accounts;
@@ -67,6 +69,7 @@ abstract contract MarginAccount is MarginPool {
         else if (account.borrowedAmounts[borrowed_] != 0 && amount_ == 0) account.borrowed.remove(borrowed_);
 
         setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
+        account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[borrowed_]).add(amount_);
         account.borrowedAmounts[borrowed_] = amount_;
     }
 
@@ -117,5 +120,11 @@ abstract contract MarginAccount is MarginPool {
     function _setInitialBorrowBlock(IERC20 borrowed_, uint256 block_, address account_) internal {
         Account storage account = _accounts[account_];
         account.initialBorrowBlock[borrowed_] = block_;
+    }
+
+    // Check if an account is currently borrowing
+    function isBorrowing(address account_) public view returns (bool) {
+        Account storage account = _accounts[account_];
+        return account.hasBorrowed != 0;
     }
 }
