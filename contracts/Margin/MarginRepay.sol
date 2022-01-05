@@ -19,19 +19,19 @@ abstract contract MarginRepay is MarginLevel {
         for (uint i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 amountBorrowed = borrowed(borrowed, account_);
+            uint256 amountBorrowed = borrowed(token, account_);
             if (amountBorrowed == 0) continue;          
 
             uint256 currentPrice = borrowedPrice(token, account_);
-            uint256 initialPrice = initialBorrowPrice(borrowed, account_);
-            uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
+            uint256 initialPrice = initialBorrowPrice(token, account_);
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             if (currentPrice > initialPrice.add(interest)) {
-                uint256 payoutAmount = oracle.amount(borrowed, currentPrice.sub(initialPrice).sub(interest));
+                uint256 payoutAmount = oracle.amount(token, currentPrice.sub(initialPrice).sub(interest));
                 pool.unclaim(token, amountBorrowed);
-                pool.withdraw(borrowed, payoutAmount);
-                _setBorrowed(borrowed, 0, account_);
-                _setInitialBorrowPrice(borrowed, 0, account_);
+                pool.withdraw(token, payoutAmount);
+                _setBorrowed(token, 0, account_);
+                _setInitialBorrowPrice(token, 0, account_);
 
                 numPayouts = numPayouts.add(1);
             }

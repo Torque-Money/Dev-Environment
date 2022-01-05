@@ -20,7 +20,7 @@ abstract contract MarginLiquidate is MarginRepay {
     }
 
     // Get the liquidation fee percent
-    function liquidationFeePercent() external view returns (uint256, uint256) {
+    function liquidationFeePercent() public view returns (uint256, uint256) {
         return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
@@ -32,11 +32,11 @@ abstract contract MarginLiquidate is MarginRepay {
 
     // Liquidate all undercollateralized accounts with the remaining collateral
     function _liquidate(address account_, uint256 numPayouts_, IFlashSwap flashSwap_, bytes memory data_) internal {
-        IER20[] memory borrowedTokens = _borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
         uint256 numRepays = borrowedTokens.length.sub(numPayouts_);
-        IERC20[] memory repayTokens = new IERC20[](numpRepays);
-        uint256[] memory repayAmounts = new uint256[](numpRepays);
+        IERC20[] memory repayTokens = new IERC20[](numRepays);
+        uint256[] memory repayAmounts = new uint256[](numRepays);
         uint256 repayIndex = 0;
 
         for (uint i = 0; i < borrowedTokens.length; i++) {
@@ -45,12 +45,12 @@ abstract contract MarginLiquidate is MarginRepay {
             uint256 amountBorrowed = borrowed(borrowed, account_);
             if (amountBorrowed == 0) continue;
 
-            uint256 currentPrice = borrowedPrice(borrowed_, account_);
-            uint256 initialPrice = initialBorrowPrice(borrowed, account_);
-            uint256 interest = pool.interest(borrowed, initialPrice, initialBorrowBlock(borrowed, account_));
+            uint256 currentPrice = borrowedPrice(token, account_);
+            uint256 initialPrice = initialBorrowPrice(token, account_);
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
-            uint256 repayAmount = oracle.amount(token_, repayPrice);
+            uint256 repayAmount = oracle.amount(token, repayPrice);
 
             (uint256 liqPercentNumerator, uint256 liqPercentDenominator) = liquidationFeePercent();
             repayTokens[repayIndex] = token;
