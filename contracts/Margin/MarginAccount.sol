@@ -17,8 +17,8 @@ abstract contract MarginAccount is MarginPool {
         TokenSet.Set borrowed;
         mapping(IERC20 => uint256) borrowedAmounts;
 
-        uint256 initialBorrowPrice;
-        uint256 initialBorrowBlock;
+        mapping(IERC20 => uint256) initialBorrowPrice;
+        mapping(IERC20 => uint256) initialBorrowBlock;
     }
 
     mapping(address => Account) private _accounts;
