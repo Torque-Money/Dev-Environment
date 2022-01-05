@@ -18,4 +18,21 @@ abstract contract MarginBorrow is MarginAccount {
     function setMinCollateralPrice(uint256 minCollateralPrice_) external onlyOwner returns (uint256) {
         minCollateralPrice = minCollateralPrice_;
     }
+
+    // Borrow against the collateral
+    function borrow(IERC20 borrowed_, uint256 amount_) external {
+        require(collateralPrice(_msgSender()) >= minCollateralPrice, "Collateral price must be greater than minimum");
+
+        if (borrowed(borrowed_, _msgSender()) == 0) _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
+
+        pool.claim(borrowed_, amount_);
+        _setBorrowed(borrowed_, borrowed(borrowed_, _msgSender()).add(amount_), _msgSender());
+
+        uint256 _initialBorrowPrice = oracle.price(borrowed_, amount_);
+        _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
+
+        emit Borrow(_msgSender(), borrowed_, amount_);
+    }
+
+    event Borrow(address indexed account, IERC20 borrowed, uint256 amount);
 }
