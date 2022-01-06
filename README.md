@@ -28,7 +28,7 @@ Staked tokens will be lended out to leveragers who will have to pay an interest 
 
 Staking is essential to the protocol as with no liquidity, there is nothing for the leveragers to borrow, which would render the protocol useless.
 
-#### Leveraging
+#### Leveraging (long only currently)
 
 Leveraging is where a user borrows money to invest with and is then entitled to the earnings made from the investment or is required to repay the losses incurred from the investment.
 
@@ -45,14 +45,39 @@ Please note that in addition to the price of the asset you borrowed against losi
 - Accumulating too much interest
 - The value of your deposited collateral dropping in value
 
-### Core analysis
+### Advanced overview
 
 #### Staking
 
-#### Leveraging
+When you stake tokens in the pool, you will receive LP tokens equal to `D * TLP / TVL` where `D` is the amount of the token you deposit, `TLP` is the total number of LP tokens in circulation, and `TVL` is the total amount of the staked asset in the pool.
 
-### Token
+These staked tokens will be lended out to leveragers who will be charged an interest rate on top of what they borrow which will be redistributed back to you. When you redeem your LP tokens you will receive `R * TVL / TLP` of the initial tokens you staked where `R` is the amount of LP tokens to be redeemed, and `TLP` and `TVL` have the same meanings as above.
+
+It should be noted that since your assets are lended out, there is no guarantee that your assets will be available to be redeemed when you wish. However the protocom aims to offset this by drastically boosting the interest rates whenever the utilization rate increases above a given threshold, which aims to drastically reduce the amount of borrowers and therefore returns liquidity to the pool.
+
+At the current time (potential to be changed in the future), staking in the pool theoretically protects your assets against market fluctuations, allowing staking to be considered as a market neutral strategy. When we lend your assets out to leveragers, if the price of your assets increases we pay out the amount that they went up by to the leverager, and if the price of your decreases, the leveragers collateral will cover your loss. This would mean in theory that the value of your assets would stay the same as the initial value you deposited plus the interest rate accumulated, however this is dependent on a couple of factors. In order to be completely market neutral it would require that 100% of liquidity is used at all times which we have already proved above is virtually impossible, and in addition to this in the event of a big market crash it is expected that there will be very few investors going long on your assets, further lowering your market protection. Therefore while the protocol in practice does not offer pure market neutral returns, it does provide some protection against market fluctuations, and opens you up to being able to receive the increasing value of your assets.
+
+#### Leveraging (long only currently)
+
+Users may leverage up to as much as they wish against their collateral, however they will need to deposit a minimum amount first. This collateral will be used to ensure that the protocol is paid back for any losses your leveraged position may incur. This minimum collateral amount is enforced so that there is always an incentive for liquidating a user, otherwise undercollateralized accounts would horde borrowed liquidity whilst being undercollateralized.
+
+The protocol works uses a cross margin, which means different amounts of borrowed assets affect the accounts overall margin level. However this also means that different margin borrows can offset each other which provides the leverager with the ability to hedge huge leveraged positions even if they would traditionally lack the collateral to do so. Additionally this means that in the case of a liquidation, your entire account will be liquidated. However a potential work around to isolate your losses is to use unique crypto addresses for each asset you wish to borrow.
+
+While leveraging a user will accumulate interest that compounds on a per block basis. Interest is measured from the start of the block that was initially used to make the borrow a particular asset. Repaying the asset and reborrowing it again resets the accumulated interest. The interest is charged on the initial borrow price of the asset. Topping your account up with more collateral is a good way to pay off interest, however it is recommended that after accumulating enough interest you repay the assets and reborrow. This will make more sense with the next part.
+
+Interest rates are determined by the utilization rate as well as a given max interest rate set by the owners of the protocol. As such they fluctuate over time and this is why it is recommended that after accumulating a large amount of interest you repay your loan, otherwise a slight interest rate movement could cause your entire account to be liquidated. In addition to this and to prevent low liquidity for stakers trying to redeem, when the utilization rate exceeds a certain threshold, interest rates will increase at a much sharper rate.
+
+Liquidations occur when an accounts margin level falls below the safe threshold set by the owners of the protocol. In the case of a liquidation, all of the accounts collateral will be used to pay off losses incurred by the account. In addition the user who calls the liquidation function will receive a percentage of the collateral they liquidate.
+
+At all times in order to avoid being liquidated the account must satisfy the following equation:
+`(B(0) + I(t)) * (M_min_n) < (B(t) + C(t)) * (M_min_d)` where `B(t)` is the total price of the borrowed assets at the current time `t`, `C(t)` is the total price of the collateral at current time `t`, `I(t)` is the accumulated interest at time `t`, and `M_min` is the minimum margin level seperated into `M_min_n` and `M_min_d` which represents the numerator and denominator of the min margin level respectively.
+
+It should be noted that during the process of either repayments or liquidations you will have to use a swap function which supports callbacks to your own custom swap callback. This callback will receive the funds and will expect at the very minimum the amounts of the assets it specifies in the function params. By default we provide a swap function which will take the assets, swap them at the market, and will then return the assets back to the caller as well as providing the address provided as extra data with any extra input tokens.
+
+### TAU token
 
 ### DAO
+
+### Yield farming
 
 ### Future plans
