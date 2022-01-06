@@ -4,6 +4,10 @@
 
 ### Disclaimer: Please note that everything explained in this whitepaper is purely hypothetical and should not be considered as fact. This is experimental technology and nothing is certain.
 
+### Official links
+
+**Currently we do not have any official links**
+
 ### Code
 
 All of the most up to date code can be found in the [official repository](https://github.com/Torque-Money/Torque-Protocol). In addition the code can be verified on most blockchain explorers.
@@ -75,8 +79,18 @@ It should be noted that during the process of either repayments or liquidations 
 
 ### TAU token
 
+The TAU token will be the official governance token for the Torque ecosystem. It will be used to vote on changes to be made to the protocol through the governance and timelock contracts.
+
+Users will be able to earn TAU through providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets.
+
 ### DAO
 
-### Yield farming
+The DAO will consist of the TAU token, governance contracts, and timelock contracts. All of the smart contracts deployed will be fully managed by the DAO, and changes will be voted on by holders of the TAU token.
+
+A percentage of the profits earned by the protocol will be forwarded off to the DAO to manage. The majority of these funds will be locked away in the protocols to ensure liquidity. The remaining funds will be used to fund new projects as venture capital investments, and will be occasionally distributed out to owners of TAU.
 
 ### Future plans
+
+Our next plan is to add a shorting option to the protocol. Adding this will balance out the returns to stakers, and will encourage borrowing in both bull and bear markets which will help to bring the protocol close to its peak theoretical performing state.
+
+In addition to this we plan to provide flashloans using our liquidity pool in which users will be able to borrow huge amounts of collateral as long as they can repay it as well as a fee back to the protocol within the same transaction. Flash loans will help boost the returns for the liquidity providers at no loss for the protocol itself.
