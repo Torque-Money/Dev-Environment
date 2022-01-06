@@ -2,23 +2,23 @@
 
 ## Changes between v1 and v2
 
--   Removed the need for periods - instead the system will work of a continuous debt based system
--   The new system will involve continuous liquidity and no more stakers seperate from the borrow (potentially)
--   Borrowers will lock their funds into a seperate pool, however stakers will not be able to redeem their funds without sufficient liquidity
--   Stakers on investing will receive LP tokens to represent their investment - with this it will allow any holder to unlock that same collateral, pegging it to the price. However the benefit it brings is that instead of unlocking liquidity from the pool, users will just trade the token which represents this, helping to keep locked liquidity by incentivizing the trading of an appreciation asset (as the value of the pools stake increases)
+- Removed the need for periods - instead the system will work of a continuous debt based system
+- The new system will involve continuous liquidity and no more stakers seperate from the borrow (potentially)
+- Borrowers will lock their funds into a seperate pool, however stakers will not be able to redeem their funds without sufficient liquidity
+- Stakers on investing will receive LP tokens to represent their investment - with this it will allow any holder to unlock that same collateral, pegging it to the price. However the benefit it brings is that instead of unlocking liquidity from the pool, users will just trade the token which represents this, helping to keep locked liquidity by incentivizing the trading of an appreciation asset (as the value of the pools stake increases)
 
 ## TODO
 
--   Add in repayment distribution feature where voters can only vote and stakers of the governance token get paid out (needs good community support for voters to willingly vote without payment)
--   Add in the better yield farming distributor based on the utilization rate
--   We can value crypto companies, where the value of the token is derived from the price of the company someone would be willing to buy it at to receive its cashflow and assets
--   Upgrade price feeds to use [Chainlink price feeds](https://docs.chain.link/docs/get-the-latest-price/)
--   Replace the swap functions with a collateral market resistant option + change the payback system to not use a swap at the DEX incase of low liquidity (and maybe not even the redeem function)
+- Add in repayment distribution feature where voters can only vote and stakers of the governance token get paid out (needs good community support for voters to willingly vote without payment)
+- Add in the better yield farming distributor based on the utilization rate
+- We can value crypto companies, where the value of the token is derived from the price of the company someone would be willing to buy it at to receive its cashflow and assets
+- Upgrade price feeds to use [Chainlink price feeds](https://docs.chain.link/docs/get-the-latest-price/)
+- Replace the swap functions with a collateral market resistant option + change the payback system to not use a swap at the DEX incase of low liquidity (and maybe not even the redeem function)
 
 ## Code
 
--   [Protocol repository](https://github.com/Terragonn/Torque-Protocol-V1)
--   [Frontend repository](https://github.com/Terragonn/Torque-Frontend)
+- [Protocol repository](https://github.com/Terragonn/Torque-Protocol-V1)
+- [Frontend repository](https://github.com/Terragonn/Torque-Frontend)
 
 ## Deployed contracts
 
@@ -80,54 +80,54 @@ The liquidator will be allocated a percentage of the collateral to compensate th
 
 Interest rates can be calculated by the formula:
 
--   `d` = amount of asset lended out
--   `p` = amount of asset locked in pool and liquid
--   `i` = interest rate
--   `i = d / (d + p)`
+- `d` = amount of asset lended out
+- `p` = amount of asset locked in pool and liquid
+- `i` = interest rate
+- `i = d / (d + p)`
 
 We will calculate the interest rate continuously over a given interval. This will not compound. We can know how much interest has been accumulated by the time between when the amount was borrowed and the current time. The interest can be calculated with the following formula:
 
--   `k` = max percent interest
--   `t_0` = initial time
--   `t_c` = current time
--   `b_0` = value of amount borrowed initially in relation to the deposited asset
--   `i` = interest rate (as seen above)
--   `I` = interest
--   `I = k * b_0 * i * (t_c - t_0)`
+- `k` = max percent interest
+- `t_0` = initial time
+- `t_c` = current time
+- `b_0` = value of amount borrowed initially in relation to the deposited asset
+- `i` = interest rate (as seen above)
+- `I` = interest
+- `I = k * b_0 * i * (t_c - t_0)`
 
 ### Margin levels
 
 At all times the formula must satisfy the following equation. If the equation is no longer satisfied, the user will be opened up to be liquidated:
 
--   `b_t` = value of borrowed amount relative to deposited asset at time t
--   `d_t` = amount of asset deposited at time t
--   `i_t` = interest accumulated at time t
--   `a` = alpha overcollateralized ratio
--   `a < (b_t + d_t) / (b_0 + i_t)`
+- `b_t` = value of borrowed amount relative to deposited asset at time t
+- `d_t` = amount of asset deposited at time t
+- `i_t` = interest accumulated at time t
+- `a` = alpha overcollateralized ratio
+- `a < (b_t + d_t) / (b_0 + i_t)`
 
 ### Repayments
 
 The repayment value can be calculated using the following formula:
 
--   `d` = amount deposited
--   `b_t` = value of borrowed amount at time t relative to deposited asset
--   `i_t` = interest at time t
--   `R` = repayment value in terms of deposited asset
--   `R = d + b_t - b_0 - i_t`
+- `d` = amount deposited
+- `b_t` = value of borrowed amount at time t relative to deposited asset
+- `i_t` = interest at time t
+- `R` = repayment value in terms of deposited asset
+- `R = d + b_t - b_0 - i_t`
 
 When the repayment is made, if the repayment value is less than or equal to the deposit value, then the user must repay the following amount:
 
--   `b_t` = value of amount borrowed at time t in terms of deposited asset
--   `i_t` = interest at time t
--   `R` = repay value in terms of deposited asset
--   `R = b_0 + i_t - b_t`
+- `b_t` = value of amount borrowed at time t in terms of deposited asset
+- `i_t` = interest at time t
+- `R` = repay value in terms of deposited asset
+- `R = b_0 + i_t - b_t`
 
 If the repayment value is > deposit value, then the user will be paid out the following amount:
 
--   `b_t` = value of amount borrowed at time t in terms of deposited asset
--   `i_t` = interest at time t
--   `R` = repay value in terms of deposited asset
--   `R = b_t - b_0 - i_t`
+- `b_t` = value of amount borrowed at time t in terms of deposited asset
+- `i_t` = interest at time t
+- `R` = repay value in terms of deposited asset
+- `R = b_t - b_0 - i_t`
 
 ## Yields
 
@@ -137,11 +137,11 @@ Thus stakers can expect to earn a maximum yield of the current interest rate on 
 
 The true APY cannot truly be calculated as the interest rate is dynamic, however if a staker restakes their full amount throughout the whole year, the interest rate stays the same, leveragers borrow for the full amount of time, and the full amount of collateral is used by leveragers during every period, then the APY can be calculated using the following formula:
 
--   `s_0` = initial stake
--   `i_0` = interest rate
--   `l` = period length in days
--   `s_f` = final stake
--   `s_f = s_0 * (1 + i) ^ (365 / l)`
+- `s_0` = initial stake
+- `i_0` = interest rate
+- `l` = period length in days
+- `s_f` = final stake
+- `s_f = s_0 * (1 + i) ^ (365 / l)`
 
 ## DAO and governance token
 
@@ -149,5 +149,5 @@ WIP - a fixed number of governance tokens will be allocated back to stakers that
 
 ## Future plans and protocol v2
 
--   Allow leveragers to borrow against multiple types of assets
--   Add cross margins instead of exclusively providing isolated margins
+- Allow leveragers to borrow against multiple types of assets
+- Add cross margins instead of exclusively providing isolated margins
