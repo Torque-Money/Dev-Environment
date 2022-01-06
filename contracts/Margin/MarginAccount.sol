@@ -8,12 +8,12 @@ import "./MarginPool.sol";
 
 abstract contract MarginAccount is MarginPool {
     using SafeMath for uint256;
-    using TokenSet for TokenSet.Set;
+    using Set for Set.TokenSet;
 
     struct Account {
-        TokenSet.Set collateral;
+        Set.TokenSet collateral;
         mapping(IERC20 => uint256) collateralAmounts;
-        TokenSet.Set borrowed;
+        Set.TokenSet borrowed;
         mapping(IERC20 => uint256) borrowedAmounts;
         mapping(IERC20 => uint256) initialBorrowPrice;
         mapping(IERC20 => uint256) initialBorrowBlock;

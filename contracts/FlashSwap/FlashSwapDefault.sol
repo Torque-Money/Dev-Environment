@@ -12,11 +12,11 @@ import "./IFlashSwap.sol";
 contract FlashSwapDefault is IFlashSwap, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-    using TokenSet for TokenSet.Set;
+    using Set for Set.TokenSet;
 
     UniswapV2Router02 public router;
 
-    mapping(uint256 => TokenSet.Set) private _sets;
+    mapping(uint256 => Set.TokenSet) private _sets;
     mapping(uint256 => mapping(IERC20 => uint256)) private _amounts;
     uint256 private _index;
 
@@ -81,7 +81,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         uint256 inIndex = _index++;
         uint256 finalIndex = _index++;
 
-        TokenSet.Set storage inSet = _sets[inIndex];
+        Set.TokenSet storage inSet = _sets[inIndex];
         mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
         for (uint256 i = 0; i < tokenIn_.length; i++) {
             IERC20 token = tokenIn_[i];
