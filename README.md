@@ -10,7 +10,7 @@ All of the most up to date code can be found in the [official repository](https:
 
 ### Deployed contracts
 
-**As of the current point in time no contracts have been deployed. If you see a contract that claims to be ours that is not here, please verify it with us first before using it**
+**As of the current point in time no contracts have been deployed. If you see a contract that claims to be ours that is not listed here, please verify it with us first before using it**
 
 ### Motivation
 
