@@ -36,7 +36,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) internal {
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = borrowedTokens(account_);
 
         IERC20[] memory repayTokens = new IERC20[](borrowedTokens.length);
         uint256[] memory repayAmounts = new uint256[](borrowedTokens.length);
@@ -44,7 +44,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 currentPrice = borrowedPrice(token, account_);
+            uint256 currentPrice = _borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
             uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
@@ -60,7 +60,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
             _setCollateral(token, 0, account_);
         }
 
-        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        IERC20[] memory collateralTokens = collateralTokens(account_);
         uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
         for (uint256 i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 

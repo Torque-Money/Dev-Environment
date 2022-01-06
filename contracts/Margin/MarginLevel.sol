@@ -31,12 +31,12 @@ abstract contract MarginLevel is MarginAccount {
 
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
-        uint256 accountPrice = collateralPrice(account_);
-        uint256 currentBorrowPrice = borrowedPrice(account_);
+        uint256 accountPrice = _collateralPrice(account_);
+        uint256 currentBorrowPrice = _borrowedPrice(account_);
 
         uint256 _initialBorrowPrice = 0;
         uint256 interest = 0;
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = borrowedTokens(account_);
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             uint256 _tempInitialBorrowPrice = initialBorrowPrice(borrowedTokens[i], account_);
             _initialBorrowPrice = _initialBorrowPrice.add(_tempInitialBorrowPrice);
