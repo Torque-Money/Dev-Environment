@@ -101,7 +101,7 @@ abstract contract MarginLongRepay is Margin {
             else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
         }
 
-        return ();
+        return (repayTokens, repayAmounts);
     }
 
     // Repay the losses incurred by the account
@@ -110,8 +110,8 @@ abstract contract MarginLongRepay is Margin {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) internal {
-        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayAmountsOut(account_);
         (IERC20[] memory repayTokensIn, uint256[] memory repayAmountsIn) = _repayAmountsIn(account_);
+        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayAmountsOut(account_);
 
         uint256[] memory amountOut = _flashSwap(repayTokensIn, repayAmountsIn, repayTokensOut, repayAmountsOut, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {

@@ -57,7 +57,7 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the collateral tokens list
-    function collateralTokens(address account_) public view returns (IERC20[] memory) {
+    function _collateralTokens(address account_) internal view returns (IERC20[] memory) {
         return _accounts[account_].collateral.iterable();
     }
 
@@ -97,7 +97,7 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the borrowed tokens list
-    function borrowedTokens(address account_) public view returns (IERC20[] memory) {
+    function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
         return _accounts[account_].borrowed.iterable();
     }
 
