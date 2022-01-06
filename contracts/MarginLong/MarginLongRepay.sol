@@ -17,7 +17,7 @@ abstract contract MarginLongRepay is Margin {
 
     // Payout the margin profits to the account
     function _repayPayout(address account_) internal {
-        IERC20[] memory borrowedTokens = borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
@@ -48,7 +48,7 @@ abstract contract MarginLongRepay is Margin {
             uint256
         )
     {
-        IERC20[] memory borrowedTokens = borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
         IERC20[] memory repayTokens = new IERC20[](borrowedTokens.length);
         uint256[] memory repayAmounts = new uint256[](borrowedTokens.length);
@@ -82,7 +82,7 @@ abstract contract MarginLongRepay is Margin {
         uint256[] storage repayAmounts = _tempRepayAmounts[_tempRepayIndex];
         _tempRepayIndex = _tempRepayIndex.add(1);
 
-        IERC20[] memory collateralTokens = collateralTokens(account_);
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
         for (uint256 i = 0; i < collateralTokens.length; i++) {
             IERC20 token = collateralTokens[i];
             uint256 tokenAmount = collateral(token, account_);

@@ -33,7 +33,7 @@ abstract contract MarginLevel is MarginAccount {
     function marginLevel(address account_) public view returns (uint256, uint256) {
         uint256 _initialBorrowPrice = 0;
         uint256 interest = 0;
-        IERC20[] memory borrowedTokens = borrowedTokens(account_);
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             uint256 _tempInitialBorrowPrice = initialBorrowPrice(borrowedTokens[i], account_);
             _initialBorrowPrice = _initialBorrowPrice.add(_tempInitialBorrowPrice);
