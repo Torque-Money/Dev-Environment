@@ -44,20 +44,20 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the price of a token used as collateral for the asset borrowed for an account
-    function collateralPrice(IERC20 collateral_, address account_) public view returns (uint256) {
+    function _collateralPrice(IERC20 collateral_, address account_) internal view returns (uint256) {
         return oracle.price(collateral_, collateral(collateral_, account_));
     }
 
     // Get the total collateral price for a given account and asset borrowed
-    function collateralPrice(address account_) public view returns (uint256) {
+    function _collateralPrice(address account_) internal view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
-        for (uint256 i = 0; i < account.collateral.count(); i++) totalPrice = totalPrice.add(collateralPrice(account.collateral.keyAtIndex(i), account_));
+        for (uint256 i = 0; i < account.collateral.count(); i++) totalPrice = totalPrice.add(_collateralPrice(account.collateral.keyAtIndex(i), account_));
         return totalPrice;
     }
 
     // Get the collateral tokens list
-    function _collateralTokens(address account_) internal view returns (IERC20[] memory) {
+    function collateralTokens(address account_) public view returns (IERC20[] memory) {
         return _accounts[account_].collateral.iterable();
     }
 
@@ -84,20 +84,20 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the current price of an asset borrowed
-    function borrowedPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
+    function _borrowedPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
         return oracle.price(borrowed_, borrowed(borrowed_, account_));
     }
 
     // Get the total price of the assets borrowed
-    function borrowedPrice(address account_) public view returns (uint256) {
+    function _borrowedPrice(address account_) internal view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
-        for (uint256 i = 0; i < account.borrowed.count(); i++) totalPrice = totalPrice.add(borrowedPrice(account.borrowed.keyAtIndex(i), account_));
+        for (uint256 i = 0; i < account.borrowed.count(); i++) totalPrice = totalPrice.add(_borrowedPrice(account.borrowed.keyAtIndex(i), account_));
         return totalPrice;
     }
 
     // Get the borrowed tokens list
-    function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
+    function borrowedTokens(address account_) public view returns (IERC20[] memory) {
         return _accounts[account_].borrowed.iterable();
     }
 
