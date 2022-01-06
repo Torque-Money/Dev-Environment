@@ -94,12 +94,14 @@ abstract contract MarginLongRepay is Margin {
             uint256 tokenPrice = _collateralPrice(token, account_);
             if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
 
-            tempRepayTokens.push(token);
-            tempRepayAmounts.push(tokenAmount);
+            {
+                tempRepayTokens.push(token);
+                tempRepayAmounts.push(tokenAmount);
 
-            _setBorrowed(token, 0, account_);
-            _setInitialBorrowPrice(token, 0, account_);
-            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
+                _setBorrowed(token, 0, account_);
+                _setInitialBorrowPrice(token, 0, account_);
+                _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
+            }
 
             if (tokenPrice >= totalRepayPrice) break;
             else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
