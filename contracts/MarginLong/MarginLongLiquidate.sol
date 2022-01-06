@@ -6,9 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "../FlashSwap/IFlashSwap.sol";
-import "./MarginRepay.sol";
+import "./MarginLongRepay.sol";
 
-abstract contract MarginLiquidate is MarginRepay {
+abstract contract MarginLongLiquidate is MarginLongRepay {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 

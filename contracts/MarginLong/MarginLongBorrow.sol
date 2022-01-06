@@ -3,10 +3,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./MarginAccount.sol";
-import "./MarginApproved.sol";
+import "../Margin/Margin.sol";
 
-abstract contract MarginBorrow is MarginAccount, MarginApproved {
+abstract contract MarginLongBorrow is Margin {
     using SafeMath for uint256;
 
     // Borrow against the collateral
