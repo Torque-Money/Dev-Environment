@@ -31,9 +31,6 @@ abstract contract MarginLevel is MarginAccount {
 
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
-        uint256 accountPrice = collateralPrice(account_);
-        uint256 currentBorrowPrice = borrowedPrice(account_);
-
         uint256 _initialBorrowPrice = 0;
         uint256 interest = 0;
         IERC20[] memory borrowedTokens = borrowedTokens(account_);
@@ -43,7 +40,7 @@ abstract contract MarginLevel is MarginAccount {
             interest = interest.add(pool.interest(borrowedTokens[i], _initialBorrowPrice, initialBorrowBlock(borrowedTokens[i], account_)));
         }
 
-        return (currentBorrowPrice.add(accountPrice), _initialBorrowPrice.add(interest));
+        return (borrowedPrice(account_).add(collateralPrice(account_)), _initialBorrowPrice.add(interest));
     }
 
     // Check whether an account is undercollateralized
