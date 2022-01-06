@@ -82,42 +82,39 @@ abstract contract LPoolInterest is LPoolLiquidity {
         }
     }
 
-    // Helper to calculate the interest rate when the amount borrowed is above the max utilization rate
-    function _interestRateMax(
-        uint256 valueLocked,
-        uint256 utilized,
-        FractionMath.Fraction memory utilization,
-        FractionMath.Fraction memory interestMin,
-        FractionMath.Fraction memory interestMax
+    // Helper to calculate the minimum interest rate
+    function _interestRateMin(
+        uint256 utilized_,
+        uint256 valueLocked_,
+        FractionMath.Fraction memory interestMin_
     ) internal pure returns (uint256, uint256) {
+        return (utilized_.mul(interestMin_.numerator), valueLocked_.mul(interestMin_.denominator));
+    }
+
+    // Helper to calculate the maximum interest rate
+    function _interestRateMax(
+        uint256 utilized_,
+        uint256 valueLocked_,
+        FractionMath.Fraction memory utilizationMax_,
+        FractionMath.Fraction memory interestMin_,
+        FractionMath.Fraction memory interestMax_
+    ) internal pure returns (uint256, uint256) {
+        uint256 kNumerator;
+        {
+            kNumerator = interestMax_.numerator.add(interestMin_.denominator).sub(interestMin_.numerator.mul(interestMax_.denominator)).mul(utilizationMax_.numerator);
+        }
+        uint256 kDenominator;
+        {
+            kDenominator = interestMax_.denominator.mul(interestMin_.denominator).mul(utilizationMax_.denominator);
+        }
+
         uint256 numerator;
         {
-            numerator = utilized.mul(interestMax.numerator).mul(utilization.denominator).mul(interestMin.denominator);
+            numerator = utilized_.mul(interestMax_.numerator).mul(kDenominator).sub(kNumerator.mul(valueLocked_).mul(interestMax_.denominator));
         }
-        {
-            numerator = numerator.add(utilization.numerator.mul(interestMin.numerator).mul(valueLocked).mul(interestMax.denominator));
-        }
-        {
-            numerator = numerator.mul(utilization.denominator).mul(interestMax.denominator);
-        }
-
-        uint256 numeratorSub;
-        {
-            numeratorSub = utilization.numerator.mul(interestMax.numerator).mul(valueLocked);
-        }
-        {
-            numeratorSub = numeratorSub.mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator);
-        }
-        {
-            numerator = numerator.sub(numeratorSub);
-        }
-
         uint256 denominator;
         {
-            denominator = valueLocked.mul(interestMax.denominator).mul(utilization.denominator);
-        }
-        {
-            denominator = denominator.mul(interestMin.denominator).mul(utilization.denominator).mul(interestMax.denominator);
+            denominator = valueLocked_.mul(interestMax_.denominator).mul(kDenominator);
         }
 
         return (numerator, denominator);
@@ -128,13 +125,13 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256 valueLocked = tvl(token_);
         uint256 utilized = valueLocked.sub(liquidity(token_));
 
-        FractionMath.Fraction memory utilization = _maxUtilization[token_];
+        FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
-        if (utilized.mul(utilization.denominator) > tvl(token_).mul(utilization.numerator))
-            return _interestRateMax(valueLocked, utilized, utilization, interestMin, interestMax);
-        else return (utilized.mul(interestMin.numerator), valueLocked.mul(interestMin.denominator));
+        if (utilized.mul(utilizationMax.denominator) > tvl(token_).mul(utilizationMax.numerator))
+            return _interestRateMax(utilized, valueLocked, utilizationMax, interestMin, interestMax);
+        else return _interestRateMin(utilized, valueLocked, interestMin);
     }
 
     // Get the interest on a given asset for a given number of blocks
