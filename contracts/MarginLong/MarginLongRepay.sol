@@ -39,7 +39,7 @@ abstract contract MarginLongRepay is Margin {
     }
 
     // Get the amounts of each borrowed asset that needs to be repaid
-    function _repayAmounts(address account_)
+    function _repayAmountsOut(address account_)
         internal
         view
         returns (
@@ -74,13 +74,9 @@ abstract contract MarginLongRepay is Margin {
         return (repayTokens, repayAmounts, totalRepayPrice);
     }
 
-    // Repay the losses incurred by the account
-    function _repayLosses(
-        address account_,
-        IFlashSwap flashSwap_,
-        bytes memory data_
-    ) internal {
-        (IERC20[] memory repayTokens, uint256[] memory repayAmounts, uint256 totalRepayPrice) = _repayAmounts(account_);
+    // Get the amounts of collateral that need to be used to repay
+    function _repayAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
+        (, , uint256 totalRepayPrice) = _repayAmountsOut(account_);
 
         IERC20[] storage tempRepayTokens = _tempRepayTokens[_tempRepayIndex];
         uint256[] storage tempRepayAmounts = _tempRepayAmounts[_tempRepayIndex];
@@ -104,11 +100,21 @@ abstract contract MarginLongRepay is Margin {
             if (tokenPrice >= totalRepayPrice) break;
             else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
         }
+    }
 
-        uint256[] memory amountOut = _flashSwap(tempRepayTokens, tempRepayAmounts, repayTokens, repayAmounts, flashSwap_, data_);
+    // Repay the losses incurred by the account
+    function _repayLosses(
+        address account_,
+        IFlashSwap flashSwap_,
+        bytes memory data_
+    ) internal {
+        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayAmountsOut(account_);
+        (IERC20[] memory repayTokensIn, uint256[] memory repayAmountsIn) = _repayAmountsIn(account_);
+
+        uint256[] memory amountOut = _flashSwap(repayTokensIn, repayAmountsIn, repayTokensOut, repayAmountsOut, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {
-            repayTokens[i].safeApprove(address(pool), amountOut[i]);
-            pool.deposit(repayTokens[i], amountOut[i]);
+            repayTokensOut[i].safeApprove(address(pool), amountOut[i]);
+            pool.deposit(repayTokensOut[i], amountOut[i]);
         }
     }
 

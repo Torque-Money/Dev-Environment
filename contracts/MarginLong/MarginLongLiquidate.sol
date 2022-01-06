@@ -44,15 +44,12 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 repayAmount;
-            {
-                uint256 currentPrice = _borrowedPrice(token, account_);
-                uint256 initialPrice = initialBorrowPrice(token, account_);
-                uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
+            uint256 currentPrice = _borrowedPrice(token, account_);
+            uint256 initialPrice = initialBorrowPrice(token, account_);
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
-                uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
-                repayAmount = oracle.amount(token, repayPrice);
-            }
+            uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
+            uint256 repayAmount = oracle.amount(token, repayPrice);
 
             (uint256 liqPercentNumerator, uint256 liqPercentDenominator) = liquidationFeePercent();
             repayTokens[i] = token;
