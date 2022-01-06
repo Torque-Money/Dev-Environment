@@ -69,11 +69,7 @@ Interest rates are determined by the utilization rate as well as a given max int
 
 Liquidations occur when an accounts margin level falls below the safe threshold set by the owners of the protocol. In the case of a liquidation, all of the accounts collateral will be used to pay off losses incurred by the account. In addition the user who calls the liquidation function will receive a percentage of the collateral they liquidate.
 
-At all times in order to avoid being liquidated the account must satisfy the following equation:
-
-`(B(0) + I(t)) * (M_min_n) < (B(t) + C(t)) * (M_min_d)`
-
-where `B(t)` is the total price of the borrowed assets at the current time `t`, `C(t)` is the total price of the collateral at current time `t`, `I(t)` is the accumulated interest at time `t`, and `M_min` is the minimum margin level seperated into `M_min_n` and `M_min_d` which represents the numerator and denominator of the min margin level respectively.
+At all times in order to avoid being liquidated the account must satisfy the equation `(B(0) + I(t)) * (M_min_n) < (B(t) + C(t)) * (M_min_d)` where `B(t)` is the total price of the borrowed assets at the current time `t`, `C(t)` is the total price of the collateral at current time `t`, `I(t)` is the accumulated interest at time `t`, and `M_min` is the minimum margin level seperated into `M_min_n` and `M_min_d` which represents the numerator and denominator of the min margin level respectively.
 
 It should be noted that during the process of either repayments or liquidations you will have to use a swap function which supports callbacks to your own custom swap callback. This callback will receive the funds and will expect at the very minimum the amounts of the assets it specifies in the function params. By default we provide a swap function which will take the assets, swap them at the market, and will then return the assets back to the caller as well as providing the address provided as extra data with any extra input tokens.
 
