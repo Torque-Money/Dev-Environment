@@ -12,15 +12,15 @@ contract Governance is Governor, GovernorSettings, GovernorCompatibilityBravo, G
     constructor(
         ERC20Votes token_,
         TimelockController timelock_,
-        uint256 _quorumFraction,
-        uint256 _votingDelay,
-        uint256 _votingPeriod,
-        uint256 _proposalThreshold
+        uint256 quorumFraction_,
+        uint256 votingDelay_,
+        uint256 votingPeriod_,
+        uint256 proposalThreshold_
     )
         Governor("TorqueDAO")
-        GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
+        GovernorSettings(votingDelay_, votingPeriod_, proposalThreshold_)
         GovernorVotes(token_)
-        GovernorVotesQuorumFraction(_quorumFraction)
+        GovernorVotesQuorumFraction(quorumFraction_)
         GovernorTimelockControl(timelock_)
     {}
 
