@@ -14,12 +14,16 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
     function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
         (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
-        uint256 tax = taxPercentNumerator.mul(amount_).div(taxPercentDenominator);
-        token_.safeTransferFrom(_msgSender(), taxAccount, tax);
+        address[] memory _taxAccounts = _taxAccounts();
 
-        uint256 taxedAmount = amount_.sub(tax);
-        token_.safeTransferFrom(_msgSender(), address(this), taxedAmount);
-        emit Deposit(_msgSender(), token_, taxedAmount, tax, taxAccount);
+        uint256 tax = taxPercentNumerator.mul(amount_).div(taxPercentDenominator).div(_taxAccounts.length);
+        uint256 totalTax = tax.mul(_taxAccounts.length);
+
+        for (uint256 i = 0; i < _taxAccounts.length; i++) token_.safeTransferFrom(_msgSender(), _taxAccounts[i], tax);
+
+        amount_ = amount_.sub(totalTax);
+        token_.safeTransferFrom(_msgSender(), address(this), amount_);
+        emit Deposit(_msgSender(), token_, amount_, totalTax, _taxAccounts);
     }
 
     // Withdraw a given amount of collateral from the pool
@@ -31,6 +35,6 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     function liquidity(IERC20 token_) public view virtual returns (uint256);
 
-    event Deposit(address indexed account, IERC20 token, uint256 amount, uint256 tax, address taxAccount);
+    event Deposit(address indexed account, IERC20 token, uint256 amount, uint256 totalTax, address[] taxAccount);
     event Withdraw(address indexed account, IERC20 token, uint256 amount);
 }
