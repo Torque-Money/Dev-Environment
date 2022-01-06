@@ -78,8 +78,8 @@ abstract contract MarginLongRepay is Margin {
     function _repayAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
         (, , uint256 totalRepayPrice) = _repayAmountsOut(account_);
 
-        IERC20[] storage tempRepayTokens = _tempRepayTokens[_tempRepayIndex];
-        uint256[] storage tempRepayAmounts = _tempRepayAmounts[_tempRepayIndex];
+        IERC20[] storage repayTokens = _tempRepayTokens[_tempRepayIndex];
+        uint256[] storage repayAmounts = _tempRepayAmounts[_tempRepayIndex];
         _tempRepayIndex = _tempRepayIndex.add(1);
 
         IERC20[] memory collateralTokens = collateralTokens(account_);
@@ -90,8 +90,8 @@ abstract contract MarginLongRepay is Margin {
             uint256 tokenPrice = _collateralPrice(token, account_);
             if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
 
-            tempRepayTokens.push(token);
-            tempRepayAmounts.push(tokenAmount);
+            repayTokens.push(token);
+            repayAmounts.push(tokenAmount);
 
             _setBorrowed(token, 0, account_);
             _setInitialBorrowPrice(token, 0, account_);
@@ -100,6 +100,8 @@ abstract contract MarginLongRepay is Margin {
             if (tokenPrice >= totalRepayPrice) break;
             else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
         }
+
+        return ();
     }
 
     // Repay the losses incurred by the account
