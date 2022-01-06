@@ -29,10 +29,7 @@ contract TimelockTax is Context {
     }
 
     modifier onlyTax() {
-        require(
-            _msgSender() == taxAccount,
-            "Only the tax account may call this"
-        );
+        require(_msgSender() == taxAccount, "Only the tax account may call this");
         _;
     }
 
@@ -51,9 +48,7 @@ contract TimelockTax is Context {
         require(block.timestamp >= lastTax.add(taxCooldown));
 
         uint256 bal = _token.balanceOf(address(this));
-        uint256 tax = bal.mul(_taxPercentage.numerator).div(
-            _taxPercentage.denominator
-        );
+        uint256 tax = bal.mul(_taxPercentage.numerator).div(_taxPercentage.denominator);
         _token.safeTransfer(taxAccount, tax);
 
         lastTax = block.timestamp;

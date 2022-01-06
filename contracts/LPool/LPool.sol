@@ -9,8 +9,5 @@ contract LPool is LPoolStake, LPoolInterest {
         uint256 taxPercentNumerator_,
         uint256 taxPercentDenominator_,
         uint256 blocksPerCompound_
-    )
-        LPoolTax(taxPercentNumerator_, taxPercentDenominator_)
-        LPoolInterest(blocksPerCompound_)
-    {}
+    ) LPoolTax(taxPercentNumerator_, taxPercentDenominator_) LPoolInterest(blocksPerCompound_) {}
 }

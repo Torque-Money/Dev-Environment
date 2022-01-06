@@ -37,18 +37,8 @@ abstract contract YieldRates is YieldCore {
         uint256 staked_
     ) internal view returns (uint256) {
         FractionMath.Fraction memory rate = _rates[token_];
-        return
-            block
-                .number
-                .sub(initialStakeBlock_)
-                .mul(staked_)
-                .mul(rate.numerator)
-                .div(rate.denominator);
+        return block.number.sub(initialStakeBlock_).mul(staked_).mul(rate.numerator).div(rate.denominator);
     }
 
-    event RateChange(
-        IERC20 token,
-        uint256 rateNumerator,
-        uint256 rateDenominator
-    );
+    event RateChange(IERC20 token, uint256 rateNumerator, uint256 rateDenominator);
 }

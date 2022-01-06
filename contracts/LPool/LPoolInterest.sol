@@ -21,23 +21,13 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Set the blocks per compound
-    function setBlocksPerCompound(uint256 blocksPerCompound_)
-        external
-        onlyRole(POOL_ADMIN)
-    {
+    function setBlocksPerCompound(uint256 blocksPerCompound_) external onlyRole(POOL_ADMIN) {
         blocksPerCompound = blocksPerCompound_;
     }
 
     // Get the max interest for minimum utilization for the given token
-    function maxInterestMin(IERC20 token_)
-        public
-        view
-        returns (uint256, uint256)
-    {
-        return (
-            _maxInterestMin[token_].numerator,
-            _maxInterestMin[token_].denominator
-        );
+    function maxInterestMin(IERC20 token_) public view returns (uint256, uint256) {
+        return (_maxInterestMin[token_].numerator, _maxInterestMin[token_].denominator);
     }
 
     // Set the max interest for minimum utilization for the given token
@@ -55,15 +45,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max interest for maximum utilization for the given token
-    function maxInterestMax(IERC20 token_)
-        public
-        view
-        returns (uint256, uint256)
-    {
-        return (
-            _maxInterestMax[token_].numerator,
-            _maxInterestMax[token_].denominator
-        );
+    function maxInterestMax(IERC20 token_) public view returns (uint256, uint256) {
+        return (_maxInterestMax[token_].numerator, _maxInterestMax[token_].denominator);
     }
 
     // Set the max interest for maximum utilization for the given token
@@ -81,15 +64,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max utilization threshold for the given token
-    function maxUtilization(IERC20 token_)
-        public
-        view
-        returns (uint256, uint256)
-    {
-        return (
-            _maxUtilization[token_].numerator,
-            _maxUtilization[token_].denominator
-        );
+    function maxUtilization(IERC20 token_) public view returns (uint256, uint256) {
+        return (_maxUtilization[token_].numerator, _maxUtilization[token_].denominator);
     }
 
     // Set the max utilization threshold for the given token
@@ -116,37 +92,21 @@ abstract contract LPoolInterest is LPoolLiquidity {
     ) internal pure returns (uint256, uint256) {
         uint256 numerator;
         {
-            numerator = utilized
-                .mul(interestMax.numerator)
-                .mul(utilization.denominator)
-                .mul(interestMin.denominator);
+            numerator = utilized.mul(interestMax.numerator).mul(utilization.denominator).mul(interestMin.denominator);
         }
         {
-            numerator = numerator.add(
-                utilization
-                    .numerator
-                    .mul(interestMin.numerator)
-                    .mul(valueLocked)
-                    .mul(interestMax.denominator)
-            );
+            numerator = numerator.add(utilization.numerator.mul(interestMin.numerator).mul(valueLocked).mul(interestMax.denominator));
         }
         {
-            numerator = numerator.mul(utilization.denominator).mul(
-                interestMax.denominator
-            );
+            numerator = numerator.mul(utilization.denominator).mul(interestMax.denominator);
         }
 
         uint256 numeratorSub;
         {
-            numeratorSub = utilization.numerator.mul(interestMax.numerator).mul(
-                    valueLocked
-                );
+            numeratorSub = utilization.numerator.mul(interestMax.numerator).mul(valueLocked);
         }
         {
-            numeratorSub = numeratorSub
-                .mul(interestMax.denominator)
-                .mul(utilization.denominator)
-                .mul(interestMin.denominator);
+            numeratorSub = numeratorSub.mul(interestMax.denominator).mul(utilization.denominator).mul(interestMin.denominator);
         }
         {
             numerator = numerator.sub(numeratorSub);
@@ -154,26 +114,17 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
         uint256 denominator;
         {
-            denominator = valueLocked.mul(interestMax.denominator).mul(
-                utilization.denominator
-            );
+            denominator = valueLocked.mul(interestMax.denominator).mul(utilization.denominator);
         }
         {
-            denominator = denominator
-                .mul(interestMin.denominator)
-                .mul(utilization.denominator)
-                .mul(interestMax.denominator);
+            denominator = denominator.mul(interestMin.denominator).mul(utilization.denominator).mul(interestMax.denominator);
         }
 
         return (numerator, denominator);
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
-    function interestRate(IERC20 token_)
-        public
-        view
-        returns (uint256, uint256)
-    {
+    function interestRate(IERC20 token_) public view returns (uint256, uint256) {
         uint256 valueLocked = tvl(token_);
         uint256 utilized = valueLocked.sub(liquidity(token_));
 
@@ -181,23 +132,9 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
-        if (
-            utilized.mul(utilization.denominator) >
-            tvl(token_).mul(utilization.numerator)
-        )
-            return
-                _interestRateMax(
-                    valueLocked,
-                    utilized,
-                    utilization,
-                    interestMin,
-                    interestMax
-                );
-        else
-            return (
-                utilized.mul(interestMin.numerator),
-                valueLocked.mul(interestMin.denominator)
-            );
+        if (utilized.mul(utilization.denominator) > tvl(token_).mul(utilization.numerator))
+            return _interestRateMax(valueLocked, utilized, utilization, interestMin, interestMax);
+        else return (utilized.mul(interestMin.numerator), valueLocked.mul(interestMin.denominator));
     }
 
     // Get the interest on a given asset for a given number of blocks
@@ -207,19 +144,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256 borrowBlock_
     ) external view returns (uint256) {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
-        (
-            uint256 interestRateNumerator,
-            uint256 interestRateDenominator
-        ) = interestRate(token_);
+        (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
         uint256 precision = 12; // Precision is calculated as the log of the maximum expected number of blocks borrowed for
-        return
-            FractionMath.fracExp(
-                initialBorrow_,
-                blocksPerCompound.mul(interestRateDenominator).div(
-                    interestRateNumerator
-                ),
-                blocksSinceBorrow,
-                precision
-            );
+        return FractionMath.fracExp(initialBorrow_, blocksPerCompound.mul(interestRateDenominator).div(interestRateNumerator), blocksSinceBorrow, precision);
     }
 }

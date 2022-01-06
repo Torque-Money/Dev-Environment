@@ -56,10 +56,7 @@ abstract contract MarginCore is Ownable {
     }
 
     // Set the swap tolerance
-    function setSwapTolerance(
-        uint256 swapToleranceNumerator_,
-        uint256 swapToleranceDenominator_
-    ) external onlyOwner {
+    function setSwapTolerance(uint256 swapToleranceNumerator_, uint256 swapToleranceDenominator_) external onlyOwner {
         _swapTolerance.numerator = swapToleranceNumerator_;
         _swapTolerance.denominator = swapToleranceDenominator_;
     }
@@ -77,18 +74,8 @@ abstract contract MarginCore is Ownable {
             tokenIn_[i].safeApprove(address(flashSwap), amountIn_[i]);
         }
         for (uint256 i = 0; i < minAmountOut_.length; i++) {
-            minAmountOut_[i] = minAmountOut_[i]
-                .mul(_swapTolerance.denominator.sub(_swapTolerance.numerator))
-                .div(_swapTolerance.denominator);
+            minAmountOut_[i] = minAmountOut_[i].mul(_swapTolerance.denominator.sub(_swapTolerance.numerator)).div(_swapTolerance.denominator);
         }
-        return
-            flashSwap.flashSwap(
-                tokenIn_,
-                amountIn_,
-                tokenOut_,
-                minAmountOut_,
-                flashSwap_,
-                data_
-            );
+        return flashSwap.flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_, flashSwap_, data_);
     }
 }

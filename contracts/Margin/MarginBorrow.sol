@@ -16,41 +16,21 @@ abstract contract MarginBorrow is MarginAccount, MarginApproved {
     }
 
     // Set the minimum collateral price
-    function setMinCollateralPrice(uint256 minCollateralPrice_)
-        external
-        onlyOwner
-    {
+    function setMinCollateralPrice(uint256 minCollateralPrice_) external onlyOwner {
         minCollateralPrice = minCollateralPrice_;
     }
 
     // Borrow against the collateral
-    function borrow(IERC20 borrowed_, uint256 amount_)
-        external
-        onlyApprovedBorrow(borrowed_)
-    {
-        require(
-            collateralPrice(_msgSender()) >= minCollateralPrice,
-            "Collateral price must be greater than minimum"
-        );
+    function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrow(borrowed_) {
+        require(collateralPrice(_msgSender()) >= minCollateralPrice, "Collateral price must be greater than minimum");
 
-        if (!isBorrowing(borrowed_, _msgSender()))
-            _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
+        if (!isBorrowing(borrowed_, _msgSender())) _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
 
         pool.claim(borrowed_, amount_);
-        _setBorrowed(
-            borrowed_,
-            borrowed(borrowed_, _msgSender()).add(amount_),
-            _msgSender()
-        );
+        _setBorrowed(borrowed_, borrowed(borrowed_, _msgSender()).add(amount_), _msgSender());
 
         uint256 _initialBorrowPrice = oracle.price(borrowed_, amount_);
-        _setInitialBorrowPrice(
-            borrowed_,
-            initialBorrowPrice(borrowed_, _msgSender()).add(
-                _initialBorrowPrice
-            ),
-            _msgSender()
-        );
+        _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
 
         emit Borrow(_msgSender(), borrowed_, amount_);
     }

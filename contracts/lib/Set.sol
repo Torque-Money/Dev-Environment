@@ -59,19 +59,11 @@ library TokenSet {
         return self.keyList[self.keyPointers[key]] == key;
     }
 
-    function keyAtIndex(Set storage self, uint256 index)
-        internal
-        view
-        returns (IERC20)
-    {
+    function keyAtIndex(Set storage self, uint256 index) internal view returns (IERC20) {
         return self.keyList[index];
     }
 
-    function iterable(Set storage self)
-        internal
-        view
-        returns (IERC20[] memory)
-    {
+    function iterable(Set storage self) internal view returns (IERC20[] memory) {
         return self.keyList;
     }
 }

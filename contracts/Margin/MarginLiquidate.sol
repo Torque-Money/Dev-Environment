@@ -14,27 +14,18 @@ abstract contract MarginLiquidate is MarginRepay {
 
     FractionMath.Fraction private _liquidationFeePercent;
 
-    constructor(
-        uint256 liquidationFeePercentNumerator_,
-        uint256 liquidationFeePercentDenominator_
-    ) {
+    constructor(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) {
         _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
         _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
 
     // Get the liquidation fee percent
     function liquidationFeePercent() public view returns (uint256, uint256) {
-        return (
-            _liquidationFeePercent.numerator,
-            _liquidationFeePercent.denominator
-        );
+        return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
     // Set the liquidation fee percent
-    function setLiquidationFeePercent(
-        uint256 liquidationFeePercentNumerator_,
-        uint256 liquidationFeePercentDenominator_
-    ) external onlyOwner {
+    function setLiquidationFeePercent(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) external onlyOwner {
         _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
         _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
@@ -55,24 +46,14 @@ abstract contract MarginLiquidate is MarginRepay {
 
             uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
-            uint256 interest = pool.interest(
-                token,
-                initialPrice,
-                initialBorrowBlock(token, account_)
-            );
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
             uint256 repayAmount = oracle.amount(token, repayPrice);
 
-            (
-                uint256 liqPercentNumerator,
-                uint256 liqPercentDenominator
-            ) = liquidationFeePercent();
+            (uint256 liqPercentNumerator, uint256 liqPercentDenominator) = liquidationFeePercent();
             repayTokens[i] = token;
-            repayAmounts[i] = liqPercentDenominator
-                .sub(liqPercentNumerator)
-                .mul(repayAmount)
-                .div(liqPercentDenominator);
+            repayAmounts[i] = liqPercentDenominator.sub(liqPercentNumerator).mul(repayAmount).div(liqPercentDenominator);
 
             _setBorrowed(token, 0, account_);
             _setInitialBorrowPrice(token, 0, account_);
@@ -80,20 +61,10 @@ abstract contract MarginLiquidate is MarginRepay {
         }
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory collateralAmounts = new uint256[](
-            collateralTokens.length
-        );
-        for (uint256 i = 0; i < collateralTokens.length; i++)
-            collateralAmounts[i] = collateral(collateralTokens[i], account_);
+        uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
+        for (uint256 i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 
-        uint256[] memory amountOut = _flashSwap(
-            collateralTokens,
-            collateralAmounts,
-            repayTokens,
-            repayAmounts,
-            flashSwap_,
-            data_
-        );
+        uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, repayTokens, repayAmounts, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {
             repayTokens[i].safeApprove(address(pool), amountOut[i]);
             pool.deposit(repayTokens[i], amountOut[i]);
@@ -106,10 +77,7 @@ abstract contract MarginLiquidate is MarginRepay {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) external {
-        require(
-            underCollateralized(account_),
-            "Only undercollateralized accounts may be liquidated"
-        );
+        require(underCollateralized(account_), "Only undercollateralized accounts may be liquidated");
 
         _repayPayout(account_);
         _liquidate(account_, flashSwap_, data_);
@@ -117,10 +85,5 @@ abstract contract MarginLiquidate is MarginRepay {
         emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
 
-    event Liquidated(
-        address indexed account,
-        address liquidator,
-        IFlashSwap flashSwap,
-        bytes data
-    );
+    event Liquidated(address indexed account, address liquidator, IFlashSwap flashSwap, bytes data);
 }

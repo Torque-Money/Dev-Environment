@@ -20,10 +20,7 @@ abstract contract LPoolTax is LPoolCore {
     }
 
     // Set the tax percentage
-    function setTaxPercentage(
-        uint256 taxPercentNumerator_,
-        uint256 taxPercentDenominator_
-    ) external onlyRole(POOL_ADMIN) {
+    function setTaxPercentage(uint256 taxPercentNumerator_, uint256 taxPercentDenominator_) external onlyRole(POOL_ADMIN) {
         _taxPercent.numerator = taxPercentNumerator_;
         _taxPercent.denominator = taxPercentDenominator_;
     }

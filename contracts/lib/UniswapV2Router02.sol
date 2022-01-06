@@ -2,15 +2,9 @@
 pragma solidity ^0.8.0;
 
 interface UniswapV2Router02 {
-    function getAmountsIn(uint256 amountOut, address[] memory path)
-        external
-        view
-        returns (uint256[] memory amounts);
+    function getAmountsIn(uint256 amountOut, address[] memory path) external view returns (uint256[] memory amounts);
 
-    function getAmountsOut(uint256 amountIn, address[] memory path)
-        external
-        view
-        returns (uint256[] memory amounts);
+    function getAmountsOut(uint256 amountIn, address[] memory path) external view returns (uint256[] memory amounts);
 
     function swapExactTokensForTokens(
         uint256 amountIn,

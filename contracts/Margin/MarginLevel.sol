@@ -13,10 +13,7 @@ abstract contract MarginLevel is MarginAccount {
 
     FractionMath.Fraction private _minMarginLevel; // Percentage that the margin level may hover above before liquidation (should be above 100)
 
-    constructor(
-        uint256 minMarginLevelNumerator_,
-        uint256 minMarginLevelDenominator_
-    ) {
+    constructor(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) {
         _minMarginLevel.numerator = minMarginLevelNumerator_;
         _minMarginLevel.denominator = minMarginLevelDenominator_;
     }
@@ -27,20 +24,13 @@ abstract contract MarginLevel is MarginAccount {
     }
 
     // Set the min margin level percent threshold before liquidation
-    function setMinMarginLevel(
-        uint256 minMarginLevelNumerator_,
-        uint256 minMarginLevelDenominator_
-    ) external onlyOwner {
+    function setMinMarginLevel(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) external onlyOwner {
         _minMarginLevel.numerator = minMarginLevelNumerator_;
         _minMarginLevel.denominator = minMarginLevelDenominator_;
     }
 
     // Get the margin level of an account
-    function marginLevel(address account_)
-        public
-        view
-        returns (uint256, uint256)
-    {
+    function marginLevel(address account_) public view returns (uint256, uint256) {
         uint256 accountPrice = collateralPrice(account_);
         uint256 currentBorrowPrice = borrowedPrice(account_);
 
@@ -48,33 +38,17 @@ abstract contract MarginLevel is MarginAccount {
         uint256 interest = 0;
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            uint256 _tempInitialBorrowPrice = initialBorrowPrice(
-                borrowedTokens[i],
-                account_
-            );
-            _initialBorrowPrice = _initialBorrowPrice.add(
-                _tempInitialBorrowPrice
-            );
-            interest = interest.add(
-                pool.interest(
-                    borrowedTokens[i],
-                    _initialBorrowPrice,
-                    initialBorrowBlock(borrowedTokens[i], account_)
-                )
-            );
+            uint256 _tempInitialBorrowPrice = initialBorrowPrice(borrowedTokens[i], account_);
+            _initialBorrowPrice = _initialBorrowPrice.add(_tempInitialBorrowPrice);
+            interest = interest.add(pool.interest(borrowedTokens[i], _initialBorrowPrice, initialBorrowBlock(borrowedTokens[i], account_)));
         }
 
-        return (
-            currentBorrowPrice.add(accountPrice),
-            _initialBorrowPrice.add(interest)
-        );
+        return (currentBorrowPrice.add(accountPrice), _initialBorrowPrice.add(interest));
     }
 
     // Check whether an account is undercollateralized
     function underCollateralized(address account_) public view returns (bool) {
-        (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(
-            account_
-        );
+        (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(account_);
         uint256 lhs = _minMarginLevel.numerator.mul(marginDenominator);
         uint256 rhs = marginNumerator.mul(_minMarginLevel.denominator);
 

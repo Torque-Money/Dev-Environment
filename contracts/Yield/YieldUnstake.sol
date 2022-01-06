@@ -12,35 +12,20 @@ abstract contract YieldUnstake is YieldAccount, YieldRates {
     using SafeERC20 for IERC20;
 
     // Get the owed balance distributed to an account
-    function owedBalance(IERC20 token_, address account_)
-        public
-        view
-        returns (uint256)
-    {
+    function owedBalance(IERC20 token_, address account_) public view returns (uint256) {
         uint256 owed = _owedBalance(token_, account_);
-        uint256 yield = _yield(
-            token_,
-            initialStakeBlock(token_, account_),
-            staked(token_, account_)
-        );
+        uint256 yield = _yield(token_, initialStakeBlock(token_, account_), staked(token_, account_));
         return owed.add(yield);
     }
 
     // Unstake tokens
     function unstake(IERC20 token_, uint256 amount_) external {
         uint256 currentStaked = staked(token_, _msgSender());
-        require(
-            amount_ <= currentStaked,
-            "Cannot unstake more than amount staked"
-        );
+        require(amount_ <= currentStaked, "Cannot unstake more than amount staked");
 
         token_.safeTransfer(_msgSender(), amount_);
 
-        _setOwedBalance(
-            token_,
-            owedBalance(token_, _msgSender()),
-            _msgSender()
-        );
+        _setOwedBalance(token_, owedBalance(token_, _msgSender()), _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
         _setStaked(token_, currentStaked.sub(amount_), _msgSender());
         emit Unstake(_msgSender(), token_, amount_);

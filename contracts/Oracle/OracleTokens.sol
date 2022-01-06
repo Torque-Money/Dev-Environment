@@ -46,29 +46,17 @@ abstract contract OracleTokens is Ownable {
     }
 
     // Set the default stablecoin to convert the prices into
-    function setDefaultStablecoin(IERC20 token_)
-        external
-        onlyOwner
-        onlySupported(token_)
-    {
+    function setDefaultStablecoin(IERC20 token_) external onlyOwner onlySupported(token_) {
         defaultStablecoin = token_;
     }
 
     // Get the price feed for a given asset
-    function priceFeed(IERC20 token_)
-        public
-        view
-        returns (AggregatorV3Interface)
-    {
+    function priceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
         return _tokens[token_].priceFeed;
     }
 
     // Get the reserve price feed for a given asset
-    function reservePriceFeed(IERC20 token_)
-        public
-        view
-        returns (AggregatorV3Interface)
-    {
+    function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
         return _tokens[token_].reservePriceFeed;
     }
 

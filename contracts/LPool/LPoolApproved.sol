@@ -42,9 +42,7 @@ abstract contract LPoolApproved is LPoolCore {
             if (!isPA(token_[i]) && !isLP(token_[i])) {
                 _PATokens[token_[i]] = true;
 
-                IERC20 LPToken = IERC20(
-                    address(new LPoolToken(name_[i], symbol_[i]))
-                );
+                IERC20 LPToken = IERC20(address(new LPoolToken(name_[i], symbol_[i])));
                 _LPTokens[LPToken] = true;
 
                 _PAToLP[token_[i]] = LPToken;
@@ -56,22 +54,12 @@ abstract contract LPoolApproved is LPoolCore {
     }
 
     // Get the LP token that corresponds to the given token
-    function LPFromPA(IERC20 token_)
-        public
-        view
-        onlyPA(token_)
-        returns (IERC20)
-    {
+    function LPFromPA(IERC20 token_) public view onlyPA(token_) returns (IERC20) {
         return _PAToLP[token_];
     }
 
     // Get the token that corresponds to the given LP token
-    function PAFromLP(IERC20 token_)
-        public
-        view
-        onlyLP(token_)
-        returns (IERC20)
-    {
+    function PAFromLP(IERC20 token_) public view onlyLP(token_) returns (IERC20) {
         return _LPToPA[token_];
     }
 
