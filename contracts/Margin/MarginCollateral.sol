@@ -4,12 +4,23 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./MarginBorrow.sol";
 import "./MarginLevel.sol";
+import "./MarginApproved.sol";
 
-abstract contract MarginCollateral is MarginBorrow, MarginLevel {
+abstract contract MarginCollateral is MarginApproved, MarginLevel {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+
+    uint256 public minCollateralPrice;
+
+    constructor(uint256 minCollateralPrice_) {
+        minCollateralPrice = minCollateralPrice_;
+    }
+
+    // Set the minimum collateral price
+    function setMinCollateralPrice(uint256 minCollateralPrice_) external onlyOwner {
+        minCollateralPrice = minCollateralPrice_;
+    }
 
     // Deposit collateral into the account
     function addCollateral(IERC20 collateral_, uint256 amount_) external onlyApprovedCollateral(collateral_) {

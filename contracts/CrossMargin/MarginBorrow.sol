@@ -9,17 +9,6 @@ import "./MarginApproved.sol";
 abstract contract MarginBorrow is MarginAccount, MarginApproved {
     using SafeMath for uint256;
 
-    uint256 public minCollateralPrice;
-
-    constructor(uint256 minCollateralPrice_) {
-        minCollateralPrice = minCollateralPrice_;
-    }
-
-    // Set the minimum collateral price
-    function setMinCollateralPrice(uint256 minCollateralPrice_) external onlyOwner {
-        minCollateralPrice = minCollateralPrice_;
-    }
-
     // Borrow against the collateral
     function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrow(borrowed_) {
         require(collateralPrice(_msgSender()) >= minCollateralPrice, "Collateral price must be greater than minimum");
