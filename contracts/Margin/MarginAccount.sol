@@ -49,7 +49,7 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the total collateral price for a given account and asset borrowed
-    function _collateralPrice(address account_) internal view returns (uint256) {
+    function collateralPrice(address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
         for (uint256 i = 0; i < account.collateral.count(); i++) totalPrice = totalPrice.add(_collateralPrice(account.collateral.keyAtIndex(i), account_));
@@ -89,7 +89,7 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the total price of the assets borrowed
-    function _borrowedPrice(address account_) internal view returns (uint256) {
+    function borrowedPrice(address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
         for (uint256 i = 0; i < account.borrowed.count(); i++) totalPrice = totalPrice.add(_borrowedPrice(account.borrowed.keyAtIndex(i), account_));
