@@ -21,7 +21,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
         for (uint256 i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
 
-        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayAmountsOut(account_);
+        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayLossesAmountsOut(account_);
 
         uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, repayTokensOut, repayAmountsOut, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {

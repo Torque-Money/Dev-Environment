@@ -39,7 +39,7 @@ abstract contract MarginLongRepay is Margin {
     }
 
     // Get the repay price when paying out
-    function _repayPriceRepay(IERC20 token_, address account_) internal view returns (uint256) {
+    function _repayLossesPrice(IERC20 token_, address account_) internal view returns (uint256) {
         uint256 currentPrice = _borrowedPrice(token_, account_);
         uint256 initialPrice = initialBorrowPrice(token_, account_);
         uint256 interest = pool.interest(token_, initialPrice, initialBorrowBlock(token_, account_));
@@ -48,7 +48,7 @@ abstract contract MarginLongRepay is Margin {
     }
 
     // Get the amounts of each borrowed asset that needs to be repaid
-    function _repayAmountsOut(address account_)
+    function _repayLossesAmountsOut(address account_)
         internal
         view
         returns (
@@ -67,7 +67,7 @@ abstract contract MarginLongRepay is Margin {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 repayPrice = _repayPriceRepay(token, account_);
+            uint256 repayPrice = _repayLossesPrice(token, account_);
             uint256 repayAmount = oracle.amount(token, repayPrice);
 
             repayTokens[i] = token;
@@ -80,8 +80,8 @@ abstract contract MarginLongRepay is Margin {
     }
 
     // Get the amounts of collateral that need to be used to repay
-    function _repayAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
-        (, , uint256 totalRepayPrice) = _repayAmountsOut(account_);
+    function _repayLossesAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
+        (, , uint256 totalRepayPrice) = _repayLossesAmountsOut(account_);
 
         IERC20[] storage repayTokens = _tempRepayTokens[_tempRepayIndex];
         uint256[] storage repayAmounts = _tempRepayAmounts[_tempRepayIndex];
@@ -115,8 +115,8 @@ abstract contract MarginLongRepay is Margin {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) internal {
-        (IERC20[] memory repayTokensIn, uint256[] memory repayAmountsIn) = _repayAmountsIn(account_);
-        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayAmountsOut(account_);
+        (IERC20[] memory repayTokensIn, uint256[] memory repayAmountsIn) = _repayLossesAmountsIn(account_);
+        (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayLossesAmountsOut(account_);
 
         uint256[] memory amountOut = _flashSwap(repayTokensIn, repayAmountsIn, repayTokensOut, repayAmountsOut, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {
