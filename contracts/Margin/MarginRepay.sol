@@ -23,28 +23,17 @@ abstract contract MarginRepay is MarginLevel {
 
             uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
-            uint256 interest = pool.interest(
-                token,
-                initialPrice,
-                initialBorrowBlock(token, account_)
-            );
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             if (currentPrice > initialPrice.add(interest)) {
-                uint256 payoutAmount = oracle.amount(
-                    token,
-                    currentPrice.sub(initialPrice).sub(interest)
-                );
+                uint256 payoutAmount = oracle.amount(token, currentPrice.sub(initialPrice).sub(interest));
 
                 pool.unclaim(token, borrowed(token, account_));
                 pool.withdraw(token, payoutAmount);
 
                 _setBorrowed(token, 0, account_);
                 _setInitialBorrowPrice(token, 0, account_);
-                _setCollateral(
-                    token,
-                    collateral(token, account_).add(payoutAmount),
-                    account_
-                );
+                _setCollateral(token, collateral(token, account_).add(payoutAmount), account_);
             }
         }
     }
@@ -71,11 +60,7 @@ abstract contract MarginRepay is MarginLevel {
 
             uint256 currentPrice = borrowedPrice(token, account_);
             uint256 initialPrice = initialBorrowPrice(token, account_);
-            uint256 interest = pool.interest(
-                token,
-                initialPrice,
-                initialBorrowBlock(token, account_)
-            );
+            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
 
             uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
             uint256 repayAmount = oracle.amount(token, repayPrice);
@@ -95,11 +80,7 @@ abstract contract MarginRepay is MarginLevel {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) internal {
-        (
-            IERC20[] memory repayTokens,
-            uint256[] memory repayAmounts,
-            uint256 totalRepayPrice
-        ) = _repayAmounts(account_);
+        (IERC20[] memory repayTokens, uint256[] memory repayAmounts, uint256 totalRepayPrice) = _repayAmounts(account_);
 
         IERC20[] storage tempRepayTokens = _tempRepayTokens[_tempRepayIndex];
         uint256[] storage tempRepayAmounts = _tempRepayAmounts[_tempRepayIndex];
@@ -107,35 +88,24 @@ abstract contract MarginRepay is MarginLevel {
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
         for (uint256 i = 0; i < collateralTokens.length; i++) {
-            if (totalRepayPrice == 0) break; // **** Add this change to the cleaned up flash swap function too
-
             IERC20 token = collateralTokens[i];
             uint256 tokenAmount = collateral(token, account_);
 
             uint256 tokenPrice = collateralPrice(token, account_);
-            if (tokenPrice > totalRepayPrice)
-                tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
+            if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
 
             tempRepayTokens.push(token);
             tempRepayAmounts.push(tokenAmount);
 
             _setBorrowed(token, 0, account_);
             _setInitialBorrowPrice(token, 0, account_);
-            _setCollateral(
-                token,
-                collateral(token, account_).sub(tokenAmount),
-                account_
-            );
+            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
+
+            if (tokenPrice >= totalRepayPrice) break;
+            else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
         }
 
-        uint256[] memory amountOut = _flashSwap(
-            tempRepayTokens,
-            tempRepayAmounts,
-            repayTokens,
-            repayAmounts,
-            flashSwap_,
-            data_
-        );
+        uint256[] memory amountOut = _flashSwap(tempRepayTokens, tempRepayAmounts, repayTokens, repayAmounts, flashSwap_, data_);
         for (uint256 i = 0; i < amountOut.length; i++) {
             repayTokens[i].safeApprove(address(pool), amountOut[i]);
             pool.deposit(repayTokens[i], amountOut[i]);
@@ -144,10 +114,7 @@ abstract contract MarginRepay is MarginLevel {
 
     // Repay the accounts borrowed amounts
     function repay(IFlashSwap flashSwap_, bytes memory data_) external {
-        require(
-            isBorrowing(_msgSender()),
-            "Cannot repay an account that has not borrowed"
-        );
+        require(isBorrowing(_msgSender()), "Cannot repay an account that has not borrowed");
 
         _repayPayout(_msgSender());
         _repayLosses(_msgSender(), flashSwap_, data_);

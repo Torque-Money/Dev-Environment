@@ -29,11 +29,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         router = router_;
     }
 
-    function _bytesToAddress(bytes memory source_)
-        internal
-        pure
-        returns (address addr)
-    {
+    function _bytesToAddress(bytes memory source_) internal pure returns (address addr) {
         assembly {
             addr := mload(add(source_, 0x14))
         }
@@ -55,13 +51,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             amountOut = amountIn_;
         } else {
             IERC20(path[0]).safeApprove(address(router), amountIn_);
-            amountOut = router.swapExactTokensForTokens(
-                amountIn_,
-                0,
-                path,
-                address(this),
-                block.timestamp + 1
-            )[1];
+            amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, address(this), block.timestamp + 1)[1];
         }
 
         tokenOut_.safeTransfer(_msgSender(), amountOut);
@@ -81,18 +71,6 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         return router.getAmountsIn(minAmountOut_, path)[0];
     }
 
-    // Wrapper for the amounts out
-    function _amountsOut(
-        IERC20 tokenIn_,
-        uint256 amountIn_,
-        IERC20 tokenOut_
-    ) internal view returns (uint256) {
-        address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
-        return router.getAmountsOut(amountIn_, path)[0];
-    }
-
     // Swap the input tokens to the minimum amount of output tokens required
     function _flashSwap(
         IERC20[] memory tokenIn_,
@@ -103,7 +81,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         uint256 inIndex = _index++;
         uint256 finalIndex = _index++;
 
-        TokenSet.Set storage inSet = _sets[inIndex]; // Move in tokens and amounts to a set and a mapping
+        TokenSet.Set storage inSet = _sets[inIndex];
         mapping(IERC20 => uint256) storage inAmounts = _amounts[inIndex];
         for (uint256 i = 0; i < tokenIn_.length; i++) {
             IERC20 token = tokenIn_[i];
@@ -111,42 +89,37 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
             inAmounts[token] = amountIn_[i];
         }
 
-        mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex]; // Store final amounts of tokens
+        mapping(IERC20 => uint256) storage finalAmounts = _amounts[finalIndex];
 
         for (uint256 i = 0; i < tokenOut_.length; i++) {
-            // Iterate over output tokens first (all must be covered)
             IERC20 outToken = tokenOut_[i];
             uint256 minAmountOut = minAmountOut_[i];
 
             for (uint256 j = 0; j < inSet.count(); j++) {
-                // Iterate over input tokens second (not all necessary + available tokens change)
                 IERC20 inToken = inSet.keyAtIndex(j);
                 uint256 amountIn = inAmounts[inToken];
 
-                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken); // Get the minimum collateral to achieve the minimum amount out
-                if (minIn >= amountIn) {
-                    // If the minimum amount is GREATER than the amount we have
-                    uint256 out = _swap(inToken, amountIn, outToken); // Swap the full amount of collateral we have since it is "not enough" to satisfy the amount out
+                uint256 minIn = _amountsIn(inToken, minAmountOut, outToken);
+                if (minIn > amountIn) {
+                    uint256 out = _swap(inToken, amountIn, outToken);
 
                     finalAmounts[outToken] = finalAmounts[outToken].add(out);
                     inAmounts[inToken] = 0;
                     inSet.remove(inToken);
 
-                    if (out >= minAmountOut) break;
-                    // If the amount out we have is greater than the amount we need (shouldnt ever be greater)
-                    else minAmountOut = minAmountOut.sub(out);
+                    minAmountOut = minAmountOut.sub(out);
                 } else {
-                    uint256 out = _swap(inToken, minIn, outToken); // Swap the minimum amount of collateral needed to get the min amount out
+                    uint256 out = _swap(inToken, minIn, outToken);
 
-                    inAmounts[inToken] = inAmounts[inToken].sub(minIn);
                     finalAmounts[outToken] = finalAmounts[outToken].add(out);
+                    inAmounts[inToken] = inAmounts[inToken].sub(minIn);
 
                     break;
                 }
             }
         }
 
-        uint256[] memory amountsOut = new uint256[](tokenOut_.length); // The final amounts of output tokens
+        uint256[] memory amountsOut = new uint256[](tokenOut_.length);
         for (uint256 i = 0; i < tokenOut_.length; i++) {
             amountsOut[i] = finalAmounts[tokenOut_[i]];
         }
@@ -163,12 +136,7 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
         uint256[] memory minAmountOut_,
         bytes memory data_
     ) external override returns (uint256[] memory) {
-        uint256[] memory amountsOut = _flashSwap(
-            tokenIn_,
-            amountIn_,
-            tokenOut_,
-            minAmountOut_
-        );
+        uint256[] memory amountsOut = _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_);
 
         address rewarded = _bytesToAddress(data_); // Payout excess collateral to specified account from the data
         for (uint256 i = 0; i < tokenIn_.length; i++) {
