@@ -11,6 +11,12 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    // Calculate the price required to be returned during the liquidation
+    function liquidateRepayPrice(address account_) external view returns (uint256) {
+        (, , uint256 repayPrice) = _repayLossesAmountsOut(account_);
+        return repayPrice;
+    }
+
     // Liquidate all accounts that have not been repaid by the repay greater
     function _liquidate(
         address account_,
