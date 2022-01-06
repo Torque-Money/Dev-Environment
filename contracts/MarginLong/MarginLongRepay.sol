@@ -38,6 +38,15 @@ abstract contract MarginLongRepay is Margin {
         }
     }
 
+    // Get the repay price when paying out
+    function _repayPriceRepay(IERC20 token_, address account_) internal view returns (uint256) {
+        uint256 currentPrice = _borrowedPrice(token_, account_);
+        uint256 initialPrice = initialBorrowPrice(token_, account_);
+        uint256 interest = pool.interest(token_, initialPrice, initialBorrowBlock(token_, account_));
+
+        return initialPrice.add(interest).sub(currentPrice);
+    }
+
     // Get the amounts of each borrowed asset that needs to be repaid
     function _repayAmountsOut(address account_)
         internal
@@ -58,11 +67,7 @@ abstract contract MarginLongRepay is Margin {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             IERC20 token = borrowedTokens[i];
 
-            uint256 currentPrice = _borrowedPrice(token, account_);
-            uint256 initialPrice = initialBorrowPrice(token, account_);
-            uint256 interest = pool.interest(token, initialPrice, initialBorrowBlock(token, account_));
-
-            uint256 repayPrice = initialPrice.add(interest).sub(currentPrice);
+            uint256 repayPrice = _repayPriceRepay(token, account_);
             uint256 repayAmount = oracle.amount(token, repayPrice);
 
             repayTokens[i] = token;
