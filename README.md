@@ -1,4 +1,4 @@
-# Torque Money Whitepaper
+# Torque Whitepaper
 
 ### Disclaimer: Please note that everything explained in this whitepaper is purely hypothetical and should not be considered as fact. This is experimental technology and nothing is certain.
 
