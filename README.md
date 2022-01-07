@@ -85,9 +85,9 @@ It should be noted that during the process of either repayments or liquidations,
 
 The TAU token will be the official governance token for the Torque ecosystem. It will be used to vote on changes to be made to the protocol through the governance and timelock contracts.
 
-Users will be able to earn TAU by providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets.
-
 A percentage of all of the profits earned by the protocol will be used to back the price of the TAU token. At any point in time, holders of TAO may burn their TAU tokens in exchange for any of the underlying reserve assets supported by the protocol. With this we aim to ensure a rising price floor that TAU cannot fall below. In the event that the market value of TAU drops below its floor price, arbitragers will buy TAU for cheap and market price and sell it back to the treasury, which will reduce the circulating number of tokens as well as increasing buying pressure which should return the token back above its price floor. While in theory being impossible, even if the price of the token goes to zero, TAU holders will still be able to redeem their tokens for what they are worth from the reserve directly.
+
+Users will be able to earn TAU by providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets. We aim to set the yield rate less than the floor price increase rate to achieve a rising floor price whilst increasing the distribution of the token to promote decentralization.
 
 ### DAO
 
