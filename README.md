@@ -8,7 +8,7 @@
 
 - [Landing page](https://torque.money/)
 - [App](https://app.torque.money/)
-- [Governance]();
+- [Governance]()
 - [TAU token]()
 - [GitHub](https://github.com/Torque-Money)
 - [Twitter](https://twitter.com/torque_money)
