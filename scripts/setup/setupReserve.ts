@@ -11,6 +11,9 @@ export default async function main() {
     const rateDenominators = Array(lpTokens.length).fill(100);
     await reserve.setRates(lpTokens, rateNumerators, rateDenominators);
 
+    const approved = Array(leveragePoolApprovedTokens.length).fill(true);
+    await reserve.setApproved(leveragePoolApprovedTokens, approved);
+
     console.log("Setup: Reserve");
 }
 

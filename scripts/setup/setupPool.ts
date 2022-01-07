@@ -8,12 +8,15 @@ export default async function main() {
     const approvedNames = config.approved.map((approved) => "Torque Leveraged " + approved.name);
     const approvedSymbols = config.approved.map((approved) => "tl" + approved.symbol);
     await leveragePool.approve(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
+
     const maxInterestMinNumerator = Array(leveragePoolApprovedTokens.length).fill(15);
     const maxInterestMinDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
     await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
+
     const maxInterestMaxNumerator = Array(leveragePoolApprovedTokens.length).fill(45);
     const maxInterestMaxDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
     await leveragePool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
+
     const maxUtilizationNumerator = Array(leveragePoolApprovedTokens.length).fill(60);
     const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
     await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
