@@ -31,7 +31,7 @@ export default async function main() {
     }
 
     // Copy the config
-    const newConfigPath = outDir + config.split("/").at(-1);
+    const newConfigPath = outDir + "/" + config.split("/").at(-1);
     fs.copyFile(config, newConfigPath, (err) => {
         if (err) throw err;
     });
