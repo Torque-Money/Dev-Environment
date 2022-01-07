@@ -5,7 +5,7 @@
     "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
     "run": "npx hardhat run --network localhost",
-    "update": "cp config.json artifacts/contracts/FlashSwap/FlashSwap.sol/FlashSwap.json ../Torque-Frontend/src/config",
+    "update": "ts-node scripts/util/updateFiles.ts",
     "test": "npx hardhat test --network localhost"
   },
   "devDependencies": {

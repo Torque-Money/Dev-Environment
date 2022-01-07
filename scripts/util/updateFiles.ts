@@ -1,9 +1,7 @@
 import fs from "fs";
 
-function move() {}
-
 export default async function main() {
-    const compiledContracts = "artifacts/contracts";
+    const compiledContracts = process.cwd() + "/artifacts/contracts";
     const config = "config.json";
     const abis = [
         "FlashSwap/FlashSwap.sol/FlashSwap.json",
@@ -16,9 +14,15 @@ export default async function main() {
         "Oracle/Oracle.sol/Oracle.json",
         "Reserve/Reserve.sol/Reserve.json",
     ];
-    const outDir = process.cwd() + "../Torque-Frontend/src/config";
+    const outDir = process.cwd() + "/../Torque-Frontend/src/config";
 
-    // Here we are going to loop through each ABI, take its file name from the path and move it into the outDir
+    console.log(compiledContracts);
+
+    // Loop through each ABI and copy it to the new directory
+    for (const abi of abis) {
+    }
+
+    // Move the config
 
     console.log("Util: Copied files");
 }
