@@ -11,7 +11,6 @@ export default async function main() {
     const oracleSupported = Array(oracleApproved.length).fill(true);
     await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported);
     await oracle.setDefaultStablecoin(oracleApproved[0]);
-    await oracle.transferOwnership(config.timelockAddress);
 
     console.log("Setup: Oracle");
 }

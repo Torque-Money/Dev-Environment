@@ -8,8 +8,6 @@ export default async function main() {
     const marginSupported = Array(marginApproved.length).fill(true);
     await isolatedMargin.approve(marginApproved, marginSupported);
 
-    await isolatedMargin.transferOwnership(config.timelockAddress);
-
     console.log("Setup: Isolated margin");
 }
 

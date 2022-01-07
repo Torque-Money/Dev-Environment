@@ -2,7 +2,7 @@
   "name": "torque-protocol",
   "version": "1.0.0",
   "scripts": {
-    "format": "npx prettier --write 'contracts/**/*.sol'",
+    "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
     "run": "npx hardhat run --network localhost",
     "update": "cp config.json artifacts/contracts/Margin.sol/Margin.json artifacts/contracts/Oracle.sol/Oracle.json artifacts/contracts/LPool.sol/LPool.json ../Torque-Frontend/src/config",
@@ -29,7 +29,7 @@
   "prettier": {
     "overrides": [
       {
-        "files": "*.sol",
+        "files": "*.{sol,ts}",
         "options": {
           "printWidth": 170,
           "tabWidth": 4,
