@@ -3,7 +3,7 @@ import config from "../../config.json";
 
 export default async function main() {
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
-    const reserve = await hre.ethers.getContractAt("Yield", config.reserveAddress);
+    const reserve = await hre.ethers.getContractAt("Reserve", config.reserveAddress);
 
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
     const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => leveragePool.LPFromPA(approved)));
