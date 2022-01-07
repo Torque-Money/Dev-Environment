@@ -4,6 +4,15 @@
 
 ### Disclaimer: Please note that everything explained in this whitepaper is purely hypothetical and should not be considered as fact. This is experimental technology and nothing is certain.
 
+## Official links
+
+- [Landing page](https://torque.money/)
+- [App](https://app.torque.money/)
+- [Governance]()
+- [TAU token]()
+- [GitHub](https://github.com/Torque-Money)
+- [Twitter](https://twitter.com/torque_money)
+
 ## Contents
 
 - [Code](#code)
@@ -18,15 +27,6 @@
 - [TAU token](#tau-token)
 - [DAO](#dao)
 - [Future plans](#future-plans)
-
-### Official links
-
-- [Landing page](https://torque.money/)
-- [App](https://app.torque.money/)
-- [Governance]()
-- [TAU token]()
-- [GitHub](https://github.com/Torque-Money)
-- [Twitter](https://twitter.com/torque_money)
 
 ### Code
 
