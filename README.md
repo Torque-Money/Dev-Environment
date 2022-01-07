@@ -6,7 +6,12 @@
 
 ### Official links
 
-**Currently we do not have any official links**
+- [Landing page](https://torque.money/)
+- [App](https://app.torque.money/)
+- [Governance]();
+- [TAU token]()
+- [GitHub](https://github.com/Torque-Money)
+- [Twitter](https://twitter.com/torque_money)
 
 ### Code
 
