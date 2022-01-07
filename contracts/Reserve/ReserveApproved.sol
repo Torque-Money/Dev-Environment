@@ -10,23 +10,33 @@ abstract contract ReserveApproved is ReserveCore {
 
     Set.TokenSet private _approvedTokens;
 
+    modifier onlyApproved(IERC20 token_) {
+        require(isApproved(token_), "Only approved tokens may be used");
+        _;
+    }
+
     // Approve tokens to be used with the reserve
     function setApproved(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
         for (uint256 i = 0; i < token_.length; i++) {
             if (approved_[i] && !isApproved(token_[i])) {
                 _approvedTokens.insert(token_[i]);
-                emit ApprovedUpdate(token_[i], approved_[i]);
+                emit SetApproved(token_[i], approved_[i]);
             } else if (!approved_[i] && isApproved(token_[i])) {
                 _approvedTokens.remove(token_[i]);
-                emit ApprovedUpdate(token_[i], approved_[i]);
+                emit SetApproved(token_[i], approved_[i]);
             }
         }
     }
 
     // Check if a token is approved
-    function isApproved(IERC20 token_) public returns (bool) {
+    function isApproved(IERC20 token_) public view returns (bool) {
         return _approvedTokens.exists(token_);
     }
 
-    event ApprovedUpdate(IERC20 token, bool approved);
+    // Return a list of approved tokens
+    function _approved() internal view returns (IERC20[] memory) {
+        return _approvedTokens.iterable();
+    }
+
+    event SetApproved(IERC20 token, bool approved);
 }

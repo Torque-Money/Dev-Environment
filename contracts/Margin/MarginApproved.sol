@@ -23,7 +23,7 @@ abstract contract MarginApproved is MarginCore {
         for (uint256 i = 0; i < token_.length; i++) {
             if (isApprovedCollateral(token_[i]) != approved_[i]) {
                 _approvedCollateral[token_[i]] = approved_[i];
-                emit ApproveCollateral(token_[i], approved_[i]);
+                emit SetApprovedCollateral(token_[i], approved_[i]);
             }
         }
     }
@@ -33,7 +33,7 @@ abstract contract MarginApproved is MarginCore {
         for (uint256 i = 0; i < token_.length; i++) {
             if (isApprovedBorrow(token_[i]) != approved_[i]) {
                 _approvedBorrow[token_[i]] = approved_[i];
-                emit ApproveBorrow(token_[i], approved_[i]);
+                emit SetApprovedBorrow(token_[i], approved_[i]);
             }
         }
     }
@@ -48,6 +48,6 @@ abstract contract MarginApproved is MarginCore {
         return _approvedBorrow[token_];
     }
 
-    event ApproveCollateral(IERC20 token, bool approved);
-    event ApproveBorrow(IERC20 token, bool approved);
+    event SetApprovedCollateral(IERC20 token, bool approved);
+    event SetApprovedBorrow(IERC20 token, bool approved);
 }
