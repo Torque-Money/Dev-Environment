@@ -48,7 +48,7 @@ abstract contract LPoolApproved is LPoolCore {
                 _PAToLP[token_[i]] = LPToken;
                 _LPToPA[LPToken] = token_[i];
 
-                emit TokenApproved(token_[i], LPToken);
+                emit Approved(token_[i], LPToken);
             }
         }
     }
@@ -63,5 +63,5 @@ abstract contract LPoolApproved is LPoolCore {
         return _LPToPA[token_];
     }
 
-    event TokenApproved(IERC20 token, IERC20 LPToken);
+    event Approved(IERC20 token, IERC20 LPToken);
 }
