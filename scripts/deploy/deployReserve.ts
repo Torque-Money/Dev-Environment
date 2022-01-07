@@ -7,9 +7,9 @@ export default async function main() {
         token: config.tokenAddress,
         oracle: config.oracleAddress,
     };
-    const Yield = await hre.ethers.getContractFactory("Reserve");
-    const _yield = await Yield.deploy(...Object.values(constructorArgs));
-    config.yieldAddress = _yield.address;
+    const Reserve = await hre.ethers.getContractFactory("Reserve");
+    const reserve = await Reserve.deploy(...Object.values(constructorArgs));
+    config.reserveAddress = reserve.address;
     console.log("Deployed: Reserve");
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
