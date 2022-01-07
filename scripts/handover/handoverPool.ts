@@ -9,7 +9,8 @@ export default async function main() {
 
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.marginLongAddress);
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), config.timelockAddress);
-    await leveragePool.setTaxAccount(config.timelockAddress);
+    await leveragePool.addTaxAccount(config.timelockAddress);
+    await leveragePool.addTaxAccount(config.reserveAddress);
     await leveragePool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
 
     console.log("Handover: Leverage pool");
