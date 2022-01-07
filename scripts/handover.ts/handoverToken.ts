@@ -8,7 +8,7 @@ export default async function main() {
     const token = await hre.ethers.getContractAt("Token", config.tokenAddress);
 
     await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), config.timelockAddress);
-    await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_MINTER_ROLE")), config.yieldAddress);
+    await token.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_MINTER_ROLE")), config.reserveAddress);
     await token.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE")), signerAddress);
 
     console.log("Handover: Token");

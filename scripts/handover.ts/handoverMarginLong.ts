@@ -2,11 +2,11 @@ import hre from "hardhat";
 import config from "../../config.json";
 
 export default async function main() {
-    const isolatedMargin = await hre.ethers.getContractAt("IsolatedMargin", config.isolatedMarginAddress);
+    const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
 
-    await isolatedMargin.transferOwnership(config.timelockAddress);
+    await marginLong.transferOwnership(config.timelockAddress);
 
-    console.log("Handover: Isolated margin");
+    console.log("Handover: Margin long");
 }
 
 if (require.main === module)

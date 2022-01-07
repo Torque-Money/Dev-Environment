@@ -7,7 +7,7 @@ export default async function main() {
 
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
-    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.isolatedMarginAddress);
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.marginLongAddress);
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), config.timelockAddress);
     await leveragePool.setTaxAccount(config.timelockAddress);
     await leveragePool.renounceRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE")), signerAddress);
