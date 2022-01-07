@@ -16,7 +16,7 @@ export default async function main() {
         "Oracle/Oracle.sol/Oracle.json",
         "Reserve/Reserve.sol/Reserve.json",
     ];
-    const outDir = "../Torque-Frontend/src/config";
+    const outDir = process.cwd() + "../Torque-Frontend/src/config";
 
     // Here we are going to loop through each ABI, take its file name from the path and move it into the outDir
 
