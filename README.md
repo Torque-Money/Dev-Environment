@@ -7,6 +7,17 @@
 ## Contents
 
 - [Code](#code)
+- [Deployed contracts](#deployed-contracts)
+- [Motivation](#motivation)
+- [High level overview](#high-level-overview)
+  - [Staking](#staking)
+  - [Leveraging (long)](#leveraging-long-only-currently)
+- [Advanced overview](#advanced-overview)
+  - [Staking](#staking-1)
+  - [Leveraging (long)](#leveraging-long-only-currently-1)
+- [TAU token](#tau-token)
+- [DAO](#dao)
+- [Future plans](#future-plans)
 
 ### Official links
 
