@@ -1,8 +1,8 @@
 # Torque Money Whitepaper
 
-## A DeFi leveraging protocol that allows users to leverage as much as they wish against their collateral whilst providing high (currently market neutral) returns to liquidity providers.
-
 ### Disclaimer: Please note that everything explained in this whitepaper is purely hypothetical and should not be considered as fact. This is experimental technology and nothing is certain.
+
+A DeFi leveraging protocol that allows users to leverage as much as they wish against their collateral whilst providing high (currently market neutral) returns to liquidity providers.
 
 ## Official links
 
