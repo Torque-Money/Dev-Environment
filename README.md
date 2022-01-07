@@ -26,7 +26,7 @@ We also wish to provide some of the best interest rates to our liquidity provide
 
 #### Staking
 
-Staking or liquidity providing is where a user deposits tokens into our liquidity pool. In exchange, stakers will receive tokens that represent their share of the pool. These tokens may be redeemed at any time for the percentage of the underlying asset they initially deposited that they are entitled to, given that there is liquidity available.
+Staking or liquidity providing is where a user deposits tokens into our leveraging pool. In exchange, stakers will receive tokens that represent their share of the pool. These tokens may be redeemed at any time for the percentage of the underlying asset they initially deposited that they are entitled to, given that there is liquidity available.
 
 Staked tokens will be lended out to leveragers who will have to pay an interest rate on what they borrow. This interest will then be distributed back to the pool, and thus the stakers, who will receive their share of interest that they are entitled to when they redeem their tokens for their underlying assets.
 
@@ -55,7 +55,7 @@ In addition to the price of the asset borrowed losing value causing an account t
 
 #### Staking
 
-When a user stakes tokens in our liquidity pool, they will receive LP tokens equal to `D * TLP / TVL` where `D` is the amount of the tokens deposited, `TLP` is the total number of LP tokens in circulation, and `TVL` is the total amount of the staked asset in the pool. LP tokens may be traded around, allowing the staker to exchange the value of their underlying assets without having to redeem them.
+When a user stakes tokens in our leveraging pool, they will receive LP tokens equal to `D * TLP / TVL` where `D` is the amount of the tokens deposited, `TLP` is the total number of LP tokens in circulation, and `TVL` is the total amount of the staked asset in the pool. LP tokens may be traded around, allowing the staker to exchange the value of their underlying assets without having to redeem them.
 
 These staked tokens will be lended out to leveragers who will be charged an interest rate on top of what they borrow which will be redistributed back to the staker. LP tokens may be redeemed for `R * TVL / TLP` of the initial tokens staked where `R` is the amount of LP tokens to be redeemed, and `TLP` and `TVL` have the same meanings as above.
 
@@ -85,9 +85,11 @@ It should be noted that during the process of either repayments or liquidations,
 
 The TAU token will be the official governance token for the Torque ecosystem. It will be used to vote on changes to be made to the protocol through the governance and timelock contracts.
 
-A percentage of all of the profits earned by the protocol will be used to back the price of the TAU token. At any point in time, holders of TAO may burn their TAU tokens in exchange for any of the underlying reserve assets supported by the protocol. With this we aim to ensure a rising price floor that TAU cannot fall below. In the event that the market value of TAU drops below its floor price, arbitragers will buy TAU for cheap and market price and sell it back to the treasury, which will reduce the circulating number of tokens as well as increasing buying pressure which should return the token back above its price floor. While in theory being impossible, even if the price of the token goes to zero, TAU holders will still be able to redeem their tokens for what they are worth from the reserve directly.
+A percentage of all of the profits earned by the protocol will be used to back the price of the TAU token. At any point in time, holders of TAU may burn their tokens in exchange for any of the underlying reserve assets supported by the protocol. With this we aim to create a rising price floor that TAU's market price cannot fall below.
 
-Users will be able to earn TAU by providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets. We aim to set the yield rate less than the floor price increase rate to achieve a rising floor price whilst increasing the distribution of the token to promote decentralization.
+In the event that the market value of TAU drops below its floor price, arbitragers will buy it cheaper at market price and sell it back to the treasury for its floor price, which will reduce the circulating number of tokens as well as increasing buying pressure which should return the token back above its price floor. While in theory the price of the token should never go to zero as long as there are assets to back it in the reserve, if the price does manage to fall to zero, TAU holders will still be able to burn their tokens in exchange for the percentage of reserve assets they are entitled to.
+
+Users will be able to earn TAU by providing liquidity to the leveraging pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets. We aim to set the yield rate less than the floor price increase rate to achieve a rising floor price whilst increasing the distribution of the token to promote decentralization.
 
 ### DAO
 
@@ -101,4 +103,4 @@ Finally, a percentage of the DAO's treasury will be able to be withdrawn by a ta
 
 Our next plan is to add a shorting option to the protocol. Adding this will balance out the returns to stakers, and will encourage borrowing in both bull and bear markets which will help to bring the protocol close to its peak theoretical performing state.
 
-In addition to this we plan to provide flashloans using our liquidity pool in which users will be able to borrow huge amounts of collateral as long as they can repay it as well as a fee back to the protocol within the same transaction. Flash loans will help boost the returns for the liquidity providers at no loss for the protocol itself.
+In addition to this we plan to provide flashloans using our leveraging pool in which users will be able to borrow huge amounts of collateral as long as they can repay it as well as a fee back to the protocol within the same transaction. Flash loans will help boost the returns for the liquidity providers at no loss for the protocol itself.
