@@ -43,7 +43,7 @@ contract TimelockTax is Context {
         taxAccount = account_;
     }
 
-    // @dev Claim tax for a given token
+    // Claim tax for a given token
     function claimTax(IERC20 token_) external onlyTax {
         require(block.timestamp >= lastTax.add(taxCooldown));
 
