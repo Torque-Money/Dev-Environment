@@ -28,23 +28,23 @@ A DeFi leveraging protocol that allows users to leverage as much as they wish ag
 - [DAO](#dao)
 - [Future plans](#future-plans)
 
-### Code
+## Code
 
 All of the most up to date code can be found in the [official repository](https://github.com/Torque-Money/Torque-Protocol). In addition the deployed smart contract code can be verified on most blockchain explorers.
 
-### Deployed contracts
+## Deployed contracts
 
 **As of the current point in time no contracts have been deployed. If you see a contract that claims to be ours that is not listed here, please verify it with us first before using it**
 
-### Motivation
+## Motivation
 
 Our aim is to provide unlimited leveraging to everyone. Traditional lending platforms typically cap the amount you may borrow, for example 5x or 10x against your collateral. However, we believe that this should not be the case, and our protocol aims to remove this cap so that the only limit is the amount of liquidity in the leveraging pool.
 
 We also wish to provide some of the best interest rates to our liquidity providers in the market.
 
-### High level overview
+## High level overview
 
-#### Staking
+### Staking
 
 Staking or liquidity providing is where a user deposits tokens into our leveraging pool. In exchange, stakers will receive tokens that represent their share of the pool. These tokens may be redeemed at any time for the percentage of the underlying asset they initially deposited that they are entitled to, given that there is liquidity available.
 
@@ -52,7 +52,7 @@ Staked tokens will be lended out to leveragers who will have to pay an interest 
 
 Staking is essential to the protocol as with no liquidity, there would be nothing for the leveragers to borrow, which would render the protocol useless.
 
-#### Leveraging (long only currently)
+### Leveraging (long only currently)
 
 Leveraging is where a user borrows money to invest with and is then entitled to the earnings made from the investment or is required to repay the losses incurred from the investment.
 
@@ -71,9 +71,9 @@ In addition to the price of the asset borrowed losing value causing an account t
 - Accumulating too much interest
 - Having the accounts collateral decreasing in value so that it is not enough to back the incurred losses
 
-### Advanced overview
+## Advanced overview
 
-#### Staking
+### Staking
 
 When a user stakes tokens in our leveraging pool, they will receive LP tokens equal to `D * TLP / TVL` where `D` is the amount of the tokens deposited, `TLP` is the total number of LP tokens in circulation, and `TVL` is the total amount of the staked asset in the pool. LP tokens may be traded around, allowing the staker to exchange the value of their underlying assets without having to redeem them.
 
@@ -85,7 +85,7 @@ At the current time (potential to be changed in the future), staking in the pool
 
 However, this is dependent on a couple of factors. In order to be completely market neutral it would require that 100% of liquidity is used at all times which we have already proved above is virtually impossible by the interest rates. In addition to this, in the event of a big market crash, it is expected that there will be very few investors going long, further lowering the utilization rate and thus market protection. Therefore while the protocol in practice does not offer pure market neutral returns, it does provide some protection against market fluctuations, and opens the account up to being able to receive some market returns on top of an interest rate.
 
-#### Leveraging (long only currently)
+### Leveraging (long only currently)
 
 Users may leverage up to as much as they wish against their collateral, however they will need to deposit a minimum amount first. This collateral will be used to ensure that the protocol is paid back for any losses a leveraged position may incur. The minimum collateral amount is enforced so that there is always an incentive for liquidating a user, otherwise undercollateralized accounts would horde borrowed liquidity whilst being undercollateralized.
 
@@ -101,7 +101,7 @@ At all times in order to avoid being liquidated the account must satisfy the equ
 
 It should be noted that during the process of either repayments or liquidations, the caller will have to use a swap function. This function supports custom callbacks, where as long as the callback returns the minimum amount of the desired assets, it will be allowed. By default we provide a swap function which will take the assets, swap them at a DEX, and will then return the assets back to the caller as well as providing the address provided as extra data with any extra input tokens.
 
-### TAU token
+## TAU token
 
 The TAU token will be the official governance token for the Torque ecosystem. It will be used to vote on changes to be made to the protocol through the governance and timelock contracts.
 
@@ -111,7 +111,7 @@ In the event that the market value of TAU drops below its floor price, arbitrage
 
 Users will be able to earn TAU by providing liquidity to the leveraging pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets. We aim to set the yield rate less than the floor price increase rate to achieve a rising floor price whilst increasing the distribution of the token to promote decentralization.
 
-### DAO
+## DAO
 
 The DAO will consist of the TAU token, governance contracts, and timelock contracts. All of the smart contracts deployed will be fully managed by the DAO, and changes will be voted on by holders of the TAU token.
 
@@ -119,7 +119,7 @@ A percentage of the profits earned by the protocol will be forwarded off to the 
 
 Finally, a percentage of the DAO's treasury will be taxed by a tax account which cannot be controlled by the DAO. However, the tax account will only be able to withdraw a fixed percentage of the DAO's treasury every fixed number of blocks.
 
-### Future plans
+## Future plans
 
 Our next plan is to add a shorting option to the protocol. Adding this will balance out the returns to stakers, and will encourage borrowing in both bull and bear markets which will help to bring the protocol close to its peak theoretical performing state.
 
