@@ -85,13 +85,17 @@ It should be noted that during the process of either repayments or liquidations,
 
 The TAU token will be the official governance token for the Torque ecosystem. It will be used to vote on changes to be made to the protocol through the governance and timelock contracts.
 
-Users will be able to earn TAU through providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets.
+Users will be able to earn TAU by providing liquidity to the pool. As the size of the pool grows overtime, the yield rate of the token will be reduced, however as new assets are added to the pool there is a chance yield rewards will come back as an incentive to provide liquidity for new assets.
+
+A percentage of all of the profits earned by the protocol will be used to back the price of the TAU token. At any point in time, holders of TAO may burn their TAU tokens in exchange for any of the underlying reserve assets supported by the protocol. With this we aim to ensure a rising price floor that TAU cannot fall below. In the event that the market value of TAU drops below its floor price, arbitragers will buy TAU for cheap and market price and sell it back to the treasury, which will reduce the circulating number of tokens as well as increasing buying pressure which should return the token back above its price floor. While in theory being impossible, even if the price of the token goes to zero, TAU holders will still be able to redeem their tokens for what they are worth from the reserve directly.
 
 ### DAO
 
 The DAO will consist of the TAU token, governance contracts, and timelock contracts. All of the smart contracts deployed will be fully managed by the DAO, and changes will be voted on by holders of the TAU token.
 
 A percentage of the profits earned by the protocol will be forwarded off to the DAO to manage. The majority of these funds will be locked away in the protocols to ensure liquidity. The remaining funds will be used to fund new projects as venture capital investments, and will be occasionally distributed out to owners of TAU.
+
+Finally, a percentage of the DAO's treasury will be able to be withdrawn by a tax account which cannot be controlled by the DAO itself. However the tax account will only be able to withdraw a fixed percentage every fixed number of days to prevent the tax account "rugging" the treasury.
 
 ### Future plans
 
