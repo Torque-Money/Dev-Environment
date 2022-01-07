@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "../LPool/LPool.sol";
 import "../Governance/Token.sol";
-import "./YieldStake.sol";
+import "../Oracle/Oracle.sol";
+import "./ReserveStake.sol";
 
-contract Yield is YieldStake {
-    constructor(Token token_, LPool pool_) YieldCore(token_) {}
+contract Reserve is ReserveStake {
+    constructor(Token token_, Oracle oracle_) ReserveCore(token_) {}
 }

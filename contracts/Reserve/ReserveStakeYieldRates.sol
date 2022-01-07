@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./ReserveCore.sol";
 
-abstract contract YieldRates is YieldCore {
+abstract contract ReserveStakeYieldRates is ReserveCore {
     using SafeMath for uint256;
 
     mapping(IERC20 => FractionMath.Fraction) private _rates;

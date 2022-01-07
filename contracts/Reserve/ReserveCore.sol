@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Governance/Token.sol";
 import "../Oracle/Oracle.sol";
 
-contract YieldCore is Ownable {
+contract ReserveCore is Ownable {
     Token public token;
     Oracle public oracle;
 
