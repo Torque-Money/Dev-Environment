@@ -1,6 +1,6 @@
 import hre from "hardhat";
 import fs from "fs";
-import config from "../config.json";
+import config from "../../config.json";
 
 export default async function main() {
     const constructorArgs = {
@@ -11,14 +11,13 @@ export default async function main() {
         swapToleranceDenominator: 200,
         minMarginLevelNumerator: 105,
         minMarginLevelDenominator: 100,
-        minCollateral: hre.ethers.BigNumber.from(100).mul(10).pow(18),
-        liquidationFeePercentNumerator: 5,
-        liquidationFeePercentDenominator: 100,
+        minCollateralPrice: hre.ethers.BigNumber.from(100).mul(10).pow(18),
     };
-    const IsolatedMargin = await hre.ethers.getContractFactory("IsolatedMargin");
-    const isolatedMargin = await IsolatedMargin.deploy(...Object.values(constructorArgs));
-    config.isolatedMarginAddress = isolatedMargin.address;
-    console.log("Deployed: Isolated margin");
+    const MarginLong = await hre.ethers.getContractFactory("MarginLong");
+    const marginLong = await MarginLong.deploy(...Object.values(constructorArgs));
+    config.marginLongAddress = marginLong.address;
+    console.log("Deployed: Margin long");
+
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
 

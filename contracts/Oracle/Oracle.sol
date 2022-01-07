@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./OracleTokens.sol";
 
-abstract contract Oracle is OracleTokens {
+contract Oracle is OracleTokens {
     using SafeMath for uint256;
 
     // Get the price of an asset in terms of the default stablecoin

@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./IFlashSwap.sol";
 
-abstract contract FlashSwap is Context, ReentrancyGuard {
+contract FlashSwap is Context, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     // Swap a group of assets for another using an external function and allow the transaction as long as the minimum amount is satisfied - returns the amount of the asset out

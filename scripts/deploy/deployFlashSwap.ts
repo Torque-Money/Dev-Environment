@@ -11,7 +11,6 @@ export default async function main() {
 
     const constructorArgs2 = {
         router: config.defaultRouterAddress,
-        pool: config.leveragePoolAddress,
     };
     const FlashSwapDefault = await hre.ethers.getContractFactory("FlashSwapDefault");
     const flashSwapDefault = await FlashSwapDefault.deploy(...Object.values(constructorArgs2));

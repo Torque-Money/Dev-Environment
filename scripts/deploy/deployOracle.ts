@@ -1,11 +1,9 @@
 import hre from "hardhat";
 import fs from "fs";
-import config from "../config.json";
+import config from "../../config.json";
 
 export default async function main() {
-    const constructorArgs = {
-        pool: config.leveragePoolAddress,
-    };
+    const constructorArgs = {};
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(constructorArgs));
     config.oracleAddress = oracle.address;
