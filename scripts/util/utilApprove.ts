@@ -14,7 +14,8 @@ export default async function main() {
         const tokenBalance = await token.balanceOf(signerAddress);
 
         await token.approve(config.leveragePoolAddress, tokenBalance);
-        await token.approve(config.isolatedMarginAddress, tokenBalance);
+        await token.approve(config.marginLongAddress, tokenBalance);
+        await token.approve(config.reserveAddress, tokenBalance);
 
         console.log(`Approve: Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
     }

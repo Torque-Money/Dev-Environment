@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import config from "../config.json";
+import config from "../../config.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 
 export default async function main() {
