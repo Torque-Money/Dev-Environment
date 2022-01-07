@@ -1,8 +1,6 @@
 import setupPool from "./setupPool";
 import setupOracle from "./setupOracle";
 import setupIsolatedMargin from "./setupIsolatedMargin";
-import setupToken from "./setupToken";
-import setupTimelock from "./setupTimelock";
 import setupYield from "./setupYield";
 
 export default async function main() {
@@ -10,8 +8,6 @@ export default async function main() {
     await setupPool();
     await setupOracle();
     await setupIsolatedMargin();
-    await setupToken();
-    await setupTimelock();
     await setupYield();
 }
 
