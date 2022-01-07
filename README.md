@@ -95,7 +95,7 @@ The DAO will consist of the TAU token, governance contracts, and timelock contra
 
 A percentage of the profits earned by the protocol will be forwarded off to the DAO to manage. The majority of these funds will be locked away in the protocols to ensure liquidity. The remaining funds will be used to fund new projects as venture capital investments, and will be occasionally distributed out to owners of TAU.
 
-Finally, a percentage of the DAO's treasury will be able to be withdrawn by a tax account which cannot be controlled by the DAO itself. However the tax account will only be able to withdraw a fixed percentage every fixed number of days to prevent the tax account "rugging" the treasury.
+Finally, a percentage of the DAO's treasury will be able to be withdrawn by a tax account which cannot be controlled by the DAO itself. However the tax account will only be able to withdraw a fixed percentage every fixed number of days to prevent the tax account from "rugging" the treasury.
 
 ### Future plans
 
