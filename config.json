@@ -11,7 +11,7 @@
       "decimals": 18,
       "priceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
       "reservePriceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
-      "margin": true,
+      "marginLong": true,
       "leveragePool": true
     },
     {
@@ -23,7 +23,7 @@
       "decimals": 18,
       "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
       "reservePriceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
-      "margin": true,
+      "marginLong": true,
       "leveragePool": true
     }
   ],

@@ -1,14 +1,14 @@
 import setupPool from "./setupPool";
 import setupOracle from "./setupOracle";
-import setupIsolatedMargin from "./setupIsolatedMargin";
-import setupYield from "./setupYield";
+import setupMarginLong from "./setupMarginLong";
+import setupReserve from "./setupReserve";
 
 export default async function main() {
     // Setup the contracts
     await setupPool();
     await setupOracle();
-    await setupIsolatedMargin();
-    await setupYield();
+    await setupMarginLong();
+    await setupReserve();
 }
 
 if (require.main === module)
