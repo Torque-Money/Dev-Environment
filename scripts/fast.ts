@@ -4,6 +4,7 @@ import handover from "./handover/handover";
 
 import utilFund from "./util/utilFund";
 import utilApprove from "./util/utilApprove";
+import utilUpdateFiles from "./util/utilUpdateFiles";
 
 export default async function main() {
     await deploy();
@@ -12,6 +13,7 @@ export default async function main() {
 
     await utilFund();
     await utilApprove();
+    await utilUpdateFiles();
 }
 
 if (require.main === module)
