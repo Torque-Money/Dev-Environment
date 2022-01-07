@@ -3,7 +3,7 @@ import handoverOracle from "./handoverOracle";
 import handoverFlashswap from "./handoverFlashswap";
 import handoverIsolatedMargin from "./handoverIsolatedMargin";
 import handoverToken from "./handoverToken";
-import handoverTimelock from "./handoverTimelock";
+import handoverGovernance from "./handoverGovernance";
 
 export default async function main() {
     // Handover the contracts
@@ -12,7 +12,7 @@ export default async function main() {
     await handoverFlashswap();
     await handoverIsolatedMargin();
     await handoverToken();
-    await handoverTimelock();
+    await handoverGovernance();
 }
 
 if (require.main === module)

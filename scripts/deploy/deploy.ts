@@ -2,6 +2,7 @@ import deployPool from "./deployPool";
 import deployOracle from "./deployOracle";
 import deployFlashSwap from "../deploy/deployFlashSwap";
 import deployIsolatedMargin from "./deployIsolatedMargin";
+import deployToken from "./deployToken";
 import deployGovernance from "./deployGovernance";
 import deployYield from "./deployYield";
 
@@ -11,6 +12,7 @@ export default async function main() {
     await deployOracle();
     await deployFlashSwap();
     await deployIsolatedMargin();
+    await deployToken();
     await deployGovernance();
     await deployYield();
 }
