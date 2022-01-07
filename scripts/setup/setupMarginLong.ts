@@ -2,7 +2,7 @@ import hre from "hardhat";
 import config from "../../config.json";
 
 export default async function main() {
-    const marginLong = await hre.ethers.getContractAt("IsolatedMargin", config.marginLongAddress);
+    const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
 
     const marginApprovedCollateral = config.approved.filter((approved) => approved.marginLong).map((approved) => approved.address);
     const marginSupportedCollateral = Array(marginApprovedCollateral.length).fill(true);
