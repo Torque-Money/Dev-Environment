@@ -11,16 +11,25 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    // Get the total tokens in reserve for a given token
+    function totalReserve(IERC20 token_) public view returns (uint256) {
+        uint256 staked = totalStaked(token_);
+        uint256 available = token_.balanceOf(address(this)).sub(staked);
+        return available;
+    }
+
+    // Return the total backing price for each token
+    function backingPricePerAsset() external view returns (uint256, uint256) {
+        return (token.totalSupply(), totalPrice());
+    }
+
     // Get the total liquidity price of the reserve
     function totalPrice() public view returns (uint256) {
         uint256 _totalPrice = 0;
 
         IERC20[] memory approved = _approved();
         for (uint256 i = 0; i < approved.length; i++) {
-            uint256 staked = totalStaked(approved[i]);
-            uint256 available = approved[i].balanceOf(address(this)).sub(staked);
-
-            uint256 price = oracle.price(approved[i], available);
+            uint256 price = oracle.price(approved[i], totalReserve(approved[i]));
             _totalPrice = _totalPrice.add(price);
         }
 
