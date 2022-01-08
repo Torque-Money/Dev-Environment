@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ReserveApproved.sol";
+import "./ReserveStakeAccount.sol";
 
-abstract contract ReserveRedeem is ReserveApproved {
+abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -16,7 +17,10 @@ abstract contract ReserveRedeem is ReserveApproved {
 
         IERC20[] memory approved = _approved();
         for (uint256 i = 0; i < approved.length; i++) {
-            uint256 price = oracle.price(approved[i], approved[i].balanceOf(address(this)));
+            uint256 staked = totalStaked(approved[i]);
+            uint256 available = approved[i].balanceOf(address(this)).sub(staked);
+
+            uint256 price = oracle.price(approved[i], available);
             _totalPrice = _totalPrice.add(price);
         }
 

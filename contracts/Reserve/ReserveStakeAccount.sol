@@ -66,7 +66,7 @@ abstract contract ReserveStakeAccount is ReserveCore {
     }
 
     // Get the total amount of a given token staked
-    function totalStaked(IERC20 token_) external view returns (uint256) {
+    function totalStaked(IERC20 token_) public view returns (uint256) {
         return _totalStaked[token_];
     }
 }
