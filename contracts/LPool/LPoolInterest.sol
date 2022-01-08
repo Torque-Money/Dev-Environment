@@ -84,17 +84,17 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
     // Helper to calculate the minimum interest rate
     function _interestRateMin(
-        uint256 utilized_,
-        uint256 valueLocked_,
+        uint256 utilizationNumerator_,
+        uint256 utilizationDenominator_,
         FractionMath.Fraction memory interestMin_
     ) internal pure returns (uint256, uint256) {
-        return (utilized_.mul(interestMin_.numerator), valueLocked_.mul(interestMin_.denominator));
+        return (utilizationNumerator_.mul(interestMin_.numerator), utilizationDenominator_.mul(interestMin_.denominator));
     }
 
     // Helper to calculate the maximum interest rate
     function _interestRateMax(
-        uint256 utilized_,
-        uint256 valueLocked_,
+        uint256 utilizationNumerator_,
+        uint256 utilizationDenominator_,
         FractionMath.Fraction memory utilizationMax_,
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
@@ -110,11 +110,11 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
         uint256 numerator;
         {
-            numerator = utilized_.mul(interestMax_.numerator).mul(kDenominator).sub(kNumerator.mul(valueLocked_).mul(interestMax_.denominator));
+            numerator = utilizationNumerator_.mul(interestMax_.numerator).mul(kDenominator).sub(kNumerator.mul(utilizationDenominator_).mul(interestMax_.denominator));
         }
         uint256 denominator;
         {
-            denominator = valueLocked_.mul(interestMax_.denominator).mul(kDenominator);
+            denominator = utilizationDenominator_.mul(interestMax_.denominator).mul(kDenominator);
         }
 
         return (numerator, denominator);
@@ -122,16 +122,15 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
     function interestRate(IERC20 token_) public view returns (uint256, uint256) {
-        uint256 valueLocked = tvl(token_);
-        uint256 utilized = valueLocked.sub(liquidity(token_));
+        (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(token_);
 
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
-        if (utilized.mul(utilizationMax.denominator) > tvl(token_).mul(utilizationMax.numerator))
-            return _interestRateMax(utilized, valueLocked, utilizationMax, interestMin, interestMax);
-        else return _interestRateMin(utilized, valueLocked, interestMin);
+        if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
+            return _interestRateMax(utilizationNumerator, utilizationDenominator, utilizationMax, interestMin, interestMax);
+        else return _interestRateMin(utilizationNumerator, utilizationDenominator, interestMin);
     }
 
     // Get the interest on a given asset for a given number of blocks
