@@ -12,7 +12,10 @@ abstract contract MarginLongBorrow is Margin {
     function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrow(borrowed_) {
         require(collateralPrice(_msgSender()) >= minCollateralPrice, "Collateral price must be greater than minimum");
 
-        if (!isBorrowing(borrowed_, _msgSender())) _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
+        if (!isBorrowing(borrowed_, _msgSender())) {
+            _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
+            _addAccount(_msgSender());
+        }
 
         pool.claim(borrowed_, amount_);
         _setBorrowed(borrowed_, borrowed(borrowed_, _msgSender()).add(amount_), _msgSender());

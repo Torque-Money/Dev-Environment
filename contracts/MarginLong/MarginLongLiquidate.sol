@@ -47,6 +47,8 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         _repayPayout(account_);
         _liquidate(account_, flashSwap_, data_);
 
+        _removeAccount(_msgSender());
+
         emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
 

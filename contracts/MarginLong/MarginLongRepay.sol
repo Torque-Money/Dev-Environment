@@ -132,6 +132,8 @@ abstract contract MarginLongRepay is Margin {
         _repayPayout(_msgSender());
         _repayLosses(_msgSender(), flashSwap_, data_);
 
+        _removeAccount(_msgSender());
+
         emit Repay(_msgSender(), flashSwap_, data_);
     }
 
