@@ -14,7 +14,7 @@ abstract contract LPoolLend is LPoolApproved {
     mapping(IERC20 => uint256) private _totalLoaned;
 
     // Lend out collateral to an approved account
-    function loan(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
+    function loan(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
         require(amount_ <= liquidity(token_), "Withdraw amount exceeds available liquidity");
         token_.safeTransfer(_msgSender(), amount_);
         _loaned[_msgSender()][token_] = _loaned[_msgSender()][token_].add(amount_);
@@ -22,7 +22,7 @@ abstract contract LPoolLend is LPoolApproved {
     }
 
     // Repay collateral from an account
-    function repay(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
+    function repay(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
         if (amount_ > _loaned[_msgSender()][token_]) _loaned[_msgSender()][token_] = 0;
         else _loaned[_msgSender()][token_] = _loaned[_msgSender()][token_].sub(amount_);

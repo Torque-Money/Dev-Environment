@@ -12,7 +12,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeERC20 for IERC20;
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
+    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
         (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
         address[] memory _taxAccounts = _taxAccounts();
 
@@ -27,7 +27,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     }
 
     // Withdraw a given amount of collateral from the pool
-    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPA(token_) {
+    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
         require(amount_ <= liquidity(token_), "Withdraw amount exceeds available liquidity");
         token_.safeTransfer(_msgSender(), amount_);
         emit Withdraw(_msgSender(), token_, amount_);
