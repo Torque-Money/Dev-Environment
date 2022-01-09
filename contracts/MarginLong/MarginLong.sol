@@ -13,10 +13,13 @@ contract MarginLong is MarginLongBorrow, MarginLongLiquidate {
         uint256 swapToleranceDenominator_,
         uint256 minMarginLevelNumerator_,
         uint256 minMarginLevelDenominator_,
-        uint256 minCollateralPrice_
+        uint256 minCollateralPrice_,
+        uint256 liquidationFeePercentNumerator_,
+        uint256 liquidationFeePercentDenominator_
     )
         MarginCore(pool_, oracle_, flashSwap_, swapToleranceNumerator_, swapToleranceDenominator_)
         MarginLevel(minMarginLevelNumerator_, minMarginLevelDenominator_)
         MarginCollateral(minCollateralPrice_)
+        MarginLongLiquidate(liquidationFeePercentNumerator_, liquidationFeePercentDenominator_)
     {}
 }
