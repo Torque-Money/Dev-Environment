@@ -6,14 +6,18 @@ import "./LPoolCore.sol";
 import "./LPoolToken.sol";
 
 abstract contract LPoolApproved is LPoolCore {
-    mapping(IERC20 => bool) private _PATokens;
-    mapping(IERC20 => bool) private _LPTokens;
+    mapping(IERC20 => IERC20) private _PTToLP;
+    mapping(IERC20 => IERC20) private _LPToPT;
 
-    mapping(IERC20 => IERC20) private _PAToLP;
-    mapping(IERC20 => IERC20) private _LPToPA;
+    mapping(IERC20 => bool) private _approved;
 
-    modifier onlyPA(IERC20 token_) {
-        require(isPA(token_), "Only pool approved tokens may be used");
+    modifier onlyPT(IERC20 token_) {
+        require(isPT(token_), "Only pool tokens may be used");
+        _;
+    }
+
+    modifier onlyApprovedPT(IERC20 token_) {
+        require(isApprovedPT(token_), "Only approved pool tokens may be used");
         _;
     }
 
@@ -22,49 +26,69 @@ abstract contract LPoolApproved is LPoolCore {
         _;
     }
 
-    // Check if a token regular token is approved
-    function isPA(IERC20 token_) public view returns (bool) {
-        return _PATokens[token_];
+    modifier onlyApprovedLP(IERC20 token_) {
+        require(isApprovedLP(token_), "Only approved liquidity pool tokens may be used");
+        _;
+    }
+
+    // Check if a token is usable with the pool
+    function isPT(IERC20 token_) public view returns (bool) {
+        return address(_PTToLP[token_]) != address(0);
+    }
+
+    // Check if a pool token is approved
+    function isApprovedPT(IERC20 token_) public view returns (bool) {
+        return isPT(token_) && _approved[token_];
     }
 
     // Check if a given token is an LP token
     function isLP(IERC20 token_) public view returns (bool) {
-        return _LPTokens[token_];
+        return address(_LPToPT[token_]) != address(0);
     }
 
-    // Approve a token for use with the pool and create a new LP token
-    function approve(
+    // Check if a LP token is approved
+    function isApprovedLP(IERC20 token_) public view returns (bool) {
+        return isLP(token_) && _approved[PTFromLP(token_)];
+    }
+
+    // Add a new token to be used with the pool
+    function addLPToken(
         IERC20[] memory token_,
         string[] memory name_,
         string[] memory symbol_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (!isPA(token_[i]) && !isLP(token_[i])) {
-                _PATokens[token_[i]] = true;
-
+            if (!isPT(token_[i]) && !isLP(token_[i])) {
                 IERC20 LPToken = IERC20(address(new LPoolToken(name_[i], symbol_[i])));
-                _LPTokens[LPToken] = true;
 
-                _PAToLP[token_[i]] = LPToken;
-                _LPToPA[LPToken] = token_[i];
+                _PTToLP[token_[i]] = LPToken;
+                _LPToPT[LPToken] = token_[i];
 
-                emit Approved(token_[i], LPToken);
+                emit AddLPToken(token_[i], LPToken);
             }
         }
     }
 
-    // Set whether or not a token is approved
+    // Approve liquidity pool tokens for use with the pool if it is different to its current approved state
+    function setApproved(IERC20[] memory token_, bool[] memory approved_) external onlyRole(POOL_ADMIN) {
+        for (uint256 i = 0; i < token_.length; i++) {
+            if (isPT(token_[i]) && isApprovedPT(token_[i]) != approved_[i]) {
+                _approved[token_[i]] = approved_[i];
+                emit SetApproved(token_[i], approved_[i]);
+            }
+        }
+    }
 
     // Get the LP token that corresponds to the given token
-    function LPFromPA(IERC20 token_) public view onlyPA(token_) returns (IERC20) {
-        return _PAToLP[token_];
+    function LPFromPT(IERC20 token_) public view onlyPT(token_) returns (IERC20) {
+        return _PTToLP[token_];
     }
 
     // Get the token that corresponds to the given LP token
-    function PAFromLP(IERC20 token_) public view onlyLP(token_) returns (IERC20) {
-        return _LPToPA[token_];
+    function PTFromLP(IERC20 token_) public view onlyLP(token_) returns (IERC20) {
+        return _LPToPT[token_];
     }
 
-    event Approved(IERC20 token, IERC20 LPToken);
+    event AddLPToken(IERC20 token, IERC20 LPToken);
     event SetApproved(IERC20 token, bool approved);
 }
