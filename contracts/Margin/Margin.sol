@@ -2,5 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "./MarginCollateral.sol";
+import "./MarginBorrowers.sol";
 
-abstract contract Margin is MarginCollateral {}
+abstract contract Margin is MarginCollateral, MarginBorrowers {}
