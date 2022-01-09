@@ -69,7 +69,7 @@ abstract contract LPoolApproved is LPoolCore {
         }
     }
 
-    // Approve liquidity pool tokens for use with the pool if it is different to its current approved state
+    // Approve pool tokens for use with the pool if it is different to its current approved state - a LP token is approved if and only if its pool token is approved
     function setApproved(IERC20[] memory token_, bool[] memory approved_) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
             if (isPT(token_[i]) && isApprovedPT(token_[i]) != approved_[i]) {
