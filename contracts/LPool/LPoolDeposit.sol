@@ -12,7 +12,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeERC20 for IERC20;
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
+    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPT(token_) {
         (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
         address[] memory _taxAccounts = _taxAccounts();
 

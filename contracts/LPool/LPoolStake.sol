@@ -13,15 +13,15 @@ abstract contract LPoolStake is LPoolLiquidity {
 
     // Return the amount of tokens received for staking a given amount of tokens
     function stakeValue(IERC20 token_, uint256 amount_) public view returns (uint256) {
-        LPoolToken LPToken = LPoolToken(address(LPFromPA(token_)));
+        LPoolToken LPToken = LPoolToken(address(LPFromPT(token_)));
         uint256 totalSupply = LPToken.totalSupply();
         uint256 totalValue = tvl(token_);
         return amount_.mul(totalSupply).div(totalValue);
     }
 
     // Stake tokens and receive LP tokens that represent the users share in the pool
-    function stake(IERC20 token_, uint256 amount_) external onlyPA(token_) returns (uint256) {
-        LPoolToken LPToken = LPoolToken(address(LPFromPA(token_)));
+    function stake(IERC20 token_, uint256 amount_) external onlyApprovedPT(token_) returns (uint256) {
+        LPoolToken LPToken = LPoolToken(address(LPFromPT(token_)));
 
         uint256 value = stakeValue(token_, amount_);
         require(value > 0, "Not enough tokens staked");
@@ -45,7 +45,7 @@ abstract contract LPoolStake is LPoolLiquidity {
     // Redeem LP tokens for the underlying asset
     function redeem(IERC20 token_, uint256 amount_) external onlyLP(token_) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(token_));
-        IERC20 approvedToken = PAFromLP(token_);
+        IERC20 approvedToken = PTFromLP(token_);
 
         uint256 value = redeemValue(LPToken, amount_);
         require(value <= liquidity(approvedToken), "Not enough liquidity to redeem at this time");
