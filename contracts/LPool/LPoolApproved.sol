@@ -53,6 +53,8 @@ abstract contract LPoolApproved is LPoolCore {
         }
     }
 
+    // Set whether or not a token is approved
+
     // Get the LP token that corresponds to the given token
     function LPFromPA(IERC20 token_) public view onlyPA(token_) returns (IERC20) {
         return _PAToLP[token_];
@@ -64,4 +66,5 @@ abstract contract LPoolApproved is LPoolCore {
     }
 
     event Approved(IERC20 token, IERC20 LPToken);
+    event SetApproved(IERC20 token, bool approved);
 }
