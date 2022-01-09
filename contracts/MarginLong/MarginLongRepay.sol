@@ -98,6 +98,7 @@ abstract contract MarginLongRepay is Margin {
             repayTokens.push(token);
             repayAmounts.push(tokenAmount);
 
+            // **** None of this is right ?
             _setBorrowed(token, 0, account_);
             _setInitialBorrowPrice(token, 0, account_);
             _setCollateral(token, 0, account_);
