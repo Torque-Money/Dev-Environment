@@ -61,14 +61,6 @@ abstract contract MarginAccount is MarginPool {
         return _accounts[account_].collateral.iterable();
     }
 
-    // Get the amounts of collateral for each asset
-    function _collateralAmounts(address account_) internal view returns (uint256[] memory) {
-        IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory amounts = new uint256[](collateralTokens.length);
-        for (uint256 i = 0; i < collateralTokens.length; i++) amounts[i] = collateral(collateralTokens[i], account_);
-        return amounts;
-    }
-
     // Set the amount the user has borrowed
     function _setBorrowed(
         IERC20 borrowed_,
@@ -107,14 +99,6 @@ abstract contract MarginAccount is MarginPool {
     // Get the borrowed tokens list
     function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
         return _accounts[account_].borrowed.iterable();
-    }
-
-    // Get the amounts borrowed of each asset
-    function _borrowedAmounts(address account_) internal view returns (uint256[] memory) {
-        IERC20[] memory borrowedTokens = _borrowTokens(account_);
-        uint256[] memory amounts = new uint256[](borrowedTokens.length);
-        for (uint256 i = 0; i < borrowedTokens.length; i++) amounts[i] = borrowed(borrowedTokens[i], account_);
-        return amounts;
     }
 
     // Get the initial borrow price for an account
