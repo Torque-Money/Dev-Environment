@@ -63,8 +63,9 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         uint256[] memory borrowRepayAmounts = new uint256[](borrowRepayPrices.length);
         for (uint256 i = 0; i < borrowRepayAmounts.length; i++) {
             uint256 allocatedCollateralPrice = borrowRepayPrices[i].mul(_collateralPrice).div(totalRepayPrice);
-            (uint256 liqFeeNum, uint256 liqFeeDenom) = liquidationFeePercent();
             uint256 allocatedCollateralAmount = oracle.amount(allocatedCollateralPrice, borrowedTokens[i]);
+
+            (uint256 liqFeeNum, uint256 liqFeeDenom) = liquidationFeePercent();
             borrowRepayAmounts[i] = liqFeeDenom.sub(liqFeeNum).mul(allocatedCollateralAmount).div(liqFeeDenom);
         }
 
