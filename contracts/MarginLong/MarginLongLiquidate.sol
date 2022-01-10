@@ -30,14 +30,6 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         return marginNumerator <= marginDenominator;
     }
 
-    // Calculate the price required to be returned during the liquidation
-    function liquidateRepayPrice(address account_) external view returns (uint256) {
-        // **** FIX THIS BROKEN FUNCTION
-        // **** **** I NEED TO MAKE SURE I UNCLAIM EVERYWHERE DURING REPAY AND LIQUIDATE TOO
-        (, , uint256 repayPrice) = _repayLossesAmountsOut(account_);
-        return repayPrice;
-    }
-
     // Update the users accounts as a result of the liquidations
     function _resetAccount(address account_) internal {
         IERC20[] memory collateralTokens = _collateralTokens(account_);
@@ -68,32 +60,8 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
             repayTokensOut[i].safeApprove(address(pool), amountOut[i]);
             pool.deposit(repayTokensOut[i], amountOut[i]);
         }
-    }
 
-    // Liquidate an undercollateralized account
-    function _liquidateUndercollateralized(
-        address account,
-        IFlashSwap flashSwap_,
-        bytes memory data_
-    ) internal {
-        IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory collateralAmounts = _collateralAmounts(account_);
-
-        IERC20[] memory borrowTokens = _borrowedTokens(account_);
-        uint256[] memory borrowRepayAmounts = new uint256[](borrowTokens.length);
-
-        uint256 collateralTotalPrice = _collateralPrice(collateral_, account_);
-        (uint256 liqFeeNumerator, uint256 liqFeeDenominator) = liquidationFeePercent();
-        uint256 allocatedRepayPrice = collateralTotalPrice.div(borrowTokens.length);
-
-        for (uint256 i = 0; i < borrowTokens.length; i++)
-            borrowRepayAmounts[i] = liqFeeDenominator.sub(liqFeeNumerator).mul(oracle.amount(borrowTokens[i], allocatedRepayPrice)).div(liqFeeDenominator);
-
-        uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, borrowTokens, borrowRepayAmounts, flashSwap_, data_);
-        for (uint256 i = 0; i < amountOut.length; i++) {
-            borrowTokens[i].safeApprove(address(pool), amountOut[i]);
-            pool.deposit(borrowTokens[i], amountOut[i]);
-        }
+        // **** The new plan is going to be to loop through the remaining borrowed, get the percentage of each asset that was lost relative to the others, and allocate the collateral accordingly to those borrowed losses
     }
 
     // Liquidate an undercollateralized account
