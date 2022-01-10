@@ -125,6 +125,8 @@ abstract contract MarginLongRepay is Margin {
         }
     }
 
+    // **** Add the option to pay off small amounts at a time instead of a full account reset, and if the new price becomes 0 then we remove (how would this tie in with the initial borrow price ?)
+
     // Repay the accounts borrowed amounts
     function repay(IFlashSwap flashSwap_, bytes memory data_) external {
         require(isBorrowing(_msgSender()), "Cannot repay an account that has not borrowed");
