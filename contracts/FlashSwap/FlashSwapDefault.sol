@@ -138,6 +138,8 @@ contract FlashSwapDefault is IFlashSwap, Ownable {
     ) external override returns (uint256[] memory) {
         uint256[] memory amountsOut = _flashSwap(tokenIn_, amountIn_, tokenOut_, minAmountOut_);
 
+        // **** I want to redo flash swap so that it instead can take in assets with 0 value and just ignore them if that is the case + make swap more efficient
+
         address rewarded = _bytesToAddress(data_); // Payout excess collateral to specified account from the data
         for (uint256 i = 0; i < tokenIn_.length; i++) {
             IERC20 token = tokenIn_[i];

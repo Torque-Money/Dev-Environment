@@ -11,10 +11,6 @@ abstract contract MarginLongRepay is Margin {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    mapping(uint256 => IERC20[]) private _tempRepayTokens;
-    mapping(uint256 => uint256[]) private _tempRepayAmounts;
-    uint256 private _tempRepayIndex;
-
     // Payout the margin profits to the account
     function _repayPayout(address account_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
@@ -36,6 +32,31 @@ abstract contract MarginLongRepay is Margin {
                 _setCollateral(token, collateral(token, account_).add(payoutAmount), account_);
             }
         }
+    }
+
+    // Get the amounts of collateral that need to be used to repay
+    function _repayLossesAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
+        (, , uint256 totalRepayPrice) = _repayLossesAmountsOut(account_);
+
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
+
+        for (uint256 i = 0; i < collateralTokens.length; i++) {
+            IERC20 token = collateralTokens[i];
+            uint256 tokenAmount = collateral(token, account_);
+
+            uint256 tokenPrice = _collateralPrice(token, account_);
+            if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
+
+            collateralAmounts[i] = tokenAmount;
+
+            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
+
+            if (tokenPrice >= totalRepayPrice) break;
+            else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
+        }
+
+        return (collateralTokens, collateralAmounts);
     }
 
     // Get the repay price when paying out
@@ -74,39 +95,13 @@ abstract contract MarginLongRepay is Margin {
 
             totalRepayPrice = totalRepayPrice.add(repayPrice);
 
+            pool.unclaim(token, borrowed(token, account_));
+
             _setBorrowed(token, 0, account_);
             _setInitialBorrowPrice(token, 0, account_);
         }
 
         return (repayTokens, repayAmounts, totalRepayPrice);
-    }
-
-    // Get the amounts of collateral that need to be used to repay
-    function _repayLossesAmountsIn(address account_) internal returns (IERC20[] memory, uint256[] memory) {
-        (, , uint256 totalRepayPrice) = _repayLossesAmountsOut(account_);
-
-        IERC20[] storage repayTokens = _tempRepayTokens[_tempRepayIndex];
-        uint256[] storage repayAmounts = _tempRepayAmounts[_tempRepayIndex];
-        _tempRepayIndex = _tempRepayIndex.add(1); // **** This is a bad model, I need to come up with some way of fixing this up
-
-        IERC20[] memory collateralTokens = _collateralTokens(account_);
-        for (uint256 i = 0; i < collateralTokens.length; i++) {
-            IERC20 token = collateralTokens[i];
-            uint256 tokenAmount = collateral(token, account_);
-
-            uint256 tokenPrice = _collateralPrice(token, account_);
-            if (tokenPrice > totalRepayPrice) tokenAmount = totalRepayPrice.mul(tokenAmount).div(tokenPrice);
-
-            repayTokens.push(token);
-            repayAmounts.push(tokenAmount);
-
-            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
-
-            if (tokenPrice >= totalRepayPrice) break;
-            else totalRepayPrice = totalRepayPrice.sub(tokenPrice);
-        }
-
-        return (repayTokens, repayAmounts);
     }
 
     // Repay the losses incurred by the account
@@ -124,8 +119,6 @@ abstract contract MarginLongRepay is Margin {
             pool.deposit(repayTokensOut[i], amountOut[i]);
         }
     }
-
-    // **** Add the option to pay off small amounts at a time instead of a full account reset, and if the new price becomes 0 then we remove (how would this tie in with the initial borrow price ?)
 
     // Repay the accounts borrowed amounts
     function repay(IFlashSwap flashSwap_, bytes memory data_) external {
