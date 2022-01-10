@@ -22,7 +22,6 @@ abstract contract MarginLongBorrow is Margin {
 
         uint256 _initialBorrowPrice = oracle.price(borrowed_, amount_);
         _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
-        require(_initialBorrowPrice(borrowed_, _msgSender()) <= marginBorrowLimitPrice, "Margin borrow limit has been reached");
 
         emit Borrow(_msgSender(), borrowed_, amount_);
     }
