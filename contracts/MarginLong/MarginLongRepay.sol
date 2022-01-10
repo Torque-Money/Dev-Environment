@@ -4,12 +4,31 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../lib/FractionMath.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "../Margin/Margin.sol";
 
 abstract contract MarginLongRepay is Margin {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+
+    FractionMath.Fraction private _repayTax;
+
+    constructor(uint256 repayTaxNumerator_, uint256 repayTaxDenominator_) {
+        repayTax.numerator = repayTaxNumerator_;
+        repayTax.denominator = repayTaxDenominator_;
+    }
+
+    // Set the repay tax
+    function setRepayTax(uint256 repayTaxNumerator_, uint256 repayTaxDenominator_) external onlyOwner {
+        repayTax.numerator = repayTaxNumerator_;
+        repayTax.denominator = repayTaxDenominator_;
+    }
+
+    // Get the repay tax
+    function repayTax() public view returns (uint256, uint256) {
+        return (repayTax.numerator, repayTax.denominator);
+    }
 
     // Payout the margin profits to the account
     function _repayPayout(address account_) internal {
@@ -25,7 +44,8 @@ abstract contract MarginLongRepay is Margin {
                 uint256 payoutAmount = oracle.amount(token, currentPrice.sub(initialPrice).sub(interest));
 
                 pool.unclaim(token, borrowed(token, account_));
-                pool.withdraw(token, payoutAmount);
+                (uint256 repayTaxNumerator, uint256 repayTaxDenominator) = repayTax();
+                pool.withdraw(token, _repayTaxDenominator.sub(_repayTaxNumerator).mul(payoutAmount).div(_repayTaxDenominator));
 
                 _setBorrowed(token, 0, account_);
                 _setInitialBorrowPrice(token, 0, account_);
