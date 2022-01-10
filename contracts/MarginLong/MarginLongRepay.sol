@@ -50,7 +50,6 @@ abstract contract MarginLongRepay is Margin {
     // Get the amounts of each borrowed asset that needs to be repaid
     function _repayLossesAmountsOut(address account_)
         internal
-        view
         returns (
             IERC20[] memory,
             uint256[] memory,
@@ -74,6 +73,9 @@ abstract contract MarginLongRepay is Margin {
             repayAmounts[i] = repayAmount;
 
             totalRepayPrice = totalRepayPrice.add(repayPrice);
+
+            _setBorrowed(token, 0, account_);
+            _setInitialBorrowPrice(token, 0, account_);
         }
 
         return (repayTokens, repayAmounts, totalRepayPrice);
@@ -85,7 +87,7 @@ abstract contract MarginLongRepay is Margin {
 
         IERC20[] storage repayTokens = _tempRepayTokens[_tempRepayIndex];
         uint256[] storage repayAmounts = _tempRepayAmounts[_tempRepayIndex];
-        _tempRepayIndex = _tempRepayIndex.add(1);
+        _tempRepayIndex = _tempRepayIndex.add(1); // **** This is a bad model, I need to come up with some way of fixing this up
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
         for (uint256 i = 0; i < collateralTokens.length; i++) {
@@ -98,10 +100,7 @@ abstract contract MarginLongRepay is Margin {
             repayTokens.push(token);
             repayAmounts.push(tokenAmount);
 
-            // **** None of this is right ?
-            _setBorrowed(token, 0, account_);
-            _setInitialBorrowPrice(token, 0, account_);
-            _setCollateral(token, 0, account_);
+            _setCollateral(token, collateral(token, account_).sub(tokenAmount), account_);
 
             if (tokenPrice >= totalRepayPrice) break;
             else totalRepayPrice = totalRepayPrice.sub(tokenPrice);

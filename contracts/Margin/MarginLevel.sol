@@ -43,8 +43,8 @@ abstract contract MarginLevel is MarginAccount {
         return (borrowedPrice(account_).add(collateralPrice(account_)), _initialBorrowPrice.add(interest));
     }
 
-    // Check whether an account is undercollateralized
-    function underCollateralized(address account_) public view returns (bool) {
+    // Check whether an account is liquidatable
+    function liquidatable(address account_) public view returns (bool) {
         (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(account_);
         uint256 lhs = _minMarginLevel.numerator.mul(marginDenominator);
         uint256 rhs = marginNumerator.mul(_minMarginLevel.denominator);

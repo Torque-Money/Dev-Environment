@@ -35,7 +35,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel {
         require(amount_ <= currentCollateral, "Cannot remove more than available collateral");
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
-        require(!underCollateralized(_msgSender()), "Removing collateral results in an undercollateralized account");
+        require(!liquidatable(_msgSender()), "Removing collateral results in a liquidatable account");
         require(
             !isBorrowing(_msgSender()) || collateralPrice(_msgSender()) >= minCollateralPrice,
             "Cannot withdraw if new collateral price is less than minimum borrow price whilst borrowing"

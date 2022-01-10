@@ -24,10 +24,32 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
+    // Check if an account is undercollateralized
+    function undercollateralized(address account_) public view returns (bool) {
+        (uint256 marginNumerator, uint256 marginDenominator) = marginLevel(account_);
+        return marginNumerator <= marginDenominator;
+    }
+
     // Calculate the price required to be returned during the liquidation
     function liquidateRepayPrice(address account_) external view returns (uint256) {
+        // **** FIX THIS BROKEN FUNCTION
+        // **** **** I NEED TO MAKE SURE I UNCLAIM EVERYWHERE DURING REPAY AND LIQUIDATE TOO
         (, , uint256 repayPrice) = _repayLossesAmountsOut(account_);
         return repayPrice;
+    }
+
+    // Update the users accounts as a result of the liquidations
+    function _resetAccount(address account_) internal {
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], 0, account_);
+
+        IERC20[] memory borrowTokens = _borrowedTokens(account_);
+        for (uint256 i = 0; i < borrowTokens.length; i++) {
+            _setBorrowed(borrowTokens[i], 0, account_);
+            _setInitialBorrowPrice(borrowTokens[i], 0, account_);
+        }
+
+        _removeAccount(_msgSender());
     }
 
     // Liquidate all accounts that have not been repaid by the repay greater
@@ -37,8 +59,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         bytes memory data_
     ) internal {
         IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
-        for (uint256 i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
+        uint256[] memory collateralAmounts = _collateralAmounts(account_);
 
         (IERC20[] memory repayTokensOut, uint256[] memory repayAmountsOut, ) = _repayLossesAmountsOut(account_);
 
@@ -56,25 +77,23 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         bytes memory data_
     ) internal {
         IERC20[] memory collateralTokens = _collateralTokens(account_);
+        uint256[] memory collateralAmounts = _collateralAmounts(account_);
+
         IERC20[] memory borrowTokens = _borrowedTokens(account_);
         uint256[] memory borrowRepayAmounts = new uint256[](borrowTokens.length);
 
         uint256 collateralTotalPrice = _collateralPrice(collateral_, account_);
         (uint256 liqFeeNumerator, uint256 liqFeeDenominator) = liquidationFeePercent();
-        uint256 allocatedRepayPrice = liqFeeDenominator.sub(liqFeeNumerator).mul(collateralTotalPrice).div(borrowTokens.length).div(liqFeeDenominator);
+        uint256 allocatedRepayPrice = collateralTotalPrice.div(borrowTokens.length);
 
-        for (uint256 i = 0; i < borrowTokens.length; i++) {
-            borrowRepayAmounts[i] = oracle.amount(borrowTokens[i], allocatedRepayPrice);
-        }
+        for (uint256 i = 0; i < borrowTokens.length; i++)
+            borrowRepayAmounts[i] = liqFeeDenominator.sub(liqFeeNumerator).mul(oracle.amount(borrowTokens[i], allocatedRepayPrice)).div(liqFeeDenominator);
 
-        uint256[] memory collateralAmounts = new uint256[](collateralTokens.length);
-        for (uint256 i = 0; i < collateralTokens.length; i++) collateralAmounts[i] = collateral(collateralTokens[i], account_);
         uint256[] memory amountOut = _flashSwap(collateralTokens, collateralAmounts, borrowTokens, borrowRepayAmounts, flashSwap_, data_);
-
-        // **** I will have to manually reset the amounts to zero as well
-        // **** SPEAKING OF WHICH I AM PRETTY SURE I AM NOT RESETTING THE BORROWED AMOUNTS FOR THE ABOVE ACCOUNTS ****
-
-        // **** Add a collateral amounts function and replace these problems with it
+        for (uint256 i = 0; i < amountOut.length; i++) {
+            borrowTokens[i].safeApprove(address(pool), amountOut[i]);
+            pool.deposit(borrowTokens[i], amountOut[i]);
+        }
     }
 
     // Liquidate an undercollateralized account
@@ -83,12 +102,13 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) external {
-        require(underCollateralized(account_), "Only undercollateralized accounts may be liquidated");
+        require(liquidatable(account_), "Account is not liquidatable");
 
         _repayPayout(account_);
+
         _liquidate(account_, flashSwap_, data_);
 
-        _removeAccount(_msgSender());
+        _resetAccount(account_);
 
         emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
