@@ -148,9 +148,13 @@ abstract contract MarginLongRepayOLD is Margin {
 
     function _repayAccountPrice(address account_) internal returns (uint256) {
         uint256[] memory repayPayoutAmounts = _repayPayoutAmounts(account_);
-        (repayPayoutAmounts, uint256[] memory borrowDebt, uint256[] memory collateralAmounts, uint256[] memory collateralDebt) = _repayLossesAmounts(
+        (uint256[] memory newRepayPayoutAmounts, uint256[] memory borrowDebt, uint256[] memory collateralAmounts, uint256[] memory collateralDebt) = _repayLossesAmounts(
             repayPayoutAmounts,
             account_
         );
+
+        // **** Now we need to go through and calculate the amounts out of each asset used in the swap (from the combined debts of the borrow debts and collateral debts)
+
+        // **** I am failing to see how the flash swap comes into the price and what actually affects our new price from this and what we do with it ?
     }
 }
