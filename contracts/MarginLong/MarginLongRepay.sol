@@ -87,6 +87,8 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
             pool.deposit(borrowedTokens[i], amountsOut[i]);
         }
 
+        _removeAccount(_msgSender());
+
         emit Repay(_msgSender(), flashSwap_, data_);
 
         return collateralPrice(_msgSender());
