@@ -54,7 +54,7 @@ abstract contract MarginLongRepayOLD is Margin {
     }
 
     // Calculate the repay amounts to be paid out from the collateral
-    function _repayLossesPrices(uint256[] memory payoutAmounts_, address account_) internal view returns (uint256[] memory) {
+    function _repayLossesPrices(uint256[] memory payoutPrices_, address account_) internal view returns (uint256[] memory) {
         IERC20[] memory borrowTokens = _borrowTokens(account_);
         uint256[] memory borrowDebt = new uint256[](borrowTokens.length);
 
@@ -88,7 +88,9 @@ abstract contract MarginLongRepayOLD is Margin {
                         require(borrowIndex < borrowTokens.length, "Not enough collateral to repay");
 
                         if (payoutAmounts_[borrowIndex] <= 0) borrowIndex = borrowIndex.add(1);
-                        else {}
+                        else {
+                            uint256 _collateralPrice = oracle.price(borrowedTokens[i], payoutAmounts_[i]); // **** We want the amounts but we have been given the prices - it should be amounts shouldnt it
+                        }
                     }
                 }
             }
