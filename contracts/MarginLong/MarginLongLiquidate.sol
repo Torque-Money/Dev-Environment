@@ -107,7 +107,7 @@ abstract contract MarginLongLiquidate is MarginLongRepay {
         emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
 
-    // **** I need a soft liquidation in the case of the max margin level being reached
+    // **** I need a soft liquidation in the case of the max margin level being reached + the minimum collateral level being reached
 
     event Liquidated(address indexed account, address liquidator, IFlashSwap flashSwap, bytes data);
 }
