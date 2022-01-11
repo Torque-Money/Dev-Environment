@@ -156,5 +156,6 @@ abstract contract MarginLongRepayOLD is Margin {
         // **** Now we need to go through and calculate the amounts out of each asset used in the swap (from the combined debts of the borrow debts and collateral debts)
 
         // **** I am failing to see how the flash swap comes into the price and what actually affects our new price from this and what we do with it ?
+        // **** - We are looking to repay the amounts that do not have a debt value e.g. the ones that did not get repaid out (how do I find this one though ?)
     }
 }
