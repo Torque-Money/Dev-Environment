@@ -47,13 +47,18 @@ abstract contract MarginLongRepayOLD is Margin {
         return oracle.amount(token_, currentPrice.sub(initialPrice).sub(interest));
     }
 
-    // Get the repay price when there is a loss
-    function _repayLossesPrice(IERC20 token_, address account_) internal view returns (uint256) {
+    // Get the repay amount when there is a loss
+    function _repayLossesAmount(IERC20 token_, address account_) internal view returns (uint256) {
         uint256 currentPrice = _borrowedPrice(token_, account_);
         uint256 initialPrice = initialBorrowPrice(token_, account_);
         uint256 interest = pool.interest(token_, initialPrice, initialBorrowBlock(token_, account_));
 
-        return oracle.amount(token_, initialPrice.add(interest).sub(currentPrice));
+        return initialPrice.add(interest).sub(currentPrice);
+    }
+
+    // Get the repay price when there is a loss
+    function _repayLossesPrice(IERC20 token_, address account_) internal view returns (uint256) {
+        return oracle.amount(token_, _repayLossesAmount(token_, account_));
     }
 
     // Get the borrowed assets that were above the price and how much they were repaid
