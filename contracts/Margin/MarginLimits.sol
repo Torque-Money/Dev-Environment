@@ -1,15 +1,11 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "./MarginLevel.sol";
-import "./MarginCore.sol";
+import "./MarginAccount.sol";
 
-abstract contract MarginLimits is MarginCore {
+abstract contract MarginLimits is MarginAccount {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
 
     uint256 public minCollateralPrice;
     uint256 public maxLeverage;
@@ -28,4 +24,15 @@ abstract contract MarginLimits is MarginCore {
     function setMaxLeverage(uint256 maxLeverage_) external onlyOwner {
         maxLeverage = maxLeverage_;
     }
+
+    // Check if an account is within the max leverage limit
+    function maxLeverageReached(address account_) public view returns (bool) {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        uint256 collateralPrice = collateralPrice(account_);
+        uint256 totalInitialBorrowPrice = 0;
+        for (uint256 i = 0; i < borrowedTokens.length; i++) totalInitialBorrowPrice = totalInitialBorrowPrice.add(initialBorrowPrice(borrowedTokens[i], account_));
+        return (collateralPrice.mul(maxLeverage) >= totalInitialBorrowPrice);
+    }
+
+    // **** ^^^^ if the above happens, we will do a soft liquidation where we take some of the accounts collateral and reset the borrows via a repayment + collateral collecting
 }

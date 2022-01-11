@@ -23,6 +23,8 @@ abstract contract MarginLongBorrow is Margin {
         uint256 _initialBorrowPrice = oracle.price(borrowed_, amount_);
         _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
 
+        require(!maxLeverageReached(_msgSender()) && !liquidatable(_msgSender()), "Borrowing desired amount puts account at risk");
+
         emit Borrow(_msgSender(), borrowed_, amount_);
     }
 
