@@ -72,8 +72,23 @@ abstract contract MarginLongRepayOLD is Margin {
                 while (debt > 0) {
                     if (collateralIndex < collateralTokens.length) {
                         uint256 _collateralPrice = oracle.price(collateralTokens[i], collateralAmounts[i]);
+
+                        uint256 _collateralAmount = collateralAmounts[i];
+                        if (_collateralPrice > debt) {
+                            _collateralAmount = oracle.minAmount(collateralTokens[i], debt);
+                            collateralAmounts[i] = collateralAmounts[i].sub(_collateralAmount);
+                            collateralDebt[i] = collateralDebt[i].add(_collateralAmount);
+                            debt = 0;
+                        } else {
+                            collateralDebt[i] = collateralDebt[i].add(_collateralAmount);
+                            debt = debt.sub(_collateralPrice);
+                            collateralIndex = collateralIndex.add(1);
+                        }
                     } else {
                         require(borrowIndex < borrowTokens.length, "Not enough collateral to repay");
+
+                        if (payoutAmounts_[borrowIndex] <= 0) borrowIndex = borrowIndex.add(1);
+                        else {}
                     }
                 }
             }
