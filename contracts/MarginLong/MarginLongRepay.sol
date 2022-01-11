@@ -88,15 +88,16 @@ abstract contract MarginLongRepayOLD is Margin {
                     if (collateralIndex < collateralTokens.length) {
                         uint256 _collateralPrice = oracle.price(collateralTokens[collateralIndex], collateralAmounts[collateralIndex]);
 
-                        uint256 _collateralAmount = collateralAmounts[collateralIndex];
                         if (_collateralPrice > debt) {
-                            _collateralAmount = oracle.minAmount(collateralTokens[collateralIndex], debt);
+                            uint256 _collateralAmount = oracle.minAmount(collateralTokens[collateralIndex], debt);
 
                             collateralAmounts[collateralIndex] = collateralAmounts[collateralIndex].sub(_collateralAmount);
                             collateralDebt[collateralIndex] = collateralDebt[collateralIndex].add(_collateralAmount);
 
                             debt = 0;
                         } else {
+                            uint256 _collateralAmount = collateralAmounts[collateralIndex];
+
                             collateralAmounts[collateralIndex] = 0;
                             collateralDebt[collateralIndex] = collateralDebt[collateralIndex].add(_collateralAmount);
 
@@ -106,19 +107,21 @@ abstract contract MarginLongRepayOLD is Margin {
                     } else {
                         require(borrowIndex < borrowTokens.length, "Not enough collateral to repay");
 
-                        if (payoutAmounts_[borrowIndex] <= 0) borrowIndex = borrowIndex.add(1);
+                        if (payoutAmounts_[borrowIndex] <= 0)
+                            borrowIndex = borrowIndex.add(1); // **** Understand this interaction with the first if statement better
                         else {
                             uint256 _collateralPrice = oracle.price(borrowedTokens[borrowIndex], payoutAmounts_[borrowIndex]);
 
-                            uint256 _collateralAmount = payoutAmounts_[borrowIndex];
                             if (_collateralPrice > debt) {
-                                _collateralAmount = oracle.minAmount(borrowedTokens[borrowIndex], debt);
+                                uint256 _collateralAmount = oracle.minAmount(borrowedTokens[borrowIndex], debt);
 
                                 payoutAmounts_[borrowIndex] = payoutAmounts_[borrowIndex].sub(_collateralAmount);
                                 borrowDebt[borrowIndex] = borrowDebt[borrowIndex].add(_collateralAmount);
 
                                 debt = 0;
                             } else {
+                                uint256 _collateralAmount = payoutAmounts_[borrowIndex];
+
                                 payoutAmounts_[borrowIndex] = 0;
                                 borrowDebt[borrowIndex] = borrowDebt[borrowIndex].add(_collateralAmount);
 
