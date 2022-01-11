@@ -20,6 +20,11 @@ abstract contract MarginLimits is MarginAccount {
         minCollateralPrice = minCollateralPrice_;
     }
 
+    // Check if an account has sufficient collateral to back a loan
+    function sufficientCollateralPrice(address account_) public view returns (bool) {
+        return collateralPrice(account_) >= minCollateralPrice;
+    }
+
     // Set the maximum leverage
     function setMaxLeverage(uint256 maxLeverage_) external onlyOwner {
         maxLeverage = maxLeverage_;

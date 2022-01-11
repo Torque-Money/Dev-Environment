@@ -26,7 +26,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
         require(
-            !isBorrowing(_msgSender()) || (collateralPrice(_msgSender()) >= minCollateralPrice && !maxLeverageReached(_msgSender()) && !liquidatable(_msgSender())),
+            !isBorrowing(_msgSender()) || (sufficientCollateralPrice(_msgSender()) && !maxLeverageReached(_msgSender()) && !liquidatable(_msgSender())),
             "Withdrawing desired collateral puts account at risk"
         );
 
