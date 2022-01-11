@@ -12,7 +12,7 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    // **** Get a function to calculate the amounts as well as the discount provided to the user
+    // **** Get a function to calculate the amounts as well as the discount provided to the liquidator
 
     // **** I need a soft liquidation in the case of the max margin level being reached + the minimum collateral level being reached
 }
