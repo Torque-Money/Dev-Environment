@@ -33,6 +33,4 @@ abstract contract MarginLimits is MarginAccount {
         for (uint256 i = 0; i < borrowedTokens.length; i++) totalInitialBorrowPrice = totalInitialBorrowPrice.add(initialBorrowPrice(borrowedTokens[i], account_));
         return (collateralPrice.mul(maxLeverage) >= totalInitialBorrowPrice);
     }
-
-    // **** ^^^^ if the above happens, we will do a soft liquidation where we take some of the accounts collateral and reset the borrows via a repayment + collateral collecting
 }
