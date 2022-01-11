@@ -68,8 +68,10 @@ abstract contract MarginLongRepayOLD is Margin {
         return borrowedRepays;
     }
 
+    // **** Helper to update the accumulated debt during the repay losses amounts function (**** MAKE SURE TO CHECK IF FUNCTION ARGS ARE IMMUTABLE OR NOT)
+
     // Calculate the repay amounts to be paid out from the collateral
-    function _repayLossesPrices(uint256[] memory payoutAmounts_, address account_) internal view returns (uint256[] memory) {
+    function _repayLossesAmounts(uint256[] memory payoutAmounts_, address account_) internal view returns (uint256[] memory) {
         IERC20[] memory borrowTokens = _borrowTokens(account_);
         uint256[] memory borrowDebt = new uint256[](borrowTokens.length);
 
