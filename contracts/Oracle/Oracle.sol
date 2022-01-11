@@ -25,20 +25,38 @@ contract Oracle is Ownable {
     }
 
     // Get the price of an asset in terms of the price asset
-    function price(IERC20 asset_, uint256 amount_) external view returns (uint256) {
+    function price(IERC20 token_, uint256 amount_) external view returns (uint256) {
         address[] memory path = new address[](2);
-        path[0] = address(asset_);
+        path[0] = address(token_);
         path[1] = address(priceToken);
         uint256 amountOut = router.getAmountsOut(amount_, path)[1];
         return amountOut;
     }
 
-    // Get the amounts of an asset in exchange for the asset price
-    function amount(uint256 amount_, IERC20 asset_) external view returns (uint256) {
+    // Get the minimum price of the asset to achieve the required amount
+    function minPrice(IERC20 token_, uint256 amountOut_) external view returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(priceToken);
-        path[1] = address(asset_);
+        path[1] = address(token_);
+        uint256 priceIn = router.getAmountsIn(amountOut_, path)[0];
+        return priceIn;
+    }
+
+    // Get the amounts of an asset in exchange for the asset price
+    function amount(uint256 amount_, IERC20 token_) external view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(priceToken);
+        path[1] = address(token_);
         uint256 amountOut = router.getAmountsOut(amount_, path)[1];
         return amountOut;
+    }
+
+    // Get the minimum amount in to achieve the required price out
+    function minAmount(IERC20 token_, uint256 price_) external view returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(token_);
+        path[1] = address(priceToken);
+        uint256 amountIn = router.getAmountsIn(price_, path)[0];
+        return amountIn;
     }
 }

@@ -31,38 +31,51 @@ abstract contract MarginLongRepayOLD is Margin {
     }
 
     // Get the repay amount and whether it is a repay payout or loss
-    function _repayAmount(IERC20 token_, address account_) internal view returns (uint256, bool) {
+    function _repayPrice(IERC20 token_, address account_) internal view returns (uint256, bool) {
         uint256 currentPrice = _borrowedPrice(token_, account_);
         uint256 initialPrice = initialBorrowPrice(token_, account_);
         uint256 interest = pool.interest(token_, initialPrice, initialBorrowBlock(token_, account_));
 
-        if (currentPrice > initialPrice.add(interest)) return (oracle.amount(token_, currentPrice.sub(initialPrice).sub(interest)), true);
-        else return (oracle.amount(token_, initialPrice.add(interest).sub(currentPrice)), false);
+        if (currentPrice > initialPrice.add(interest)) return (currentPrice.sub(initialPrice).sub(interest), true);
+        else return (initialPrice.add(interest).sub(currentPrice), false);
     }
 
     // Get the borrowed assets that were above the price and how much they were repaid
-    function _repayPayoutAmounts(address account_)
-        internal
-        view
-        returns (
-            IERC20[] memory,
-            uint256[] memory,
-            IERC20[] memory,
-            uint256[] memory
-        )
-    {
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
-        uint256[] memory borrowedAmounts = _borrowedAmounts(account_);
-
-        // **** IN reality this needs to be a set or something that we can iterate through and add our value to
-        IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory collateralAmounts = _collateralAmounts(account_);
+    function _repayPayoutPrices(address account_) internal view returns (uint256[] memory) {
+        IERC20[] memory borrowTokens = _borrowTokens(account_);
+        uint256[] memory borrowedRepays = new uint256[](borrowTokens.length);
 
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            (uint256 repayAmount, bool payout) = _repayAmount(borrowedTokens[i], account_);
+            (uint256 repayPrice, bool payout) = _repayPrice(borrowedTokens[i], account_);
+            if (payout) borrowedRepays[i] = repayPrice;
+        }
 
-            if (payout) {
-                borrowedAmounts[i] = 0;
+        return borrowedRepays;
+    }
+
+    // Calculate the repay amounts to be paid out from the collateral
+    function _repayLossesPrices(uint256[] memory payoutAmounts_, address account_) internal view returns (uint256[] memory) {
+        IERC20[] memory borrowTokens = _borrowTokens(account_);
+        uint256[] memory borrowDebt = new uint256[](borrowTokens.length);
+
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        uint256[] memory collateralAmounts = _collateralAmounts(account_);
+        uint256[] memory collateralDebt = new uint256[](collateralTokens.length);
+
+        uint256 collateralIndex = 0;
+        uint256 borrowIndex = 0;
+
+        for (uint256 i = 0; i < borrowTokens.length; i++) {
+            if (payoutAmounts_[i] <= 0) {
+                (uint256 debt, ) = _repayPrice(borrowTokens[i], account_);
+
+                while (debt > 0) {
+                    if (collateralIndex < collateralTokens.length) {
+                        uint256 _collateralPrice = oracle.price(collateralTokens[i], collateralAmounts[i]);
+                    } else {
+                        require(borrowIndex < borrowTokens.length, "Not enough collateral to repay");
+                    }
+                }
             }
         }
     }
