@@ -107,8 +107,7 @@ abstract contract MarginLongRepayOLD is Margin {
                     } else {
                         require(borrowIndex < borrowTokens.length, "Not enough collateral to repay");
 
-                        if (payoutAmounts_[borrowIndex] <= 0)
-                            borrowIndex = borrowIndex.add(1); // **** Understand this interaction with the first if statement better
+                        if (payoutAmounts_[borrowIndex] <= 0) borrowIndex = borrowIndex.add(1);
                         else {
                             uint256 _collateralPrice = oracle.price(borrowedTokens[borrowIndex], payoutAmounts_[borrowIndex]);
 
@@ -136,4 +135,5 @@ abstract contract MarginLongRepayOLD is Margin {
     }
 
     // **** Now I need to return all of the modified items to be used for the eventual updates
+    // **** Understand better how well these swaps correlate to the swaps that is a part of the default flash swap
 }
