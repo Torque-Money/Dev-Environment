@@ -2,14 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "../Margin/Margin.sol";
 
 abstract contract MarginLongRepayCore is Margin {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
 
     FractionMath.Fraction private _repayTax;
 
