@@ -68,6 +68,31 @@ abstract contract MarginLongRepayOLD is Margin {
         return borrowedRepays;
     }
 
+    // Payoff the debt for each collateral
+    function _repayDebt(
+        uint256 debt_,
+        IERC20[] memory collateralTokens_,
+        uint256[] memory collateralAmounts_,
+        uint256[] memory collateralDebt_,
+        uint256 index
+    ) internal view returns (uint256) {
+        uint256 _collateralPrice = oracle.price(collateralTokens_[index], collateralAmounts_[index]);
+
+        if (_collateralPrice > debt_) {
+            uint256 _collateralAmount = oracle.amount(collateralTokens_[index], debt_);
+
+            collateralAmounts_[index] = collateralAmounts_[index].sub(_collateralAmount);
+            collateralDebt_[index] = collateralDebt_[index].add(_collateralAmount);
+        } else {
+            uint256 _collateralAmount = collateralAmounts_[index];
+
+            collateralAmounts_[index] = 0;
+            collateralDebt_[index] = collateralDebt_[index].add(_collateralAmount);
+        }
+
+        return _collateralPrice;
+    }
+
     // Calculate the repay amounts to be paid out from the collateral
     function _repayLossesAmounts(uint256[] memory payoutAmounts_, address account_)
         internal
@@ -95,21 +120,9 @@ abstract contract MarginLongRepayOLD is Margin {
 
                 while (debt > 0) {
                     if (collateralIndex < collateralTokens.length) {
-                        uint256 _collateralPrice = oracle.price(collateralTokens[collateralIndex], collateralAmounts[collateralIndex]);
-
-                        if (_collateralPrice > debt) {
-                            uint256 _collateralAmount = oracle.amount(collateralTokens[collateralIndex], debt);
-
-                            collateralAmounts[collateralIndex] = collateralAmounts[collateralIndex].sub(_collateralAmount);
-                            collateralDebt[collateralIndex] = collateralDebt[collateralIndex].add(_collateralAmount);
-
-                            debt = 0;
-                        } else {
-                            uint256 _collateralAmount = collateralAmounts[collateralIndex];
-
-                            collateralAmounts[collateralIndex] = 0;
-                            collateralDebt[collateralIndex] = collateralDebt[collateralIndex].add(_collateralAmount);
-
+                        uint256 _collateralPrice = _repayDebt(debt, collateralTokens, collateralAmounts, collateralDebt, collateralIndex);
+                        if (_collateralPrice > debt) debt = 0;
+                        else {
                             debt = debt.sub(_collateralPrice);
                             collateralIndex = collateralIndex.add(1);
                         }
@@ -118,21 +131,9 @@ abstract contract MarginLongRepayOLD is Margin {
 
                         if (payoutAmounts_[borrowIndex] <= 0) borrowIndex = borrowIndex.add(1);
                         else {
-                            uint256 _collateralPrice = oracle.price(borrowedTokens[borrowIndex], payoutAmounts_[borrowIndex]);
-
-                            if (_collateralPrice > debt) {
-                                uint256 _collateralAmount = oracle.amount(borrowedTokens[borrowIndex], debt);
-
-                                payoutAmounts_[borrowIndex] = payoutAmounts_[borrowIndex].sub(_collateralAmount);
-                                borrowDebt[borrowIndex] = borrowDebt[borrowIndex].add(_collateralAmount);
-
-                                debt = 0;
-                            } else {
-                                uint256 _collateralAmount = payoutAmounts_[borrowIndex];
-
-                                payoutAmounts_[borrowIndex] = 0;
-                                borrowDebt[borrowIndex] = borrowDebt[borrowIndex].add(_collateralAmount);
-
+                            uint256 _collateralPrice = _repayDebt(debt, borrowedTokens, payoutAmounts_, borrowDebt, borrowIndex);
+                            if (_collateralPrice > debt) debt = 0;
+                            else {
                                 debt = debt.sub(_collateralPrice);
                                 borrowIndex = borrowIndex.add(1);
                             }
@@ -145,6 +146,11 @@ abstract contract MarginLongRepayOLD is Margin {
         return (payoutAmounts_, borrowDebt, collateralAmounts, collateralDebt);
     }
 
-    // **** Now I need to return all of the modified items to be used for the eventual updates
-    // **** Understand better how well these swaps correlate to the swaps that is a part of the default flash swap
+    function _repayAccountPrice(address account_) internal returns (uint256) {
+        uint256[] memory repayPayoutAmounts = _repayPayoutAmounts(account_);
+        (repayPayoutAmounts, uint256[] memory borrowDebt, uint256[] memory collateralAmounts, uint256[] memory collateralDebt) = _repayLossesAmounts(
+            repayPayoutAmounts,
+            account_
+        );
+    }
 }
