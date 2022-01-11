@@ -37,10 +37,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (isPA(token_[i])) {
-                _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
-                _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
-            }
+            _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
+            _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
         }
     }
 
@@ -56,10 +54,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (isPA(token_[i])) {
-                _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
-                _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
-            }
+            _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
+            _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
         }
     }
 
@@ -75,10 +71,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (isPA(token_[i])) {
-                _maxUtilization[token_[i]].numerator = percentNumerator_[i];
-                _maxUtilization[token_[i]].denominator = percentDenominator_[i];
-            }
+            _maxUtilization[token_[i]].numerator = percentNumerator_[i];
+            _maxUtilization[token_[i]].denominator = percentDenominator_[i];
         }
     }
 

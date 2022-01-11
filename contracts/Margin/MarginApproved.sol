@@ -21,20 +21,14 @@ abstract contract MarginApproved is MarginCore {
     // Approve a token for collateral
     function setApprovedCollateral(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (isApprovedCollateral(token_[i]) != approved_[i]) {
-                _approvedCollateral[token_[i]] = approved_[i];
-                emit SetApprovedCollateral(token_[i], approved_[i]);
-            }
+            _approvedCollateral[token_[i]] = approved_[i];
         }
     }
 
     // Approve a token to be used for borrowing
     function setApprovedBorrow(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
         for (uint256 i = 0; i < token_.length; i++) {
-            if (isApprovedBorrow(token_[i]) != approved_[i]) {
-                _approvedBorrow[token_[i]] = approved_[i];
-                emit SetApprovedBorrow(token_[i], approved_[i]);
-            }
+            _approvedBorrow[token_[i]] = approved_[i];
         }
     }
 
@@ -47,7 +41,4 @@ abstract contract MarginApproved is MarginCore {
     function isApprovedBorrow(IERC20 token_) public view returns (bool) {
         return _approvedBorrow[token_];
     }
-
-    event SetApprovedCollateral(IERC20 token, bool approved);
-    event SetApprovedBorrow(IERC20 token, bool approved);
 }

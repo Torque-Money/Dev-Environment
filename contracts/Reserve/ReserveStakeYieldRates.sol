@@ -20,7 +20,6 @@ abstract contract ReserveStakeYieldRates is ReserveCore {
         for (uint256 i = 0; i < token_.length; i++) {
             _rates[token_[i]].numerator = rateNumerator_[i];
             _rates[token_[i]].denominator = rateDenominator_[i];
-            emit SetRate(token_[i], rateNumerator_[i], rateDenominator_[i]);
         }
     }
 
@@ -39,6 +38,4 @@ abstract contract ReserveStakeYieldRates is ReserveCore {
         FractionMath.Fraction memory rate = _rates[token_];
         return block.number.sub(initialStakeBlock_).mul(staked_).mul(rate.numerator).div(rate.denominator);
     }
-
-    event SetRate(IERC20 token, uint256 rateNumerator, uint256 rateDenominator);
 }

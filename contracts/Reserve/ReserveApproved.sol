@@ -20,10 +20,8 @@ abstract contract ReserveApproved is ReserveCore {
         for (uint256 i = 0; i < token_.length; i++) {
             if (approved_[i] && !isApproved(token_[i])) {
                 _approvedTokens.insert(token_[i]);
-                emit SetApproved(token_[i], approved_[i]);
             } else if (!approved_[i] && isApproved(token_[i])) {
                 _approvedTokens.remove(token_[i]);
-                emit SetApproved(token_[i], approved_[i]);
             }
         }
     }
@@ -37,6 +35,4 @@ abstract contract ReserveApproved is ReserveCore {
     function _approved() internal view returns (IERC20[] memory) {
         return _approvedTokens.iterable();
     }
-
-    event SetApproved(IERC20 token, bool approved);
 }
