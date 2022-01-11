@@ -59,12 +59,12 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
         // Done seperately to the above because it needs to consider the new collateral
         (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
-        for (uint256 i = 0; i < borrowedTokens.length; i++)
-            _setCollateral(
-                borrowedTokens[i],
-                collateral(borrowedTokens[i], _msgSender()).add(taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator)),
-                _msgSender()
-            );
+        for (uint256 i = 0; i < borrowedTokens.length; i++) {
+            uint256 addedCollateralAmount = taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator);
+
+            _setCollateral(borrowedTokens[i], collateral(borrowedTokens[i], _msgSender()).add(addedCollateralAmount), _msgSender());
+            pool.withdraw(borrowedTokens[i], addedCollateralAmount);
+        }
 
         uint256 swapInLength = collateralTokens.length + borrowedTokens.length;
         IERC20[] memory swapTokensIn = new IERC20[](swapInLength);
@@ -93,6 +93,4 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
         return collateralPrice(_msgSender());
     }
-
-    event Repay(address indexed account, IFlashSwap flashSwap, bytes data);
 }

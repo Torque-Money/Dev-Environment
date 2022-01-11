@@ -159,4 +159,6 @@ abstract contract MarginLongRepayCore is Margin {
 
         return (payoutAmounts_, borrowDebt, collateralAmounts, collateralDebt);
     }
+
+    event Repay(address indexed account, IFlashSwap flashSwap, bytes data);
 }
