@@ -21,8 +21,10 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
         uint256 totalAccountPrice = 0;
 
+        (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
+
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            uint256 price = oracle.price(borrowedTokens[i], newRepayPayoutAmounts[i]);
+            uint256 price = oracle.price(borrowedTokens[i], taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator));
             totalAccountPrice = totalAccountPrice.add(price);
         }
 
@@ -56,8 +58,13 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], collateralAmounts[i], _msgSender());
 
         // Done seperately to the above because it needs to consider the new collateral
+        (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
         for (uint256 i = 0; i < borrowedTokens.length; i++)
-            _setCollateral(borrowedTokens[i], collateral(borrowedTokens[i], _msgSender()).add(newRepayPayoutAmounts[i]), _msgSender());
+            _setCollateral(
+                borrowedTokens[i],
+                collateral(borrowedTokens[i], _msgSender()).add(taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator)),
+                _msgSender()
+            );
 
         uint256 swapInLength = collateralTokens.length + borrowedTokens.length;
         IERC20[] memory swapTokensIn = new IERC20[](swapInLength);
