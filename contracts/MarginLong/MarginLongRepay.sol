@@ -13,6 +13,10 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
         _removeAccount(_msgSender());
 
+        // **** At some point here we need to add the repay tax in for the extra amounts accumulated ? (might be better to include in the margin level - look further into it)
+
         emit Repay(_msgSender(), flashSwap_, data_);
     }
+
+    // **** I also want my reset account here too
 }
