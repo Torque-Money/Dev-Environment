@@ -10,6 +10,7 @@ import "../Margin/Margin.sol";
 
 abstract contract MarginLongRepayCore is Margin {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     FractionMath.Fraction private _repayTax;
 
@@ -59,7 +60,9 @@ abstract contract MarginLongRepayCore is Margin {
     // Repay a payout amount
     function _repayPayout(IERC20 token_, address account_) internal {
         uint256 amountBorrowed = borrowed(token_, account_);
-        uint256 payoutAmount = _repayPayoutAmount(token_, account_); // **** I need to add the payout tax to this before I pay it out - if I add the tax here it wont work because the collateral might not cover the position - apply tax after?
+        // **** I need to add the payout tax to this before I pay it out - if I add the tax here it wont work because the collateral might not cover the position - apply tax after?
+        // **** Maybe it would be better to tax the account after the repay for any profits it incurred OR should we build this tax into the margin level or something ?
+        uint256 payoutAmount = _repayPayoutAmount(token_, account_);
 
         _setInitialBorrowPrice(token_, 0, account_);
         _setBorrowed(token_, 0, account_);
@@ -101,7 +104,7 @@ abstract contract MarginLongRepayCore is Margin {
                     collateralIndex = collateralIndex.add(1);
                 } else {
                     uint256 newAmount = oracle.amountMax(collateralTokens[collateralIndex], price);
-                    if (newAmount > amount) amount = newAmount; // **** Be careful with this
+                    if (newAmount > amount) amount = newAmount;
 
                     collateralRepayAmounts[collateralIndex] = newAmount;
                     _setCollateral(collateralTokens[collateralIndex], newAmount, account_);
