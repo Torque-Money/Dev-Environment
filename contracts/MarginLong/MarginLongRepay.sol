@@ -60,7 +60,7 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         // Done seperately to the above because it needs to consider the new collateral
         (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            uint256 addedCollateralAmount = taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator);
+            uint256 addedCollateralAmount = taxDenominator.sub(taxNumerator).mul(newRepayPayoutAmounts[i]).div(taxDenominator); // **** Pretty sure there is a problem with this
 
             _setCollateral(borrowedTokens[i], collateral(borrowedTokens[i], _msgSender()).add(addedCollateralAmount), _msgSender());
             pool.withdraw(borrowedTokens[i], addedCollateralAmount);

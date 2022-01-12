@@ -27,20 +27,26 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
         return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 
-    // **** Steps of liquidating:
-    // **** - Calculate the amounts of profit that the account has earned (will eventually be liquidated)
-    // **** - Calculate the prices of the assets lost and how much percentage of the collateral should be put into each asset to compensate the loss
-    // **** - Have the liquidator make the swap and allow them to keep a percentage of the collateral
-
     // Calculate the amounts of each borrowed asset to convert to
-    function _repayConversions(uint256[] memory payoutAmounts_, address account_) internal view {
-        // **** First I need to repay off the gains, get the amounts out, in addition to my collateral to get my total repay price
+    function _repayConversions(uint256[] memory payoutAmounts_, address account_) internal view returns (uint256[] memory) {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+
+        uint256 totalCollateralPrice = collateralPrice(account_);
+        for (uint256 i = 0; i < payoutAmounts_.length; i++) totalCollateralPrice = totalCollateralPrice.add(oracle.price(borrowedTokens[i], payoutAmounts_[i]));
 
         uint256[] memory repayPrices = _repayLossesPrices(account_);
         uint256 totalRepayLoss = 0;
-        for (uint256 i = 0; i < repayPrices.length; i++) {
-            totalRepayLoss = totalRepayLoss.add(repayPrices[i]);
-        }
+        for (uint256 i = 0; i < repayPrices.length; i++) totalRepayLoss = totalRepayLoss.add(repayPrices[i]);
+
+        (uint256 liqFeeNumerator, uint256 liqFeeDenominator) = liquidationFeePercent();
+        uint256[] memory assetRepayAmounts = new uint256[](borrowedTokens.length);
+        for (uint256 i = 0; i < borrowedTokens.length; i++)
+            assetRepayAmounts[i] = oracle.amount(
+                borrowedTokens[i],
+                liqFeeDenominator.sub(liqFeeNumerator).mul(repayPrices[i]).div(totalRepayLoss).div(liqFeeDenominator)
+            );
+
+        return assetRepayAmounts;
     }
 
     event Liquidated(address indexed account, address liquidator, IFlashSwap flashSwap, bytes data);
