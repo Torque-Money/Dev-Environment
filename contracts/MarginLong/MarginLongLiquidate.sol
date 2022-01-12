@@ -68,5 +68,8 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
         address account_,
         IFlashSwap flashSwap_,
         bytes memory data_
-    ) external {}
+    ) external {
+        // **** Our conditions for this is going to repay off an account that does not meet the required debt and leverage requirements
+        // **** To penalize them we will repay their account WITHOUT paying off their accumulated assets and then we will cancel their leverage position (we will also tax their collateral and pay out to the user who did this)
+    }
 }
