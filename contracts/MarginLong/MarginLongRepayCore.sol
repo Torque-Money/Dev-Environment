@@ -62,6 +62,9 @@ abstract contract MarginLongRepayCore is Margin {
         uint256 amountBorrowed = borrowed(token_, account_);
         // **** I need to add the payout tax to this before I pay it out - if I add the tax here it wont work because the collateral might not cover the position - apply tax after?
         // **** Maybe it would be better to tax the account after the repay for any profits it incurred OR should we build this tax into the margin level or something ?
+
+        // **** What I could do is consider the debt as if the debt has already been applied ?
+        // **** Alternatively I could just tax the account based off of what it earned at the end ?
         uint256 payoutAmount = _repayPayoutAmount(token_, account_);
 
         _setInitialBorrowPrice(token_, 0, account_);
