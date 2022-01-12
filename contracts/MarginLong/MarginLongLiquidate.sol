@@ -11,16 +11,14 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    // **** I need a soft liquidation in the case of the max margin level being reached + the minimum collateral level being reached
-
-    // **** Check the price differences for a liquidation up here
-
     // Liquidate an undercollateralized account
     function liquidateAccount(
         address account_,
         IFlashSwap flashSwap_,
         bytes memory data_
     ) external {
+        require(liquidatable(account_), "Account is not liquidatable");
+
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         uint256[] memory payoutAmounts = _repayPayoutAmounts(account_);
 
@@ -64,4 +62,11 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
 
         emit Liquidated(account_, _msgSender(), flashSwap_, data_);
     }
+
+    // Repay an account that does not meet the collateral requirements
+    function resetAccount(
+        address account_,
+        IFlashSwap flashSwap_,
+        bytes memory data_
+    ) external {}
 }
