@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../Oracle/Oracle.sol";
+import "../Oracle/IOracle.sol";
 import "../FlashSwap/FlashSwap.sol";
 import "../FlashSwap/IFlashSwap.sol";
 import "../LPool/LPool.sol";
@@ -15,12 +15,12 @@ abstract contract MarginCore is Ownable {
     using SafeERC20 for IERC20;
 
     LPool public pool;
-    Oracle public oracle;
+    IOracle public oracle;
     FlashSwap public flashSwap;
 
     constructor(
         LPool pool_,
-        Oracle oracle_,
+        IOracle oracle_,
         FlashSwap flashSwap_
     ) {
         pool = pool_;
@@ -34,7 +34,7 @@ abstract contract MarginCore is Ownable {
     }
 
     // Set the oracle to use
-    function setOracle(Oracle oracle_) external onlyOwner {
+    function setOracle(IOracle oracle_) external onlyOwner {
         oracle = oracle_;
     }
 
