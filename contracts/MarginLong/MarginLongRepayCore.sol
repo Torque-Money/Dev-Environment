@@ -82,6 +82,18 @@ abstract contract MarginLongRepayCore is Margin {
         return borrowedRepays;
     }
 
+    // Get the prices of the assets required to repay a loss
+    function _repayLossesPrices(address account_) internal view returns (uint256[] memory) {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        uint256[] memory borrowedRepays = new uint256[](borrowedTokens.length);
+
+        for (uint256 i = 0; i < borrowedTokens.length; i++) {
+            if (!_repayIsPayout(borrowedTokens[i], account_)) borrowedRepays[i] = _repayLossesPrice(borrowedTokens[i], account_);
+        }
+
+        return borrowedRepays;
+    }
+
     // Payoff the debt using given collateral
     function _repayDebt(
         uint256 debt_,

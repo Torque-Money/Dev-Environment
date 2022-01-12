@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "./MarginLongBorrow.sol";
+import "./MarginLongRepay.sol";
 import "./MarginLongLiquidate.sol";
 
-contract MarginLong is MarginLongBorrow, MarginLongLiquidate {
+contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
     constructor(
         LPool pool_,
         Oracle oracle_,
@@ -22,7 +23,7 @@ contract MarginLong is MarginLongBorrow, MarginLongLiquidate {
         MarginCore(pool_, oracle_, flashSwap_, swapToleranceNumerator_, swapToleranceDenominator_)
         MarginLevel(minMarginLevelNumerator_, minMarginLevelDenominator_)
         MarginCollateral(minCollateralPrice_)
-        MarginLongRepay(repayTaxNumerator_, repayTaxDenominator_)
+        MarginLongRepayCore(repayTaxNumerator_, repayTaxDenominator_)
         MarginLongLiquidate(liquidationFeePercentNumerator_, liquidationFeePercentDenominator_)
     {}
 }
