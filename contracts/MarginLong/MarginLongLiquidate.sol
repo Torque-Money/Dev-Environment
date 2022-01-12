@@ -69,7 +69,13 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
         IFlashSwap flashSwap_,
         bytes memory data_
     ) external {
-        // **** Our conditions for this is going to repay off an account that does not meet the required debt and leverage requirements
-        // **** To penalize them we will repay their account WITHOUT paying off their accumulated assets and then we will cancel their leverage position (we will also tax their collateral and pay out to the user who did this)
+        // **** We are simply going to repay the account for the user and then payout a chunk of their collateral to the resetter
+
+        // **** The real question is how are we going to pay the user out
+        // - We could overpay the accounts collateral (this seems like a pain)
+        // - We could just pay out the liquidation fee percentage that we would of had from otherwise swap repaying regularly (so now we are losing assets because of this ?)
+        // - ^ Same goes with the liquidation - we technically lose assets (it probably isnt that big of a deal)
+
+        require(maxLeverageReached(account_) || liquidatable(account_), "Account cannot be reset");
     }
 }

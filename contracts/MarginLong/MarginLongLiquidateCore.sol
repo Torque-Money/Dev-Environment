@@ -50,4 +50,5 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
     }
 
     event Liquidated(address indexed account, address liquidator, IFlashSwap flashSwap, bytes data);
+    event AccountReset(address indexed account, address resetter, IFlashSwap flashSwap, bytes data);
 }
