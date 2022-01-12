@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
-import "../FlashSwap/IFlashSwap.sol";
 import "../Margin/Margin.sol";
 
 abstract contract MarginLongRepayCore is Margin {
@@ -156,11 +155,7 @@ abstract contract MarginLongRepayCore is Margin {
     }
 
     // Repay the in debt collateral
-    function _repayCollateral(
-        address account_,
-        IFlashSwap flashSwap_,
-        bytes memory data_
-    ) internal returns (uint256[] memory) {
+    function _repayCollateral(address account_) internal returns (uint256[] memory) {
         (
             IERC20[] memory repayCollateralTokens,
             uint256[] memory repayCollateralAmounts,
@@ -174,10 +169,9 @@ abstract contract MarginLongRepayCore is Margin {
             _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
         }
 
-        uint256 amountsOut = _flashSwap(repayCollateralTokens, repayCollateralAmounts, borrowedTokens, borrowedRepayAmounts, flashSwap_, data_);
-        _deposit(borrowedTokens, amountsOut);
+        _deposit(repayCollateralTokens, repayCollateralAmounts);
     }
 
-    event Repay(address indexed account, IFlashSwap flashSwap, bytes data);
-    event Reset(address indexed account, address resetter, IFlashSwap flashSwap, bytes data);
+    event Repay(address indexed account);
+    event Reset(address indexed account, address resetter);
 }

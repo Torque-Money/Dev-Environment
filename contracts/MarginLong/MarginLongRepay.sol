@@ -2,26 +2,21 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "../FlashSwap/IFlashSwap.sol";
 import "./MarginLongRepayCore.sol";
 
 abstract contract MarginLongRepay is MarginLongRepayCore {
     // Helper to repay account
-    function _repayAccount(
-        IFlashSwap flashSwap_,
-        bytes memory data_,
-        address account_
-    ) internal {
+    function _repayAccount(address account_) internal {
         _repayPayouts(_msgSender());
-        _repayCollateral(_msgSender(), flashSwap_, data_);
+        _repayCollateral(_msgSender());
         _removeAccount(_msgSender());
     }
 
     // Repay an account
-    function repayAccount(IFlashSwap flashSwap_, bytes memory data_) external {
+    function repayAccount() external {
         uint256 initialAccountPrice = collateralPrice(_msgSender());
 
-        _repayAccount(flashSwap_, data_, _msgSender());
+        _repayAccount(_msgSender());
 
         uint256 finalAccountPrice = collateralPrice(_msgSender());
 
@@ -32,18 +27,14 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
             _deposit(tokens, amounts);
         }
 
-        emit Repay(_msgSender(), flashSwap_, data_);
+        emit Repay(_msgSender());
     }
 
     // Reset an account
-    function resetAccount(
-        address account_,
-        IFlashSwap flashSwap_,
-        bytes memory data_
-    ) external {
+    function resetAccount(address account_) external {
         require(resettable(account_), "This account cannot be reset");
 
-        _repayAccount(flashSwap_, data_, account_);
+        _repayAccount(account_);
 
         uint256 accountPrice = collateralPrice(account_);
 
@@ -52,6 +43,6 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         (IERC20[] memory tokens, uint256[] memory amounts) = _taxAccount(tax, _msgSender());
         for (uint256 i = 0; i < tokens.length; i++) tokens[i].safeTransfer(_msgSender(), amounts[i]);
 
-        emit Reset(account_, _msgSender(), flashSwap_, data_);
+        emit Reset(account_, _msgSender());
     }
 }
