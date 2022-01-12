@@ -9,20 +9,20 @@ import "./LPoolLiquidity.sol";
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeMath for uint256;
 
-    uint256 public blocksPerCompound;
+    uint256 public interestRateBlocks;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMin;
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
-    constructor(uint256 blocksPerCompound_) {
-        blocksPerCompound = blocksPerCompound_;
+    constructor(uint256 interestRateBlocks_) {
+        interestRateBlocks = interestRateBlocks_;
     }
 
-    // Set the blocks per compound
-    function setBlocksPerCompound(uint256 blocksPerCompound_) external onlyRole(POOL_ADMIN) {
-        blocksPerCompound = blocksPerCompound_;
+    // Set the number of blocks the interest rate is calculated for
+    function setInterestRateBlocks(uint256 interestRateBlocks_) external onlyRole(POOL_ADMIN) {
+        interestRateBlocks = interestRateBlocks_;
     }
 
     // Get the max interest for minimum utilization for the given token
@@ -127,7 +127,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
         else return _interestRateMin(utilizationNumerator, utilizationDenominator, interestMin);
     }
 
-    // Get the interest on a given asset for a given number of blocks
+    // Get the accumulated interest on a given asset for a given number of blocks
     function interest(
         IERC20 token_,
         uint256 initialBorrow_,
@@ -135,7 +135,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     ) external view returns (uint256) {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
-        uint256 precision = 12; // Precision is calculated as the log of the maximum expected number of blocks borrowed for
-        return FractionMath.fracExp(initialBorrow_, blocksPerCompound.mul(interestRateDenominator).div(interestRateNumerator), blocksSinceBorrow, precision);
+
+        return initialBorrow_.mul(interestRateNumerator).mul(blocksSinceBorrow).div(interestRateDenominator).div(interestRateBlocks);
     }
 }
