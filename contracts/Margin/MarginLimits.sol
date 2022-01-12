@@ -38,4 +38,9 @@ abstract contract MarginLimits is MarginAccount {
         for (uint256 i = 0; i < borrowedTokens.length; i++) totalInitialBorrowPrice = totalInitialBorrowPrice.add(initialBorrowPrice(borrowedTokens[i], account_));
         return (collateralPrice.mul(maxLeverage) >= totalInitialBorrowPrice);
     }
+
+    // Check if an account is resettable
+    function resettable(address account_) public view returns (bool) {
+        return (maxLeverageReached(account_) || !sufficientCollateralPrice(account_));
+    }
 }

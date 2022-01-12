@@ -76,6 +76,6 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
         // - We could just pay out the liquidation fee percentage that we would of had from otherwise swap repaying regularly (so now we are losing assets because of this ?)
         // - ^ Same goes with the liquidation - we technically lose assets (it probably isnt that big of a deal)
 
-        require(maxLeverageReached(account_) || liquidatable(account_), "Account cannot be reset");
+        require(resettable(account_), "Account cannot be reset");
     }
 }
