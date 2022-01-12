@@ -82,8 +82,48 @@ abstract contract MarginLongRepayCore is Margin {
         for (uint256 i = 0; i < borrowedTokens.length; i++) if (_repayIsPayout(borrowedTokens[i], account_)) _repayPayout(borrowedTokens[i], account_);
     }
 
+    // Repay debt using an accounts collateral
+    function _repayDebt(
+        uint256 debt_,
+        address account_,
+        IERC20[] memory collateralTokens_,
+        uint256[] memory collateralRepayAmounts_,
+        uint256 collateralIndex_
+    ) internal {
+        while (debt_ > 0 && collateralIndex_ < collateralTokens_.length) {
+            uint256 amount = collateral(collateralTokens_[collateralIndex_], account_);
+            uint256 price = oracle.priceMin(collateralTokens_[collateralIndex_], amount);
+
+            if (price < debt_) {
+                collateralRepayAmounts_[collateralIndex_] = amount;
+                _setCollateral(collateralTokens_[collateralIndex_], 0, account_);
+
+                debt_ = debt_.sub(price);
+                collateralIndex_ = collateralIndex_.add(1);
+            } else {
+                uint256 newAmount = oracle.amountMax(collateralTokens_[collateralIndex_], price);
+                if (newAmount > amount) amount = newAmount;
+
+                collateralRepayAmounts_[collateralIndex_] = newAmount;
+                _setCollateral(collateralTokens_[collateralIndex_], newAmount, account_);
+
+                break;
+            }
+        }
+
+        return collateralIndex_;
+    }
+
     // Get the collateral repay amounts to pay off a loss
-    function _repayCollateralAmounts(address account_) internal returns (IERC20[] memory, uint256[] memory) {
+    function _repayCollateralAmounts(address account_)
+        internal
+        returns (
+            IERC20[] memory,
+            uint256[] memory,
+            IERC20[] memory,
+            uint256[] memory
+        )
+    {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         uint256[] memory borrowedRepayAmounts = new uint256[](borrowedTokens.length);
 
@@ -95,29 +135,29 @@ abstract contract MarginLongRepayCore is Margin {
             uint256 debt = _repayLossesPrice(borrowedTokens[i], account_);
             borrowedRepayAmounts[i] = oracle.amountMin(borrowedTokens[i], debt);
 
-            while (debt > 0 && collateralIndex < collateralTokens.length) {
-                uint256 amount = collateral(collateralTokens[collateralIndex], account_);
-                uint256 price = oracle.priceMin(collateralTokens[collateralIndex], amount);
-
-                if (price < debt) {
-                    collateralRepayAmounts[collateralIndex] = amount;
-                    _setCollateral(collateralTokens[collateralIndex], 0, account_);
-
-                    debt = debt.sub(price);
-                    collateralIndex = collateralIndex.add(1);
-                } else {
-                    uint256 newAmount = oracle.amountMax(collateralTokens[collateralIndex], price);
-                    if (newAmount > amount) amount = newAmount;
-
-                    collateralRepayAmounts[collateralIndex] = newAmount;
-                    _setCollateral(collateralTokens[collateralIndex], newAmount, account_);
-
-                    break;
-                }
-            }
+            collateralIndex = _repayDebt(debt, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
         }
 
         return (collateralTokens, collateralRepayAmounts, borrowedTokens, borrowedRepayAmounts);
+    }
+
+    // Tax an account
+    function _taxAccount(uint256 amount_, address account_) internal returns (IERC20[] memory, uint256[] memory) {
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        uint256[] memory collateralRepayAmounts;
+        uint256 collateralIndex = 0;
+
+        _repayDebt(amount_, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
+
+        return (collateralTokens, collateralRepayAmounts);
+    }
+
+    // Deposit collateral into the pool
+    function _deposit(IERC20[] memory token_, uint256[] memory amount_) internal {
+        for (uint256 i = 0; i < token_.length; i++) {
+            token_[i].safeApprove(address(pool), amount_[i]);
+            pool.deposit(token_[i], amount_[i]);
+        }
     }
 
     // Repay the in debt collateral
@@ -140,11 +180,9 @@ abstract contract MarginLongRepayCore is Margin {
         }
 
         uint256 amountsOut = _flashSwap(repayCollateralTokens, repayCollateralAmounts, borrowedTokens, borrowedRepayAmounts, flashSwap_, data_);
-        for (uint256 i = 0; i < amountsOut.length; i++) {
-            borrowedTokens[i].safeApprove(address(pool), amountsOut[i]);
-            pool.deposit(borrowedTokens[i], amountsOut[i]);
-        }
+        _deposit(borrowedTokens, amountsOut);
     }
 
     event Repay(address indexed account, IFlashSwap flashSwap, bytes data);
+    event Reset(address indexed account, address resetter, IFlashSwap flashSwap, bytes data);
 }
