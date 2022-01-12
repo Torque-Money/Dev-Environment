@@ -173,4 +173,6 @@ abstract contract MarginLongRepayCore is Margin {
     }
 
     event Repay(address indexed account, IFlashSwap flashSwap, bytes data);
+
+    // **** The new repay will be state modifying - we will simply calculate the losses and the amounts that need to be repaid, and then we will do it for the given accounts (repaid amounts IN the collateral)
 }
