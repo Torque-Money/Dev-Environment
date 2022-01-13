@@ -2,11 +2,11 @@ import hre from "hardhat";
 import config from "../../config.json";
 
 export default async function main() {
-    const flashSwapDefault = await hre.ethers.getContractAt("FlashSwapDefault", config.flashSwapDefaultAddress);
+    const converter = await hre.ethers.getContractAt("Converter", config.converterAddress);
 
-    await flashSwapDefault.transferOwnership(config.timelockAddress);
+    await converter.transferOwnership(config.timelockAddress);
 
-    console.log("Handover: Flash swap / flash swap default");
+    console.log("Handover: Converter");
 }
 
 if (require.main === module)

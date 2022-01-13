@@ -1,6 +1,6 @@
 import handoverPool from "./handoverPool";
 import handoverOracle from "./handoverOracle";
-import handoverFlashswap from "./handoverFlashswap";
+import handoverConverter from "./handoverConverter";
 import handoverMarginLong from "./handoverMarginLong";
 import handoverToken from "./handoverToken";
 import handoverGovernance from "./handoverGovernance";
@@ -8,9 +8,9 @@ import handoverReserve from "./handoverReserve";
 
 export default async function main() {
     // Handover the contracts
+    await handoverConverter();
     await handoverPool();
     await handoverOracle();
-    await handoverFlashswap();
     await handoverMarginLong();
     await handoverToken();
     await handoverGovernance();
