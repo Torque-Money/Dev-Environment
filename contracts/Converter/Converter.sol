@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../lib/UniswapV2Router02.sol";
+import "./IConverter.sol";
 
-contract Converter is Ownable {
+contract Converter is IConverter, Ownable {
     using SafeERC20 for IERC20;
 
     UniswapV2Router02 public router;
@@ -25,7 +26,7 @@ contract Converter is Ownable {
         IERC20 tokenIn_,
         uint256 amountIn_,
         IERC20 tokenOut_
-    ) external returns (uint256) {
+    ) external override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
