@@ -2,13 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../Oracle/IOracle.sol";
 import "../LPool/LPool.sol";
 
 abstract contract MarginCore is Ownable {
-    using SafeMath for uint256;
-
     LPool public pool;
     IOracle public oracle;
 

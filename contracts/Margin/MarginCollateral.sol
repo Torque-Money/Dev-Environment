@@ -16,6 +16,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
     function addCollateral(IERC20 collateral_, uint256 amount_) external onlyApprovedCollateral(collateral_) {
         collateral_.safeTransferFrom(_msgSender(), address(this), amount_);
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).add(amount_), _msgSender());
+
         emit AddCollateral(_msgSender(), collateral_, amount_);
     }
 
@@ -25,10 +26,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
         require(amount_ <= currentCollateral, "Cannot remove more than available collateral");
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
-        require(
-            !isBorrowing(_msgSender()) || (sufficientCollateralPrice(_msgSender()) && !maxLeverageReached(_msgSender()) && !liquidatable(_msgSender())),
-            "Withdrawing desired collateral puts account at risk"
-        );
+        require(!isBorrowing(_msgSender()) || (!resettable(_msgSender()) && !liquidatable(_msgSender())), "Withdrawing desired collateral puts account at risk");
 
         collateral_.safeTransfer(_msgSender(), amount_);
         emit RemoveCollateral(_msgSender(), collateral_, amount_);

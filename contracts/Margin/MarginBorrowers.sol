@@ -19,7 +19,7 @@ abstract contract MarginBorrowers {
     }
 
     // Get a full list of all borrowing accounts
-    function getAccounts() public view returns (address[] memory) {
+    function getBorrowingAccounts() public view returns (address[] memory) {
         return _accountSet.iterable();
     }
 }

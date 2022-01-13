@@ -32,10 +32,8 @@ abstract contract MarginLimits is MarginAccount {
 
     // Check if an account is within the max leverage limit
     function maxLeverageReached(address account_) public view returns (bool) {
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         uint256 collateralPrice = collateralPrice(account_);
-        uint256 totalInitialBorrowPrice = 0;
-        for (uint256 i = 0; i < borrowedTokens.length; i++) totalInitialBorrowPrice = totalInitialBorrowPrice.add(initialBorrowPrice(borrowedTokens[i], account_));
+        uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
         return (collateralPrice.mul(maxLeverage) >= totalInitialBorrowPrice);
     }
 

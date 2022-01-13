@@ -2,14 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginAccount.sol";
 
 abstract contract MarginLevel is MarginAccount {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
 
     FractionMath.Fraction private _minMarginLevel; // Percentage that the margin level may hover above before liquidation (should be above 100)
 
@@ -31,16 +29,9 @@ abstract contract MarginLevel is MarginAccount {
 
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
-        uint256 _initialBorrowPrice = 0;
-        uint256 interest = 0;
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
-        for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            uint256 _tempInitialBorrowPrice = initialBorrowPrice(borrowedTokens[i], account_);
-            _initialBorrowPrice = _initialBorrowPrice.add(_tempInitialBorrowPrice);
-            interest = interest.add(pool.interest(borrowedTokens[i], _initialBorrowPrice, initialBorrowBlock(borrowedTokens[i], account_)));
-        }
-
-        return (borrowedPrice(account_).add(collateralPrice(account_)), _initialBorrowPrice.add(interest));
+        uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
+        uint256 interest = interest(account_);
+        return (borrowedPrice(account_).add(collateralPrice(account_)), totalInitialBorrowPrice.add(interest));
     }
 
     // Check whether an account is liquidatable
