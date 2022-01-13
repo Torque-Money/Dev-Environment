@@ -24,7 +24,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     }
 
     // Get a pseudo random token to convert the deposited asset to for a uniform distribution of fees
-    function _pseudoRandomPT() internal returns (IERC20) {
+    function _pseudoRandomPT() internal view returns (IERC20) {
         IERC20[] memory tokens = _poolTokens();
         uint256 index = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(tokens.length);
         return tokens[index];
@@ -40,7 +40,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
         uint256 tax = taxPercentNumerator.mul(convertedAmount).div(taxPercentDenominator).div(_taxAccounts.length);
         uint256 totalTax = tax.mul(_taxAccounts.length);
-        for (uint256 i = 0; i < _taxAccounts.length; i++) token_.safeTransfer(_taxAccounts[i], tax);
+        for (uint256 i = 0; i < _taxAccounts.length; i++) convertedToken.safeTransfer(_taxAccounts[i], tax);
 
         convertedAmount = convertedAmount.sub(totalTax);
         emit Deposit(_msgSender(), token_, amount_, convertedToken, convertedAmount);
