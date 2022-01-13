@@ -33,9 +33,9 @@ abstract contract MarginLongRepayCore is Margin {
     function _repayIsPayout(IERC20 token_, address account_) internal view returns (bool) {
         uint256 currentPrice = _borrowedPrice(token_, account_);
         uint256 initialPrice = initialBorrowPrice(token_, account_);
-        uint256 interest = pool.interest(token_, initialPrice, initialBorrowBlock(token_, account_));
+        uint256 _interest = interest(token_, account_);
 
-        return (currentPrice > initialPrice.add(interest));
+        return (currentPrice > initialPrice.add(_interest));
     }
 
     // Get the repay amount when there is a payout
