@@ -3,17 +3,7 @@ import fs from "fs";
 export default async function main() {
     const compiledContracts = process.cwd() + "/artifacts/contracts";
     const config = process.cwd() + "/config.json";
-    const abis = [
-        "FlashSwap/FlashSwap.sol/FlashSwap.json",
-        "FlashSwap/FlashSwapDefault.sol/FlashSwapDefault.json",
-        "Governance/Governor.sol/Governance.json",
-        "Governance/Timelock.sol/Timelock.json",
-        "Governance/Token.sol/Token.json",
-        "LPool/LPool.sol/LPool.json",
-        "MarginLong/MarginLong.sol/MarginLong.json",
-        "Oracle/Oracle.sol/Oracle.json",
-        "Reserve/Reserve.sol/Reserve.json",
-    ];
+    const abis = ["LPool/LPool.sol/LPool.json", "MarginLong/MarginLong.sol/MarginLong.json", "Oracle/Oracle.sol/Oracle.json"];
     const outDir = process.cwd() + "/../Torque-Frontend/src/config";
 
     // Loop through each ABI and copy it to the new directory
