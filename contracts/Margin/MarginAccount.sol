@@ -115,6 +115,14 @@ abstract contract MarginAccount is MarginPool {
         return account.initialBorrowPrice[borrowed_];
     }
 
+    // Get the total initial borrow price for an account
+    function initialBorrowPrice(address account_) public view returns (uint256) {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        uint256 total = 0;
+        for (uint256 i = 0; i < borrowedTokens.length; i++) total = total.add(initialBorrowPrice(borrowedTokens[i], account_));
+        return total;
+    }
+
     // Set the initial borrow price for an account
     function _setInitialBorrowPrice(
         IERC20 borrowed_,
@@ -141,9 +149,6 @@ abstract contract MarginAccount is MarginPool {
         account.initialBorrowBlock[borrowed_] = block_;
     }
 
-    // **** I want to be able to calculate the total interest for a given account too AND maybe even the interest for a given token
-    // **** I also want to be able to get the total initial price of some assets
-
     // Check if an account is currently borrowing
     function isBorrowing(address account_) public view returns (bool) {
         Account storage account = _accounts[account_];
@@ -153,5 +158,18 @@ abstract contract MarginAccount is MarginPool {
     // Check if an account is currently borrowing a particular asset
     function isBorrowing(IERC20 borrowed_, address account_) public view returns (bool) {
         return borrowed(borrowed_, account_) > 0;
+    }
+
+    // Get the interest accumulated for a given asset
+    function interest(IERC20 borrowed_, address account_) public view returns (uint256) {
+        return pool.interest(borrowed_, initialBorrowPrice(borrowed_, account_), initialBorrowBlock(borrowed_, account_));
+    }
+
+    // Get the interest accumulated for the total account
+    function interest(address account_) public view returns (uint256) {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+        uint256 total = 0;
+        for (uint256 i = 0; i < borrowedTokens.length; i++) total = total.add(interest(borrowedTokens[i], account_));
+        return total;
     }
 }
