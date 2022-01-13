@@ -4,11 +4,11 @@ import config from "../../config.json";
 export default async function main() {
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
 
-    const marginApprovedCollateral = config.approved.filter((approved) => approved.marginLong).map((approved) => approved.address);
+    const marginApprovedCollateral = config.approved.filter((approved) => approved.marginLongCollateral).map((approved) => approved.address);
     const marginSupportedCollateral = Array(marginApprovedCollateral.length).fill(true);
     await marginLong.setApprovedCollateral(marginApprovedCollateral, marginSupportedCollateral);
 
-    const marginApprovedBorrow = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
+    const marginApprovedBorrow = config.approved.filter((approved) => approved.marginLongBorrow).map((approved) => approved.address);
     const marginSupportedBorrow = Array(marginApprovedBorrow.length).fill(true);
     await marginLong.setApprovedBorrow(marginApprovedBorrow, marginSupportedBorrow);
 
