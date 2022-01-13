@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../Converter/Converter.sol";
+import "../Converter/IConverter.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
@@ -12,14 +12,14 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    Converter public converter;
+    IConverter public converter;
 
-    constructor(Converter converter_) {
+    constructor(IConverter converter_) {
         converter = converter_;
     }
 
     // Set the converter to use
-    function setConverter(Converter converter_) external onlyRole(POOL_ADMIN) {
+    function setConverter(IConverter converter_) external onlyRole(POOL_ADMIN) {
         converter = converter_;
     }
 
