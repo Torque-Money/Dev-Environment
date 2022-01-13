@@ -13,6 +13,7 @@ contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
         uint256 minMarginLevelNumerator_,
         uint256 minMarginLevelDenominator_,
         uint256 minCollateralPrice_,
+        uint256 maxLeverage_,
         uint256 repayTaxNumerator_,
         uint256 repayTaxDenominator_,
         uint256 liquidationFeePercentNumerator_,
@@ -20,7 +21,7 @@ contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
     )
         MarginCore(pool_, oracle_)
         MarginLevel(minMarginLevelNumerator_, minMarginLevelDenominator_)
-        MarginCollateral(minCollateralPrice_)
+        MarginLimits(minCollateralPrice_, maxLeverage_)
         MarginLongRepayCore(repayTaxNumerator_, repayTaxDenominator_)
         MarginLongLiquidateCore(liquidationFeePercentNumerator_, liquidationFeePercentDenominator_)
     {}

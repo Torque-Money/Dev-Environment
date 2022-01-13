@@ -83,7 +83,7 @@ abstract contract MarginLongRepayCore is Margin {
         IERC20[] memory collateralTokens_,
         uint256[] memory collateralRepayAmounts_,
         uint256 collateralIndex_
-    ) internal {
+    ) internal returns (uint256) {
         while (debt_ > 0 && collateralIndex_ < collateralTokens_.length) {
             uint256 amount = collateral(collateralTokens_[collateralIndex_], account_);
             uint256 price = oracle.priceMin(collateralTokens_[collateralIndex_], amount);
@@ -109,15 +109,7 @@ abstract contract MarginLongRepayCore is Margin {
     }
 
     // Get the collateral repay amounts to pay off a loss
-    function _repayCollateralAmounts(address account_)
-        internal
-        returns (
-            IERC20[] memory,
-            uint256[] memory,
-            IERC20[] memory,
-            uint256[] memory
-        )
-    {
+    function _repayCollateralAmounts(address account_) internal returns (IERC20[] memory, uint256[] memory) {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
         uint256[] memory borrowedRepayAmounts = new uint256[](borrowedTokens.length);
 
@@ -125,14 +117,14 @@ abstract contract MarginLongRepayCore is Margin {
         uint256[] memory collateralRepayAmounts;
         uint256 collateralIndex = 0;
 
-        for (uint256 i = 0; i < borrowedTokens; i++) {
+        for (uint256 i = 0; i < borrowedTokens.length; i++) {
             uint256 debt = _repayLossesPrice(borrowedTokens[i], account_);
             borrowedRepayAmounts[i] = oracle.amountMin(borrowedTokens[i], debt);
 
             collateralIndex = _repayDebt(debt, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
         }
 
-        return (collateralTokens, collateralRepayAmounts, borrowedTokens, borrowedRepayAmounts);
+        return (collateralTokens, collateralRepayAmounts);
     }
 
     // Tax an account
@@ -155,13 +147,10 @@ abstract contract MarginLongRepayCore is Margin {
     }
 
     // Repay the in debt collateral
-    function _repayCollateral(address account_) internal returns (uint256[] memory) {
-        (
-            IERC20[] memory repayCollateralTokens,
-            uint256[] memory repayCollateralAmounts,
-            IERC20[] memory borrowedTokens,
-            uint256[] memory borrowedRepayAmounts
-        ) = _repayCollateralAmounts(account_);
+    function _repayCollateral(address account_) internal {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+
+        (IERC20[] memory repayCollateralTokens, uint256[] memory repayCollateralAmounts) = _repayCollateralAmounts(account_);
 
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));

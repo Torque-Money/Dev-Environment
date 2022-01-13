@@ -45,7 +45,7 @@ abstract contract MarginAccount is MarginPool {
 
     // Get the price of a token used as collateral for the asset borrowed for an account
     function _collateralPrice(IERC20 collateral_, address account_) internal view returns (uint256) {
-        return oracle.price(collateral_, collateral(collateral_, account_));
+        return oracle.priceMin(collateral_, collateral(collateral_, account_));
     }
 
     // Get the total collateral price for a given account and asset borrowed
@@ -93,7 +93,7 @@ abstract contract MarginAccount is MarginPool {
 
     // Get the current price of an asset borrowed
     function _borrowedPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
-        return oracle.price(borrowed_, borrowed(borrowed_, account_));
+        return oracle.priceMin(borrowed_, borrowed(borrowed_, account_));
     }
 
     // Get the total price of the assets borrowed

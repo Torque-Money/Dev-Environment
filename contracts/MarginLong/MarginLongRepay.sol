@@ -3,16 +3,18 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MarginLongRepayCore.sol";
 
 abstract contract MarginLongRepay is MarginLongRepayCore {
+    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     // Helper to repay account
     function _repayAccount(address account_) internal {
-        _repayPayouts(_msgSender());
-        _repayCollateral(_msgSender());
-        _removeAccount(_msgSender());
+        _repayPayouts(account_);
+        _repayCollateral(account_);
+        _removeAccount(account_);
     }
 
     // Repay an account

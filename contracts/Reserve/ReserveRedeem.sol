@@ -29,7 +29,7 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
 
         IERC20[] memory approved = _approved();
         for (uint256 i = 0; i < approved.length; i++) {
-            uint256 price = oracle.price(approved[i], totalReserve(approved[i]));
+            uint256 price = oracle.priceMin(approved[i], totalReserve(approved[i]));
             _totalPrice = _totalPrice.add(price);
         }
 
@@ -42,7 +42,7 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
         uint256 totalSupply = token.totalSupply();
 
         uint256 entitledPrice = amount_.mul(_totalPrice).div(totalSupply);
-        uint256 entitledAmount = oracle.amount(token_, entitledPrice);
+        uint256 entitledAmount = oracle.amountMin(token_, entitledPrice);
 
         return entitledAmount;
     }
