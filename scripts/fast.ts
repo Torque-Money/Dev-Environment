@@ -1,6 +1,5 @@
 import deploy from "./deploy/deploy";
 import setup from "./setup/setup";
-import handover from "./handover/handover";
 
 import utilFund from "./util/utilFund";
 import utilApprove from "./util/utilApprove";
@@ -9,7 +8,6 @@ import utilUpdateFiles from "./util/utilUpdateFiles";
 export default async function main() {
     await deploy();
     await setup();
-    await handover();
 
     await utilFund();
     await utilApprove();

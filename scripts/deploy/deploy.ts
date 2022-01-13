@@ -3,8 +3,6 @@ import deployOracle from "./deployOracle";
 import deployConverter from "./deployConverter";
 import deployMarginLong from "./deployMarginLong";
 import deployToken from "./deployToken";
-import deployGovernance from "./deployGovernance";
-import deployReserve from "./deployReserve";
 
 export default async function main() {
     // Deploy contracts
@@ -13,8 +11,6 @@ export default async function main() {
     await deployOracle();
     await deployMarginLong();
     await deployToken();
-    await deployGovernance();
-    await deployReserve();
 }
 
 if (require.main === module)
