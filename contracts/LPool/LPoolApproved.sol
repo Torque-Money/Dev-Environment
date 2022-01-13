@@ -9,6 +9,8 @@ abstract contract LPoolApproved is LPoolCore {
     mapping(IERC20 => IERC20) private _PTToLP;
     mapping(IERC20 => IERC20) private _LPToPT;
 
+    IERC20[] private _PTList;
+
     mapping(IERC20 => bool) private _approved;
 
     modifier onlyPT(IERC20 token_) {
@@ -64,9 +66,16 @@ abstract contract LPoolApproved is LPoolCore {
                 _PTToLP[token_[i]] = LPToken;
                 _LPToPT[LPToken] = token_[i];
 
+                _PTList.push(token_[i]);
+
                 emit AddLPToken(token_[i], LPToken);
             }
         }
+    }
+
+    // Get a list of pool tokens
+    function _poolTokens() internal view returns (IERC20[] memory) {
+        return _PTList;
     }
 
     // Approve pool tokens for use with the pool if it is different to its current approved state - a LP token is approved if and only if its pool token is approved
