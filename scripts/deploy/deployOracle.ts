@@ -3,11 +3,15 @@ import fs from "fs";
 import config from "../../config.json";
 
 export default async function main() {
-    const constructorArgs = {};
+    const constructorArgs = {
+        thresholdNumerator: 1,
+        thresholdDenominator: 200,
+    };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(constructorArgs));
     config.oracleAddress = oracle.address;
     console.log("Deployed: Oracle");
+
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
 

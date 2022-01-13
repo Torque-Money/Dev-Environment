@@ -6,12 +6,11 @@ export default async function main() {
     const constructorArgs = {
         pool: config.leveragePoolAddress,
         oracle: config.oracleAddress,
-        flashSwap: config.flashSwapAddress,
-        swapToleranceNumerator: 3,
-        swapToleranceDenominator: 200,
-        minMarginLevelNumerator: 105,
-        minMarginLevelDenominator: 100,
+        minMarginLevelPercent: 105,
         minCollateralPrice: hre.ethers.BigNumber.from(100).mul(10).pow(18),
+        maxLeverage: 125,
+        repayTaxPercent: 5,
+        liquidationFeePercent: 10,
     };
     const MarginLong = await hre.ethers.getContractFactory("MarginLong");
     const marginLong = await MarginLong.deploy(...Object.values(constructorArgs));
