@@ -17,7 +17,7 @@ abstract contract MarginAccount is MarginPool {
         mapping(IERC20 => uint256) borrowedAmounts;
         mapping(IERC20 => uint256) initialBorrowPrice;
         mapping(IERC20 => uint256) initialBorrowBlock;
-        uint256 hasBorrowed; // Used to check if an account is currently borrowing or not
+        uint256 hasBorrowed;
     }
 
     mapping(address => Account) private _accounts;
@@ -107,14 +107,6 @@ abstract contract MarginAccount is MarginPool {
     // Get the borrowed tokens list
     function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
         return _accounts[account_].borrowed.iterable();
-    }
-
-    // Get the amount of each borrowed token
-    function _borrowedAmounts(address account_) internal view returns (uint256[] memory) {
-        IERC20[] memory tokens = _borrowedTokens(account_);
-        uint256[] memory amounts = new uint256[](tokens.length);
-        for (uint256 i = 0; i < tokens.length; i++) amounts[i] = borrowed(tokens[i], account_);
-        return amounts;
     }
 
     // Get the initial borrow price for an account

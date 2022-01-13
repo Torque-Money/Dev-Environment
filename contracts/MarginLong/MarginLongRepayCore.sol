@@ -85,18 +85,18 @@ abstract contract MarginLongRepayCore is Margin {
         uint256 collateralIndex_
     ) internal returns (uint256) {
         while (debt_ > 0 && collateralIndex_ < collateralTokens_.length) {
-            uint256 amount = collateral(collateralTokens_[collateralIndex_], account_);
-            uint256 price = oracle.priceMin(collateralTokens_[collateralIndex_], amount);
+            uint256 collateralAmount = collateral(collateralTokens_[collateralIndex_], account_);
+            uint256 collateralPrice = _collateralPrice(collateralTokens_[collateralIndex_], account_);
 
-            if (price < debt_) {
-                collateralRepayAmounts_[collateralIndex_] = amount;
+            if (collateralPrice < debt_) {
+                collateralRepayAmounts_[collateralIndex_] = collateralAmount;
                 _setCollateral(collateralTokens_[collateralIndex_], 0, account_);
 
-                debt_ = debt_.sub(price);
+                debt_ = debt_.sub(collateralPrice);
                 collateralIndex_ = collateralIndex_.add(1);
             } else {
-                uint256 newAmount = oracle.amountMax(collateralTokens_[collateralIndex_], price);
-                if (newAmount > amount) amount = newAmount;
+                uint256 newAmount = oracle.amountMax(collateralTokens_[collateralIndex_], collateralPrice);
+                if (newAmount > collateralAmount) newAmount = collateralAmount;
 
                 collateralRepayAmounts_[collateralIndex_] = newAmount;
                 _setCollateral(collateralTokens_[collateralIndex_], newAmount, account_);
