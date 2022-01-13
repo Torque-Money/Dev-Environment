@@ -2,12 +2,14 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginLongRepayCore.sol";
 
 abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     FractionMath.Fraction private _liquidationFeePercent;
 
@@ -25,6 +27,28 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
     // Get the liquidation fee percent
     function liquidationFeePercent() public view returns (uint256, uint256) {
         return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
+    }
+
+    // Reset the accounts collateral
+    function _resetCollateral(address account_) internal {
+        IERC20[] memory collateralTokens = _collateralTokens(account_);
+        uint256[] memory collateralAmounts = _collateralAmounts(account_);
+
+        _deposit(collateralTokens, collateralAmounts);
+        for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], collateralAmounts[i], account_);
+    }
+
+    // Reset the users borrowed amounts
+    function _resetBorrowed(address account_) internal {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+
+        for (uint256 i = 0; i < borrowedTokens.length; i++) {
+            pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));
+            _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
+            _setBorrowed(borrowedTokens[i], 0, account_);
+        }
+
+        _removeAccount(account_);
     }
 
     event Liquidated(address indexed account, address liquidator);
