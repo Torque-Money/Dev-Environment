@@ -16,14 +16,16 @@ abstract contract LPoolClaim is LPoolApproved {
         require(amount_ <= liquidity(token_), "Cannot claim more than total liquidity");
         _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].add(amount_);
         _totalClaimed[token_] = _totalClaimed[token_].add(amount_);
+
         emit Claim(_msgSender(), token_, amount_);
     }
 
     // Unclaim an amount of a given token
     function unclaim(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyPT(token_) {
-        require(amount_ <= _claimed[_msgSender()][token_], "Cannot unclaim more than your claim");
+        require(amount_ <= _claimed[_msgSender()][token_], "Cannot unclaim more than current claim");
         _claimed[_msgSender()][token_] = _claimed[_msgSender()][token_].sub(amount_);
         _totalClaimed[token_] = _totalClaimed[token_].sub(amount_);
+
         emit Unclaim(_msgSender(), token_, amount_);
     }
 
