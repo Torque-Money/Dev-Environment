@@ -149,6 +149,9 @@ abstract contract MarginAccount is MarginPool {
         account.initialBorrowBlock[borrowed_] = block_;
     }
 
+    // **** I want to be able to calculate the total interest for a given account too AND maybe even the interest for a given token
+    // **** I also want to be able to get the total initial price of some assets
+
     // Check if an account is currently borrowing
     function isBorrowing(address account_) public view returns (bool) {
         Account storage account = _accounts[account_];
