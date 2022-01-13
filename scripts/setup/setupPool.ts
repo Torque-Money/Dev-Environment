@@ -7,7 +7,8 @@ export default async function main() {
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
     const approvedNames = config.approved.map((approved) => "Torque Leveraged " + approved.name);
     const approvedSymbols = config.approved.map((approved) => "tl" + approved.symbol);
-    await leveragePool.approve(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
+    await leveragePool.addLPToken(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
+    await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true));
 
     const maxInterestMinNumerator = Array(leveragePoolApprovedTokens.length).fill(15);
     const maxInterestMinDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
