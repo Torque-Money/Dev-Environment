@@ -28,6 +28,7 @@ abstract contract ReserveUnstake is ReserveStakeAccount, ReserveStakeYieldRates 
         _setOwedBalance(token_, owedBalance(token_, _msgSender()), _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
         _setStaked(token_, currentStaked.sub(amount_), _msgSender());
+
         emit Unstake(_msgSender(), token_, amount_);
     }
 
@@ -38,6 +39,7 @@ abstract contract ReserveUnstake is ReserveStakeAccount, ReserveStakeYieldRates 
 
         _setOwedBalance(token_, 0, _msgSender());
         _setInitialStakeBlock(token_, block.number, _msgSender());
+
         emit ClaimYield(_msgSender(), token_, owed);
 
         return owed;
