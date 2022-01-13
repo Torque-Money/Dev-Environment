@@ -6,7 +6,7 @@ export default async function main() {
     const reserve = await hre.ethers.getContractAt("Reserve", config.reserveAddress);
 
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
-    const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => leveragePool.LPFromPA(approved)));
+    const lpTokens = await Promise.all(leveragePoolApprovedTokens.map((approved) => leveragePool.LPFromPT(approved)));
     const rateNumerators = Array(lpTokens.length).fill(10);
     const rateDenominators = Array(lpTokens.length).fill(100);
     await reserve.setRates(lpTokens, rateNumerators, rateDenominators);
