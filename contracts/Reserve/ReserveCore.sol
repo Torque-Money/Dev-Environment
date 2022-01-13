@@ -3,13 +3,13 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Governance/Token.sol";
-import "../Oracle/Oracle.sol";
+import "../Oracle/IOracle.sol";
 
 contract ReserveCore is Ownable {
     Token public token;
-    Oracle public oracle;
+    IOracle public oracle;
 
-    constructor(Token token_, Oracle oracle_) {
+    constructor(Token token_, IOracle oracle_) {
         token = token_;
         oracle = oracle_;
     }
@@ -20,7 +20,7 @@ contract ReserveCore is Ownable {
     }
 
     // Set the oracle
-    function setOracle(Oracle oracle_) external onlyOwner {
+    function setOracle(IOracle oracle_) external onlyOwner {
         oracle = oracle_;
     }
 }
