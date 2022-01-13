@@ -19,12 +19,12 @@ abstract contract MarginPool is MarginCore {
     }
 
     // Set the total borrowed of a given asset
-    function setTotalBorrowed(IERC20 borrowed_, uint256 amount_) public {
+    function _setTotalBorrowed(IERC20 borrowed_, uint256 amount_) internal {
         _totalBorrowed[borrowed_] = amount_;
     }
 
     // Set the total collateral of a given asset
-    function setTotalCollateral(IERC20 collateral_, uint256 amount_) public {
+    function _setTotalCollateral(IERC20 collateral_, uint256 amount_) internal {
         _totalCollateral[collateral_] = amount_;
     }
 }

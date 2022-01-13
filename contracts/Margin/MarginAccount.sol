@@ -33,7 +33,7 @@ abstract contract MarginAccount is MarginPool {
         if (account.collateralAmounts[collateral_] == 0 && amount_ != 0) account.collateral.insert(collateral_);
         else if (account.collateralAmounts[collateral_] != 0 && amount_ == 0) account.collateral.remove(collateral_);
 
-        setTotalCollateral(collateral_, totalCollateral(collateral_).sub(account.collateralAmounts[collateral_]).add(amount_));
+        _setTotalCollateral(collateral_, totalCollateral(collateral_).sub(account.collateralAmounts[collateral_]).add(amount_));
         account.collateralAmounts[collateral_] = amount_;
     }
 
@@ -80,7 +80,7 @@ abstract contract MarginAccount is MarginPool {
         if (account.borrowedAmounts[borrowed_] == 0 && amount_ != 0) account.borrowed.insert(borrowed_);
         else if (account.borrowedAmounts[borrowed_] != 0 && amount_ == 0) account.borrowed.remove(borrowed_);
 
-        setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
+        _setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
         account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[borrowed_]).add(amount_);
         account.borrowedAmounts[borrowed_] = amount_;
     }
