@@ -1,6 +1,6 @@
 import deployPool from "./deployPool";
 import deployOracle from "./deployOracle";
-import deployFlashSwap from "../deploy/deployFlashSwap";
+import deployConverter from "./deployConverter";
 import deployMarginLong from "./deployMarginLong";
 import deployToken from "./deployToken";
 import deployGovernance from "./deployGovernance";
@@ -8,9 +8,9 @@ import deployReserve from "./deployReserve";
 
 export default async function main() {
     // Deploy contracts
+    await deployConverter();
     await deployPool();
     await deployOracle();
-    await deployFlashSwap();
     await deployMarginLong();
     await deployToken();
     await deployGovernance();
