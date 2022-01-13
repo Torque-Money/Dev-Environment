@@ -1,1 +1,36 @@
-{"avgBlockTime":1,"routerAddress":"0xf491e7b69e4244ad4002bc14e878a34207e38c29","approved":[{"name":"Dai","symbol":"DAI","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png","address":"0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e","whale":"0x598c5e19a132a5c433a80c908f05d87bfdaac4ae","decimals":18,"priceFeed":"0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52","reservePriceFeed":"0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52","marginLong":true,"leveragePool":true},{"name":"Wrapped Fantom","symbol":"wFTM","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png","address":"0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83","whale":"0x4901c740607e415685b4d09e4aa960329cd183ca","decimals":18,"priceFeed":"0xf4766552D15AE4d256Ad41B6cf2933482B0680dc","reservePriceFeed":"0xf4766552D15AE4d256Ad41B6cf2933482B0680dc","marginLong":true,"leveragePool":true}],"leveragePoolAddress":"0x172076E0166D1F9Cc711C77Adf8488051744980C","oracleAddress":"0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B","converterAddress":"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8","marginLongAddress":"0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25","tokenAddress":"0xD84379CEae14AA33C123Af12424A37803F885889","governanceAddress":"0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5","timelockAddress":"0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d","reserveAddress":"0x46b142DD1E924FAb83eCc3c08e4D46E82f005e0E"}
+{
+  "avgBlockTime": 1,
+  "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
+  "approved": [
+    {
+      "name": "Dai",
+      "symbol": "DAI",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+      "address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "whale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae",
+      "decimals": 18,
+      "priceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "reservePriceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "marginLong": true,
+      "leveragePool": true,
+      "oracle": true
+    },
+    {
+      "name": "Wrapped Fantom",
+      "symbol": "wFTM",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
+      "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+      "whale": "0x4901c740607e415685b4d09e4aa960329cd183ca",
+      "decimals": 18,
+      "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "reservePriceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "marginLong": true,
+      "leveragePool": true,
+      "oracle": true
+    }
+  ],
+  "leveragePoolAddress": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
+  "oracleAddress": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
+  "converterAddress": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
+  "marginLongAddress": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25"
+}
