@@ -18,11 +18,6 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
         return available;
     }
 
-    // Return the total backing price for each token
-    function backingPricePerAsset() external view returns (uint256, uint256) {
-        return (token.totalSupply(), totalPrice());
-    }
-
     // Get the total liquidity price of the reserve
     function totalPrice() public view returns (uint256) {
         uint256 _totalPrice = 0;
@@ -36,12 +31,16 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
         return _totalPrice;
     }
 
+    // Return the total backing price for each token
+    function backingPricePerAsset() public view returns (uint256, uint256) {
+        return (totalPrice(), token.totalSupply());
+    }
+
     // Get the amount of tokens received for redeeming tokens
     function redeemValue(uint256 amount_, IERC20 token_) public view returns (uint256) {
-        uint256 _totalPrice = totalPrice();
-        uint256 totalSupply = token.totalSupply();
+        (uint256 backingPriceNumerator, uint256 backingPriceDenominator) = backingPricePerAsset();
 
-        uint256 entitledPrice = amount_.mul(_totalPrice).div(totalSupply);
+        uint256 entitledPrice = amount_.mul(backingPriceNumerator).div(backingPriceDenominator);
         uint256 entitledAmount = oracle.amountMin(token_, entitledPrice);
 
         return entitledAmount;
@@ -49,10 +48,10 @@ abstract contract ReserveRedeem is ReserveApproved, ReserveStakeAccount {
 
     // Redeem tokens for the underlying reserve asset
     function redeem(uint256 amount_, IERC20 token_) external onlyApproved(token_) returns (uint256) {
-        token.burn(_msgSender(), amount_);
-
         uint256 _redeemValue = redeemValue(amount_, token_);
+
         token_.safeTransfer(_msgSender(), _redeemValue);
+        token.burn(_msgSender(), amount_);
 
         emit Redeem(_msgSender(), amount_, token_, _redeemValue);
 

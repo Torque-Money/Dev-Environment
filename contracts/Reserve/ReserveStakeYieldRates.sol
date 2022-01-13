@@ -35,7 +35,7 @@ abstract contract ReserveStakeYieldRates is ReserveCore {
         uint256 initialStakeBlock_,
         uint256 staked_
     ) internal view returns (uint256) {
-        FractionMath.Fraction memory rate = _rates[token_];
-        return block.number.sub(initialStakeBlock_).mul(staked_).mul(rate.numerator).div(rate.denominator);
+        (uint256 rateNumerator, uint256 rateDenominator) = getRate(token_);
+        return block.number.sub(initialStakeBlock_).mul(staked_).mul(rateNumerator).div(rateDenominator);
     }
 }
