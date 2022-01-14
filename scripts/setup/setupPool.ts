@@ -5,8 +5,8 @@ export default async function main() {
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
-    const approvedNames = config.approved.filter((approved) => approved.leveragePool).map((approved) => "Torque Leveraged " + approved.name);
-    const approvedSymbols = config.approved.filter((approved) => approved.leveragePool).map((approved) => "tl" + approved.symbol);
+    const approvedNames = config.approved.filter((approved) => approved.leveragePool).map((approved) => config.LPPrefixName + " " + approved.name);
+    const approvedSymbols = config.approved.filter((approved) => approved.leveragePool).map((approved) => config.LPPrefixSymbol + approved.symbol);
     await leveragePool.addLPToken(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
     await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true));
 

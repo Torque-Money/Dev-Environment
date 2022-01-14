@@ -1,6 +1,8 @@
 {
   "avgBlockTime": 1,
   "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
+  "LPPrefixName": "Torque Leverage",
+  "LPPrefixSymbol": "tl",
   "approved": [
     {
       "name": "Dai",
@@ -31,8 +33,8 @@
       "oracle": true
     }
   ],
-  "leveragePoolAddress": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
-  "oracleAddress": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
-  "converterAddress": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
-  "marginLongAddress": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25"
+  "leveragePoolAddress": "0x162A433068F51e18b7d13932F27e66a3f99E6890",
+  "oracleAddress": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
+  "converterAddress": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+  "marginLongAddress": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f"
 }
