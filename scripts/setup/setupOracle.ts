@@ -10,7 +10,6 @@ export default async function main() {
     const correctDecimals = config.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
     const oracleSupported = Array(oracleApproved.length).fill(true);
     await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported);
-    await oracle.setDefaultStablecoin(oracleApproved[0]);
 
     console.log("Setup: Oracle");
 }

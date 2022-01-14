@@ -6,6 +6,7 @@ export default async function main() {
     const constructorArgs = {
         thresholdNumerator: 1,
         thresholdDenominator: 200,
+        priceDecimals: 18,
     };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(...Object.values(constructorArgs));
