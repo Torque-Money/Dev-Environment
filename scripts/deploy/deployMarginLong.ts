@@ -7,7 +7,7 @@ export default async function main() {
         pool: config.leveragePoolAddress,
         oracle: config.oracleAddress,
         minMarginLevelPercent: 105,
-        minCollateralPrice: hre.ethers.BigNumber.from(100).mul(10).pow(18),
+        minCollateralPrice: hre.ethers.BigNumber.from(10).pow(18).mul(100),
         maxLeverage: 125,
         repayTaxPercent: 5,
         liquidationFeePercent: 10,
