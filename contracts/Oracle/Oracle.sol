@@ -13,7 +13,11 @@ contract Oracle is IOracle, OracleTokens {
 
     FractionMath.Fraction private _threshold;
 
-    constructor(uint256 thresholdNumerator_, uint256 thresholdDenominator_) {
+    constructor(
+        uint256 thresholdNumerator_,
+        uint256 thresholdDenominator_,
+        uint256 priceDecimals_
+    ) OracleTokens(priceDecimals_) {
         _threshold.numerator = thresholdNumerator_;
         _threshold.denominator = thresholdDenominator_;
     }
@@ -42,7 +46,7 @@ contract Oracle is IOracle, OracleTokens {
         }
         if (result <= 0) return 0;
 
-        return uint256(result).mul(10**decimals(defaultStablecoin)).div(10**_decimals).mul(amount_).div(10**decimals(token_));
+        return uint256(result).mul(10**priceDecimals).mul(amount_).div(10**_decimals).div(10**decimals(token_));
     }
 
     // Get the price for a given token amount at the lowest threshold by the oracle
