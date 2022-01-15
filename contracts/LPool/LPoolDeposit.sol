@@ -25,6 +25,10 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     // Get a pseudo random token to convert the deposited asset to for a uniform distribution of fees
     function _pseudoRandomPT() internal view returns (IERC20) {
+        // **** Move this to a weighted distribution using the utilization rates
+        // **** Perhaps instead of doing a random distribution so that the interest rates are artificial and the distribution is fair, have a manual allocation mode ?
+        // **** Try and intuitively understand this ???
+
         IERC20[] memory tokens = _poolTokens();
         uint256 index = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(tokens.length);
         return tokens[index];
