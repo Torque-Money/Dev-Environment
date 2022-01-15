@@ -16,6 +16,7 @@ abstract contract LPoolStake is LPoolLiquidity {
         LPoolToken LPToken = LPoolToken(address(LPFromPT(token_)));
         uint256 totalSupply = LPToken.totalSupply();
         uint256 totalValue = tvl(token_);
+        if (totalValue == 0) return amount_;
         return amount_.mul(totalSupply).div(totalValue);
     }
 
