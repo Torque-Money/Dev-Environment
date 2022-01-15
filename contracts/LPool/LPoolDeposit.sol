@@ -23,7 +23,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         converter = converter_;
     }
 
-    // Get a pseudo random token to convert the deposited asset to for a weighted distribution based on utilization rates of fees
+    // Get a pseudo random token from a weighted distribution based on utilization rates of pool tokens
     function _pseudoRandomWeightedPT() internal view returns (IERC20) {
         uint256 multiplier = 10000;
 
@@ -41,10 +41,15 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
 
         uint256 cumulative = 0;
+        IERC20 selected;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             cumulative = cumulative.add(weights[i]);
-            if (randomSample <= cumulative) return poolTokens[i];
+            if (randomSample <= cumulative) {
+                selected = poolTokens[i];
+                break;
+            }
         }
+        return selected;
     }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
