@@ -29,6 +29,8 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         // **** Perhaps instead of doing a random distribution so that the interest rates are artificial and the distribution is fair, have a manual allocation mode ?
         // **** Try and intuitively understand this ???
 
+        // **** We are going to use a cache which will be notified whenever the value changes via the TVL or something else changing
+
         IERC20[] memory tokens = _poolTokens();
         uint256 index = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(tokens.length);
         return tokens[index];
