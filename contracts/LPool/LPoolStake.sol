@@ -38,8 +38,9 @@ abstract contract LPoolStake is LPoolLiquidity {
     // Get the value for redeeming LP tokens for the underlying asset
     function redeemValue(IERC20 token_, uint256 amount_) public view returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(token_));
+        IERC20 approvedToken = PTFromLP(token_);
         uint256 totalSupply = LPToken.totalSupply();
-        uint256 totalValue = tvl(token_);
+        uint256 totalValue = tvl(approvedToken);
         return amount_.mul(totalValue).div(totalSupply);
     }
 
