@@ -17,17 +17,19 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
     }
 
     // Liquidate an account
-    function liquidateAccount(address account_) external {
+    function liquidateAccount(address account_) external returns (IERC20[] memory, uint256[] memory) {
         require(liquidatable(account_), "MarginLongLiquidate: This account cannot be liquidated");
 
         uint256 accountPrice = collateralPrice(account_);
         (uint256 liqFeeNumerator, uint256 liqFeeDenominator) = liquidationFeePercent();
-        uint256 fee = liqFeeDenominator.sub(liqFeeNumerator).mul(accountPrice).div(liqFeeDenominator);
+        uint256 fee = accountPrice.mul(liqFeeNumerator).div(liqFeeDenominator);
         (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(fee, account_);
         for (uint256 i = 0; i < collateralTokens.length; i++) collateralTokens[i].safeTransfer(_msgSender(), feeAmounts[i]);
 
         _liquidateAccount(account_);
 
         emit Liquidated(account_, _msgSender());
+
+        return (collateralTokens, feeAmounts);
     }
 }

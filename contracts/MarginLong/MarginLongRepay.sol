@@ -36,7 +36,7 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     }
 
     // Reset an account
-    function resetAccount(address account_) external {
+    function resetAccount(address account_) external returns (IERC20[] memory, uint256[] memory) {
         require(resettable(account_), "MarginLongRepay: This account cannot be reset");
 
         _repayAccount(account_);
@@ -45,9 +45,21 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
         (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
         uint256 tax = accountPrice.mul(taxNumerator).div(taxDenominator);
-        (IERC20[] memory tokens, uint256[] memory amounts) = _taxAccount(tax, _msgSender());
-        for (uint256 i = 0; i < tokens.length; i++) tokens[i].safeTransfer(_msgSender(), amounts[i]);
+        (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(tax, _msgSender()); // **** Remove this tax in favor of extra interest in a winning position off of the current price
+        uint256[] memory depositAmounts = new uint256[](collateralTokens.length);
+
+        for (uint256 i = 0; i < collateralTokens.length; i++) {
+            depositAmounts[i] = feeAmounts[i];
+            feeAmounts[i] = feeAmounts[i].div(2);
+            depositAmounts[i] = depositAmounts[i].sub(feeAmounts[i]);
+
+            collateralTokens[i].safeTransfer(_msgSender(), feeAmounts[i]);
+        }
+
+        _deposit(collateralTokens, depositAmounts);
 
         emit Reset(account_, _msgSender());
+
+        return (collateralTokens, feeAmounts);
     }
 }
