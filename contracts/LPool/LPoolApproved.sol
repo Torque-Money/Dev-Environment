@@ -14,22 +14,22 @@ abstract contract LPoolApproved is LPoolCore {
     mapping(IERC20 => bool) private _approved;
 
     modifier onlyPT(IERC20 token_) {
-        require(isPT(token_), "Only pool tokens may be used");
+        require(isPT(token_), "LPoolApproved: Only pool tokens may be used");
         _;
     }
 
     modifier onlyApprovedPT(IERC20 token_) {
-        require(isApprovedPT(token_), "Only approved pool tokens may be used");
+        require(isApprovedPT(token_), "LPoolApproved: Only approved pool tokens may be used");
         _;
     }
 
     modifier onlyLP(IERC20 token_) {
-        require(isLP(token_), "Only liquidity pool tokens may be used");
+        require(isLP(token_), "LPoolApproved: Only liquidity pool tokens may be used");
         _;
     }
 
     modifier onlyApprovedLP(IERC20 token_) {
-        require(isApprovedLP(token_), "Only approved liquidity pool tokens may be used");
+        require(isApprovedLP(token_), "LPoolApproved: Only approved liquidity pool tokens may be used");
         _;
     }
 

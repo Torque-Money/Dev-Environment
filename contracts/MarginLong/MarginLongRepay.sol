@@ -37,7 +37,7 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
     // Reset an account
     function resetAccount(address account_) external {
-        require(resettable(account_), "This account cannot be reset");
+        require(resettable(account_), "MarginLongRepay: This account cannot be reset");
 
         _repayAccount(account_);
 

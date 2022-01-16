@@ -21,7 +21,7 @@ abstract contract OracleTokens is Ownable {
     }
 
     modifier onlySupported(IERC20 token_) {
-        require(isSupported(token_), "Only supported tokens may be used");
+        require(isSupported(token_), "OracleTokens: Only supported tokens may be used");
         _;
     }
 

@@ -33,13 +33,13 @@ library Set {
     }
 
     function insert(TokenSet storage self, IERC20 key) internal {
-        require(!exists(self, key), "Token already exists in the set.");
+        require(!exists(self, key), "TokenSet: Token already exists in the set.");
         self.keyList.push(key);
         self.keyPointers[key] = self.keyList.length - 1;
     }
 
     function remove(TokenSet storage self, IERC20 key) internal {
-        require(exists(self, key), "Token does not exist in the set.");
+        require(exists(self, key), "TokenSet: Token does not exist in the set.");
         IERC20 keyToMove = self.keyList[count(self) - 1];
         uint256 rowToReplace = self.keyPointers[key];
 
@@ -73,13 +73,13 @@ library Set {
     }
 
     function insert(AddressSet storage self, address key) internal {
-        require(!exists(self, key), "Address already exists in the set.");
+        require(!exists(self, key), "AddressSet: Address already exists in the set.");
         self.keyList.push(key);
         self.keyPointers[key] = self.keyList.length - 1;
     }
 
     function remove(AddressSet storage self, address key) internal {
-        require(exists(self, key), "Address does not exist in the set.");
+        require(exists(self, key), "AddressSet: Address does not exist in the set.");
         address keyToMove = self.keyList[count(self) - 1];
         uint256 rowToReplace = self.keyPointers[key];
 

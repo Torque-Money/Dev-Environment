@@ -9,12 +9,12 @@ abstract contract MarginApproved is MarginCore {
     mapping(IERC20 => bool) private _approvedBorrow;
 
     modifier onlyApprovedCollateral(IERC20 token_) {
-        require(isApprovedCollateral(token_), "Only approved tokens may be used");
+        require(isApprovedCollateral(token_), "MarginApproved: Only approved tokens may be used");
         _;
     }
 
     modifier onlyApprovedBorrow(IERC20 token_) {
-        require(isApprovedBorrow(token_), "Only approved tokens may be used");
+        require(isApprovedBorrow(token_), "MarginApproved: Only approved tokens may be used");
         _;
     }
 

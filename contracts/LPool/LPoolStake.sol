@@ -25,7 +25,7 @@ abstract contract LPoolStake is LPoolLiquidity {
         LPoolToken LPToken = LPoolToken(address(LPFromPT(token_)));
 
         uint256 value = stakeValue(token_, amount_);
-        require(value > 0, "Not enough tokens staked");
+        require(value > 0, "LPoolStake: Not enough tokens staked");
 
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
         LPToken.mint(_msgSender(), value);
@@ -50,7 +50,7 @@ abstract contract LPoolStake is LPoolLiquidity {
         IERC20 approvedToken = PTFromLP(token_);
 
         uint256 value = redeemValue(LPToken, amount_);
-        require(value <= liquidity(approvedToken), "Not enough liquidity to redeem at this time");
+        require(value <= liquidity(approvedToken), "LPoolStake: Not enough liquidity to redeem at this time");
 
         LPToken.burn(_msgSender(), amount_);
         approvedToken.safeTransfer(_msgSender(), value);
