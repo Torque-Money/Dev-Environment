@@ -31,4 +31,10 @@ contract Resolver {
 
         return (false, bytes(""));
     }
+
+    // **** These are going to be wrappers for the swap that we are going to perform on the tokens
+
+    function executorLiquidate() external {}
+
+    function executorReset() external {}
 }
