@@ -6,7 +6,7 @@ import "./MarginLongRepay.sol";
 import "./MarginLongLiquidate.sol";
 import "../Oracle/IOracle.sol";
 
-contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidateCore {
+contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
     constructor(
         LPool pool_,
         IOracle oracle_,

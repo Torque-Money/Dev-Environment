@@ -17,7 +17,7 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
     }
 
     // Liquidate an account
-    function liquidateAccount(address account_) internal {
+    function liquidateAccount(address account_) external {
         require(liquidatable(account_), "This account cannot be liquidated");
 
         uint256 accountPrice = collateralPrice(account_);
