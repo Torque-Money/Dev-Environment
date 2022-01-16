@@ -32,5 +32,3 @@ contract Resolver {
         return (false, bytes(""));
     }
 }
-
-// **** Don't forget the payment node
