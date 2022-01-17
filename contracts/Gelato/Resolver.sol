@@ -10,7 +10,7 @@ import "../LPool/LPool.sol";
 import "../Converter/IConverter.sol";
 import "./PokeMeReady.sol";
 
-contract Resolver is PokeMeReady {
+contract Resolver is PokeMeReady, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -19,13 +19,33 @@ contract Resolver is PokeMeReady {
     IConverter public converter;
 
     constructor(
+        IPokeMe pokeMe_,
         MarginLong marginLong_,
         LPool pool_,
-        IConverter converter_,
-        IPokeMe pokeMe_
+        IConverter converter_
     ) PokeMeReady(pokeMe_) {
         marginLong = marginLong_;
         pool = pool_;
+        converter = converter_;
+    }
+
+    // Set the poke me
+    function setPokeMe(IPokeMe pokeMe_) external onlyOwner {
+        pokeMe = pokeMe_;
+    }
+
+    // Set the margin long
+    function setMarginLong(MarginLong marginLong_) external onlyOwner {
+        marginLong = marginLong_;
+    }
+
+    // Set the pool
+    function setPool(LPool pool_) external onlyOwner {
+        pool = pool_;
+    }
+
+    // Set the converter
+    function setConverter(IConverter converter_) external onlyOwner {
         converter = converter_;
     }
 
