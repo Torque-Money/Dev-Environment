@@ -96,16 +96,15 @@ abstract contract MarginLongRepayCore is Margin {
 
         uint256 debt = _repayLossesPrice(borrowed_, account_);
         _repayLossFromCollateral(debt, account_, collateralTokens, collateralRepayAmounts, 0);
+        _deposit(collateralTokens, collateralRepayAmounts);
 
         pool.unclaim(borrowed_, borrowed(borrowed_, account_));
         _setBorrowed(borrowed_, 0, account_);
         _setInitialBorrowPrice(borrowed_, 0, account_);
-
-        _deposit(collateralTokens, collateralRepayAmounts);
     }
 
-    // Get the collateral repay amounts to pay off a loss
-    function _repayLossAllCollateralAmounts(address account_) internal returns (IERC20[] memory, uint256[] memory) {
+    // Pay of all of the losses using collateral
+    function _repayLossAll(address account_) internal {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
         IERC20[] memory collateralTokens = _collateralTokens(account_);
@@ -115,24 +114,13 @@ abstract contract MarginLongRepayCore is Margin {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             uint256 debt = _repayLossesPrice(borrowedTokens[i], account_);
             collateralIndex = _repayLossFromCollateral(debt, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
-        }
 
-        return (collateralTokens, collateralRepayAmounts);
-    }
-
-    // Repay the in debt collateral
-    function _repayLossAll(address account_) internal {
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
-
-        (IERC20[] memory repayCollateralTokens, uint256[] memory repayCollateralAmounts) = _repayLossAllCollateralAmounts(account_);
-
-        for (uint256 i = 0; i < borrowedTokens.length; i++) {
             pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));
             _setBorrowed(borrowedTokens[i], 0, account_);
             _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
         }
 
-        _deposit(repayCollateralTokens, repayCollateralAmounts);
+        _deposit(collateralTokens, collateralRepayAmounts);
     }
 
     // Tax an accounts collateral and return the amounts taken from the collateral
