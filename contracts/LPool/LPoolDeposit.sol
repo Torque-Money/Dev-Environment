@@ -58,14 +58,9 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         IERC20 convertedToken = _pseudoRandomWeightedPT();
         uint256 convertedAmount = converter.swapMaxOut(token_, amount_, convertedToken);
 
-        address[] memory _taxAccounts = _taxAccounts();
-        (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
-        uint256 tax = taxPercentNumerator.mul(convertedAmount).div(taxPercentDenominator).div(_taxAccounts.length);
-        uint256 totalTax = tax.mul(_taxAccounts.length);
-        for (uint256 i = 0; i < _taxAccounts.length; i++) convertedToken.safeTransfer(_taxAccounts[i], tax);
+        uint256 totalTax = _payTax(convertedToken, convertedAmount);
 
-        convertedAmount = convertedAmount.sub(totalTax);
-        emit Deposit(_msgSender(), token_, amount_, convertedToken, convertedAmount);
+        emit Deposit(_msgSender(), token_, amount_, convertedToken, convertedAmount.sub(totalTax));
     }
 
     // Withdraw a given amount of collateral from the pool

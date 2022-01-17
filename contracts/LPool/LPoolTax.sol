@@ -1,11 +1,16 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "../lib/Set.sol";
 import "./LPoolCore.sol";
 
 abstract contract LPoolTax is LPoolCore {
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
     using Set for Set.AddressSet;
 
     FractionMath.Fraction private _taxPercent;
@@ -37,8 +42,16 @@ abstract contract LPoolTax is LPoolCore {
         _taxAccountSet.remove(account_);
     }
 
-    // Get the tax accounts
-    function _taxAccounts() internal view returns (address[] memory) {
-        return _taxAccountSet.iterable();
+    // Apply and distribute tax
+    function _payTax(IERC20 taxToken_, uint256 amountIn_) internal returns (uint256) {
+        address[] memory taxAccounts = _taxAccountSet.iterable();
+        (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
+
+        uint256 tax = taxPercentNumerator.mul(amountIn_).div(taxPercentDenominator).div(taxAccounts.length);
+        uint256 totalTax = tax.mul(taxAccounts.length);
+
+        for (uint256 i = 0; i < taxAccounts.length; i++) taxToken_.safeTransfer(taxAccounts[i], tax);
+
+        return totalTax;
     }
 }
