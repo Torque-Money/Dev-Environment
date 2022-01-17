@@ -10,7 +10,7 @@ export default async function main() {
 
     const marginApprovedBorrow = config.approved.filter((approved) => approved.marginLongBorrow).map((approved) => approved.address);
     const marginSupportedBorrow = Array(marginApprovedBorrow.length).fill(true);
-    await marginLong.setApprovedBorrow(marginApprovedBorrow, marginSupportedBorrow);
+    await marginLong.setApprovedBorrowed(marginApprovedBorrow, marginSupportedBorrow);
 
     console.log("Setup: Margin long");
 }
