@@ -22,6 +22,9 @@ export default async function main() {
     const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
     await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.marginLongAddress);
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.resolverAddress);
+
     console.log("Setup: Leverage pool");
 }
 

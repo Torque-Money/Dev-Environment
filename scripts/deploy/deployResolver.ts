@@ -1,18 +1,18 @@
-import hre, {ethers} from "hardhat";
+import hre from "hardhat";
 import fs from "fs";
 import config from "../../config.json";
 
 export default async function main() {
     const constructorArgs = {
+        pokeMe: config.gelatoPokeMe,
+        marginLong: config.marginLongAddress,
+        pool: config.leveragePoolAddress,
         converter: config.converterAddress,
-        taxPercentNumerator: 5,
-        taxPercentDenominator: 100,
-        blocksPerCompound: ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
-    const Pool = await hre.ethers.getContractFactory("LPool");
-    const pool = await Pool.deploy(...Object.values(constructorArgs));
-    config.leveragePoolAddress = pool.address;
-    console.log("Deployed: Pool");
+    const Resolver = await hre.ethers.getContractFactory("Resolver");
+    const resolver = await Resolver.deploy(...Object.values(constructorArgs));
+    config.resolverAddress = resolver.address;
+    console.log("Deployed: Resolver");
 
     fs.writeFileSync("config.json", JSON.stringify(config));
 }
