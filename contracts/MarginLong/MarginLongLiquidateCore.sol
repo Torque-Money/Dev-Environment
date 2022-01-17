@@ -25,7 +25,7 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
     }
 
     // Get the liquidation fee percent
-    function liquidationFeePercent() public view returns (uint256, uint256) {
+    function liquidationFeePercent() public view override returns (uint256, uint256) {
         return (_liquidationFeePercent.numerator, _liquidationFeePercent.denominator);
     }
 

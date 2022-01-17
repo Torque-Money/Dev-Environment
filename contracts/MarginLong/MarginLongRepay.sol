@@ -19,18 +19,9 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
     // Repay an account
     function repayAccount() external {
-        uint256 initialAccountPrice = collateralPrice(_msgSender());
+        require(isBorrowing(_msgSender()), "MarginLongRepay: Cannot repay account with no leveraged positions");
 
         _repayAccount(_msgSender());
-
-        uint256 finalAccountPrice = collateralPrice(_msgSender());
-
-        if (finalAccountPrice > initialAccountPrice) {
-            (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
-            uint256 tax = finalAccountPrice.sub(initialAccountPrice).mul(taxNumerator).div(taxDenominator);
-            (IERC20[] memory tokens, uint256[] memory amounts) = _taxAccount(tax, _msgSender());
-            _deposit(tokens, amounts);
-        }
 
         emit Repay(_msgSender());
     }
@@ -42,23 +33,11 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         _repayAccount(account_);
 
         uint256 accountPrice = collateralPrice(account_);
+        (uint256 liqFeeNumerator, uint256 liqFeeDenominator) = liquidationFeePercent();
+        uint256 penalty = accountPrice.mul(liqFeeNumerator).div(liqFeeDenominator);
 
-        (uint256 taxNumerator, uint256 taxDenominator) = repayTax();
-        uint256 tax = accountPrice.mul(taxNumerator).div(taxDenominator);
-        (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(tax, _msgSender()); // **** Remove this tax in favor of extra interest in a winning position off of the current price
-        uint256[] memory depositAmounts = new uint256[](collateralTokens.length);
-
-        // **** I can remove this - I will just repay the treasury with all of the excess funds generated
-
-        for (uint256 i = 0; i < collateralTokens.length; i++) {
-            depositAmounts[i] = feeAmounts[i];
-            feeAmounts[i] = feeAmounts[i].div(2);
-            depositAmounts[i] = depositAmounts[i].sub(feeAmounts[i]);
-
-            collateralTokens[i].safeTransfer(_msgSender(), feeAmounts[i]);
-        }
-
-        _deposit(collateralTokens, depositAmounts);
+        (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(penalty, _msgSender());
+        for (uint256 i = 0; i < collateralTokens.length; i++) collateralTokens[i].safeTransfer(_msgSender(), feeAmounts[i]);
 
         emit Reset(account_, _msgSender());
 

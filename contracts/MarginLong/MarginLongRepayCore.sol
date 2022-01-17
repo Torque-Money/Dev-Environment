@@ -4,30 +4,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../lib/FractionMath.sol";
 import "../Margin/Margin.sol";
 
 abstract contract MarginLongRepayCore is Margin {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-
-    FractionMath.Fraction private _repayTax;
-
-    constructor(uint256 repayTaxNumerator_, uint256 repayTaxDenominator_) {
-        _repayTax.numerator = repayTaxNumerator_;
-        _repayTax.denominator = repayTaxDenominator_;
-    }
-
-    // Set the repay tax
-    function setRepayTax(uint256 repayTaxNumerator_, uint256 repayTaxDenominator_) external onlyOwner {
-        _repayTax.numerator = repayTaxNumerator_;
-        _repayTax.denominator = repayTaxDenominator_;
-    }
-
-    // Get the repay tax
-    function repayTax() public view returns (uint256, uint256) {
-        return (_repayTax.numerator, _repayTax.denominator);
-    }
 
     // Check whether or not a given borrowed asset is at a loss or profit
     function _repayIsPayout(IERC20 token_, address account_) internal view returns (bool) {
@@ -160,6 +141,8 @@ abstract contract MarginLongRepayCore is Margin {
 
         _deposit(repayCollateralTokens, repayCollateralAmounts);
     }
+
+    function liquidationFeePercent() public view virtual returns (uint256, uint256);
 
     event Repay(address indexed account);
     event Reset(address indexed account, address resetter);

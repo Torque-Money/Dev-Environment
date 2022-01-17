@@ -162,7 +162,14 @@ abstract contract MarginAccount is MarginPool {
 
     // Get the interest accumulated for a given asset
     function interest(IERC20 borrowed_, address account_) public view returns (uint256) {
-        return pool.interest(borrowed_, initialBorrowPrice(borrowed_, account_), initialBorrowBlock(borrowed_, account_));
+        uint256 borrowPrice = _borrowedPrice(borrowed_, account_);
+        uint256 initBorrowPrice = initialBorrowPrice(borrowed_, account_);
+
+        uint256 interestPrice;
+        if (borrowPrice > initBorrowPrice) interestPrice = borrowPrice;
+        else interestPrice = initBorrowPrice;
+
+        return pool.interest(borrowed_, interestPrice, initialBorrowBlock(borrowed_, account_));
     }
 
     // Get the interest accumulated for the total account

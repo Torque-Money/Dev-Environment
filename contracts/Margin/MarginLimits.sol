@@ -39,6 +39,6 @@ abstract contract MarginLimits is MarginAccount {
 
     // Check if an account is resettable
     function resettable(address account_) public view returns (bool) {
-        return (maxLeverageReached(account_) || !sufficientCollateralPrice(account_));
+        return (isBorrowing(account_) && (maxLeverageReached(account_) || !sufficientCollateralPrice(account_)));
     }
 }
