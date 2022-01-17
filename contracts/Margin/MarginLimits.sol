@@ -34,7 +34,7 @@ abstract contract MarginLimits is MarginAccount {
     function maxLeverageReached(address account_) public view returns (bool) {
         uint256 collateralPrice = collateralPrice(account_);
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
-        return (collateralPrice.mul(maxLeverage) >= totalInitialBorrowPrice);
+        return (collateralPrice.mul(maxLeverage) > totalInitialBorrowPrice);
     }
 
     // Check if an account is resettable
