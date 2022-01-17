@@ -9,7 +9,7 @@ abstract contract MarginLongBorrow is Margin {
     using SafeMath for uint256;
 
     // Margin borrow against collateral
-    function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrow(borrowed_) {
+    function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrowed(borrowed_) {
         require(sufficientCollateralPrice(_msgSender()), "MarginLongBorrow: Insufficient collateral to borrow against");
 
         if (!isBorrowing(borrowed_, _msgSender())) {
