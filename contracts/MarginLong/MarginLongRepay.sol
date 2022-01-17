@@ -12,14 +12,17 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
 
     // Helper to repay entire account
     function _repayAccount(address account_) internal {
-        _repayPayouts(account_);
-        _repayCollateral(account_);
+        _repayPayoutAll(account_);
+        _repayLossAll(account_);
         _removeAccount(account_);
     }
 
     // Helper to repay a single leveraged position
     function _repayPosition(IERC20 borrowed_, address account_) internal {
-        // **** We will also have to check at the end if there are any more borrowed positions left and if not remove the account
+        if (_repayIsPayout(borrowed_, account_)) _repayPayout(borrowed_, account_);
+        else _repayLoss(borrowed_, account_);
+
+        if (!isBorrowing(account_)) _removeAccount(account_);
     }
 
     // Repay an account

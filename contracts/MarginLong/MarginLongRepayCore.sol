@@ -39,14 +39,14 @@ abstract contract MarginLongRepayCore is Margin {
 
     // Repay a payout amount
     function _repayPayout(IERC20 token_, address account_) internal {
-        uint256 amountBorrowed = borrowed(token_, account_);
         uint256 payoutAmount = _repayPayoutAmount(token_, account_);
+
+        pool.unclaim(token_, borrowed(token_, account_));
+        pool.withdraw(token_, payoutAmount);
 
         _setInitialBorrowPrice(token_, 0, account_);
         _setBorrowed(token_, 0, account_);
 
-        pool.unclaim(token_, amountBorrowed);
-        pool.withdraw(token_, payoutAmount);
         _setCollateral(token_, collateral(token_, account_).add(payoutAmount), account_);
     }
 
