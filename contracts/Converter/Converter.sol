@@ -32,6 +32,7 @@ contract Converter is IConverter, Ownable {
         path[1] = address(tokenOut_);
 
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
+        tokenIn_.safeApprove(address(router), amountIn_);
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
         return amountOut;
