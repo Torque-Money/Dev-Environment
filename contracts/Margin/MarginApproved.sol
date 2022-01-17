@@ -6,15 +6,15 @@ import "./MarginCore.sol";
 
 abstract contract MarginApproved is MarginCore {
     mapping(IERC20 => bool) private _approvedCollateral;
-    mapping(IERC20 => bool) private _approvedBorrow;
+    mapping(IERC20 => bool) private _approvedBorrowed;
 
     modifier onlyApprovedCollateral(IERC20 token_) {
-        require(isApprovedCollateral(token_), "MarginApproved: Only approved tokens may be used");
+        require(isApprovedCollateral(token_), "MarginApproved: Only approved collateral tokens may be used");
         _;
     }
 
-    modifier onlyApprovedBorrow(IERC20 token_) {
-        require(isApprovedBorrow(token_), "MarginApproved: Only approved tokens may be used");
+    modifier onlyApprovedBorrowed(IERC20 token_) {
+        require(isApprovedBorrowed(token_), "MarginApproved: Only approved borrowed tokens may be used");
         _;
     }
 
@@ -26,9 +26,9 @@ abstract contract MarginApproved is MarginCore {
     }
 
     // Approve a token to be used for borrowing
-    function setApprovedBorrow(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
+    function setApprovedBorrowed(IERC20[] memory token_, bool[] memory approved_) external onlyOwner {
         for (uint256 i = 0; i < token_.length; i++) {
-            _approvedBorrow[token_[i]] = approved_[i];
+            _approvedBorrowed[token_[i]] = approved_[i];
         }
     }
 
@@ -38,7 +38,7 @@ abstract contract MarginApproved is MarginCore {
     }
 
     // Check if a token is approved
-    function isApprovedBorrow(IERC20 token_) public view returns (bool) {
-        return _approvedBorrow[token_];
+    function isApprovedBorrowed(IERC20 token_) public view returns (bool) {
+        return _approvedBorrowed[token_];
     }
 }

@@ -8,7 +8,8 @@ import "./LPoolInterest.sol";
 contract LPool is LPoolStake, LPoolInterest {
     constructor(
         IConverter converter_,
-        uint256 taxPercent_,
+        uint256 taxPercentNumerator_,
+        uint256 taxPercentDenominator_,
         uint256 blocksPerCompound_
-    ) LPoolTax(taxPercent_, 100) LPoolDeposit(converter_) LPoolInterest(blocksPerCompound_) {}
+    ) LPoolTax(taxPercentNumerator_, taxPercentDenominator_) LPoolDeposit(converter_) LPoolInterest(blocksPerCompound_) {}
 }
