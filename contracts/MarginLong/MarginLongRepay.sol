@@ -10,11 +10,16 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    // Helper to repay account
+    // Helper to repay entire account
     function _repayAccount(address account_) internal {
         _repayPayouts(account_);
         _repayCollateral(account_);
         _removeAccount(account_);
+    }
+
+    // Helper to repay a single leveraged position
+    function _repayPosition(IERC20 borrowed_, address account_) internal {
+        // **** We will also have to check at the end if there are any more borrowed positions left and if not remove the account
     }
 
     // Repay an account
