@@ -122,8 +122,10 @@ abstract contract MarginLongRepayCore is Margin {
     // Deposit collateral into the pool
     function _deposit(IERC20[] memory token_, uint256[] memory amount_) internal {
         for (uint256 i = 0; i < token_.length; i++) {
-            token_[i].safeApprove(address(pool), amount_[i]);
-            pool.deposit(token_[i], amount_[i]);
+            if (amount_[i] > 0) {
+                token_[i].safeApprove(address(pool), amount_[i]);
+                pool.deposit(token_[i], amount_[i]);
+            }
         }
     }
 

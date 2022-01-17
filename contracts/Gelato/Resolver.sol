@@ -75,8 +75,10 @@ contract Resolver is PokeMeReady {
         _transfer(fee, feeToken);
 
         for (uint256 i = 0; i < repayTokens_.length; i++) {
-            repayTokens_[i].safeApprove(address(pool), repayAmounts_[i]);
-            pool.deposit(repayTokens_[i], repayAmounts_[i]);
+            if (repayAmounts_[i] > 0) {
+                repayTokens_[i].safeApprove(address(pool), repayAmounts_[i]);
+                pool.deposit(repayTokens_[i], repayAmounts_[i]);
+            }
         }
     }
 
