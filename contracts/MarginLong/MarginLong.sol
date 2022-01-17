@@ -10,16 +10,16 @@ contract MarginLong is MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
     constructor(
         LPool pool_,
         IOracle oracle_,
-        uint256 minMarginLevelPercent_,
+        uint256 minMarginLevelPercentNumerator_,
+        uint256 minMarginLevelPercentDenominator_,
         uint256 minCollateralPrice_,
         uint256 maxLeverage_,
-        uint256 repayTaxPercent_,
-        uint256 liquidationFeePercent_
+        uint256 liquidationFeePercentNumerator_,
+        uint256 liquidationFeePercentDenominator_
     )
         MarginCore(pool_, oracle_)
-        MarginLevel(minMarginLevelPercent_, 100)
+        MarginLevel(minMarginLevelPercentNumerator_, minMarginLevelPercentDenominator_)
         MarginLimits(minCollateralPrice_, maxLeverage_)
-        MarginLongRepayCore(repayTaxPercent_, 100)
-        MarginLongLiquidateCore(liquidationFeePercent_, 100)
+        MarginLongLiquidateCore(liquidationFeePercentNumerator_, liquidationFeePercentDenominator_)
     {}
 }

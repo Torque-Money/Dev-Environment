@@ -10,7 +10,7 @@ import "../LPool/LPool.sol";
 import "../Converter/IConverter.sol";
 import "./PokeMeReady.sol";
 
-contract Resolver is PokeMeReady, Ownable {
+contract Resolver is PokeMeReady {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -19,33 +19,13 @@ contract Resolver is PokeMeReady, Ownable {
     IConverter public converter;
 
     constructor(
-        IPokeMe pokeMe_,
+        address pokeMe_,
         MarginLong marginLong_,
         LPool pool_,
         IConverter converter_
     ) PokeMeReady(pokeMe_) {
         marginLong = marginLong_;
         pool = pool_;
-        converter = converter_;
-    }
-
-    // Set the poke me
-    function setPokeMe(IPokeMe pokeMe_) external onlyOwner {
-        pokeMe = pokeMe_;
-    }
-
-    // Set the margin long
-    function setMarginLong(MarginLong marginLong_) external onlyOwner {
-        marginLong = marginLong_;
-    }
-
-    // Set the pool
-    function setPool(LPool pool_) external onlyOwner {
-        pool = pool_;
-    }
-
-    // Set the converter
-    function setConverter(IConverter converter_) external onlyOwner {
         converter = converter_;
     }
 
@@ -74,7 +54,7 @@ contract Resolver is PokeMeReady, Ownable {
 
     // Pay transaction
     function _payTransaction(IERC20[] memory repayTokens_, uint256[] memory repayAmounts_) internal {
-        (uint256 fee, address feeToken) = pokeMe.getFeeDetails();
+        (uint256 fee, address feeToken) = IPokeMe(pokeMe).getFeeDetails();
 
         for (uint256 i = 0; i < repayTokens_.length; i++) {
             uint256 amountOut = converter.maxAmountOut(repayTokens_[i], repayAmounts_[i], IERC20(feeToken));

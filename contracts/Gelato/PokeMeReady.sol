@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: GPL-3.0-only
+//SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
 import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -10,17 +10,17 @@ interface IPokeMe {
 }
 
 abstract contract PokeMeReady {
-    IPokeMe public immutable pokeMe;
+    address public immutable pokeMe;
     address payable public immutable gelato;
     address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
-    constructor(IPokeMe _pokeMe) {
+    constructor(address _pokeMe) {
         pokeMe = _pokeMe;
         gelato = IPokeMe(_pokeMe).gelato();
     }
 
     modifier onlyPokeMe() {
-        require(msg.sender == address(pokeMe), "PokeMeReady: onlyPokeMe");
+        require(msg.sender == pokeMe, "PokeMeReady: onlyPokeMe");
         _;
     }
 
