@@ -48,6 +48,8 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(tax, _msgSender()); // **** Remove this tax in favor of extra interest in a winning position off of the current price
         uint256[] memory depositAmounts = new uint256[](collateralTokens.length);
 
+        // **** I can remove this - I will just repay the treasury with all of the excess funds generated
+
         for (uint256 i = 0; i < collateralTokens.length; i++) {
             depositAmounts[i] = feeAmounts[i];
             feeAmounts[i] = feeAmounts[i].div(2);

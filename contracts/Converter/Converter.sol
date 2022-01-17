@@ -30,8 +30,38 @@ contract Converter is IConverter, Ownable {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(tokenOut_);
+
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
+
         return amountOut;
+    }
+
+    // Get the maximum output tokens for given input tokens
+    function maxAmountOut(
+        IERC20 tokenIn_,
+        uint256 amountIn_,
+        IERC20 tokenOut_
+    ) external view override returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+
+        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
+        return amountOut;
+    }
+
+    // Get the minimum input tokens required for the given output tokens
+    function minAmountIn(
+        IERC20 tokenIn_,
+        IERC20 tokenOut_,
+        uint256 amountOut_
+    ) external view override returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+
+        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
+        return amountIn;
     }
 }

@@ -9,4 +9,16 @@ interface IConverter {
         uint256 amountIn_,
         IERC20 tokenOut_
     ) external returns (uint256);
+
+    function maxAmountOut(
+        IERC20 tokenIn_,
+        uint256 amountIn_,
+        IERC20 tokenOut_
+    ) external view returns (uint256);
+
+    function minAmountIn(
+        IERC20 tokenIn_,
+        IERC20 tokenOut_,
+        uint256 amountOut_
+    ) external view returns (uint256);
 }
