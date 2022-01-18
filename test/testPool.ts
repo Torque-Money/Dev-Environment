@@ -6,11 +6,14 @@ import {ERC20, LPool} from "../typechain-types";
 describe("Stake", async function () {
     let pool: LPool;
     let token: ERC20;
+    let lpToken: ERC20;
     let signerAddress: string;
 
     beforeEach(async () => {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         token = await ethers.getContractAt("ERC20", config.approved[0].address);
+
+        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
@@ -22,8 +25,6 @@ describe("Stake", async function () {
         const tokensToStake = ethers.BigNumber.from(1000000);
         const stakeValue = await pool.stakeValue(token.address, tokensToStake);
         await pool.stake(token.address, tokensToStake);
-
-        const lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensToStake));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(stakeValue);
@@ -40,5 +41,25 @@ describe("Stake", async function () {
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
     });
 
-    it("should fail to access out of bounds content", async () => {});
+    it("should fail to stake incorrect tokens and invalid amounts", async () => {
+        try {
+            await pool.stake(lpToken.address, 0);
+            expect(true).to.equal(false);
+        } catch {}
+
+        try {
+            await pool.redeem(token.address, 0);
+            expect(true).to.equal(false);
+        } catch {}
+
+        try {
+            await pool.stake(token.address, ethers.BigNumber.from(2).pow(255));
+            expect(true).to.equal(false);
+        } catch {}
+
+        try {
+            await pool.redeem(lpToken.address, 0);
+            expect(true).to.equal(false);
+        } catch {}
+    });
 });
