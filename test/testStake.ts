@@ -16,7 +16,7 @@ describe("Stake", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    it("should stake tokens for LP tokens", async function () {
+    it("should stake tokens for LP tokens and redeem for an equal amount", async function () {
         const initialBalance = await token.balanceOf(signerAddress);
 
         const tokensToStake = ethers.BigNumber.from(1000000);
