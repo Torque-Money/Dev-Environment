@@ -4,6 +4,9 @@ import {chooseConfig} from "../util/chooseConfig";
 export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(test);
 
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
@@ -26,6 +29,8 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
 
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.marginLongAddress);
     await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.resolverAddress);
+
+    await leveragePool.addTaxAccount(signerAddress);
 
     console.log("Setup: Leverage pool");
 }
