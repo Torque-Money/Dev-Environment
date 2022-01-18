@@ -1,19 +1,34 @@
 import "@nomiclabs/hardhat-waffle";
 import {task} from "hardhat/config";
 
-import fast from "./scripts/fast";
+import deploy from "./scripts/deploy/deploy";
+import setup from "./scripts/setup/setup";
+
+import utilFund from "./scripts/util/utilFund";
+import utilApprove from "./scripts/util/utilApprove";
+import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import dotenv from "dotenv";
 dotenv.config();
 
-// **** The fast isnt going to work for everything - I dont get to spend others money on live or testnet
-// **** In addition we should remove the need for whales on testnet and the ability to choose the config on testnet
+task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+    await deploy(false, hre);
+    await setup(false, hre);
+});
 
-task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => await fast(false, hre));
+task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
+    await deploy(true, hre);
+    await setup(true, hre);
+});
 
-task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => await fast(true, hre));
+task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
+    await deploy(false, hre);
+    await setup(false, hre);
 
-task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => await fast(false, hre));
+    await utilFund(hre);
+    await utilApprove(hre);
+    await utilUpdateFiles();
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const NETWORK_URL_TEST = process.env.NETWORK_URL; // Rinkeby
