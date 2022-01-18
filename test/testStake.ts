@@ -27,6 +27,7 @@ describe("Stake", async function () {
 
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensToStake));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(stakeValue);
+        expect(await token.balanceOf(pool.address)).to.equal(tokensToStake);
 
         expect(await pool.redeemValue(lpToken.address, stakeValue)).to.equal(tokensToStake);
 
