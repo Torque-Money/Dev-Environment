@@ -1,7 +1,8 @@
-import hre, {ethers} from "hardhat";
+import {ethers} from "hardhat";
+import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
-export default async function main(test: boolean) {
+export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(test);
 
     const constructorArgs = {

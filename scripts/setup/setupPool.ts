@@ -1,7 +1,7 @@
-import hre from "hardhat";
+import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig} from "../util/chooseConfig";
 
-export default async function main(test: boolean) {
+export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(test);
 
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);

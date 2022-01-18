@@ -1,8 +1,8 @@
-import hre from "hardhat";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import {chooseConfig} from "./chooseConfig";
+import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-export default async function main(test: boolean) {
+export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(test);
 
     const signer = hre.ethers.provider.getSigner();
