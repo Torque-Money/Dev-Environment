@@ -4,8 +4,9 @@
   "scripts": {
     "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
-    "run": "npx hardhat run --network localhost",
-    "update": "ts-node scripts/util/utilUpdateFiles.ts",
+    "deploy:main": "npx hardhat deploy-main --network mainnet",
+    "deploy:test": "npx hardhat deploy-test --network testnet",
+    "deploy:fork": "npx hardhat deploy-fork --network localhost",
     "test": "npx hardhat test --network localhost",
     "test:setup": "npm run run -- scripts/fast.ts && npm run test"
   },

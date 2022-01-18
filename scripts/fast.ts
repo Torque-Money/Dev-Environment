@@ -15,12 +15,3 @@ export default async function main(test: boolean) {
     await utilApprove(test);
     await utilUpdateFiles();
 }
-
-if (require.main === module) {
-    main(TEST)
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });
-}
