@@ -1,7 +1,7 @@
 {
   "avgBlockTime": 1,
-  "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
-  "gelatoPokeMe": "0x6EDe1597c05A0ca77031cBA43Ab887ccf24cd7e8",
+  "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+  "gelatoPokeMe": "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
   "LPPrefixName": "Torque Leverage",
   "LPPrefixSymbol": "tl",
   "approved": [
