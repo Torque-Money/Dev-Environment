@@ -5,22 +5,24 @@ import utilFund from "./util/utilFund";
 import utilApprove from "./util/utilApprove";
 import utilUpdateFiles from "./util/utilUpdateFiles";
 
-// **** I need to add some sort of option for command line argument parsing
-// **** I might remove the boolean = false by default later
+export default async function main(test: boolean) {
+    await deploy(test);
+    await setup(test);
 
-export default async function main(test: boolean = false) {
-    await deploy();
-    await setup();
-
-    await utilFund();
-    await utilApprove();
+    await utilFund(test);
+    await utilApprove(test);
     await utilUpdateFiles();
 }
 
-if (require.main === module)
-    main()
+if (require.main === module) {
+    let test = false;
+
+    const argv = process.argv.slice(2);
+
+    main(test)
         .then(() => process.exit(0))
         .catch((error) => {
             console.error(error);
             process.exit(1);
         });
+}
