@@ -2,7 +2,7 @@ import hre from "hardhat";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
 import {chooseConfig} from "./chooseConfig";
 
-export default async function main(test: boolean = false) {
+export default async function main(test: boolean) {
     const config = chooseConfig(test);
 
     const signer = hre.ethers.provider.getSigner();
@@ -19,11 +19,3 @@ export default async function main(test: boolean = false) {
         console.log(`Approve: Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
     }
 }
-
-if (require.main === module)
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });

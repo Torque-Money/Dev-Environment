@@ -1,7 +1,7 @@
 import hre from "hardhat";
 import {chooseConfig} from "../util/chooseConfig";
 
-export default async function main(test: boolean = false) {
+export default async function main(test: boolean) {
     const config = chooseConfig(test);
 
     const oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
@@ -15,11 +15,3 @@ export default async function main(test: boolean = false) {
 
     console.log("Setup: Oracle");
 }
-
-if (require.main === module)
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });

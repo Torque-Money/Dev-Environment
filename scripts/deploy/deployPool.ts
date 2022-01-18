@@ -1,7 +1,7 @@
 import hre, {ethers} from "hardhat";
 import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
-export default async function main(test: boolean = false) {
+export default async function main(test: boolean) {
     const config = chooseConfig(test);
 
     const constructorArgs = {
@@ -17,11 +17,3 @@ export default async function main(test: boolean = false) {
 
     saveConfig(config, test);
 }
-
-if (require.main === module)
-    main()
-        .then(() => process.exit(0))
-        .catch((error) => {
-            console.error(error);
-            process.exit(1);
-        });
