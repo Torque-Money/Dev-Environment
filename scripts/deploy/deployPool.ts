@@ -8,10 +8,15 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
         converter: config.converterAddress,
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
-        blocksPerCompound: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
+        blocksPerInterestApplication: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
-    const pool = await Pool.deploy(...Object.values(constructorArgs));
+    const pool = await Pool.deploy(
+        constructorArgs.converter,
+        constructorArgs.taxPercentNumerator,
+        constructorArgs.taxPercentDenominator,
+        constructorArgs.blocksPerInterestApplication
+    );
     config.leveragePoolAddress = pool.address;
     console.log("Deployed: Pool");
 

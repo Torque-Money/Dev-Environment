@@ -10,6 +10,6 @@ contract LPool is LPoolStake, LPoolInterest {
         IConverter converter_,
         uint256 taxPercentNumerator_,
         uint256 taxPercentDenominator_,
-        uint256 blocksPerCompound_
-    ) LPoolTax(taxPercentNumerator_, taxPercentDenominator_) LPoolDeposit(converter_) LPoolInterest(blocksPerCompound_) {}
+        uint256 blocksPerInterestApplication_
+    ) LPoolTax(taxPercentNumerator_, taxPercentDenominator_) LPoolDeposit(converter_) LPoolInterest(blocksPerInterestApplication_) {}
 }

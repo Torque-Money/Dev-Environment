@@ -10,7 +10,7 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
         priceDecimals: 18,
     };
     const Oracle = await hre.ethers.getContractFactory("Oracle");
-    const oracle = await Oracle.deploy(...Object.values(constructorArgs));
+    const oracle = await Oracle.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
     config.oracleAddress = oracle.address;
     console.log("Deployed: Oracle");
 

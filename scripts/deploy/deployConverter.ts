@@ -7,8 +7,9 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
     const constructorArgs = {
         router: config.routerAddress,
     };
+
     const Converter = await hre.ethers.getContractFactory("Converter");
-    const converter = await Converter.deploy(...Object.values(constructorArgs));
+    const converter = await Converter.deploy(constructorArgs.router);
     config.converterAddress = converter.address;
     console.log("Deployed: Converter");
 

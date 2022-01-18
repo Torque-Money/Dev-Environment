@@ -9,20 +9,20 @@ import "./LPoolLiquidity.sol";
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeMath for uint256;
 
-    uint256 public interestRateBlocks;
+    uint256 public blocksPerInterestApplication;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMin;
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax;
 
     mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
-    constructor(uint256 interestRateBlocks_) {
-        interestRateBlocks = interestRateBlocks_;
+    constructor(uint256 blocksPerInterestApplication_) {
+        blocksPerInterestApplication = blocksPerInterestApplication_;
     }
 
     // Set the number of blocks the interest rate is calculated for
-    function setInterestRateBlocks(uint256 interestRateBlocks_) external onlyRole(POOL_ADMIN) {
-        interestRateBlocks = interestRateBlocks_;
+    function setBlocksPerInterestApplication(uint256 blocksPerInterestApplication_) external onlyRole(POOL_ADMIN) {
+        blocksPerInterestApplication = blocksPerInterestApplication_;
     }
 
     // Get the max interest for minimum utilization for the given token
@@ -136,6 +136,6 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
 
-        return initialBorrow_.mul(interestRateNumerator).mul(blocksSinceBorrow).div(interestRateDenominator).div(interestRateBlocks);
+        return initialBorrow_.mul(interestRateNumerator).mul(blocksSinceBorrow).div(interestRateDenominator).div(blocksPerInterestApplication);
     }
 }
