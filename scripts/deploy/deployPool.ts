@@ -1,4 +1,3 @@
-import {ethers} from "hardhat";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
@@ -9,7 +8,7 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
         converter: config.converterAddress,
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
-        blocksPerCompound: ethers.BigNumber.from(2628000).div(config.avgBlockTime),
+        blocksPerCompound: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(...Object.values(constructorArgs));
