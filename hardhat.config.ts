@@ -6,6 +6,8 @@ import fast from "./scripts/fast";
 import dotenv from "dotenv";
 dotenv.config();
 
+// **** To fix this I simply need to pass in the hre instead of the regular hardhat
+
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => await fast(false));
 
 task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => await fast(true));
