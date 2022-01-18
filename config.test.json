@@ -1,0 +1,40 @@
+{
+  "avgBlockTime": 1,
+  "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
+  "gelatoPokeMe": "0x6EDe1597c05A0ca77031cBA43Ab887ccf24cd7e8",
+  "LPPrefixName": "Torque Leverage",
+  "LPPrefixSymbol": "tl",
+  "approved": [
+    {
+      "name": "Dai",
+      "symbol": "DAI",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+      "address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
+      "whale": "0x598c5e19a132a5c433a80c908f05d87bfdaac4ae",
+      "decimals": 18,
+      "priceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "reservePriceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true
+    },
+    {
+      "name": "Wrapped Fantom",
+      "symbol": "wFTM",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
+      "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+      "whale": "0x4901c740607e415685b4d09e4aa960329cd183ca",
+      "decimals": 18,
+      "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "reservePriceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true
+    }
+  ],
+  "leveragePoolAddress": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+  "oracleAddress": "0xD84379CEae14AA33C123Af12424A37803F885889",
+  "converterAddress": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
+  "marginLongAddress": "0x2B0d36FACD61B71CC05ab8F3D2355ec3631C0dd5",
+  "resolverAddress": "0xfbC22278A96299D91d41C453234d97b4F5Eb9B2d"
+}

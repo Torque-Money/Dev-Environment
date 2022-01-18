@@ -6,7 +6,8 @@
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
     "run": "npx hardhat run --network localhost",
     "update": "ts-node scripts/util/utilUpdateFiles.ts",
-    "test": "npx hardhat test --network localhost"
+    "test": "npx hardhat test --network localhost",
+    "test:setup": "npm run run -- scripts/fast.ts && npm run test"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.2.2",
