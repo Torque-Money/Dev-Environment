@@ -1,15 +1,14 @@
 import hre from "hardhat";
-import config from "../../config.json";
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
+import {chooseConfig} from "./chooseConfig";
 
-export default async function main() {
-    // Account to fund with tokens
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    // Fund the accounts and approve pool and margin protocols to spend
     for (const approved of config.approved) {
-        // Fund account with tokens
         await hre.network.provider.request({
             method: "hardhat_impersonateAccount",
             params: [approved.whale],
