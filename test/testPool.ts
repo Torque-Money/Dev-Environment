@@ -1,6 +1,7 @@
 import {expect} from "chai";
 import {ethers} from "hardhat";
 import config from "../config.json";
+import {shouldFail} from "../scripts/util/testUtils";
 import {ERC20, LPool} from "../typechain-types";
 
 describe("Stake", async function () {
@@ -42,24 +43,17 @@ describe("Stake", async function () {
     });
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {
-        try {
-            await pool.stake(lpToken.address, 0);
-            expect(true).to.equal(false);
-        } catch {}
+        await shouldFail(async () => await pool.stake(lpToken.address, 0));
 
-        try {
-            await pool.redeem(token.address, 0);
-            expect(true).to.equal(false);
-        } catch {}
+        await shouldFail(async () => await pool.redeem(token.address, 0));
 
-        try {
-            await pool.stake(token.address, ethers.BigNumber.from(2).pow(255));
-            expect(true).to.equal(false);
-        } catch {}
+        await shouldFail(async () => await pool.stake(token.address, ethers.BigNumber.from(2).pow(255)));
 
+        await shouldFail(async () => await pool.redeem(lpToken.address, 0));
+    });
+
+    it("should fail to access out of bounds operations", async () => {
         try {
-            await pool.redeem(lpToken.address, 0);
-            expect(true).to.equal(false);
         } catch {}
     });
 });
