@@ -44,16 +44,17 @@ describe("Stake", async function () {
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {
         await shouldFail(async () => await pool.stake(lpToken.address, 0));
-
         await shouldFail(async () => await pool.redeem(token.address, 0));
 
         await shouldFail(async () => await pool.stake(token.address, ethers.BigNumber.from(2).pow(255)));
-
         await shouldFail(async () => await pool.redeem(lpToken.address, 0));
     });
 
     it("should fail to access out of bounds operations", async () => {
-        try {
-        } catch {}
+        await shouldFail(async () => await pool.deposit(token.address, 0));
+        await shouldFail(async () => await pool.withdraw(token.address, 0));
+
+        await shouldFail(async () => await pool.claim(token.address, 0));
+        await shouldFail(async () => await pool.unclaim(token.address, 0));
     });
 });
