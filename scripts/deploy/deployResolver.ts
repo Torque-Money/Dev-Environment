@@ -11,7 +11,7 @@ export default async function main(test: boolean, hre: HardhatRuntimeEnvironment
         converter: config.converterAddress,
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
-    const resolver = await Resolver.deploy(...Object.values(constructorArgs));
+    const resolver = await Resolver.deploy(constructorArgs.pokeMe, constructorArgs.marginLong, constructorArgs.pool, constructorArgs.converter);
     config.resolverAddress = resolver.address;
     console.log("Deployed: Resolver");
 
