@@ -1,8 +1,9 @@
 import hre from "hardhat";
-import fs from "fs";
-import config from "../../config.json";
+import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const constructorArgs = {
         pool: config.leveragePoolAddress,
         oracle: config.oracleAddress,
@@ -18,7 +19,7 @@ export default async function main() {
     config.marginLongAddress = marginLong.address;
     console.log("Deployed: Margin long");
 
-    fs.writeFileSync("config.json", JSON.stringify(config));
+    saveConfig(config, test);
 }
 
 if (require.main === module)

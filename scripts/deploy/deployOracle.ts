@@ -1,8 +1,9 @@
 import hre from "hardhat";
-import fs from "fs";
-import config from "../../config.json";
+import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const constructorArgs = {
         thresholdNumerator: 1,
         thresholdDenominator: 200,
@@ -13,7 +14,7 @@ export default async function main() {
     config.oracleAddress = oracle.address;
     console.log("Deployed: Oracle");
 
-    fs.writeFileSync("config.json", JSON.stringify(config));
+    saveConfig(config, test);
 }
 
 if (require.main === module)

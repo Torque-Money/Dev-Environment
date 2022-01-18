@@ -1,8 +1,9 @@
 import hre from "hardhat";
-import fs from "fs";
-import config from "../../config.json";
+import {chooseConfig, saveConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const constructorArgs = {
         router: config.routerAddress,
     };
@@ -11,7 +12,7 @@ export default async function main() {
     config.converterAddress = converter.address;
     console.log("Deployed: Converter");
 
-    fs.writeFileSync("config.json", JSON.stringify(config));
+    saveConfig(config, test);
 }
 
 if (require.main === module)
