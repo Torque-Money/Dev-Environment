@@ -5,6 +5,8 @@ import utilFund from "./util/utilFund";
 import utilApprove from "./util/utilApprove";
 import utilUpdateFiles from "./util/utilUpdateFiles";
 
+const TEST = false;
+
 export default async function main(test: boolean) {
     await deploy(test);
     await setup(test);
@@ -15,11 +17,7 @@ export default async function main(test: boolean) {
 }
 
 if (require.main === module) {
-    let test = false;
-
-    const argv = process.argv.slice(2);
-
-    main(test)
+    main(TEST)
         .then(() => process.exit(0))
         .catch((error) => {
             console.error(error);
