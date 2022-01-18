@@ -1,7 +1,9 @@
 import hre from "hardhat";
-import config from "../../config.json";
+import {chooseConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
 
     const oracleApproved = config.approved.map((approved) => approved.address);

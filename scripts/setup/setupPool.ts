@@ -1,7 +1,9 @@
 import hre from "hardhat";
-import config from "../../config.json";
+import {chooseConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const leveragePool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
     const leveragePoolApprovedTokens = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);

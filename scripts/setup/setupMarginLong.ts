@@ -1,7 +1,9 @@
 import hre from "hardhat";
-import config from "../../config.json";
+import {chooseConfig} from "../util/chooseConfig";
 
-export default async function main() {
+export default async function main(test: boolean = false) {
+    const config = chooseConfig(test);
+
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
 
     const marginApprovedCollateral = config.approved.filter((approved) => approved.marginLongCollateral).map((approved) => approved.address);
