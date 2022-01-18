@@ -1,6 +1,6 @@
 # Torque Protocol
 
-A DeFi leveraging protocol that allows users to leverage as much as they wish against their collateral whilst providing high returns to liquidity providers.
+A DeFi leveraging protocol that allows users to leverage extreme amounts of crypto against their collateral whilst providing high returns and yields to liquidity providers.
 
 ## Official links
 
