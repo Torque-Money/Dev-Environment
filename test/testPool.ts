@@ -16,7 +16,7 @@ describe("Stake", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    it("should stake tokens for LP tokens and redeem for an equal amount", async function () {
+    it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const initialBalance = await token.balanceOf(signerAddress);
 
         const tokensToStake = ethers.BigNumber.from(1000000);
@@ -28,6 +28,7 @@ describe("Stake", async function () {
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensToStake));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(stakeValue);
         expect(await token.balanceOf(pool.address)).to.equal(tokensToStake);
+        expect(await pool.liquidity(token.address)).to.equal(tokensToStake);
 
         expect(await pool.redeemValue(lpToken.address, stakeValue)).to.equal(tokensToStake);
 
@@ -36,4 +37,6 @@ describe("Stake", async function () {
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
     });
+
+    it("should fail to access out of bounds content", async () => {});
 });
