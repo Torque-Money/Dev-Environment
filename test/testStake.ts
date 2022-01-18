@@ -1,11 +1,11 @@
 import {ethers} from "hardhat";
-import deployFast from "../scripts/fast";
 import config from "../config.json";
+import {LPool} from "../typechain-types";
 
-describe("Stake", function () {
-    beforeEach(async () => await deployFast(false));
+describe("Stake", async function () {
+    let pool: LPool;
 
-    it("should stake tokens for an equal amount of LP tokens", async function () {
-        // Do something with the accounts
-    });
+    beforeEach(async () => (pool = await ethers.getContractAt("LPool", config.leveragePoolAddress)));
+
+    it("should stake tokens for an equal amount of LP tokens", async function () {});
 });
