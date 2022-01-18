@@ -15,16 +15,22 @@ import dotenv from "dotenv";
 dotenv.config();
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+    hre.run("compile");
+
     await deploy(false, hre);
     await setup(false, hre);
 });
 
 task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
+    hre.run("compile");
+
     await deploy(true, hre);
     await setup(true, hre);
 });
 
 task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
+    hre.run("compile");
+
     await deploy(false, hre);
     await setup(false, hre);
 
