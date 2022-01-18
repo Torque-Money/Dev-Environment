@@ -30,6 +30,7 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
         require(isBorrowing(borrowed_, _msgSender()), "MarginLongRepay: Cannot repay account with no leveraged position");
 
         _repayAccount(borrowed_, _msgSender());
+        require(!resettable(_msgSender()), "MarginLongRepay: Repaying position puts account at risk");
 
         emit Repay(_msgSender(), borrowed_);
     }
