@@ -6,11 +6,11 @@ import fast from "./scripts/fast";
 import dotenv from "dotenv";
 dotenv.config();
 
-task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => await fast(false));
+task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => await fast(false, hre));
 
-task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => await fast(true));
+task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => await fast(true, hre));
 
-task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => await fast(false));
+task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => await fast(false, hre));
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const NETWORK_URL_TEST = "";
