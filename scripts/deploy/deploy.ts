@@ -3,11 +3,12 @@ import deployOracle from "./deployOracle";
 import deployConverter from "./deployConverter";
 import deployMarginLong from "./deployMarginLong";
 import deployResolver from "./deployResolver";
+import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-export default async function main(test: boolean) {
-    await deployConverter(test);
-    await deployPool(test);
-    await deployOracle(test);
-    await deployMarginLong(test);
-    await deployResolver(test);
+export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
+    await deployConverter(test, hre);
+    await deployPool(test, hre);
+    await deployOracle(test, hre);
+    await deployMarginLong(test, hre);
+    await deployResolver(test, hre);
 }
