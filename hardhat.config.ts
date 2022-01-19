@@ -17,25 +17,33 @@ dotenv.config();
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     hre.run("compile");
 
-    await deploy(false, hre);
-    await setup(false, hre);
+    await deploy("main", hre);
+    await setup("main", hre);
+
+    await utilUpdateFiles();
 });
 
 task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
     hre.run("compile");
 
-    await deploy(true, hre);
-    await setup(true, hre);
+    await deploy("test", hre);
+    await setup("test", hre);
+
+    await utilFund("test", hre);
+    await utilApprove("test", hre);
+
+    await utilUpdateFiles();
 });
 
 task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
     hre.run("compile");
 
-    await deploy(false, hre);
-    await setup(false, hre);
+    await deploy("fork", hre);
+    await setup("fork", hre);
 
-    await utilFund(hre);
-    await utilApprove(hre);
+    await utilFund("fork", hre);
+    await utilApprove("fork", hre);
+
     await utilUpdateFiles();
 });
 
