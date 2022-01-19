@@ -5,8 +5,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../Margin/Margin.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginLongBorrow is Margin {
     using SafeMath for uint256;
 
@@ -22,9 +20,6 @@ abstract contract MarginLongBorrow is Margin {
 
         uint256 _initialBorrowPrice = oracle.priceMin(borrowed_, amount_);
         _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
-
-        console.log(resettable(_msgSender()));
-        console.log(liquidatable(_msgSender()));
 
         require(!resettable(_msgSender()) && !liquidatable(_msgSender()), "MarginLongBorrow: Borrowing desired amount puts account at risk");
 
