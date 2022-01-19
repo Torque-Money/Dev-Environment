@@ -1,3 +1,4 @@
+import {expect} from "chai";
 import {ethers} from "hardhat";
 import config from "../config.json";
 import {ERC20, MarginLong} from "../typechain-types";
@@ -19,5 +20,12 @@ describe("MarginLong", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    it("deposit and undeposit collateral into the account", async () => {});
+    it("deposit and undeposit collateral into the account", async () => {
+        const initialBalance = await token.balanceOf(signerAddress);
+
+        const tokenAmount = ethers.BigNumber.from(1000000);
+        await marginLong.addCollateral(token.address, tokenAmount);
+
+        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokenAmount));
+    });
 });
