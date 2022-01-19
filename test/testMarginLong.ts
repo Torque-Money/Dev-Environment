@@ -56,8 +56,10 @@ describe("MarginLong", async function () {
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
         const borrowTokenBalance = await borrowedToken.balanceOf(signerAddress);
-        const stakeValue = await pool.stakeValue(borrowedToken.address, borrowTokenBalance);
-        await pool.stake(borrowedToken.address, borrowTokenBalance);
+        const tokensStaked = ethers.BigNumber.from(10).pow(18).mul(50);
+
+        const stakeValue = await pool.stakeValue(borrowedToken.address, tokensStaked);
+        await pool.stake(borrowedToken.address, tokensStaked);
 
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
@@ -67,9 +69,9 @@ describe("MarginLong", async function () {
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
         const borrowedAmount = ethers.BigNumber.from(1000000);
-        await marginLong.borrow(borrowedToken.address, borrowedAmount); // **** This is the problem
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
-        expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance.sub(borrowedAmount));
+        expect(await pool.liquidity(borrowedToken.address)).to.equal(tokensStaked.sub(borrowedAmount));
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(borrowedAmount);
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(borrowedAmount);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(borrowedAmount);
@@ -81,8 +83,8 @@ describe("MarginLong", async function () {
         const collateralValue = await marginLong.collateral(token.address, signerAddress);
         await marginLong.removeCollateral(token.address, collateralValue);
 
-        expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance);
-        expect(await pool.tvl(borrowedToken.address)).to.equal(borrowTokenBalance);
+        expect(await pool.liquidity(borrowedToken.address)).to.equal(tokensStaked);
+        expect(await pool.tvl(borrowedToken.address)).to.equal(tokensStaked);
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
