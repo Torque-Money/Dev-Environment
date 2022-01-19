@@ -67,7 +67,7 @@ describe("MarginLong", async function () {
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
         const borrowedAmount = ethers.BigNumber.from(1000000);
-        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount); // **** This is the problem
 
         expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance.sub(borrowedAmount));
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(borrowedAmount);
