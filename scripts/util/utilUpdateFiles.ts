@@ -2,7 +2,7 @@ import fs from "fs";
 
 export default async function main() {
     const compiledContracts = process.cwd() + "/artifacts/contracts";
-    const configs = [process.cwd() + "/config.test.json", process.cwd() + "/config.json"];
+    const configs = [process.cwd() + "/config.main.json", process.cwd() + "/config.test.json", process.cwd() + "/config.fork.json"];
     const abis = ["LPool/LPool.sol/LPool.json", "MarginLong/MarginLong.sol/MarginLong.json", "Oracle/Oracle.sol/Oracle.json"];
     const outDir = process.cwd() + "/../Torque-Frontend/src/config";
 

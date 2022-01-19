@@ -1,12 +1,14 @@
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import {chooseConfig} from "./chooseConfig";
+import {chooseConfig, ConfigType} from "./chooseConfig";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-export default async function main(hre: HardhatRuntimeEnvironment) {
-    const config = chooseConfig(false);
+export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    const config = chooseConfig(configType);
 
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
+
+    // **** This will be changed to router swaps later
 
     for (const approved of config.approved) {
         await hre.network.provider.request({
