@@ -4,7 +4,7 @@ import config from "../config.json";
 import {shouldFail} from "../scripts/util/testUtils";
 import {ERC20, Oracle} from "../typechain-types";
 
-describe("Stake", async function () {
+describe("Oracle", async function () {
     let oracle: Oracle;
     let token: ERC20;
     let lpToken: ERC20;
