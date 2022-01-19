@@ -14,7 +14,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     for (const approved of config.approved) {
         const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
-        const ethAmount = hre.ethers.utils.parseEther("100");
+        const ethAmount = hre.ethers.utils.parseEther(Math.floor(10000 / config.approved.length).toString());
         await router.swapExactETHForTokens(0, [await router.WETH(), token.address], signerAddress, Date.now(), {value: ethAmount});
     }
 }
