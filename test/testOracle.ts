@@ -21,5 +21,21 @@ describe("Stake", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    it("should get the prices and decimals of the given tokens", async () => {});
+    it("should get the prices for the accepted tokens", async () => {
+        const tokenAmount = ethers.BigNumber.from(1000000);
+
+        expect(await oracle.priceMin(token.address, tokenAmount)).to.not.equal(0);
+        expect(await oracle.priceMax(token.address, tokenAmount)).to.not.equal(0);
+
+        expect(await oracle.amountMin(token.address, tokenAmount)).to.not.equal(0);
+        expect(await oracle.amountMax(token.address, tokenAmount)).to.not.equal(0);
+    });
+
+    it("should not get the prices of non accepted tokens", async () => {
+        await shouldFail(async () => await oracle.priceMin(lpToken.address, 0));
+        await shouldFail(async () => await oracle.priceMax(lpToken.address, 0));
+
+        await shouldFail(async () => await oracle.amountMin(lpToken.address, 0));
+        await shouldFail(async () => await oracle.amountMax(lpToken.address, 0));
+    });
 });
