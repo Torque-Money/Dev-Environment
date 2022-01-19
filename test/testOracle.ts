@@ -8,7 +8,6 @@ describe("Oracle", async function () {
     let oracle: Oracle;
     let token: ERC20;
     let lpToken: ERC20;
-    let signerAddress: string;
 
     beforeEach(async () => {
         oracle = await ethers.getContractAt("Oracle", config.oracleAddress);
@@ -16,9 +15,6 @@ describe("Oracle", async function () {
 
         const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
     });
 
     it("should get the prices for the accepted tokens", async () => {
