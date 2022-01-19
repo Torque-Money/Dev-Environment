@@ -55,7 +55,6 @@ describe("MarginLong", async function () {
     it("should prevent bad leverage positions and should open and repay a leveraged position", async () => {
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
-        const borrowTokenBalance = await borrowedToken.balanceOf(signerAddress);
         const tokensStaked = ethers.BigNumber.from(10).pow(18).mul(50);
 
         const stakeValue = await pool.stakeValue(borrowedToken.address, tokensStaked);
@@ -79,6 +78,32 @@ describe("MarginLong", async function () {
         await shouldFail(async () => await marginLong.removeCollateral(token.address, collateralValue));
 
         await marginLong.repayAccount(borrowedToken.address);
+
+        const collateralValue = await marginLong.collateral(token.address, signerAddress);
+        await marginLong.removeCollateral(token.address, collateralValue);
+
+        expect(await pool.liquidity(borrowedToken.address)).to.equal(tokensStaked);
+        expect(await pool.tvl(borrowedToken.address)).to.equal(tokensStaked);
+        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
+        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
+        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
+
+        await pool.redeem(await pool.LPFromPT(borrowedToken.address), stakeValue);
+    });
+
+    it("should open and repay all leveraged positions", async () => {
+        const tokensStaked = ethers.BigNumber.from(10).pow(18).mul(50);
+
+        const stakeValue = await pool.stakeValue(borrowedToken.address, tokensStaked);
+        await pool.stake(borrowedToken.address, tokensStaked);
+
+        const collateralAmount = ethers.BigNumber.from(10).pow(18).mul(200);
+        await marginLong.addCollateral(token.address, collateralAmount);
+
+        const borrowedAmount = ethers.BigNumber.from(1000000);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+
+        await marginLong.repayAccountAll();
 
         const collateralValue = await marginLong.collateral(token.address, signerAddress);
         await marginLong.removeCollateral(token.address, collateralValue);
