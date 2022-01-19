@@ -69,6 +69,45 @@
       "marginLongCollateral": true,
       "marginLongBorrow": false,
       "leveragePool": false
+    },
+    {
+      "name": "Tether",
+      "symbol": "USDT",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
+      "address": "0x049d68029688eabf473097a2fc38ef61633a3c7a",
+      "whale": "0xaa02db4a4690e441a2f0d3bd6a2736160b159b19",
+      "decimals": "6",
+      "priceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
+      "reservePriceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
+      "marginLongCollateral": true,
+      "marginLongBorrow": false,
+      "leveragePool": false
+    },
+    {
+      "name": "Magic Internet Money",
+      "symbol": "MIM",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/162.png",
+      "address": "0x82f0b8b456c1a451378467398982d4834b6829c1",
+      "whale": "0xbefe4f86f189c1c817446b71eb6ac90e3cb68e60",
+      "decimals": 18,
+      "priceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
+      "reservePriceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
+      "marginLongCollateral": true,
+      "marginLongBorrow": false,
+      "leveragePool": false
+    },
+    {
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+      "address": "0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8",
+      "whale": "0xbdfa4f4492dd7b7cf211209c4791af8d52bf5c50",
+      "decimals": 18,
+      "priceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
+      "reservePriceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true
     }
   ],
   "leveragePoolAddress": "0x162A433068F51e18b7d13932F27e66a3f99E6890",
