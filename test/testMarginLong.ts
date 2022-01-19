@@ -60,5 +60,15 @@ describe("MarginLong", async function () {
         await pool.stake(borrowedToken.address, borrowTokenBalance);
 
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
+
+        const collateralAmount = ethers.BigNumber.from(10).pow(18).mul(500);
+        await marginLong.addCollateral(token.address, collateralAmount);
+
+        await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
+
+        const borrowedAmount = ethers.BigNumber.from(1000000);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+
+        // **** Check all of the borrow amounts and the pool liquidity etc
     });
 });
