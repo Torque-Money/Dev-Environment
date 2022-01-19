@@ -19,5 +19,5 @@ describe("MarginLong", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    it("should get the prices for the accepted tokens", async () => {});
+    it("deposit and undeposit collateral into the account", async () => {});
 });
