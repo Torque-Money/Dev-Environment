@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {ethers} from "hardhat";
-import config from "../config.json";
+import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/testUtils";
 import {ERC20, Oracle} from "../typechain-types";
 

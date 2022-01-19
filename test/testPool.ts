@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {ethers} from "hardhat";
-import config from "../config.json";
+import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/testUtils";
 import {ERC20, LPool} from "../typechain-types";
 
@@ -23,20 +23,20 @@ describe("Pool", async function () {
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const initialBalance = await token.balanceOf(signerAddress);
 
-        const tokensToStake = ethers.BigNumber.from(1000000);
-        const stakeValue = await pool.stakeValue(token.address, tokensToStake);
-        await pool.stake(token.address, tokensToStake);
+        const tokensProvided = ethers.BigNumber.from(1000000);
+        const providedValue = await pool.stakeValue(token.address, tokensProvided);
+        await pool.stake(token.address, tokensProvided);
 
-        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensToStake));
-        expect(await lpToken.balanceOf(signerAddress)).to.equal(stakeValue);
+        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensProvided));
+        expect(await lpToken.balanceOf(signerAddress)).to.equal(tokensProvided);
 
-        expect(await token.balanceOf(pool.address)).to.equal(tokensToStake);
-        expect(await pool.liquidity(token.address)).to.equal(tokensToStake);
-        expect(await pool.tvl(token.address)).to.equal(tokensToStake);
+        expect(await token.balanceOf(pool.address)).to.equal(tokensProvided);
+        expect(await pool.liquidity(token.address)).to.equal(tokensProvided);
+        expect(await pool.tvl(token.address)).to.equal(tokensProvided);
 
-        expect(await pool.redeemValue(lpToken.address, stakeValue)).to.equal(tokensToStake);
+        expect(await pool.redeemValue(lpToken.address, providedValue)).to.equal(tokensProvided);
 
-        await pool.redeem(lpToken.address, stakeValue);
+        await pool.redeem(lpToken.address, providedValue);
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);

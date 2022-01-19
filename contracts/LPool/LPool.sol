@@ -2,10 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "../Converter/IConverter.sol";
-import "./LPoolStake.sol";
+import "./LPoolProvide.sol";
 import "./LPoolInterest.sol";
 
-contract LPool is LPoolStake, LPoolInterest {
+contract LPool is LPoolProvide, LPoolInterest {
     constructor(
         IConverter converter_,
         uint256 taxPercentNumerator_,
