@@ -1,11 +1,13 @@
 import {expect} from "chai";
 import {ethers} from "hardhat";
 import config from "../config.json";
-import {ERC20, MarginLong} from "../typechain-types";
+import {shouldFail} from "../scripts/util/testUtils";
+import {ERC20, LPool, MarginLong} from "../typechain-types";
 
 describe("MarginLong", async function () {
     let marginLong: MarginLong;
     let token: ERC20;
+    let pool: LPool;
     let lpToken: ERC20;
     let signerAddress: string;
 
@@ -13,7 +15,7 @@ describe("MarginLong", async function () {
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         token = await ethers.getContractAt("ERC20", config.approved[0].address);
 
-        const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
+        pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
         const signer = ethers.provider.getSigner();
@@ -39,5 +41,12 @@ describe("MarginLong", async function () {
 
         expect(await marginLong.totalCollateral(token.address)).to.equal(0);
         expect(await token.balanceOf(marginLong.address)).to.equal(0);
+    });
+
+    it("should not allow bad deposits", async () => {
+        shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
+        shouldFail(async () => await marginLong.addCollateral(token.address, ethers.BigNumber.from(2).pow(255)));
+
+        shouldFail(async () => await marginLong.removeCollateral(token.address, ethers.BigNumber.from(2).pow(255)));
     });
 });
