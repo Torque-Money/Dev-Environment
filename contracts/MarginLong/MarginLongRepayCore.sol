@@ -82,9 +82,6 @@ abstract contract MarginLongRepayCore is Margin {
                 collateralRepayAmount_[collateralIndex_] = newAmount;
                 _setCollateral(collateralToken_[collateralIndex_], collateralAmount.sub(newAmount), account_);
 
-                // **** Why can I not integrate the repaying and the unclaim in here OR just move the setting of the collateral elsewhere
-                // **** I would have to reintegrate with the loop functions and such regarding the collateral amounts changing
-
                 break;
             }
         }
