@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MarginAccount.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginLimits is MarginAccount {
     using SafeMath for uint256;
 
@@ -36,16 +34,11 @@ abstract contract MarginLimits is MarginAccount {
     function maxLeverageReached(address account_) public view returns (bool) {
         uint256 collateralPrice = collateralPrice(account_);
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
-        return (collateralPrice.mul(maxLeverage) > totalInitialBorrowPrice);
+        return (collateralPrice.mul(maxLeverage) < totalInitialBorrowPrice);
     }
 
     // Check if an account is resettable
     function resettable(address account_) public view returns (bool) {
-        console.log("Margin limits");
-        console.log(isBorrowing(account_));
-        console.log(maxLeverageReached(account_)); // **** This is the broken one now (apparently the max leverage has been reached ?)
-        console.log(sufficientCollateralPrice(account_));
-
         return (isBorrowing(account_) && (maxLeverageReached(account_) || !sufficientCollateralPrice(account_)));
     }
 }
