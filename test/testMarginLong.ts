@@ -69,6 +69,9 @@ describe("MarginLong", async function () {
         const borrowedAmount = ethers.BigNumber.from(1000000);
         await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
-        // **** Check all of the borrow amounts and the pool liquidity etc
+        expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance.sub(borrowedAmount));
+        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(borrowedAmount);
+        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(borrowedAmount);
+        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(borrowedAmount);
     });
 });
