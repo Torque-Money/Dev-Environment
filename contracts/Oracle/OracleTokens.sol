@@ -25,6 +25,11 @@ abstract contract OracleTokens is Ownable {
         _;
     }
 
+    // Set the price decimals
+    function setPriceDecimals(uint256 priceDecimals_) external onlyOwner {
+        priceDecimals = priceDecimals_;
+    }
+
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
         IERC20[] memory token_,
@@ -46,11 +51,6 @@ abstract contract OracleTokens is Ownable {
     // Check if an asset is supported by the oracle
     function isSupported(IERC20 token_) public view returns (bool) {
         return _tokens[token_].supported;
-    }
-
-    // Set the price decimals
-    function setPriceDecimals(uint256 priceDecimals_) external onlyOwner {
-        priceDecimals = priceDecimals_;
     }
 
     // Get the price feed for a given asset
