@@ -40,6 +40,10 @@ describe("Pool", async function () {
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
+
+        expect(await token.balanceOf(pool.address)).to.equal(0);
+        expect(await pool.liquidity(token.address)).to.equal(0);
+        expect(await pool.tvl(token.address)).to.equal(0);
     });
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {

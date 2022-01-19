@@ -27,5 +27,17 @@ describe("MarginLong", async function () {
         await marginLong.addCollateral(token.address, tokenAmount);
 
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokenAmount));
+        expect(await marginLong.collateral(token.address, signerAddress)).to.equal(tokenAmount);
+
+        expect(await marginLong.totalCollateral(token.address)).to.equal(tokenAmount);
+        expect(await token.balanceOf(marginLong.address)).to.equal(tokenAmount);
+
+        await marginLong.removeCollateral(token.address, tokenAmount);
+
+        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
+        expect(await marginLong.collateral(token.address, signerAddress)).to.equal(0);
+
+        expect(await marginLong.totalCollateral(token.address)).to.equal(0);
+        expect(await token.balanceOf(marginLong.address)).to.equal(0);
     });
 });
