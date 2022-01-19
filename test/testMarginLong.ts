@@ -14,8 +14,8 @@ describe("MarginLong", async function () {
 
     beforeEach(async () => {
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        token = await ethers.getContractAt("ERC20", config.approved[0].address);
-        borrowedToken = await ethers.getContractAt("ERC20", config.approved[1].address);
+        token = await ethers.getContractAt("ERC20", config.approved[1].address);
+        borrowedToken = await ethers.getContractAt("ERC20", config.approved[2].address);
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));

@@ -12,7 +12,7 @@ describe("Pool", async function () {
 
     beforeEach(async () => {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        token = await ethers.getContractAt("ERC20", config.approved[0].address);
+        token = await ethers.getContractAt("ERC20", config.approved[1].address);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
