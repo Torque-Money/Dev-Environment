@@ -7,6 +7,7 @@ import {ERC20, LPool, MarginLong} from "../typechain-types";
 describe("MarginLong", async function () {
     let marginLong: MarginLong;
     let token: ERC20;
+    let borrowedToken: ERC20;
     let pool: LPool;
     let lpToken: ERC20;
     let signerAddress: string;
@@ -14,6 +15,7 @@ describe("MarginLong", async function () {
     beforeEach(async () => {
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         token = await ethers.getContractAt("ERC20", config.approved[0].address);
+        borrowedToken = await ethers.getContractAt("ERC20", config.approved[1].address);
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
@@ -50,10 +52,13 @@ describe("MarginLong", async function () {
         shouldFail(async () => await marginLong.removeCollateral(token.address, ethers.BigNumber.from(2).pow(255)));
     });
 
-    it("should not allow a borrow when there is no liquidity available", async () =>
-        await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255))));
+    it("should prevent bad leverage positions and should open and repay a leveraged position", async () => {
+        await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
-    it("should not allow a borrow when there is not enough collateral", async () => {});
+        const borrowTokenBalance = await borrowedToken.balanceOf(signerAddress);
+        const stakeValue = await pool.stakeValue(borrowedToken.address, borrowTokenBalance);
+        await pool.stake(borrowedToken.address, borrowTokenBalance);
 
-    it("should not allow overleveraged positions", async () => {});
+        await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
+    });
 });
