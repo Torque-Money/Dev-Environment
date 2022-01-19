@@ -13,8 +13,11 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const router = new hre.ethers.Contract(config.routerAddress, UniswapV2Router02.abi, signer);
 
     for (const approved of config.approved) {
+        const ethAmount = hre.ethers.BigNumber.from(10)
+            .pow(18)
+            .mul(Math.floor(8000 / config.approved.length).toString());
+
         const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
-        const ethAmount = hre.ethers.utils.parseEther(Math.floor(10000 / config.approved.length).toString());
         await router.swapExactETHForTokens(0, [await router.WETH(), token.address], signerAddress, Date.now(), {value: ethAmount});
     }
 }
