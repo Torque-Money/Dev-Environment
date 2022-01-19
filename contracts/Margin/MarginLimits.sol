@@ -43,7 +43,7 @@ abstract contract MarginLimits is MarginAccount {
     function resettable(address account_) public view returns (bool) {
         console.log("Margin limits");
         console.log(isBorrowing(account_));
-        console.log(maxLeverageReached(account_));
+        console.log(maxLeverageReached(account_)); // **** This is the broken one now (apparently the max leverage has been reached ?)
         console.log(sufficientCollateralPrice(account_));
 
         return (isBorrowing(account_) && (maxLeverageReached(account_) || !sufficientCollateralPrice(account_)));
