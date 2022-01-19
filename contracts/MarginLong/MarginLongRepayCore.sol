@@ -25,7 +25,7 @@ abstract contract MarginLongRepayCore is Margin {
         uint256 initialPrice = initialBorrowPrice(borrowed_, account_);
         uint256 _interest = interest(borrowed_, account_);
 
-        return oracle.amountMax(borrowed_, currentPrice.sub(initialPrice).sub(_interest));
+        return oracle.amountMin(borrowed_, currentPrice.sub(initialPrice).sub(_interest));
     }
 
     // Get the repay price when there is a loss
@@ -76,11 +76,11 @@ abstract contract MarginLongRepayCore is Margin {
                 debt_ = debt_.sub(collateralPrice);
                 collateralIndex_ = collateralIndex_.add(1);
             } else {
-                uint256 newAmount = oracle.amountMax(collateralToken_[collateralIndex_], collateralPrice);
+                uint256 newAmount = oracle.amountMax(collateralToken_[collateralIndex_], debt_);
                 if (newAmount > collateralAmount) newAmount = collateralAmount;
 
                 collateralRepayAmount_[collateralIndex_] = newAmount;
-                _setCollateral(collateralToken_[collateralIndex_], newAmount, account_);
+                _setCollateral(collateralToken_[collateralIndex_], collateralAmount.sub(newAmount), account_);
 
                 break;
             }
