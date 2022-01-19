@@ -58,8 +58,8 @@ describe("MarginLong", async function () {
 
         const tokensProvided = ethers.BigNumber.from(10).pow(18).mul(50);
 
-        const providedValue = await pool.stakeValue(borrowedToken.address, tokensProvided);
-        await pool.stake(borrowedToken.address, tokensProvided);
+        const providedValue = await pool.provideLiquidityValue(borrowedToken.address, tokensProvided);
+        await pool.provideLiquidity(borrowedToken.address, tokensProvided);
 
         await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
 
@@ -93,14 +93,14 @@ describe("MarginLong", async function () {
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
 
-        await pool.redeem(await pool.LPFromPT(borrowedToken.address), providedValue);
+        await pool.redeemLiquidity(await pool.LPFromPT(borrowedToken.address), providedValue);
     });
 
     it("should open and repay all leveraged positions", async () => {
         const tokensProvided = ethers.BigNumber.from(10).pow(18).mul(50);
 
-        const providedValue = await pool.stakeValue(borrowedToken.address, tokensProvided);
-        await pool.stake(borrowedToken.address, tokensProvided);
+        const providedValue = await pool.provideLiquidityValue(borrowedToken.address, tokensProvided);
+        await pool.provideLiquidity(borrowedToken.address, tokensProvided);
 
         const collateralAmount = ethers.BigNumber.from(10).pow(18).mul(200);
         await marginLong.addCollateral(collateralToken.address, collateralAmount);
@@ -123,6 +123,6 @@ describe("MarginLong", async function () {
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
 
-        await pool.redeem(await pool.LPFromPT(borrowedToken.address), providedValue);
+        await pool.redeemLiquidity(await pool.LPFromPT(borrowedToken.address), providedValue);
     });
 });

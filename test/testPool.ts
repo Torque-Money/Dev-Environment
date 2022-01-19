@@ -24,8 +24,8 @@ describe("Pool", async function () {
         const initialBalance = await token.balanceOf(signerAddress);
 
         const tokensProvided = ethers.BigNumber.from(1000000);
-        const providedValue = await pool.stakeValue(token.address, tokensProvided);
-        await pool.stake(token.address, tokensProvided);
+        const providedValue = await pool.provideLiquidityValue(token.address, tokensProvided);
+        await pool.provideLiquidity(token.address, tokensProvided);
 
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensProvided));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(tokensProvided);
@@ -34,9 +34,9 @@ describe("Pool", async function () {
         expect(await pool.liquidity(token.address)).to.equal(tokensProvided);
         expect(await pool.tvl(token.address)).to.equal(tokensProvided);
 
-        expect(await pool.redeemValue(lpToken.address, providedValue)).to.equal(tokensProvided);
+        expect(await pool.redeemLiquidityValue(lpToken.address, providedValue)).to.equal(tokensProvided);
 
-        await pool.redeem(lpToken.address, providedValue);
+        await pool.redeemLiquidity(lpToken.address, providedValue);
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
@@ -47,11 +47,11 @@ describe("Pool", async function () {
     });
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {
-        await shouldFail(async () => await pool.stake(lpToken.address, 0));
-        await shouldFail(async () => await pool.redeem(token.address, 0));
+        await shouldFail(async () => await pool.provideLiquidity(lpToken.address, 0));
+        await shouldFail(async () => await pool.redeemLiquidity(token.address, 0));
 
-        await shouldFail(async () => await pool.stake(token.address, ethers.BigNumber.from(2).pow(255)));
-        await shouldFail(async () => await pool.redeem(lpToken.address, 0));
+        await shouldFail(async () => await pool.provideLiquidity(token.address, ethers.BigNumber.from(2).pow(255)));
+        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, 0));
     });
 
     it("should fail to access out of bounds operations", async () => {
