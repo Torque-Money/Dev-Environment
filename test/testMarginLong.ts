@@ -49,4 +49,11 @@ describe("MarginLong", async function () {
 
         shouldFail(async () => await marginLong.removeCollateral(token.address, ethers.BigNumber.from(2).pow(255)));
     });
+
+    it("should not allow a borrow when there is no liquidity available", async () =>
+        await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255))));
+
+    it("should not allow a borrow when there is not enough collateral", async () => {});
+
+    it("should not allow overleveraged positions", async () => {});
 });

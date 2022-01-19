@@ -10,8 +10,6 @@ abstract contract MarginLongBorrow is Margin {
 
     // Margin borrow against collateral
     function borrow(IERC20 borrowed_, uint256 amount_) external onlyApprovedBorrowed(borrowed_) {
-        require(sufficientCollateralPrice(_msgSender()), "MarginLongBorrow: Insufficient collateral to borrow against");
-
         if (!isBorrowing(borrowed_, _msgSender())) {
             _setInitialBorrowBlock(borrowed_, block.number, _msgSender());
             _addAccount(_msgSender());
@@ -23,7 +21,7 @@ abstract contract MarginLongBorrow is Margin {
         uint256 _initialBorrowPrice = oracle.priceMin(borrowed_, amount_);
         _setInitialBorrowPrice(borrowed_, initialBorrowPrice(borrowed_, _msgSender()).add(_initialBorrowPrice), _msgSender());
 
-        require(!maxLeverageReached(_msgSender()) && !liquidatable(_msgSender()), "MarginLongBorrow: Borrowing desired amount puts account at risk");
+        require(!resettable(_msgSender()) && !liquidatable(_msgSender()), "MarginLongBorrow: Borrowing desired amount puts account at risk");
 
         emit Borrow(_msgSender(), borrowed_, amount_);
     }
