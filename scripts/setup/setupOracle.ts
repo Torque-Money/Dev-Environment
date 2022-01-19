@@ -1,8 +1,8 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chooseConfig} from "../util/chooseConfig";
+import {chooseConfig, ConfigType} from "../util/chooseConfig";
 
-export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
-    const config = chooseConfig(test);
+export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    const config = chooseConfig(configType);
 
     const oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
 

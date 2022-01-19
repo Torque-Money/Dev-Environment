@@ -2,9 +2,10 @@ import setupPool from "./setupPool";
 import setupOracle from "./setupOracle";
 import setupMarginLong from "./setupMarginLong";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+import {ConfigType} from "../util/chooseConfig";
 
-export default async function main(test: boolean, hre: HardhatRuntimeEnvironment) {
-    await setupPool(test, hre);
-    await setupOracle(test, hre);
-    await setupMarginLong(test, hre);
+export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    await setupPool(configType, hre);
+    await setupOracle(configType, hre);
+    await setupMarginLong(configType, hre);
 }
