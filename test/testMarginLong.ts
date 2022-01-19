@@ -73,5 +73,21 @@ describe("MarginLong", async function () {
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(borrowedAmount);
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(borrowedAmount);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(borrowedAmount);
+
+        await shouldFail(async () => await marginLong.removeCollateral(token.address, collateralValue));
+
+        await marginLong.repayAccount(borrowedToken.address);
+
+        const collateralValue = await marginLong.collateral(token.address, signerAddress);
+        await marginLong.removeCollateral(token.address, collateralValue);
+        expect(collateralValue).to.not.equal(collateralAmount);
+
+        expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance);
+        expect(await pool.tvl(borrowedToken.address)).to.equal(borrowTokenBalance);
+        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
+        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
+        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
+
+        await pool.redeem(await pool.LPFromPT(borrowedToken.address), stakeValue);
     });
 });
