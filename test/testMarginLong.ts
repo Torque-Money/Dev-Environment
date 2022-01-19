@@ -80,7 +80,6 @@ describe("MarginLong", async function () {
 
         const collateralValue = await marginLong.collateral(token.address, signerAddress);
         await marginLong.removeCollateral(token.address, collateralValue);
-        expect(collateralValue).to.not.equal(collateralAmount);
 
         expect(await pool.liquidity(borrowedToken.address)).to.equal(borrowTokenBalance);
         expect(await pool.tvl(borrowedToken.address)).to.equal(borrowTokenBalance);
