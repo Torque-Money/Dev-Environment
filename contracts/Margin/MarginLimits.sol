@@ -41,6 +41,7 @@ abstract contract MarginLimits is MarginAccount {
 
     // Check if an account is resettable
     function resettable(address account_) public view returns (bool) {
+        console.log("Margin limits");
         console.log(isBorrowing(account_));
         console.log(maxLeverageReached(account_));
         console.log(sufficientCollateralPrice(account_));
