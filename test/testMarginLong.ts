@@ -63,7 +63,7 @@ describe("MarginLong", async function () {
 
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
 
-        const collateralAmount = ethers.BigNumber.from(10).pow(18).mul(500);
+        const collateralAmount = ethers.BigNumber.from(10).pow(18).mul(200);
         await marginLong.addCollateral(token.address, collateralAmount);
 
         await shouldFail(async () => await marginLong.borrow(token.address, ethers.BigNumber.from(2).pow(255)));
