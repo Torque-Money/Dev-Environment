@@ -23,16 +23,14 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         converter = converter_;
     }
 
-    // Get a pseudo random token from a weighted distribution based on utilization rates of pool tokens
+    // Get a pseudo random token from a weighted distribution of pool tokens
     function _pseudoRandomWeightedPT() internal view returns (IERC20) {
-        uint256 multiplier = 10000;
-
         IERC20[] memory poolTokens = _poolTokens();
         uint256[] memory weights = new uint256[](poolTokens.length);
+
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
-            (uint256 utilNumerator, uint256 utilDenominator) = utilizationRate(poolTokens[i]);
-            uint256 weightSize = multiplier.mul(utilNumerator).div(utilDenominator);
+            uint256 weightSize = utilized(poolTokens[i]);
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
@@ -73,7 +71,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     function liquidity(IERC20 token_) public view virtual returns (uint256);
 
-    function utilizationRate(IERC20 token_) public view virtual returns (uint256, uint256);
+    function utilized(IERC20 token_) public view returns (uint256);
 
     event Deposit(address indexed account, IERC20 tokenIn, uint256 amountIn, IERC20 convertedToken, uint256 convertedAmount);
     event Withdraw(address indexed account, IERC20 token, uint256 amount);
