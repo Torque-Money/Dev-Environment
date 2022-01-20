@@ -28,6 +28,9 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         IERC20[] memory poolTokens = _poolTokens();
         uint256[] memory weights = new uint256[](poolTokens.length);
 
+        // **** I should have SOME sort of weighting regarding the total amount of the token too
+        // **** Perhaps do utilization rate PER amount utilized ?
+
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             uint256 weightSize = utilized(poolTokens[i]);
