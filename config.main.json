@@ -70,7 +70,7 @@
       "symbol": "USDT",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
       "address": "0x049d68029688eabf473097a2fc38ef61633a3c7a",
-      "decimals": "6",
+      "decimals": 6,
       "priceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
       "reservePriceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
       "marginLongCollateral": true,
