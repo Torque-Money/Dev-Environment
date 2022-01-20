@@ -1,5 +1,5 @@
 import fs from "fs";
-const fsExtra = require("fs-extra");
+import fsExtra from "fs-extra";
 
 export default async function main() {
     const compiledContracts = process.cwd() + "/artifacts/contracts";
