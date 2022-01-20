@@ -13,6 +13,7 @@
       "decimals": 18,
       "priceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
       "reservePriceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
       "leveragePool": false
@@ -25,6 +26,7 @@
       "decimals": 18,
       "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
       "reservePriceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
       "leveragePool": true
@@ -37,6 +39,7 @@
       "decimals": 8,
       "priceFeed": "0x8e94c22142f4a64b99022ccdd994f4e9ec86e4b4",
       "reservePriceFeed": "0x8e94c22142f4a64b99022ccdd994f4e9ec86e4b4",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
       "leveragePool": true
@@ -49,6 +52,7 @@
       "decimals": 18,
       "priceFeed": "0x11ddd3d147e5b83d01cee7070027092397d63658",
       "reservePriceFeed": "0x11ddd3d147e5b83d01cee7070027092397d63658",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
       "leveragePool": true
@@ -61,6 +65,7 @@
       "decimals": 6,
       "priceFeed": "0x2553f4eeb82d5a26427b8d1106c51499cba5d99c",
       "reservePriceFeed": "0x2553f4eeb82d5a26427b8d1106c51499cba5d99c",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
       "leveragePool": false
@@ -73,6 +78,7 @@
       "decimals": 6,
       "priceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
       "reservePriceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
       "leveragePool": false
@@ -85,6 +91,7 @@
       "decimals": 18,
       "priceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
       "reservePriceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
       "leveragePool": false
@@ -97,6 +104,7 @@
       "decimals": 18,
       "priceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
       "reservePriceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
+      "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
       "leveragePool": true
