@@ -30,7 +30,7 @@ export default async function main() {
         console.log(`Copied '${config}' to '${newConfigPath}'`);
     }
 
-    fs.copySync(typeChain, outRoot);
+    fs.copySync(typeChain, outRoot + "/typechain-types");
     console.log(`Copied ${typeChain} to ${outRoot}`);
 
     console.log("Util: Copied files");
