@@ -13,11 +13,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const router = new hre.ethers.Contract(config.routerAddress, UniswapV2Router02.abi, signer);
 
     for (const approved of config.approved) {
-        const ethAmount = hre.ethers.BigNumber.from(10)
-            .pow(18)
-            .mul(Math.floor(8000 / config.approved.length).toString());
+        const PERCENTAGE = 80;
+        const balance = (await hre.ethers.provider.getBalance(signerAddress)).mul(PERCENTAGE).div(100);
 
-        const token = new hre.ethers.Contract(approved.address, ERC20.abi, signer);
-        await router.swapExactETHForTokens(0, [await router.WETH(), token.address], signerAddress, Date.now(), {value: ethAmount});
+        await router.swapExactETHForTokens(0, [await router.WETH(), approved.address], signerAddress, Date.now(), {value: balance});
     }
 }
