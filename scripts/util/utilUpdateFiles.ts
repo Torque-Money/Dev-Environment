@@ -29,3 +29,5 @@ export default async function main() {
 
     console.log("Util: Copied files");
 }
+
+if (require.main === module) main();
