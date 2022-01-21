@@ -1,6 +1,7 @@
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
+import "@nomiclabs/hardhat-etherscan";
 
 import {task} from "hardhat/config";
 
@@ -67,6 +68,12 @@ export default {
         testnet: {
             url: NETWORK_URL_TEST,
             accounts: [process.env.PRIVATE_KEY],
+        },
+    },
+    etherscan: {
+        apiKey: {
+            opera: "",
+            ropsten: "",
         },
     },
 };
