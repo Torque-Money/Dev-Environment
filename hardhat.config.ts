@@ -13,6 +13,7 @@ import utilApprove from "./scripts/util/utilApprove";
 import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import dotenv from "dotenv";
+import {verifyAll} from "./scripts/util/utilVerify";
 dotenv.config();
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
@@ -48,7 +49,9 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await utilUpdateFiles();
 });
 
-task("verify-contract", "Verify contract on block explorer", async (args, hre) => {});
+task("verify-contract", "Verify contract on block explorer", async (args, hre) => {
+    await verifyAll(hre);
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const NETWORK_URL_TEST = process.env.NETWORK_URL; // Rinkeby

@@ -30,6 +30,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.marginLongAddress = marginLong.address;
     console.log("Deployed: Margin long");
 
-    saveTempConstructor("marginLong", constructorArgs);
+    saveTempConstructor(marginLong.address, constructorArgs);
     saveConfig(config, configType);
 }
