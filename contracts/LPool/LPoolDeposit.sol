@@ -30,8 +30,8 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
-            (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(poolTokens[i]); // **** Change this to the interest rate instead of utilization rate
-            uint256 weightSize = utilized(poolTokens[i]).mul(utilizationNumerator).div(utilizationDenominator);
+            (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
+            uint256 weightSize = utilized(poolTokens[i]).mul(interestRateNumerator).div(interestRateDenominator);
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
@@ -72,9 +72,9 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     function liquidity(IERC20 token_) public view virtual returns (uint256);
 
-    function utilizationRate(IERC20 token_) public view virtual returns (uint256, uint256);
-
     function utilized(IERC20 token_) public view virtual returns (uint256);
+
+    function interestRate(IERC20 token_) public view virtual returns (uint256, uint256);
 
     event Deposit(address indexed account, IERC20 tokenIn, uint256 amountIn, IERC20 convertedToken, uint256 convertedAmount);
     event Withdraw(address indexed account, IERC20 token, uint256 amount);
