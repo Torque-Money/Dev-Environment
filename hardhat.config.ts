@@ -49,12 +49,12 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await utilUpdateFiles();
 });
 
-task("verify-contract", "Verify contract on block explorer", async (args, hre) => {
+task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
     await verifyAll(hre);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
-const NETWORK_URL_TEST = process.env.NETWORK_URL; // Rinkeby
+const NETWORK_URL_TEST = process.env.NETWORK_URL;
 
 export default {
     solidity: {
