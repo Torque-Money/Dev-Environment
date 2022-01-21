@@ -1,5 +1,5 @@
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import {chooseConfig, ConfigType} from "./utilChooseConfig";
+import {chooseConfig, ConfigType} from "./utilConfig";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {

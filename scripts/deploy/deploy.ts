@@ -4,7 +4,7 @@ import deployConverter from "./deployConverter";
 import deployMarginLong from "./deployMarginLong";
 import deployResolver from "./deployResolver";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {ConfigType} from "../util/utilChooseConfig";
+import {ConfigType} from "../util/utilConfig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await deployConverter(configType, hre);

@@ -1,5 +1,5 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chooseConfig, ConfigType, saveConfig} from "../util/utilChooseConfig";
+import {chooseConfig, ConfigType, saveConfig, saveTempConstructor} from "../util/utilConfig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -13,5 +13,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.converterAddress = converter.address;
     console.log("Deployed: Converter");
 
+    saveTempConstructor("converter", constructorArgs);
     saveConfig(config, configType);
 }
