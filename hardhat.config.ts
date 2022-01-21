@@ -31,9 +31,6 @@ task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
     await deploy("test", hre);
     await setup("test", hre);
 
-    await utilFund("test", hre);
-    await utilApprove("test", hre);
-
     await utilUpdateFiles();
 });
 
