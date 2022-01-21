@@ -28,7 +28,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         constructorArgs.liquidationFeePercentDenominator
     );
     config.marginLongAddress = marginLong.address;
-    console.log("Deployed: Margin long");
+    console.log(`Deployed: Margin long | ${marginLong.address}`);
 
     saveTempConstructor(marginLong.address, constructorArgs);
     saveConfig(config, configType);

@@ -19,7 +19,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         constructorArgs.blocksPerInterestApplication
     );
     config.leveragePoolAddress = pool.address;
-    console.log("Deployed: Pool");
+    console.log(`Deployed: Pool | ${pool.address}`);
 
     saveTempConstructor(pool.address, constructorArgs);
     saveConfig(config, configType);

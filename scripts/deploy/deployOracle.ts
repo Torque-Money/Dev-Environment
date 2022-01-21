@@ -13,7 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const Oracle = await hre.ethers.getContractFactory("Oracle");
     const oracle = await Oracle.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
     config.oracleAddress = oracle.address;
-    console.log("Deployed: Oracle");
+    console.log(`Deployed: Oracle | ${oracle.address}`);
 
     saveTempConstructor(oracle.address, constructorArgs);
     saveConfig(config, configType);
