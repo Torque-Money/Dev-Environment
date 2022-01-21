@@ -32,9 +32,9 @@
       "leveragePool": true
     }
   ],
-  "leveragePoolAddress": "",
-  "oracleAddress": "",
-  "converterAddress": "",
-  "marginLongAddress": "",
-  "resolverAddress": ""
+  "leveragePoolAddress": "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5",
+  "oracleAddress": "0x58310C211c1249e454Feb91962A79d1a4F09F08e",
+  "converterAddress": "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524",
+  "marginLongAddress": "0x3058eA73cF0DD9522eeA6697943C9b84126368F8",
+  "resolverAddress": "0x0A0e323ab8114b34b7A5383D173bd9F2C993D2Ec"
 }
