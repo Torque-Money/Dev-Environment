@@ -30,7 +30,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
-            (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(poolTokens[i]);
+            (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(poolTokens[i]); // **** Change this to the interest rate instead of utilization rate
             uint256 weightSize = utilized(poolTokens[i]).mul(utilizationNumerator).div(utilizationDenominator);
 
             weights[i] = weightSize;
