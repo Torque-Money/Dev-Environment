@@ -16,6 +16,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.resolverAddress = resolver.address;
     console.log("Deployed: Resolver");
 
-    saveTempConstructor("resolver", constructorArgs);
+    saveTempConstructor(resolver.address, constructorArgs);
     saveConfig(config, configType);
 }
