@@ -1,5 +1,6 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chooseConfig, ConfigType, saveConfig, saveTempConstructor} from "../util/utilConfig";
+import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
+import {saveTempConstructor} from "../util/utilVerify";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);

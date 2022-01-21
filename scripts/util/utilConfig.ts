@@ -4,8 +4,6 @@ import mainConfig from "../../config.main.json";
 import testConfig from "../../config.test.json";
 import forkConfig from "../../config.fork.json";
 
-import tempConstructor from "../../temp.constructor.json";
-
 export type ConfigType = "main" | "test" | "fork";
 
 export function chooseConfig(configType: ConfigType) {
@@ -22,9 +20,4 @@ export function saveConfig(config: any, configType: ConfigType) {
     else if (configType === "test") configName = "config.test.json";
     else configName = "config.fork.json";
     fs.writeFileSync(configName, JSON.stringify(config));
-}
-
-export function saveTempConstructor(key: string, constructorConfig: any) {
-    (tempConstructor as any)[key] = constructorConfig;
-    fs.writeFileSync("temp.constructor.json", JSON.stringify(tempConstructor));
 }
