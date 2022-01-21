@@ -1,5 +1,5 @@
 import ERC20 from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import {chooseConfig, ConfigType} from "./chooseConfig";
+import {chooseConfig, ConfigType} from "./utilChooseConfig";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import UniswapV2Router02 from "../../artifacts/contracts/lib/UniswapV2Router02.sol/UniswapV2Router02.json";
