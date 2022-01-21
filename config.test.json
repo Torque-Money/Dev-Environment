@@ -32,9 +32,9 @@
       "leveragePool": true
     }
   ],
-  "leveragePoolAddress": "0x4Ed91667216DC701458c1bDBdE2b58757556Ed04",
-  "oracleAddress": "0x300289C3C4ce84FdC15715cC17eA1b92F80B77CC",
-  "converterAddress": "0x5E2975994F2734B4DA311CAb48A4C4137B4b4606",
-  "marginLongAddress": "0xb0c913DD447829bA3C28637a8836f36D1cACB4Be",
-  "resolverAddress": "0xF70030fEc7FeB3b888261Fc8316be430757dA4ac"
+  "leveragePoolAddress": "0x8475a918A787169155cDfda19fD9f72B1d75516C",
+  "oracleAddress": "0xBfe803AdACA8144A5dF5A17b6C3eeC2EAEf36e0a",
+  "converterAddress": "0x8572Df151c3F44dB89512b0868C17934fe74f38A",
+  "marginLongAddress": "0x7F34840a94Fb5A66A3470Aa9d0Ae2C0AA508303c",
+  "resolverAddress": "0xdC527f2664F928C411d5F701B0fa3Fc5ca7A97c3"
 }

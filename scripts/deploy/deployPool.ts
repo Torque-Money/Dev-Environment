@@ -7,7 +7,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const constructorArgs = {
         converter: config.converterAddress,
-        taxPercentNumerator: 5,
+        taxPercentNumerator: 6,
         taxPercentDenominator: 100,
         blocksPerInterestApplication: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
