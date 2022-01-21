@@ -48,6 +48,8 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await utilUpdateFiles();
 });
 
+task("verify-contract", "Verify contract on block explorer", async (args, hre) => {});
+
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const NETWORK_URL_TEST = process.env.NETWORK_URL; // Rinkeby
 
@@ -72,8 +74,8 @@ export default {
     },
     etherscan: {
         apiKey: {
-            opera: "",
-            ropsten: "",
+            opera: process.env.FTMSCAN_API_KEY,
+            rinkeby: process.env.ETHERSCAN_API_KEY,
         },
     },
 };
