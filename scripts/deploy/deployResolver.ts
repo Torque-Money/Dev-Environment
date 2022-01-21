@@ -1,5 +1,5 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
+import {chooseConfig, ConfigType, saveConfig, saveTempConstructor} from "../util/utilConfig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -15,5 +15,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.resolverAddress = resolver.address;
     console.log("Deployed: Resolver");
 
+    saveTempConstructor("resolver", constructorArgs);
     saveConfig(config, configType);
 }
