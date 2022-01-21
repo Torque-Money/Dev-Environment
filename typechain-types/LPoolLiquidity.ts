@@ -34,6 +34,7 @@ export interface LPoolLiquidityInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "interestRate(address)": FunctionFragment;
     "isApprovedLP(address)": FunctionFragment;
     "isApprovedPT(address)": FunctionFragment;
     "isLP(address)": FunctionFragment;
@@ -101,6 +102,10 @@ export interface LPoolLiquidityInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "hasRole",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "interestRate",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedLP",
@@ -190,6 +195,10 @@ export interface LPoolLiquidityInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "interestRate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedLP",
     data: BytesLike
@@ -411,6 +420,11 @@ export interface LPoolLiquidity extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    interestRate(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
@@ -545,6 +559,11 @@ export interface LPoolLiquidity extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  interestRate(
+    token_: string,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
   isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
   isApprovedPT(token_: string, overrides?: CallOverrides): Promise<boolean>;
@@ -672,6 +691,11 @@ export interface LPoolLiquidity extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    interestRate(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
 
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -894,6 +918,8 @@ export interface LPoolLiquidity extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    interestRate(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1034,6 +1060,11 @@ export interface LPoolLiquidity extends BaseContract {
     hasRole(
       role: BytesLike,
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    interestRate(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

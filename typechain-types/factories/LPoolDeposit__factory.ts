@@ -376,6 +376,30 @@ const _abi = [
         type: "address",
       },
     ],
+    name: "interestRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "token_",
+        type: "address",
+      },
+    ],
     name: "isApprovedLP",
     outputs: [
       {
@@ -583,30 +607,6 @@ const _abi = [
   {
     inputs: [],
     name: "taxPercentage",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IERC20",
-        name: "token_",
-        type: "address",
-      },
-    ],
-    name: "utilizationRate",
     outputs: [
       {
         internalType: "uint256",

@@ -115,7 +115,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
-    function interestRate(IERC20 token_) public view returns (uint256, uint256) {
+    function interestRate(IERC20 token_) public view override returns (uint256, uint256) {
         (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(token_);
 
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];

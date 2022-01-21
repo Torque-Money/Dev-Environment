@@ -32,6 +32,7 @@ export interface LPoolDepositInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "interestRate(address)": FunctionFragment;
     "isApprovedLP(address)": FunctionFragment;
     "isApprovedPT(address)": FunctionFragment;
     "isLP(address)": FunctionFragment;
@@ -45,7 +46,6 @@ export interface LPoolDepositInterface extends utils.Interface {
     "setTaxPercentage(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "taxPercentage()": FunctionFragment;
-    "utilizationRate(address)": FunctionFragment;
     "utilized(address)": FunctionFragment;
     "withdraw(address,uint256)": FunctionFragment;
   };
@@ -90,6 +90,10 @@ export interface LPoolDepositInterface extends utils.Interface {
     values: [BytesLike, string]
   ): string;
   encodeFunctionData(
+    functionFragment: "interestRate",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "isApprovedLP",
     values: [string]
   ): string;
@@ -132,10 +136,6 @@ export interface LPoolDepositInterface extends utils.Interface {
     functionFragment: "taxPercentage",
     values?: undefined
   ): string;
-  encodeFunctionData(
-    functionFragment: "utilizationRate",
-    values: [string]
-  ): string;
   encodeFunctionData(functionFragment: "utilized", values: [string]): string;
   encodeFunctionData(
     functionFragment: "withdraw",
@@ -166,6 +166,10 @@ export interface LPoolDepositInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "interestRate",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedLP",
     data: BytesLike
@@ -204,10 +208,6 @@ export interface LPoolDepositInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "taxPercentage",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "utilizationRate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "utilized", data: BytesLike): Result;
@@ -351,6 +351,11 @@ export interface LPoolDeposit extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    interestRate(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
@@ -401,11 +406,6 @@ export interface LPoolDeposit extends BaseContract {
     ): Promise<[boolean]>;
 
     taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
-
-    utilizationRate(
-      token_: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
 
     utilized(token_: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -460,6 +460,11 @@ export interface LPoolDeposit extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  interestRate(
+    token_: string,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
   isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
   isApprovedPT(token_: string, overrides?: CallOverrides): Promise<boolean>;
@@ -511,11 +516,6 @@ export interface LPoolDeposit extends BaseContract {
 
   taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
 
-  utilizationRate(
-    token_: string,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
-
   utilized(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   withdraw(
@@ -566,6 +566,11 @@ export interface LPoolDeposit extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    interestRate(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<boolean>;
@@ -613,11 +618,6 @@ export interface LPoolDeposit extends BaseContract {
     ): Promise<boolean>;
 
     taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
-
-    utilizationRate(
-      token_: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
 
     utilized(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -743,6 +743,8 @@ export interface LPoolDeposit extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    interestRate(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -793,11 +795,6 @@ export interface LPoolDeposit extends BaseContract {
     ): Promise<BigNumber>;
 
     taxPercentage(overrides?: CallOverrides): Promise<BigNumber>;
-
-    utilizationRate(
-      token_: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     utilized(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -861,6 +858,11 @@ export interface LPoolDeposit extends BaseContract {
     hasRole(
       role: BytesLike,
       account: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    interestRate(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -929,11 +931,6 @@ export interface LPoolDeposit extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     taxPercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    utilizationRate(
-      token_: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     utilized(
       token_: string,

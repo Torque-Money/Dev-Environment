@@ -74,7 +74,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     function utilized(IERC20 token_) public view virtual returns (uint256);
 
-    function interestRate(IERC20 token_) public view virtual returns (uint256, uint256); // **** Add an override
+    function interestRate(IERC20 token_) public view virtual returns (uint256, uint256);
 
     event Deposit(address indexed account, IERC20 tokenIn, uint256 amountIn, IERC20 convertedToken, uint256 convertedAmount);
     event Withdraw(address indexed account, IERC20 token, uint256 amount);
