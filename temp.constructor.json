@@ -1,34 +1,28 @@
 {
-  "converter": { "router": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D" },
-  "pool": {
-    "converter": "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524",
-    "taxPercentNumerator": 5,
-    "taxPercentDenominator": 100,
-    "blocksPerInterestApplication": { "type": "BigNumber", "hex": "0x2819a0" }
-  },
-  "oracle": {
-    "thresholdNumerator": 1,
-    "thresholdDenominator": 200,
-    "priceDecimals": 18
-  },
-  "marginLong": {},
-  "resolver": {
-    "pokeMe": "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
-    "marginLong": "0x3058eA73cF0DD9522eeA6697943C9b84126368F8",
-    "pool": "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5",
-    "converter": "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524"
-  },
-  "0x3058eA73cF0DD9522eeA6697943C9b84126368F8": {
-    "pool": "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5",
-    "oracle": "0x58310C211c1249e454Feb91962A79d1a4F09F08e",
-    "minMarginLevelPercentNumerator": 105,
-    "minMarginLevelPercentDenominator": 100,
-    "minCollateralPrice": {
-      "type": "BigNumber",
-      "hex": "0x056bc75e2d63100000"
-    },
-    "maxLeverage": 125,
-    "liquidationFeePercentNumerator": 10,
-    "liquidationFeePercentDenominator": 100
-  }
+  "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524": [
+    "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D"
+  ],
+  "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5": [
+    "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524",
+    "5",
+    "100",
+    "2628000"
+  ],
+  "0x58310C211c1249e454Feb91962A79d1a4F09F08e": ["1", "200", "18"],
+  "0x0A0e323ab8114b34b7A5383D173bd9F2C993D2Ec": [
+    "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
+    "0x3058eA73cF0DD9522eeA6697943C9b84126368F8",
+    "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5",
+    "0x4d5B4486C598C9a4F0f79E499dCab5c3c9dFa524"
+  ],
+  "0x3058eA73cF0DD9522eeA6697943C9b84126368F8": [
+    "0xC9d0a5e1d1Af44FD4a61534122E805cC921fF0F5",
+    "0x58310C211c1249e454Feb91962A79d1a4F09F08e",
+    "105",
+    "100",
+    "100000000000000000000",
+    "125",
+    "10",
+    "100"
+  ]
 }
