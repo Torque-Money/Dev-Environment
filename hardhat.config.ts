@@ -69,6 +69,9 @@ task("sandbox", "A sandbox for testing", async (args, hre) => {
     await token.approve(configTest.routerAddress, inAmount);
 
     const weth = await router.WETH();
+
+    console.log("Made it to end");
+
     await router.swapExactTokensForETH(inAmount, 0, [inToken, weth], signerAddress, Date.now());
 
     // **** It looks like I am going to have to make a custom switch for the WETH as the last input to default swap to ETH instead in the converter
