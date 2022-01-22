@@ -28,29 +28,6 @@ contract Resolver is PokeMeReady {
         converter = converter_;
     }
 
-    // Check if an account needs to be executed or automated
-    function checker() external view returns (bool canExec, bytes memory execPayload) {
-        address[] memory accounts = marginLong.getBorrowingAccounts();
-
-        for (uint256 i = 0; i < accounts.length; i++) {
-            address account = accounts[i];
-
-            if (marginLong.liquidatable(account)) {
-                canExec = true;
-                execPayload = abi.encodeWithSelector(this.executorLiquidate.selector, account);
-
-                return (canExec, execPayload);
-            } else if (marginLong.resettable(account)) {
-                canExec = true;
-                execPayload = abi.encodeWithSelector(this.executorReset.selector, account);
-
-                return (canExec, execPayload);
-            }
-        }
-
-        return (false, bytes(""));
-    }
-
     // Pay transaction
     function _payTransaction(IERC20[] memory repayTokens_, uint256[] memory repayAmounts_) internal {
         (uint256 fee, address feeToken) = IPokeMe(pokeMe).getFeeDetails();
@@ -81,14 +58,46 @@ contract Resolver is PokeMeReady {
         }
     }
 
+    // Check if an account needs to be liquidated
+    function checkLiquidate() external view returns (bool canExec, bytes memory execPayload) {
+        address[] memory accounts = marginLong.getBorrowingAccounts();
+
+        for (uint256 i = 0; i < accounts.length; i++) {
+            if (marginLong.liquidatable(accounts[i])) {
+                canExec = true;
+                execPayload = abi.encodeWithSelector(this.executeLiquidate.selector, accounts[i]);
+
+                return (canExec, execPayload);
+            }
+        }
+
+        return (false, bytes(""));
+    }
+
+    // Check if an account needs to be reset
+    function checkReset() external view returns (bool canExec, bytes memory execPayload) {
+        address[] memory accounts = marginLong.getBorrowingAccounts();
+
+        for (uint256 i = 0; i < accounts.length; i++) {
+            if (marginLong.resettable(accounts[i])) {
+                canExec = true;
+                execPayload = abi.encodeWithSelector(this.executeReset.selector, accounts[i]);
+
+                return (canExec, execPayload);
+            }
+        }
+
+        return (false, bytes(""));
+    }
+
     // Execute liquidate and repay
-    function executorLiquidate(address account_) external onlyPokeMe {
+    function executeLiquidate(address account_) external onlyPokeMe {
         (IERC20[] memory repayTokens, uint256[] memory repayAmounts) = marginLong.liquidateAccount(account_);
         _payTransaction(repayTokens, repayAmounts);
     }
 
     // Execute reset and repay
-    function executorReset(address account_) external onlyPokeMe {
+    function executeReset(address account_) external onlyPokeMe {
         (IERC20[] memory repayTokens, uint256[] memory repayAmounts) = marginLong.resetAccount(account_);
         _payTransaction(repayTokens, repayAmounts);
     }
