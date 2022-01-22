@@ -21,8 +21,8 @@ contract Converter is IConverter, Ownable {
         router = router_;
     }
 
-    // Swap the given amount for the maximum amount out
-    function swapMaxOut(
+    // Swap the given amount for the maximum tokens out
+    function swapMaxTokenOut(
         IERC20 tokenIn_,
         uint256 amountIn_,
         IERC20 tokenOut_
@@ -34,6 +34,19 @@ contract Converter is IConverter, Ownable {
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
         tokenIn_.safeApprove(address(router), amountIn_);
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
+
+        return amountOut;
+    }
+
+    // Swap the given amount for the maximum ETH out
+    function swapMaxEthOut(IERC20 tokenIn_, uint256 amountIn_) external override returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(router.WETH());
+
+        tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
+        tokenIn_.safeApprove(address(router), amountIn_);
+        uint256 amountOut = router.swapExactTokensForETH(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
         return amountOut;
     }
