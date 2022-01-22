@@ -11,7 +11,6 @@ contract Converter is IConverter, Ownable {
     using SafeERC20 for IERC20;
 
     UniswapV2Router02 public router;
-    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     constructor(UniswapV2Router02 router_) {
         router = router_;
