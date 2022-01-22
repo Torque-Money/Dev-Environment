@@ -10,17 +10,21 @@ interface IConverter {
         IERC20 tokenOut_
     ) external returns (uint256);
 
-    function swapMaxEthOut(IERC20 tokenIn_, uint256 amountIn_) external returns (uint256);
-
-    function maxAmountOut(
+    function maxAmountTokenOut(
         IERC20 tokenIn_,
         uint256 amountIn_,
         IERC20 tokenOut_
     ) external view returns (uint256);
 
-    function minAmountIn(
+    function minAmountTokenInTokenOut(
         IERC20 tokenIn_,
         IERC20 tokenOut_,
         uint256 amountOut_
     ) external view returns (uint256);
+
+    function swapMaxEthOut(IERC20 tokenIn_, uint256 amountIn_) external returns (uint256);
+
+    function maxAmountEthOut(IERC20 tokenIn_, uint256 amountIn_) external view returns (uint256);
+
+    function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) external view returns (uint256);
 }

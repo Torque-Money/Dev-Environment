@@ -11,6 +11,7 @@ contract Converter is IConverter, Ownable {
     using SafeERC20 for IERC20;
 
     UniswapV2Router02 public router;
+    address public constant ETH = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     constructor(UniswapV2Router02 router_) {
         router = router_;
@@ -38,6 +39,34 @@ contract Converter is IConverter, Ownable {
         return amountOut;
     }
 
+    // Get the maximum output tokens for given input tokens
+    function maxAmountTokenOut(
+        IERC20 tokenIn_,
+        uint256 amountIn_,
+        IERC20 tokenOut_
+    ) public view override returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+
+        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
+        return amountOut;
+    }
+
+    // Get the minimum input tokens required for the given output tokens
+    function minAmountTokenInTokenOut(
+        IERC20 tokenIn_,
+        IERC20 tokenOut_,
+        uint256 amountOut_
+    ) public view override returns (uint256) {
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = address(tokenOut_);
+
+        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
+        return amountIn;
+    }
+
     // Swap the given amount for the maximum ETH out
     function swapMaxEthOut(IERC20 tokenIn_, uint256 amountIn_) external override returns (uint256) {
         address[] memory path = new address[](2);
@@ -51,31 +80,13 @@ contract Converter is IConverter, Ownable {
         return amountOut;
     }
 
-    // Get the maximum output tokens for given input tokens
-    function maxAmountOut(
-        IERC20 tokenIn_,
-        uint256 amountIn_,
-        IERC20 tokenOut_
-    ) external view override returns (uint256) {
-        address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
-
-        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
-        return amountOut;
+    // Get the maximum output eth for given input tokens
+    function maxAmountEthOut(IERC20 tokenIn_, uint256 amountIn_) external view override returns (uint256) {
+        return maxAmountTokenOut(tokenIn_, amountIn_, IERC20(router.WETH()));
     }
 
-    // Get the minimum input tokens required for the given output tokens
-    function minAmountIn(
-        IERC20 tokenIn_,
-        IERC20 tokenOut_,
-        uint256 amountOut_
-    ) external view override returns (uint256) {
-        address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
-
-        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
-        return amountIn;
+    // Get the minimum input tokens for required output eth
+    function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) public view override returns (uint256) {
+        return minAmountTokenInTokenOut(tokenIn_, IERC20(router.WETH()), amountOut_);
     }
 }
