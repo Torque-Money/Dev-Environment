@@ -15,8 +15,8 @@
       "reservePriceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
       "oracle": true,
       "marginLongCollateral": true,
-      "marginLongBorrow": true,
-      "leveragePool": true
+      "marginLongBorrow": false,
+      "leveragePool": false
     },
     {
       "name": "Wrapped Eth",
