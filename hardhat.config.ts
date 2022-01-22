@@ -67,6 +67,9 @@ task("sandbox", "A sandbox for testing", async (args, hre) => {
     const token = new hre.ethers.Contract(inToken, ERC20Abi.abi, signer) as ERC20;
 
     await token.approve(configTest.routerAddress, inAmount);
+
+    const weth = await router.WETH();
+    await router.swapExactTokensForTokens(inAmount, 0, [inToken, weth], signerAddress, Date.now());
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
