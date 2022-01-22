@@ -55,7 +55,7 @@ const NETWORK_URL_TEST = process.env.NETWORK_URL;
 
 export default {
     solidity: {
-        compilers: [{version: "0.8.4", settings: {optimizer: {enabled: true, runs: 200}}}],
+        compilers: [{version: "0.8.9", settings: {optimizer: {enabled: true, runs: 200}}}],
     },
     networks: {
         hardhat: {
