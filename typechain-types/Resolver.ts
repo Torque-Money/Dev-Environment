@@ -20,10 +20,11 @@ export interface ResolverInterface extends utils.Interface {
   contractName: "Resolver";
   functions: {
     "ETH()": FunctionFragment;
-    "checker()": FunctionFragment;
+    "checkLiquidate()": FunctionFragment;
+    "checkReset()": FunctionFragment;
     "converter()": FunctionFragment;
-    "executorLiquidate(address)": FunctionFragment;
-    "executorReset(address)": FunctionFragment;
+    "executeLiquidate(address)": FunctionFragment;
+    "executeReset(address)": FunctionFragment;
     "gelato()": FunctionFragment;
     "marginLong()": FunctionFragment;
     "pokeMe()": FunctionFragment;
@@ -31,14 +32,21 @@ export interface ResolverInterface extends utils.Interface {
   };
 
   encodeFunctionData(functionFragment: "ETH", values?: undefined): string;
-  encodeFunctionData(functionFragment: "checker", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "checkLiquidate",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "checkReset",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "converter", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "executorLiquidate",
+    functionFragment: "executeLiquidate",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "executorReset",
+    functionFragment: "executeReset",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "gelato", values?: undefined): string;
@@ -50,14 +58,18 @@ export interface ResolverInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "pool", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "ETH", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "checker", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "checkLiquidate",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "checkReset", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "converter", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "executorLiquidate",
+    functionFragment: "executeLiquidate",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "executorReset",
+    functionFragment: "executeReset",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "gelato", data: BytesLike): Result;
@@ -98,18 +110,22 @@ export interface Resolver extends BaseContract {
   functions: {
     ETH(overrides?: CallOverrides): Promise<[string]>;
 
-    checker(
+    checkLiquidate(
+      overrides?: CallOverrides
+    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
+
+    checkReset(
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
     converter(overrides?: CallOverrides): Promise<[string]>;
 
-    executorLiquidate(
+    executeLiquidate(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    executorReset(
+    executeReset(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -125,18 +141,22 @@ export interface Resolver extends BaseContract {
 
   ETH(overrides?: CallOverrides): Promise<string>;
 
-  checker(
+  checkLiquidate(
+    overrides?: CallOverrides
+  ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
+
+  checkReset(
     overrides?: CallOverrides
   ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
   converter(overrides?: CallOverrides): Promise<string>;
 
-  executorLiquidate(
+  executeLiquidate(
     account_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  executorReset(
+  executeReset(
     account_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -152,18 +172,22 @@ export interface Resolver extends BaseContract {
   callStatic: {
     ETH(overrides?: CallOverrides): Promise<string>;
 
-    checker(
+    checkLiquidate(
+      overrides?: CallOverrides
+    ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
+
+    checkReset(
       overrides?: CallOverrides
     ): Promise<[boolean, string] & { canExec: boolean; execPayload: string }>;
 
     converter(overrides?: CallOverrides): Promise<string>;
 
-    executorLiquidate(
+    executeLiquidate(
       account_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    executorReset(account_: string, overrides?: CallOverrides): Promise<void>;
+    executeReset(account_: string, overrides?: CallOverrides): Promise<void>;
 
     gelato(overrides?: CallOverrides): Promise<string>;
 
@@ -179,16 +203,18 @@ export interface Resolver extends BaseContract {
   estimateGas: {
     ETH(overrides?: CallOverrides): Promise<BigNumber>;
 
-    checker(overrides?: CallOverrides): Promise<BigNumber>;
+    checkLiquidate(overrides?: CallOverrides): Promise<BigNumber>;
+
+    checkReset(overrides?: CallOverrides): Promise<BigNumber>;
 
     converter(overrides?: CallOverrides): Promise<BigNumber>;
 
-    executorLiquidate(
+    executeLiquidate(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    executorReset(
+    executeReset(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -205,16 +231,18 @@ export interface Resolver extends BaseContract {
   populateTransaction: {
     ETH(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    checker(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    checkLiquidate(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    checkReset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     converter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    executorLiquidate(
+    executeLiquidate(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    executorReset(
+    executeReset(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
