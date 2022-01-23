@@ -50,7 +50,9 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-task("sandbox", "A sandbox for testing", async (args, hre) => {});
+task("sandbox", "A sandbox for testing", async (args, hre) => {
+    console.log("Sandbox");
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const NETWORK_URL_TEST = process.env.NETWORK_URL;
