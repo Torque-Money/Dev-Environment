@@ -8,6 +8,8 @@ import "../Converter/IConverter.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
+import "hardhat/console.sol";
+
 abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
@@ -31,11 +33,22 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
+
+            console.log(address(poolTokens[i]));
+            console.log(interestRateNumerator);
+            console.log(interestRateDenominator);
+            console.log(utilized(poolTokens[i]));
+
             uint256 weightSize = utilized(poolTokens[i]).mul(interestRateNumerator).div(interestRateDenominator);
+
+            console.log(weightSize);
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
         }
+
+        console.log("");
+        console.log(totalWeightSize);
 
         uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
 
