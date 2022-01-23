@@ -66,8 +66,7 @@ describe("Handle price movement", async function () {
         const [minMarginLevelNumerator, minMarginLevelDenominator] = await marginLong.minMarginLevel();
         console.log("Liquidate: min margin level", minMarginLevelNumerator, minMarginLevelDenominator);
 
-        expect(newMarginLevelNumerator.mul(initialMarginLevelDenominator)).to.be.lessThan(initialMarginLevelNumerator.mul(newMarginLevelDenominator));
-
+        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await marginLong.liquidateAccount(signerAddress);
     });
 
