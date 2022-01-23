@@ -71,7 +71,7 @@ describe("Handle price movement", async function () {
 
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        // **** The account is liquidated !?!?! - why is it not able to be withdrawn (perhaps the is borrowing has not been set to zero or something or the account hasnt been removed ?)
+        // **** It is reverting in this and this is why it is staying broken - we need to figure out what is causing it to revert and where
     });
 
     // it("should reset an account", async () => {});

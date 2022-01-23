@@ -46,13 +46,7 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
             pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));
             _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
             _setBorrowed(borrowedTokens[i], 0, account_);
-
-            console.log("Borrowing specific token:");
-            console.log(isBorrowing(borrowedTokens[i], account_));
         }
-
-        console.log("Total borrowing:");
-        console.log(isBorrowing(account_));
 
         _removeAccount(account_);
     }
