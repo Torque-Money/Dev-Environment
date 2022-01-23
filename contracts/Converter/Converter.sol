@@ -29,23 +29,14 @@ contract Converter is IConverter, Ownable {
         uint256 amountIn_,
         IERC20 tokenOut_
     ) external override returns (uint256) {
-        address[] memory path = new address[](2);
+        address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
+        path[1] = router.WETH();
+        path[2] = address(tokenOut_);
 
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
         tokenIn_.safeApprove(address(router), amountIn_);
-
-        console.log("Made it here TOP");
-
-        console.log(path[0]);
-        console.log(path[1]);
-
-        // **** Perhaps what I am going to have to do is swap each one for FTM directly - it appears that otherwise the pair may not exist for some reason (router does not do grunt work)
-
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
-
-        console.log("Made it here BOT");
 
         return amountOut;
     }
@@ -56,9 +47,10 @@ contract Converter is IConverter, Ownable {
         uint256 amountIn_,
         IERC20 tokenOut_
     ) public view override returns (uint256) {
-        address[] memory path = new address[](2);
+        address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
+        path[1] = router.WETH();
+        path[2] = address(tokenOut_);
 
         uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
         return amountOut;
@@ -70,9 +62,10 @@ contract Converter is IConverter, Ownable {
         IERC20 tokenOut_,
         uint256 amountOut_
     ) public view override returns (uint256) {
-        address[] memory path = new address[](2);
+        address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
-        path[1] = address(tokenOut_);
+        path[1] = router.WETH();
+        path[2] = address(tokenOut_);
 
         uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
         return amountIn;
@@ -93,11 +86,21 @@ contract Converter is IConverter, Ownable {
 
     // Get the maximum output eth for given input tokens
     function maxAmountEthOut(IERC20 tokenIn_, uint256 amountIn_) external view override returns (uint256) {
-        return maxAmountTokenOut(tokenIn_, amountIn_, IERC20(router.WETH()));
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = router.WETH();
+
+        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
+        return amountOut;
     }
 
     // Get the minimum input tokens for required output eth
     function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) public view override returns (uint256) {
-        return minAmountTokenInTokenOut(tokenIn_, IERC20(router.WETH()), amountOut_);
+        address[] memory path = new address[](2);
+        path[0] = address(tokenIn_);
+        path[1] = router.WETH();
+
+        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
+        return amountIn;
     }
 }
