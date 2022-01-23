@@ -29,8 +29,8 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
 
     // Get the utilization rate for a given asset
     function utilizationRate(IERC20 token_) public view returns (uint256, uint256) {
-        uint256 _tvl = tvl(token_);
         uint256 _utilized = utilized(token_);
+        uint256 _tvl = tvl(token_);
         return (_utilized, _tvl);
     }
 }
