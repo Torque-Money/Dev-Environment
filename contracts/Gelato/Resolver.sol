@@ -125,13 +125,15 @@ contract Resolver is PokeMeReady {
     }
 
     // Execute liquidate and repay
-    function executeLiquidate(address account_) external onlyPokeMe {
+    function executeLiquidate(address account_) external {
+        // **** Add only poke me
         (IERC20[] memory repayTokens, uint256[] memory repayAmounts) = marginLong.liquidateAccount(account_);
         _payTransaction(repayTokens, repayAmounts);
     }
 
     // Execute reset and repay
-    function executeReset(address account_) external onlyPokeMe {
+    function executeReset(address account_) external {
+        // **** Add only poke me
         (IERC20[] memory repayTokens, uint256[] memory repayAmounts) = marginLong.resetAccount(account_);
         _payTransaction(repayTokens, repayAmounts);
     }
