@@ -54,24 +54,12 @@ describe("Handle price movement", async function () {
     });
 
     it("should liquidate an account", async () => {
-        const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
-        console.log("Liquidate: initial margin level", initialMarginLevelNumerator, initialMarginLevelDenominator);
-
         const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
         await oracle.setPrice(borrowedToken.address, newPrice);
 
-        const [newMarginLevelNumerator, newMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
-        console.log("Liquidate: new margin level", newMarginLevelNumerator, newMarginLevelDenominator);
-
-        const [minMarginLevelNumerator, minMarginLevelDenominator] = await marginLong.minMarginLevel();
-        console.log("Liquidate: min margin level", minMarginLevelNumerator, minMarginLevelDenominator);
-
         expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await marginLong.liquidateAccount(signerAddress);
-
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
-
-        // **** It is reverting in this and this is why it is staying broken - we need to figure out what is causing it to revert and where
     });
 
     // it("should reset an account", async () => {});
