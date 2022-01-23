@@ -20,9 +20,8 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     function liquidity(IERC20 token_) public view override(LPoolClaim, LPoolDeposit) returns (uint256) {
         uint256 claimed = totalClaimed(token_);
 
-        console.log(tvl(token_));
-        console.log(claimed);
-        console.log(tvl(token_) > claimed);
+        uint256 out = tvl(token_).sub(claimed);
+        console.log(out);
 
         return tvl(token_).sub(claimed);
     }
