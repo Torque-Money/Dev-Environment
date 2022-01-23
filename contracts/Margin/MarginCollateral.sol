@@ -8,8 +8,6 @@ import "./MarginLevel.sol";
 import "./MarginApproved.sol";
 import "./MarginLimits.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
@@ -27,11 +25,6 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
         require(amount_ <= collateral(collateral_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
-
-        console.log(isBorrowing(_msgSender())); // **** As expected, this is not being reset to zero after the liquidation has occured for some reason
-        console.log(resettable(_msgSender()));
-        console.log(liquidatable(_msgSender()));
-
         require(!resettable(_msgSender()) && !liquidatable(_msgSender()), "MarginCollateral: Withdrawing desired collateral puts account at risk");
 
         collateral_.safeTransfer(_msgSender(), amount_);

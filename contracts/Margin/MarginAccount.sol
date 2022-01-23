@@ -90,6 +90,7 @@ abstract contract MarginAccount is MarginPool {
         console.log(address(borrowed_));
         console.log(account_);
         console.log(account.hasBorrowed);
+        console.log(isBorrowing(account_));
         console.log("");
     }
 
