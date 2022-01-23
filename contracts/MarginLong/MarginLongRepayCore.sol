@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../Margin/Margin.sol";
 
+import "hardhat/console.sol";
+
 abstract contract MarginLongRepayCore is Margin {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
@@ -65,6 +67,9 @@ abstract contract MarginLongRepayCore is Margin {
         uint256[] memory collateralRepayAmount_,
         uint256 collateralIndex_
     ) internal returns (uint256) {
+        console.log(collateralToken_.length);
+        console.log(collateralRepayAmount_.length);
+
         while (debt_ > 0 && collateralIndex_ < collateralToken_.length) {
             uint256 collateralAmount = collateral(collateralToken_[collateralIndex_], account_);
             uint256 collateralPrice = _collateralPrice(collateralToken_[collateralIndex_], account_);

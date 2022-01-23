@@ -70,9 +70,9 @@ describe("Handle price movement", async function () {
         await marginLong.liquidateAccount(signerAddress);
     });
 
-    it("should reset an account", async () => {});
+    // it("should reset an account", async () => {});
 
-    it("should repay an account with profit", async () => {});
+    // it("should repay an account with profit", async () => {});
 
-    it("should repay an account with a loss", async () => {});
+    // it("should repay an account with a loss", async () => {});
 });
