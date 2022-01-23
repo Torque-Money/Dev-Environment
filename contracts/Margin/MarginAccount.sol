@@ -162,7 +162,9 @@ abstract contract MarginAccount is MarginPool {
         Account storage account = _accounts[account_];
 
         console.log("Has borrowed");
+        console.log(account_);
         console.log(account.hasBorrowed);
+        console.log("");
 
         return account.hasBorrowed > 0;
     }
