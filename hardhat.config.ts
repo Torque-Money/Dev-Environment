@@ -16,8 +16,7 @@ import dotenv from "dotenv";
 import {verifyAll} from "./scripts/util/utilVerify";
 dotenv.config();
 
-import deployConverter from "./scripts/deploy/deployConverter";
-import deployResolver from "./scripts/deploy/deployResolver";
+import configTest from "./config.test.json";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     hre.run("compile");
@@ -54,8 +53,12 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("sandbox", "A sandbox for testing", async (args, hre) => {
-    await deployConverter("test", hre);
-    await deployResolver("test", hre);
+    // await deployConverter("test", hre);
+    // await deployResolver("test", hre);
+    // **** Approve the new resolver as a pool deposit address
+
+    const leveragePool = await hre.ethers.getContractAt("LPool", configTest.leveragePoolAddress);
+    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), configTest.resolverAddress);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
