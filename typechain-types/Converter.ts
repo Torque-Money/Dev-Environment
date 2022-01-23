@@ -20,22 +20,33 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface ConverterInterface extends utils.Interface {
   contractName: "Converter";
   functions: {
-    "maxAmountOut(address,uint256,address)": FunctionFragment;
-    "minAmountIn(address,address,uint256)": FunctionFragment;
+    "maxAmountEthOut(address,uint256)": FunctionFragment;
+    "maxAmountTokenOut(address,uint256,address)": FunctionFragment;
+    "minAmountTokenInEthOut(address,uint256)": FunctionFragment;
+    "minAmountTokenInTokenOut(address,address,uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "router()": FunctionFragment;
     "setRouter(address)": FunctionFragment;
-    "swapMaxOut(address,uint256,address)": FunctionFragment;
+    "swapMaxEthOut(address,uint256)": FunctionFragment;
+    "swapMaxTokenOut(address,uint256,address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "maxAmountOut",
+    functionFragment: "maxAmountEthOut",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "maxAmountTokenOut",
     values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "minAmountIn",
+    functionFragment: "minAmountTokenInEthOut",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minAmountTokenInTokenOut",
     values: [string, string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -46,7 +57,11 @@ export interface ConverterInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "router", values?: undefined): string;
   encodeFunctionData(functionFragment: "setRouter", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "swapMaxOut",
+    functionFragment: "swapMaxEthOut",
+    values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "swapMaxTokenOut",
     values: [string, BigNumberish, string]
   ): string;
   encodeFunctionData(
@@ -55,11 +70,19 @@ export interface ConverterInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "maxAmountOut",
+    functionFragment: "maxAmountEthOut",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "minAmountIn",
+    functionFragment: "maxAmountTokenOut",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minAmountTokenInEthOut",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "minAmountTokenInTokenOut",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -69,7 +92,14 @@ export interface ConverterInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "router", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setRouter", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "swapMaxOut", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "swapMaxEthOut",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "swapMaxTokenOut",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -118,14 +148,26 @@ export interface Converter extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    maxAmountOut(
+    maxAmountEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    maxAmountTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    minAmountIn(
+    minAmountTokenInEthOut(
+      tokenIn_: string,
+      amountOut_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    minAmountTokenInTokenOut(
       tokenIn_: string,
       tokenOut_: string,
       amountOut_: BigNumberish,
@@ -145,7 +187,13 @@ export interface Converter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    swapMaxOut(
+    swapMaxEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    swapMaxTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
@@ -158,14 +206,26 @@ export interface Converter extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  maxAmountOut(
+  maxAmountEthOut(
+    tokenIn_: string,
+    amountIn_: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  maxAmountTokenOut(
     tokenIn_: string,
     amountIn_: BigNumberish,
     tokenOut_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  minAmountIn(
+  minAmountTokenInEthOut(
+    tokenIn_: string,
+    amountOut_: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  minAmountTokenInTokenOut(
     tokenIn_: string,
     tokenOut_: string,
     amountOut_: BigNumberish,
@@ -185,7 +245,13 @@ export interface Converter extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  swapMaxOut(
+  swapMaxEthOut(
+    tokenIn_: string,
+    amountIn_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  swapMaxTokenOut(
     tokenIn_: string,
     amountIn_: BigNumberish,
     tokenOut_: string,
@@ -198,14 +264,26 @@ export interface Converter extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    maxAmountOut(
+    maxAmountEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    maxAmountTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    minAmountIn(
+    minAmountTokenInEthOut(
+      tokenIn_: string,
+      amountOut_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    minAmountTokenInTokenOut(
       tokenIn_: string,
       tokenOut_: string,
       amountOut_: BigNumberish,
@@ -220,7 +298,13 @@ export interface Converter extends BaseContract {
 
     setRouter(router_: string, overrides?: CallOverrides): Promise<void>;
 
-    swapMaxOut(
+    swapMaxEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    swapMaxTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
@@ -245,14 +329,26 @@ export interface Converter extends BaseContract {
   };
 
   estimateGas: {
-    maxAmountOut(
+    maxAmountEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    maxAmountTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    minAmountIn(
+    minAmountTokenInEthOut(
+      tokenIn_: string,
+      amountOut_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    minAmountTokenInTokenOut(
       tokenIn_: string,
       tokenOut_: string,
       amountOut_: BigNumberish,
@@ -272,7 +368,13 @@ export interface Converter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    swapMaxOut(
+    swapMaxEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    swapMaxTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
@@ -286,14 +388,26 @@ export interface Converter extends BaseContract {
   };
 
   populateTransaction: {
-    maxAmountOut(
+    maxAmountEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    maxAmountTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    minAmountIn(
+    minAmountTokenInEthOut(
+      tokenIn_: string,
+      amountOut_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minAmountTokenInTokenOut(
       tokenIn_: string,
       tokenOut_: string,
       amountOut_: BigNumberish,
@@ -313,7 +427,13 @@ export interface Converter extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    swapMaxOut(
+    swapMaxEthOut(
+      tokenIn_: string,
+      amountIn_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    swapMaxTokenOut(
       tokenIn_: string,
       amountIn_: BigNumberish,
       tokenOut_: string,

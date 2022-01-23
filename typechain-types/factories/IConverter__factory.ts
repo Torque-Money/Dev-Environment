@@ -19,42 +19,8 @@ const _abi = [
         name: "amountIn_",
         type: "uint256",
       },
-      {
-        internalType: "contract IERC20",
-        name: "tokenOut_",
-        type: "address",
-      },
     ],
-    name: "maxAmountOut",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IERC20",
-        name: "tokenIn_",
-        type: "address",
-      },
-      {
-        internalType: "contract IERC20",
-        name: "tokenOut_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amountOut_",
-        type: "uint256",
-      },
-    ],
-    name: "minAmountIn",
+    name: "maxAmountEthOut",
     outputs: [
       {
         internalType: "uint256",
@@ -83,7 +49,113 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "swapMaxOut",
+    name: "maxAmountTokenOut",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenIn_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amountOut_",
+        type: "uint256",
+      },
+    ],
+    name: "minAmountTokenInEthOut",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenIn_",
+        type: "address",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "tokenOut_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amountOut_",
+        type: "uint256",
+      },
+    ],
+    name: "minAmountTokenInTokenOut",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenIn_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amountIn_",
+        type: "uint256",
+      },
+    ],
+    name: "swapMaxEthOut",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "tokenIn_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amountIn_",
+        type: "uint256",
+      },
+      {
+        internalType: "contract IERC20",
+        name: "tokenOut_",
+        type: "address",
+      },
+    ],
+    name: "swapMaxTokenOut",
     outputs: [
       {
         internalType: "uint256",
