@@ -8,7 +8,6 @@
     "deploy:test": "npx hardhat deploy-test --network testnet",
     "deploy:fork": "npx hardhat deploy-fork --network localhost",
     "test": "npx hardhat test --network localhost",
-    "test:deploy": "npm run deploy:fork && npm run test",
     "verify:main": "npx hardhat verify-all --network mainnet",
     "verify:test": "npx hardhat verify-all --network testnet",
     "update-files": "npx ts-node scripts/util/utilUpdateFiles.ts"
