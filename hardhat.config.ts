@@ -56,23 +56,7 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("sandbox", "A sandbox for testing", async (args, hre) => {
-    const signer = hre.ethers.provider.getSigner();
-    const signerAddress = await signer.getAddress();
-
-    const router = new hre.ethers.Contract(configTest.routerAddress, UniswapV2Router02Abi.abi, signer) as UniswapV2Router02;
-
-    const inToken = "0x01BE23585060835E02B77ef475b0Cc51aA1e0709"; // Link
-    const inAmount = hre.ethers.BigNumber.from(10).pow(18).mul(10);
-
-    const token = new hre.ethers.Contract(inToken, ERC20Abi.abi, signer) as ERC20;
-
-    await token.approve(configTest.routerAddress, inAmount);
-
-    const weth = await router.WETH();
-
-    await router.swapExactTokensForETH(inAmount, 0, [inToken, weth], signerAddress, Date.now());
-
-    // **** It looks like I am going to have to make a custom switch for the WETH as the last input to default swap to ETH instead in the converter
+    // **** I am going to now deploy my new resolver to the test net along with my new converter - when we redeploy the pool it will match with the new resolver
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
