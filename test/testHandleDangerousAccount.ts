@@ -4,7 +4,7 @@ import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
 import {ERC20, LPool, MarginLong, Resolver} from "../typechain-types";
 
-describe("Liquidate", async function () {
+describe("Handle dangerous account", async function () {
     let marginLong: MarginLong;
     let pool: LPool;
     let resolver: Resolver;
@@ -27,6 +27,8 @@ describe("Liquidate", async function () {
 
         // **** Now here we want to deposit collateral and such into the account and see what happens and if it is liquidatable
     });
+
+    afterEach(async () => {});
 
     it("should liquidate a dangerous account", async () => {});
 
