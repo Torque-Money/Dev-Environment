@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/utils/math/SignedSafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
-import "hardhat/console.sol";
-
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeCast for uint256;
     using SafeCast for int256;
