@@ -25,7 +25,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
         require(amount_ <= collateral(collateral_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
-        require(!resettable(_msgSender() && !liquidatable(_msgSender()), "MarginCollateral: Withdrawing desired collateral puts account at risk");
+        require(!resettable(_msgSender()) && !liquidatable(_msgSender()), "MarginCollateral: Withdrawing desired collateral puts account at risk");
 
         collateral_.safeTransfer(_msgSender(), amount_);
 
