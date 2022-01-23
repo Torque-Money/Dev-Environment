@@ -36,9 +36,14 @@ contract Converter is IConverter, Ownable {
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
         tokenIn_.safeApprove(address(router), amountIn_);
 
-        console.log("Made it here");
+        console.log("Made it here TOP");
+
+        console.log(path[0]);
+        console.log(path[1]);
 
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
+
+        console.log("Made it here BOT");
 
         return amountOut;
     }
