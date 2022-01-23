@@ -42,16 +42,16 @@ describe("Handle price movement", async function () {
         await marginLong.borrow(borrowedToken.address, borrowAmount);
     });
 
-    afterEach(async () => {
-        const potentialCollateralTokens = [collateralToken, borrowedToken];
-        for (const token of potentialCollateralTokens) {
-            const amount = await marginLong.collateral(token.address, signerAddress);
-            if (amount.gt(0)) await marginLong.removeCollateral(token.address, amount);
-        }
+    // afterEach(async () => {
+    //     const potentialCollateralTokens = [collateralToken, borrowedToken];
+    //     for (const token of potentialCollateralTokens) {
+    //         const amount = await marginLong.collateral(token.address, signerAddress);
+    //         if (amount.gt(0)) await marginLong.removeCollateral(token.address, amount);
+    //     }
 
-        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
-    });
+    //     const LPTokenAmount = await lpToken.balanceOf(signerAddress);
+    //     await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
+    // });
 
     it("should liquidate an account", async () => {
         const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);

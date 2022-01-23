@@ -67,9 +67,6 @@ abstract contract MarginLongRepayCore is Margin {
         uint256[] memory collateralRepayAmount_,
         uint256 collateralIndex_
     ) internal returns (uint256) {
-        console.log(collateralToken_.length);
-        console.log(collateralRepayAmount_.length);
-
         while (debt_ > 0 && collateralIndex_ < collateralToken_.length) {
             uint256 collateralAmount = collateral(collateralToken_[collateralIndex_], account_);
             uint256 collateralPrice = _collateralPrice(collateralToken_[collateralIndex_], account_);
@@ -131,7 +128,7 @@ abstract contract MarginLongRepayCore is Margin {
     // Tax an accounts collateral and return the amounts taken from the collateral
     function _taxAccount(uint256 amount_, address account_) internal returns (IERC20[] memory, uint256[] memory) {
         IERC20[] memory collateralTokens = _collateralTokens(account_);
-        uint256[] memory collateralRepayAmounts;
+        uint256[] memory collateralRepayAmounts = new uint256[](collateralTokens.length);
         uint256 collateralIndex = 0;
 
         _repayLossFromCollateral(amount_, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
