@@ -3,13 +3,18 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import "@openzeppelin/contracts/utils/math/SignedSafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
 import "hardhat/console.sol";
 
 abstract contract LPoolInterest is LPoolLiquidity {
+    using SafeCast for uint256;
+    using SafeCast for int256;
     using SafeMath for uint256;
+    using SignedSafeMath for int256;
 
     uint256 public blocksPerInterestApplication;
 
@@ -94,31 +99,33 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory utilizationMax_,
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
-    ) internal view returns (uint256, uint256) {
-        console.log(interestMax_.numerator);
-        console.log(interestMax_.denominator);
-        console.log(interestMin_.numerator);
-        console.log(interestMin_.denominator);
-        console.log(utilizationMax_.numerator);
-        uint256 kNumerator;
+    ) internal pure returns (uint256, uint256) {
+        int256 kNumerator;
         {
-            kNumerator = interestMax_.numerator.add(interestMin_.denominator).sub(interestMin_.numerator.mul(interestMax_.denominator)).mul(utilizationMax_.numerator);
+            kNumerator = interestMax_
+                .numerator
+                .toInt256()
+                .add(interestMin_.denominator.toInt256())
+                .sub(interestMin_.numerator.toInt256().mul(interestMax_.denominator.toInt256()))
+                .mul(utilizationMax_.numerator.toInt256());
         }
-        uint256 kDenominator;
+        int256 kDenominator;
         {
-            kDenominator = interestMax_.denominator.mul(interestMin_.denominator).mul(utilizationMax_.denominator);
-        }
-
-        uint256 numerator;
-        {
-            numerator = utilizationNumerator_.mul(interestMax_.numerator).mul(kDenominator).sub(kNumerator.mul(utilizationDenominator_).mul(interestMax_.denominator));
-        }
-        uint256 denominator;
-        {
-            denominator = utilizationDenominator_.mul(interestMax_.denominator).mul(kDenominator);
+            kDenominator = interestMax_.denominator.toInt256().mul(interestMin_.denominator.toInt256()).mul(utilizationMax_.denominator.toInt256());
         }
 
-        return (numerator, denominator);
+        int256 numerator;
+        {
+            numerator = utilizationNumerator_.toInt256().mul(interestMax_.numerator.toInt256()).mul(kDenominator).sub(
+                kNumerator.mul(utilizationDenominator_.toInt256()).mul(interestMax_.denominator.toInt256())
+            );
+        }
+        int256 denominator;
+        {
+            denominator = utilizationDenominator_.toInt256().mul(interestMax_.denominator.toInt256()).mul(kDenominator);
+        }
+
+        return (numerator.toUint256(), denominator.toUint256());
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
