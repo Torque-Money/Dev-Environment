@@ -137,6 +137,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
         console.log("Made it to the correct interest rate");
+        console.log(utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator));
 
         if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
             return _interestRateMax(utilization, utilizationMax, interestMin, interestMax);
