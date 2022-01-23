@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/Set.sol";
 import "./MarginPool.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginAccount is MarginPool {
     using SafeMath for uint256;
     using Set for Set.TokenSet;
@@ -85,13 +83,6 @@ abstract contract MarginAccount is MarginPool {
         _setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
         account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[borrowed_]).add(amount_);
         account.borrowedAmounts[borrowed_] = amount_;
-
-        console.log("Set borrowed");
-        console.log(address(borrowed_));
-        console.log(account_);
-        console.log(account.hasBorrowed);
-        console.log(isBorrowing(account_));
-        console.log("");
     }
 
     // Get the borrowed for a given account
@@ -116,6 +107,17 @@ abstract contract MarginAccount is MarginPool {
     // Get the borrowed tokens list
     function _borrowedTokens(address account_) internal view returns (IERC20[] memory) {
         return _accounts[account_].borrowed.iterable();
+    }
+
+    // Check if an account is currently borrowing
+    function isBorrowing(address account_) public view returns (bool) {
+        Account storage account = _accounts[account_];
+        return account.hasBorrowed > 0;
+    }
+
+    // Check if an account is currently borrowing a particular asset
+    function isBorrowing(IERC20 borrowed_, address account_) public view returns (bool) {
+        return borrowed(borrowed_, account_) > 0;
     }
 
     // Get the initial borrow price for an account
@@ -156,23 +158,6 @@ abstract contract MarginAccount is MarginPool {
     ) internal {
         Account storage account = _accounts[account_];
         account.initialBorrowBlock[borrowed_] = block_;
-    }
-
-    // Check if an account is currently borrowing
-    function isBorrowing(address account_) public view returns (bool) {
-        Account storage account = _accounts[account_];
-
-        console.log("Has borrowed");
-        console.log(account_);
-        console.log(account.hasBorrowed);
-        console.log("");
-
-        return account.hasBorrowed > 0;
-    }
-
-    // Check if an account is currently borrowing a particular asset
-    function isBorrowing(IERC20 borrowed_, address account_) public view returns (bool) {
-        return borrowed(borrowed_, account_) > 0;
     }
 
     // Get the interest accumulated for a given asset
