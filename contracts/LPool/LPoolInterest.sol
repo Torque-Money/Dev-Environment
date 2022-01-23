@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
+import "hardhat/console.sol";
+
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeMath for uint256;
 
@@ -134,6 +136,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256 borrowBlock_
     ) external view returns (uint256) {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
+        console.log("Made it here");
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
 
         return initialBorrow_.mul(interestRateNumerator).mul(blocksSinceBorrow).div(interestRateDenominator).div(blocksPerInterestApplication);
