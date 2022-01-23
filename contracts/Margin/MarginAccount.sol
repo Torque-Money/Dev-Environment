@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/Set.sol";
 import "./MarginPool.sol";
 
+import "hardhat/console.sol";
+
 abstract contract MarginAccount is MarginPool {
     using SafeMath for uint256;
     using Set for Set.TokenSet;
@@ -168,6 +170,8 @@ abstract contract MarginAccount is MarginPool {
         uint256 interestPrice;
         if (borrowPrice > initBorrowPrice) interestPrice = borrowPrice;
         else interestPrice = initBorrowPrice;
+
+        console.log("Made it here");
 
         return pool.interest(borrowed_, interestPrice, initialBorrowBlock(borrowed_, account_));
     }

@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginAccount.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginLevel is MarginAccount {
     using SafeMath for uint256;
 
@@ -32,9 +30,8 @@ abstract contract MarginLevel is MarginAccount {
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
-        console.log("Made it here");
-        uint256 interest = interest(account_);
-        return (borrowedPrice(account_).add(collateralPrice(account_)), totalInitialBorrowPrice.add(interest));
+        uint256 _interest = interest(account_);
+        return (borrowedPrice(account_).add(collateralPrice(account_)), totalInitialBorrowPrice.add(_interest));
     }
 
     // Check whether an account is liquidatable
