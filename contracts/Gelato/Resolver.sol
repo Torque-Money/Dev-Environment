@@ -38,48 +38,49 @@ contract Resolver is PokeMeReady {
             uint256 amountOut = converter.maxAmountEthOut(repayToken_[i], repayAmount_[i]);
 
             if (amountOut > outAmount_) {
-                uint256 amountIn = converter.minAmountTokenInEthOut(repayToken_[i], repayAmount_[i]);
-                repayTokens_[i].safeApprove(address(converter), amountIn);
-                converter.swapMaxOut(repayTokens_[i], amountIn, IERC20(feeToken));
-                repayAmounts_[i] = repayAmounts_[i].sub(amountIn);
+                uint256 amountIn = converter.minAmountTokenInEthOut(repayToken_[i], outAmount_);
+                repayToken_[i].safeApprove(address(converter), amountIn);
+                converter.swapMaxEthOut(repayToken_[i], amountIn);
+                repayAmount_[i] = repayAmount_[i].sub(amountIn);
                 break;
             } else {
-                repayTokens_[i].safeApprove(address(converter), repayAmounts_[i]);
-                converter.swapMaxOut(repayTokens_[i], repayAmounts_[i], IERC20(feeToken));
-                repayAmounts_[i] = 0;
+                repayToken_[i].safeApprove(address(converter), repayAmount_[i]);
+                converter.swapMaxEthOut(repayToken_[i], repayAmount_[i]);
+                repayAmount_[i] = 0;
             }
         }
     }
 
     // Repay debt for tokens
-    // function _repayInToken(
-    //     IERC20[] memory repayToken_,
-    //     uint256[] memory repayAmount_,
-    //     IERC20 outToken_,
-    //     uint256 outAmount_
-    // ) internal {
-    //     for (uint256 i = 0; i < repayToken_.length; i++) {
-    //         uint256 amountOut = converter.maxAmountOut(repayToken_[i], repayAmount_[i], outToken_);
+    function _repayInToken(
+        IERC20[] memory repayToken_,
+        uint256[] memory repayAmount_,
+        IERC20 outToken_,
+        uint256 outAmount_
+    ) internal {
+        for (uint256 i = 0; i < repayToken_.length; i++) {
+            uint256 amountOut = converter.maxAmountTokenOut(repayToken_[i], repayAmount_[i], outToken_);
 
-    //         if (amountOut > outAmount_) {
-    //             uint256 amountIn = converter.minAmountIn(repayToken_[i], outToken_, repayAmount_[i]);
-    //             repayToken_[i].safeApprove(address(converter), amountIn);
-    //             converter.swapMaxOut(repayToken_[i], amountIn, outToken_);
-    //             repayAmount_[i] = repayAmount_[i].sub(amountIn);
-    //             break;
-    //         } else {
-    //             repayToken_[i].safeApprove(address(converter), repayAmount_[i]);
-    //             converter.swapMaxOut(repayToken_[i], repayAmount_[i], IERC20(outToken_));
-    //             repayAmount_[i] = 0;
-    //         }
-    //     }
-    // }
+            if (amountOut > outAmount_) {
+                uint256 amountIn = converter.minAmountTokenInTokenOut(repayToken_[i], outToken_, repayAmount_[i]);
+                repayToken_[i].safeApprove(address(converter), amountIn);
+                converter.swapMaxTokenOut(repayToken_[i], amountIn, outToken_);
+                repayAmount_[i] = repayAmount_[i].sub(amountIn);
+                break;
+            } else {
+                repayToken_[i].safeApprove(address(converter), repayAmount_[i]);
+                converter.swapMaxTokenOut(repayToken_[i], repayAmount_[i], outToken_);
+                repayAmount_[i] = 0;
+            }
+        }
+    }
 
     // Pay transaction
     function _payTransaction(IERC20[] memory repayToken_, uint256[] memory repayAmount_) internal {
         (uint256 fee, address feeToken) = IPokeMe(pokeMe).getFeeDetails();
 
-        // **** I need to repay here depending on the token
+        if (feeToken == ETH) _repayInEth(repayToken_, repayAmount_, fee);
+        else _repayInToken(repayToken_, repayAmount_, IERC20(feeToken), fee);
 
         _transfer(fee, feeToken);
 
