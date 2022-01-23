@@ -33,7 +33,7 @@ describe("Handle dangerous account", async function () {
 
         const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
         const addCollateralAmount = ethers.BigNumber.from(10).pow(config.approved[0].decimals).mul(200);
-        const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(10);
+        const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(15);
 
         await pool.provideLiquidity(borrowedToken.address, addLiquidityAmount);
         await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
