@@ -42,6 +42,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
             uint256 weightSize = utilized(poolTokens[i]).mul(interestRateNumerator).div(interestRateDenominator);
 
             console.log(weightSize);
+            console.log("");
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
