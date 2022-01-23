@@ -10,7 +10,6 @@ describe("Handle price movement", async function () {
     let oracle: OracleTest;
     let priceDecimals: BigNumber;
     let marginLong: MarginLong;
-    let resolver: Resolver;
     let collateralToken: ERC20;
     let borrowedToken: ERC20;
     let lpToken: ERC20;
@@ -24,7 +23,6 @@ describe("Handle price movement", async function () {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
 
         collateralToken = await ethers.getContractAt("ERC20", config.approved[0].address);
         borrowedToken = await ethers.getContractAt("ERC20", config.approved[1].address);
@@ -75,17 +73,6 @@ describe("Handle price movement", async function () {
     //     expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(addCollateralAmount)).to.equal(true);
     //     expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
     // });
-
-    it("should liquidate an account using resolver", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
-        await oracle.setPrice(borrowedToken.address, newPrice);
-
-        expect((await resolver.checkLiquidate())[0]).to.equal(true);
-        await resolver.executeLiquidate(signerAddress);
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
-
-        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
-    });
 
     // it("should repay an account with profit", async () => {});
 
