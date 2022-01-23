@@ -41,7 +41,7 @@ contract Converter is IConverter, Ownable {
         console.log(path[0]);
         console.log(path[1]);
 
-        // **** Perhaps what I am going to have to do is swap each one for FTM directly - it appears that otherwise the pair may not exist for some reason
+        // **** Perhaps what I am going to have to do is swap each one for FTM directly - it appears that otherwise the pair may not exist for some reason (router does not do grunt work)
 
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
