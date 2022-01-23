@@ -95,12 +95,15 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
     ) internal view returns (uint256, uint256) {
-        console.log("Made it here TOP");
+        console.log(interestMax_.numerator);
+        console.log(interestMax_.denominator);
+        console.log(interestMin_.numerator);
+        console.log(interestMin_.denominator);
+        console.log(utilizationMax_.numerator);
         uint256 kNumerator;
         {
             kNumerator = interestMax_.numerator.add(interestMin_.denominator).sub(interestMin_.numerator.mul(interestMax_.denominator)).mul(utilizationMax_.numerator);
         }
-        console.log("Made it here BOT");
         uint256 kDenominator;
         {
             kDenominator = interestMax_.denominator.mul(interestMin_.denominator).mul(utilizationMax_.denominator);
