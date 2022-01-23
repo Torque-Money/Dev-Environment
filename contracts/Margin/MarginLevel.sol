@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginAccount.sol";
 
+import "hardhat/console.sol";
+
 abstract contract MarginLevel is MarginAccount {
     using SafeMath for uint256;
 
@@ -39,6 +41,7 @@ abstract contract MarginLevel is MarginAccount {
         if (!isBorrowing(account_)) return false;
 
         (uint256 minMarginLevelNumerator, uint256 minMarginLevelDenominator) = minMarginLevel();
+        console.log("Made it here");
         (uint256 marginLevelNumerator, uint256 marginLevelDenominator) = marginLevel(account_);
         uint256 lhs = minMarginLevelNumerator.mul(marginLevelDenominator);
         uint256 rhs = marginLevelNumerator.mul(minMarginLevelDenominator);
