@@ -92,28 +92,6 @@ abstract contract LPoolInterest is LPoolLiquidity {
         return (utilizationNumerator_.mul(interestMin_.numerator), utilizationDenominator_.mul(interestMin_.denominator));
     }
 
-    // Helper to calculate the k offset for the interest rate max
-    // function _interestRateMaxKOffset(
-    //     FractionMath.Fraction memory utilizationMax_,
-    //     FractionMath.Fraction memory interestMin_,
-    //     FractionMath.Fraction memory interestMax_
-    // ) internal pure returns (int256, int256) {
-    //     int256 kNumerator;
-    //     {
-    //         kNumerator = interestMax_
-    //             .numerator
-    //             .toInt256()
-    //             .add(interestMin_.denominator.toInt256())
-    //             .sub(interestMin_.numerator.toInt256().mul(interestMax_.denominator.toInt256()))
-    //             .mul(utilizationMax_.numerator.toInt256());
-    //     }
-    //     int256 kDenominator;
-    //     {
-    //         kDenominator = interestMax_.denominator.toInt256().mul(interestMin_.denominator.toInt256()).mul(utilizationMax_.denominator.toInt256());
-    //     }
-    //     return (kNumerator, kDenominator);
-    // }
-
     // Helper to calculate the maximum interest rate
     function _interestRateMax(
         FractionMath.Fraction memory utilization_,
