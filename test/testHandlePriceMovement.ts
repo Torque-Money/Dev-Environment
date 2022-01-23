@@ -64,7 +64,7 @@ describe("Handle price movement", async function () {
 
     it("should reset an account", async () => {
         const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).div(3);
-        await oracle.setPrice(borrowedToken.address, newPrice);
+        await oracle.setPrice(collateralToken.address, newPrice);
         expect(await marginLong.resettable(signerAddress)).to.equal(true);
         await marginLong.resetAccount(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
