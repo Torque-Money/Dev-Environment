@@ -84,7 +84,11 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Helper to calculate the minimum interest rate
-    function _interestRateMin(FractionMath.Fraction memory utilization_, FractionMath.Fraction memory interestMin_) internal pure returns (uint256, uint256) {
+    function _interestRateMin(FractionMath.Fraction memory utilization_, FractionMath.Fraction memory interestMin_) internal view returns (uint256, uint256) {
+        console.log("Interest rate min");
+        console.log(utilization_.numerator);
+        console.log(utilization_.denominator);
+
         return (utilization_.numerator.mul(interestMin_.numerator), utilization_.denominator.mul(interestMin_.denominator));
     }
 
