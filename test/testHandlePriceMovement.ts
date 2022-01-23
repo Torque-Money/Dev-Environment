@@ -46,6 +46,7 @@ describe("Handle price movement", async function () {
         const potentialCollateralTokens = [collateralToken, borrowedToken];
         for (const token of potentialCollateralTokens) {
             const amount = await marginLong.collateral(token.address, signerAddress);
+            console.log("After: recorded collateral amount");
             if (amount.gt(0)) await marginLong.removeCollateral(token.address, amount);
         }
 

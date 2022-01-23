@@ -35,7 +35,7 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
         uint256[] memory collateralAmounts = _collateralAmounts(account_);
 
         _deposit(collateralTokens, collateralAmounts);
-        for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], collateralAmounts[i], account_);
+        for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], 0, account_);
     }
 
     // Reset the users borrowed amounts
