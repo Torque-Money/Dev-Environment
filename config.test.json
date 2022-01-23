@@ -1,1 +1,40 @@
-{"avgBlockTime":1,"routerAddress":"0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D","gelatoPokeMe":"0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a","LPPrefixName":"Torque Leverage","LPPrefixSymbol":"tl","approved":[{"name":"Dai","symbol":"DAI","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png","address":"0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658","decimals":18,"priceFeed":"0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF","reservePriceFeed":"0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF","oracle":true,"marginLongCollateral":true,"marginLongBorrow":false,"leveragePool":false},{"name":"Wrapped Eth","symbol":"wETH","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png","address":"0xc778417e063141139fce010982780140aa0cd5ab","decimals":18,"priceFeed":"0x8A753747A1Fa494EC906cE90E9f37563A8AF630e","reservePriceFeed":"0x8A753747A1Fa494EC906cE90E9f37563A8AF630e","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true}],"leveragePoolAddress":"0x401aa3EaD5f7609D7aCcb7Ef4119FF8c0c4a5e28","oracleAddress":"0xFAa5FD5C48d479c98668B761D97d78D6aB367E0a","converterAddress":"0xeEb94948a878e8f77D7F058EFE4E420E216CF314","marginLongAddress":"0xE2F676DE188404bF5aF7Fc75cD8FCC951c18B8AA","resolverAddress":"0xd4C511a386032D2A70C57048b4d7dB6408D41F78"}
+{
+  "avgBlockTime": 1,
+  "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+  "gelatoPokeMe": "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
+  "LPPrefixName": "Torque Leverage",
+  "LPPrefixSymbol": "tl",
+  "approved": [
+    {
+      "name": "Dai",
+      "symbol": "DAI",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+      "address": "0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658",
+      "decimals": 18,
+      "priceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
+      "reservePriceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": false,
+      "leveragePool": false
+    },
+    {
+      "name": "Wrapped Eth",
+      "symbol": "wETH",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18,
+      "priceFeed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
+      "reservePriceFeed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true
+    }
+  ],
+  "leveragePoolAddress": "0x401aa3EaD5f7609D7aCcb7Ef4119FF8c0c4a5e28",
+  "oracleAddress": "0xFAa5FD5C48d479c98668B761D97d78D6aB367E0a",
+  "converterAddress": "0xeEb94948a878e8f77D7F058EFE4E420E216CF314",
+  "marginLongAddress": "0xE2F676DE188404bF5aF7Fc75cD8FCC951c18B8AA",
+  "resolverAddress": "0xd4C511a386032D2A70C57048b4d7dB6408D41F78"
+}
