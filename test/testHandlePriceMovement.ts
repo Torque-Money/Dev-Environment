@@ -1,12 +1,14 @@
 import {expect} from "chai";
+import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
 import {ERC20, LPool, MarginLong, OracleTest, Resolver} from "../typechain-types";
 
-describe("Handle dangerous account", async function () {
+describe("Handle price movement", async function () {
     let pool: LPool;
     let oracle: OracleTest;
+    let priceDecimals: BigNumber;
     let marginLong: MarginLong;
     let resolver: Resolver;
     let collateralToken: ERC20;
@@ -31,7 +33,7 @@ describe("Handle dangerous account", async function () {
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
 
-        const priceDecimals = await oracle.priceDecimals();
+        priceDecimals = await oracle.priceDecimals();
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
 
@@ -51,7 +53,15 @@ describe("Handle dangerous account", async function () {
         await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
     });
 
-    it("should liquidate a dangerous account", async () => {});
+    it("should liquidate an account", async () => {
+        const initialMarginLevel = await marginLong.marginLevel(signerAddress);
 
-    it("should reset a dangerous account", async () => {});
+        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
+    });
+
+    it("should reset an account", async () => {});
+
+    it("should repay an account with profit", async () => {});
+
+    it("should repay an account with a loss", async () => {});
 });
