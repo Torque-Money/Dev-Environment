@@ -35,9 +35,9 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
 
             console.log(address(poolTokens[i]));
-            console.log(interestRateNumerator);
-            console.log(interestRateDenominator);
-            console.log(utilized(poolTokens[i]));
+            console.log(interestRateNumerator); // This is being calculated as zero - why ? Clearly amounts are being utilized
+            console.log(interestRateDenominator); // This is valid
+            console.log(utilized(poolTokens[i])); // This is being calculated as zero as well for some reason
 
             uint256 weightSize = utilized(poolTokens[i]).mul(interestRateNumerator).div(interestRateDenominator);
 

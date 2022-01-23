@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/utils/math/SignedSafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
+import "hardhat/console.sol";
+
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeCast for uint256;
     using SafeCast for int256;
@@ -133,6 +135,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
+
+        console.log("Made it to the correct interest rate");
 
         if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
             return _interestRateMax(utilization, utilizationMax, interestMin, interestMax);
