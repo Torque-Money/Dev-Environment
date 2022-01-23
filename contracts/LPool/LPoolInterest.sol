@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/utils/math/SignedSafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
-import "hardhat/console.sol";
-
 abstract contract LPoolInterest is LPoolLiquidity {
     using SafeCast for uint256;
     using SafeCast for int256;
@@ -84,11 +82,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Helper to calculate the minimum interest rate
-    function _interestRateMin(FractionMath.Fraction memory utilization_, FractionMath.Fraction memory interestMin_) internal view returns (uint256, uint256) {
-        console.log("Interest rate min");
-        console.log(utilization_.numerator);
-        console.log(utilization_.denominator);
-
+    function _interestRateMin(FractionMath.Fraction memory utilization_, FractionMath.Fraction memory interestMin_) internal pure returns (uint256, uint256) {
         return (utilization_.numerator.mul(interestMin_.numerator), utilization_.denominator.mul(interestMin_.denominator));
     }
 
@@ -135,10 +129,6 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
-
-        console.log("Made it to the correct interest rate");
-        console.log(utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator));
-        // **** If this is the case, it must mean that something in the numerator is zero for some reason (probably the utilization)
 
         if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
             return _interestRateMax(utilization, utilizationMax, interestMin, interestMax);
