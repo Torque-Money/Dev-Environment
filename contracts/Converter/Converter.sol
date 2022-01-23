@@ -7,6 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "../lib/UniswapV2Router02.sol";
 import "./IConverter.sol";
 
+import "hardhat/console.sol";
+
 contract Converter is IConverter, Ownable {
     using SafeERC20 for IERC20;
 
@@ -33,6 +35,9 @@ contract Converter is IConverter, Ownable {
 
         tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
         tokenIn_.safeApprove(address(router), amountIn_);
+
+        console.log("Made it here");
+
         uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
         return amountOut;
