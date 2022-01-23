@@ -17,7 +17,7 @@ import {verifyAll} from "./scripts/util/utilVerify";
 dotenv.config();
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
-    hre.run("compile");
+    await hre.run("compile");
 
     await deploy("main", hre);
     await setup("main", hre);
@@ -26,7 +26,7 @@ task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
 });
 
 task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
-    hre.run("compile");
+    await hre.run("compile");
 
     await deploy("test", hre);
     await setup("test", hre);
@@ -35,7 +35,7 @@ task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
 });
 
 task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
-    hre.run("compile");
+    await hre.run("compile");
 
     await deploy("fork", hre);
     await setup("fork", hre);
