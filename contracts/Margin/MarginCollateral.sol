@@ -28,6 +28,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
         require((!resettable(_msgSender()) && !liquidatable(_msgSender())), "MarginCollateral: Withdrawing desired collateral puts account at risk");
 
         collateral_.safeTransfer(_msgSender(), amount_);
+
         emit RemoveCollateral(_msgSender(), collateral_, amount_);
     }
 

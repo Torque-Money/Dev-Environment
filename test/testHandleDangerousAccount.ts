@@ -41,8 +41,14 @@ describe("Handle dangerous account", async function () {
     });
 
     afterEach(async () => {
-        // Remove all collateral
-        // Remove liquidity
+        const potentialCollateralTokens = [collateralToken, borrowedToken];
+        for (const token of potentialCollateralTokens) {
+            const amount = await marginLong.collateral(token.address, signerAddress);
+            if (amount.gt(0)) await marginLong.removeCollateral(token.address, amount);
+        }
+
+        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
+        await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
     });
 
     it("should liquidate a dangerous account", async () => {});
