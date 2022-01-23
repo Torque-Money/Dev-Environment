@@ -12,14 +12,26 @@ contract Oracle is IOracle, OracleTokens {
     using SafeMath for uint256;
 
     FractionMath.Fraction private _threshold;
+    uint256 private _priceDecimals;
 
     constructor(
         uint256 thresholdNumerator_,
         uint256 thresholdDenominator_,
         uint256 priceDecimals_
-    ) OracleTokens(priceDecimals_) {
+    ) {
         _threshold.numerator = thresholdNumerator_;
         _threshold.denominator = thresholdDenominator_;
+        _priceDecimals = priceDecimals_;
+    }
+
+    // Set the price decimals
+    function setPriceDecimals(uint256 priceDecimals_) external onlyOwner {
+        _priceDecimals = priceDecimals_;
+    }
+
+    // Get the price decimals
+    function priceDecimals() public view override returns (uint256) {
+        return _priceDecimals;
     }
 
     // Set the price threshold
@@ -46,7 +58,7 @@ contract Oracle is IOracle, OracleTokens {
         }
         if (result <= 0) return 0;
 
-        return uint256(result).mul(10**priceDecimals).mul(amount_).div(10**_decimals).div(10**decimals(token_));
+        return uint256(result).mul(10**priceDecimals()).mul(amount_).div(10**_decimals).div(10**decimals(token_));
     }
 
     // Get the price for a given token amount at the lowest threshold by the oracle

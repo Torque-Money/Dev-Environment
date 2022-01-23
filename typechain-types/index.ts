@@ -43,6 +43,7 @@ export type { MarginLongRepay } from "./MarginLongRepay";
 export type { MarginLongRepayCore } from "./MarginLongRepayCore";
 export type { IOracle } from "./IOracle";
 export type { Oracle } from "./Oracle";
+export type { OracleTest } from "./OracleTest";
 export type { OracleTokens } from "./OracleTokens";
 
 export { AggregatorV3Interface__factory } from "./factories/AggregatorV3Interface__factory";
@@ -87,4 +88,5 @@ export { MarginLongRepay__factory } from "./factories/MarginLongRepay__factory";
 export { MarginLongRepayCore__factory } from "./factories/MarginLongRepayCore__factory";
 export { IOracle__factory } from "./factories/IOracle__factory";
 export { Oracle__factory } from "./factories/Oracle__factory";
+export { OracleTest__factory } from "./factories/OracleTest__factory";
 export { OracleTokens__factory } from "./factories/OracleTokens__factory";

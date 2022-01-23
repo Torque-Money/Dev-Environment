@@ -12,22 +12,11 @@ abstract contract OracleTokens is Ownable {
         uint256 decimals;
         bool supported;
     }
-
     mapping(IERC20 => Token) private _tokens;
-    uint256 public priceDecimals;
-
-    constructor(uint256 priceDecimals_) {
-        priceDecimals = priceDecimals_;
-    }
 
     modifier onlySupported(IERC20 token_) {
         require(isSupported(token_), "OracleTokens: Only supported tokens may be used");
         _;
-    }
-
-    // Set the price decimals
-    function setPriceDecimals(uint256 priceDecimals_) external onlyOwner {
-        priceDecimals = priceDecimals_;
     }
 
     // Set the price feed for a given asset along with the decimals
