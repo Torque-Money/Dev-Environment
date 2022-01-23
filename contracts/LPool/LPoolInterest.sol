@@ -94,7 +94,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory utilizationMax_,
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
-    ) internal pure returns (uint256, uint256) {
+    ) internal view returns (uint256, uint256) {
         console.log("Made it here");
 
         uint256 kNumerator;
