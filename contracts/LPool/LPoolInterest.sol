@@ -84,12 +84,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Helper to calculate the minimum interest rate
-    function _interestRateMin(
-        uint256 utilizationNumerator_,
-        uint256 utilizationDenominator_,
-        FractionMath.Fraction memory interestMin_
-    ) internal pure returns (uint256, uint256) {
-        return (utilizationNumerator_.mul(interestMin_.numerator), utilizationDenominator_.mul(interestMin_.denominator));
+    function _interestRateMin(FractionMath.Fraction memory utilization_, FractionMath.Fraction memory interestMin_) internal pure returns (uint256, uint256) {
+        return (utilization_.numerator.mul(interestMin_.numerator), utilization_.denominator.mul(interestMin_.denominator));
     }
 
     // Helper to calculate the maximum interest rate
@@ -138,10 +134,11 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
         console.log("Made it to the correct interest rate");
         console.log(utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator));
+        // **** If this is the case, it must mean that something in the numerator is zero for some reason (probably the utilization)
 
         if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
             return _interestRateMax(utilization, utilizationMax, interestMin, interestMax);
-        else return _interestRateMin(utilizationNumerator, utilizationDenominator, interestMin);
+        else return _interestRateMin(utilization, interestMin);
     }
 
     // Get the accumulated interest on a given asset for a given number of blocks
