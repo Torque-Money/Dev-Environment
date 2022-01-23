@@ -33,25 +33,13 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
+            uint256 _utilized = utilized(poolTokens[i]);
 
-            console.log(address(poolTokens[i]));
-            console.log(interestRateNumerator); // This is being calculated as zero - why ? Clearly amounts are being utilized
-            console.log(interestRateDenominator); // This is valid
-            console.log(utilized(poolTokens[i])); // This is being calculated as zero as well for some reason
-
-            uint256 weightSize = utilized(poolTokens[i]).mul(interestRateNumerator).div(interestRateDenominator);
-
-            console.log(weightSize);
-            console.log("");
+            uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1);
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
         }
-
-        console.log("");
-        console.log(totalWeightSize);
-
-        // **** So it appears we have a problem depositing when there is nothing being borrowed e.g. in the event of a liquidation - maybe unclaim afterwards ????
 
         uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
 
