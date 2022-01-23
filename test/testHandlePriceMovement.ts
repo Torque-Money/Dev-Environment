@@ -55,8 +55,15 @@ describe("Handle price movement", async function () {
 
     it("should liquidate an account", async () => {
         const initialMarginLevel = await marginLong.marginLevel(signerAddress);
+        console.log("Liquidate: initial margin level", initialMarginLevel);
 
         const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
+        await oracle.setPrice(borrowedToken.address, newPrice);
+
+        const newMarginLevel = await marginLong.marginLevel(signerAddress);
+        console.log("Liquidate: new margin level", newMarginLevel);
+
+        expect(newMarginLevel).to.be.lessThan(initialMarginLevel);
     });
 
     it("should reset an account", async () => {});
