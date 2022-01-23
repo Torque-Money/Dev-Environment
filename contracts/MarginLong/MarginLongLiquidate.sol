@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MarginLongLiquidateCore.sol";
 
-import "hardhat/console.sol";
-
 abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
@@ -27,8 +25,6 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
         uint256 fee = accountPrice.mul(liqFeeNumerator).div(liqFeeDenominator);
         (IERC20[] memory collateralTokens, uint256[] memory feeAmounts) = _taxAccount(fee, account_);
         for (uint256 i = 0; i < collateralTokens.length; i++) collateralTokens[i].safeTransfer(_msgSender(), feeAmounts[i]);
-
-        console.log("Made it past tax account in liquidation");
 
         _liquidateAccount(account_);
 
