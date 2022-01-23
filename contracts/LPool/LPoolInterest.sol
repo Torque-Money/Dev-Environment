@@ -95,6 +95,8 @@ abstract contract LPoolInterest is LPoolLiquidity {
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
     ) internal pure returns (uint256, uint256) {
+        console.log("Made it here");
+
         uint256 kNumerator;
         {
             kNumerator = interestMax_.numerator.add(interestMin_.denominator).sub(interestMin_.numerator.mul(interestMax_.denominator)).mul(utilizationMax_.numerator);
@@ -118,9 +120,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
     function interestRate(IERC20 token_) public view override returns (uint256, uint256) {
-        console.log("Made it here TOP");
         (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(token_);
-        console.log("Made it here BOT");
 
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
