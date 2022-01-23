@@ -13,9 +13,9 @@ contract Resolver is PokeMeReady {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    IConverter public converter;
     MarginLong public marginLong;
     LPool public pool;
-    IConverter public converter;
 
     constructor(
         address pokeMe_,
