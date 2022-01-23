@@ -28,6 +28,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
 
+        console.log(isBorrowing(_msgSender()));
         console.log(resettable(_msgSender()));
         console.log(liquidatable(_msgSender()));
 
