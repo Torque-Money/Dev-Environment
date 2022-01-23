@@ -78,19 +78,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "priceDecimals",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "contract IERC20",
@@ -133,19 +120,6 @@ const _abi = [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "priceDecimals_",
-        type: "uint256",
-      },
-    ],
-    name: "setPriceDecimals",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {

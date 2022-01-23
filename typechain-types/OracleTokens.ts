@@ -23,11 +23,9 @@ export interface OracleTokensInterface extends utils.Interface {
     "decimals(address)": FunctionFragment;
     "isSupported(address)": FunctionFragment;
     "owner()": FunctionFragment;
-    "priceDecimals()": FunctionFragment;
     "priceFeed(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "reservePriceFeed(address)": FunctionFragment;
-    "setPriceDecimals(uint256)": FunctionFragment;
     "setPriceFeed(address[],address[],address[],uint256[],bool[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
@@ -35,10 +33,6 @@ export interface OracleTokensInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "decimals", values: [string]): string;
   encodeFunctionData(functionFragment: "isSupported", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "priceDecimals",
-    values?: undefined
-  ): string;
   encodeFunctionData(functionFragment: "priceFeed", values: [string]): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -47,10 +41,6 @@ export interface OracleTokensInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "reservePriceFeed",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setPriceDecimals",
-    values: [BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setPriceFeed",
@@ -67,10 +57,6 @@ export interface OracleTokensInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "priceDecimals",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "priceFeed", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
@@ -78,10 +64,6 @@ export interface OracleTokensInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "reservePriceFeed",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "setPriceDecimals",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -142,8 +124,6 @@ export interface OracleTokens extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    priceDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     priceFeed(token_: string, overrides?: CallOverrides): Promise<[string]>;
 
     renounceOwnership(
@@ -154,11 +134,6 @@ export interface OracleTokens extends BaseContract {
       token_: string,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    setPriceDecimals(
-      priceDecimals_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     setPriceFeed(
       token_: string[],
@@ -181,8 +156,6 @@ export interface OracleTokens extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
-
   priceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
 
   renounceOwnership(
@@ -190,11 +163,6 @@ export interface OracleTokens extends BaseContract {
   ): Promise<ContractTransaction>;
 
   reservePriceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
-
-  setPriceDecimals(
-    priceDecimals_: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   setPriceFeed(
     token_: string[],
@@ -217,8 +185,6 @@ export interface OracleTokens extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
-
     priceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
@@ -227,11 +193,6 @@ export interface OracleTokens extends BaseContract {
       token_: string,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    setPriceDecimals(
-      priceDecimals_: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     setPriceFeed(
       token_: string[],
@@ -266,8 +227,6 @@ export interface OracleTokens extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
-
     priceFeed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceOwnership(
@@ -277,11 +236,6 @@ export interface OracleTokens extends BaseContract {
     reservePriceFeed(
       token_: string,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    setPriceDecimals(
-      priceDecimals_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     setPriceFeed(
@@ -312,8 +266,6 @@ export interface OracleTokens extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    priceDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     priceFeed(
       token_: string,
       overrides?: CallOverrides
@@ -326,11 +278,6 @@ export interface OracleTokens extends BaseContract {
     reservePriceFeed(
       token_: string,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    setPriceDecimals(
-      priceDecimals_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     setPriceFeed(

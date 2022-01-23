@@ -20,6 +20,7 @@ export interface IOracleInterface extends utils.Interface {
   functions: {
     "amountMax(address,uint256)": FunctionFragment;
     "amountMin(address,uint256)": FunctionFragment;
+    "priceDecimals()": FunctionFragment;
     "priceMax(address,uint256)": FunctionFragment;
     "priceMin(address,uint256)": FunctionFragment;
   };
@@ -33,6 +34,10 @@ export interface IOracleInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "priceDecimals",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "priceMax",
     values: [string, BigNumberish]
   ): string;
@@ -43,6 +48,10 @@ export interface IOracleInterface extends utils.Interface {
 
   decodeFunctionResult(functionFragment: "amountMax", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "amountMin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "priceDecimals",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "priceMax", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceMin", data: BytesLike): Result;
 
@@ -89,6 +98,8 @@ export interface IOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    priceDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -114,6 +125,8 @@ export interface IOracle extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
   priceMax(
     token_: string,
     amount_: BigNumberish,
@@ -138,6 +151,8 @@ export interface IOracle extends BaseContract {
       price_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
 
     priceMax(
       token_: string,
@@ -167,6 +182,8 @@ export interface IOracle extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -192,6 +209,8 @@ export interface IOracle extends BaseContract {
       price_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     priceMax(
       token_: string,

@@ -13,7 +13,7 @@ import {
   Signer,
   utils,
 } from "ethers";
-import { FunctionFragment, Result } from "@ethersproject/abi";
+import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
@@ -22,9 +22,19 @@ export interface OracleTestInterface extends utils.Interface {
   functions: {
     "amountMax(address,uint256)": FunctionFragment;
     "amountMin(address,uint256)": FunctionFragment;
+    "decimals(address)": FunctionFragment;
+    "isSupported(address)": FunctionFragment;
+    "owner()": FunctionFragment;
+    "priceDecimals()": FunctionFragment;
+    "priceFeed(address)": FunctionFragment;
     "priceMax(address,uint256)": FunctionFragment;
     "priceMin(address,uint256)": FunctionFragment;
+    "renounceOwnership()": FunctionFragment;
+    "reservePriceFeed(address)": FunctionFragment;
     "setPrice(address,uint256)": FunctionFragment;
+    "setPriceFeed(address[],address[],address[],uint256[],bool[])": FunctionFragment;
+    "threshold()": FunctionFragment;
+    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -35,6 +45,14 @@ export interface OracleTestInterface extends utils.Interface {
     functionFragment: "amountMin",
     values: [string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "decimals", values: [string]): string;
+  encodeFunctionData(functionFragment: "isSupported", values: [string]): string;
+  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "priceDecimals",
+    values?: undefined
+  ): string;
+  encodeFunctionData(functionFragment: "priceFeed", values: [string]): string;
   encodeFunctionData(
     functionFragment: "priceMax",
     values: [string, BigNumberish]
@@ -44,18 +62,75 @@ export interface OracleTestInterface extends utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "renounceOwnership",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "reservePriceFeed",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "setPrice",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setPriceFeed",
+    values: [string[], string[], string[], BigNumberish[], boolean[]]
+  ): string;
+  encodeFunctionData(functionFragment: "threshold", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "transferOwnership",
+    values: [string]
   ): string;
 
   decodeFunctionResult(functionFragment: "amountMax", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "amountMin", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "decimals", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isSupported",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "priceDecimals",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "priceFeed", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceMax", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "priceMin", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "renounceOwnership",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "reservePriceFeed",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "setPrice", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setPriceFeed",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "threshold", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "transferOwnership",
+    data: BytesLike
+  ): Result;
 
-  events: {};
+  events: {
+    "OwnershipTransferred(address,address)": EventFragment;
+  };
+
+  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type OwnershipTransferredEvent = TypedEvent<
+  [string, string],
+  { previousOwner: string; newOwner: string }
+>;
+
+export type OwnershipTransferredEventFilter =
+  TypedEventFilter<OwnershipTransferredEvent>;
 
 export interface OracleTest extends BaseContract {
   contractName: "OracleTest";
@@ -97,6 +172,16 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    decimals(token_: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    isSupported(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
+
+    owner(overrides?: CallOverrides): Promise<[string]>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    priceFeed(token_: string, overrides?: CallOverrides): Promise<[string]>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -109,9 +194,34 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    reservePriceFeed(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     setPrice(
       token_: string,
       price_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setPriceFeed(
+      token_: string[],
+      priceFeed_: string[],
+      reservePriceFeed_: string[],
+      correctDecimals_: BigNumberish[],
+      supported_: boolean[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    threshold(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
@@ -128,6 +238,16 @@ export interface OracleTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  decimals(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  isSupported(token_: string, overrides?: CallOverrides): Promise<boolean>;
+
+  owner(overrides?: CallOverrides): Promise<string>;
+
+  priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+  priceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
+
   priceMax(
     token_: string,
     amount_: BigNumberish,
@@ -140,9 +260,31 @@ export interface OracleTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  renounceOwnership(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  reservePriceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
+
   setPrice(
     token_: string,
     price_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setPriceFeed(
+    token_: string[],
+    priceFeed_: string[],
+    reservePriceFeed_: string[],
+    correctDecimals_: BigNumberish[],
+    supported_: boolean[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  threshold(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+  transferOwnership(
+    newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -159,6 +301,16 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    decimals(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    isSupported(token_: string, overrides?: CallOverrides): Promise<boolean>;
+
+    owner(overrides?: CallOverrides): Promise<string>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    priceFeed(token_: string, overrides?: CallOverrides): Promise<string>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -171,14 +323,46 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    reservePriceFeed(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     setPrice(
       token_: string,
       price_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setPriceFeed(
+      token_: string[],
+      priceFeed_: string[],
+      reservePriceFeed_: string[],
+      correctDecimals_: BigNumberish[],
+      supported_: boolean[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    threshold(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+    transferOwnership(
+      newOwner: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
-  filters: {};
+  filters: {
+    "OwnershipTransferred(address,address)"(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+    OwnershipTransferred(
+      previousOwner?: string | null,
+      newOwner?: string | null
+    ): OwnershipTransferredEventFilter;
+  };
 
   estimateGas: {
     amountMax(
@@ -193,6 +377,16 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    decimals(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    isSupported(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<BigNumber>;
+
+    priceFeed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -205,9 +399,34 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    reservePriceFeed(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     setPrice(
       token_: string,
       price_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setPriceFeed(
+      token_: string[],
+      priceFeed_: string[],
+      reservePriceFeed_: string[],
+      correctDecimals_: BigNumberish[],
+      supported_: boolean[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    threshold(overrides?: CallOverrides): Promise<BigNumber>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
@@ -225,6 +444,25 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    decimals(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isSupported(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    priceDecimals(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    priceFeed(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     priceMax(
       token_: string,
       amount_: BigNumberish,
@@ -237,9 +475,34 @@ export interface OracleTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    renounceOwnership(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    reservePriceFeed(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     setPrice(
       token_: string,
       price_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setPriceFeed(
+      token_: string[],
+      priceFeed_: string[],
+      reservePriceFeed_: string[],
+      correctDecimals_: BigNumberish[],
+      supported_: boolean[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    threshold(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    transferOwnership(
+      newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
