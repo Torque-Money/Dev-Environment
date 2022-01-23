@@ -32,6 +32,7 @@ abstract contract MarginLevel is MarginAccount {
     // Get the margin level of an account
     function marginLevel(address account_) public view returns (uint256, uint256) {
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
+        console.log("Made it here");
         uint256 interest = interest(account_);
         return (borrowedPrice(account_).add(collateralPrice(account_)), totalInitialBorrowPrice.add(interest));
     }
@@ -41,7 +42,6 @@ abstract contract MarginLevel is MarginAccount {
         if (!isBorrowing(account_)) return false;
 
         (uint256 minMarginLevelNumerator, uint256 minMarginLevelDenominator) = minMarginLevel();
-        console.log("Made it here");
         (uint256 marginLevelNumerator, uint256 marginLevelDenominator) = marginLevel(account_);
         uint256 lhs = minMarginLevelNumerator.mul(marginLevelDenominator);
         uint256 rhs = marginLevelNumerator.mul(minMarginLevelDenominator);
