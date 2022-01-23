@@ -14,6 +14,10 @@ describe("Handle dangerous account", async function () {
     let lpToken: ERC20;
     let signerAddress: string;
 
+    const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
+    const addCollateralAmount = ethers.BigNumber.from(10).pow(config.approved[0].decimals).mul(200);
+    const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
+
     beforeEach(async () => {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
@@ -31,16 +35,15 @@ describe("Handle dangerous account", async function () {
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
 
-        const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
-        const addCollateralAmount = ethers.BigNumber.from(10).pow(config.approved[0].decimals).mul(200);
-        const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
-
         await pool.provideLiquidity(borrowedToken.address, addLiquidityAmount);
         await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
         await marginLong.borrow(borrowedToken.address, borrowAmount);
     });
 
-    afterEach(async () => {});
+    afterEach(async () => {
+        // Remove all collateral
+        // Remove liquidity
+    });
 
     it("should liquidate a dangerous account", async () => {});
 
