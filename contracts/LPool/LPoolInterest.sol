@@ -92,10 +92,31 @@ abstract contract LPoolInterest is LPoolLiquidity {
         return (utilizationNumerator_.mul(interestMin_.numerator), utilizationDenominator_.mul(interestMin_.denominator));
     }
 
+    // Helper to calculate the k offset for the interest rate max
+    // function _interestRateMaxKOffset(
+    //     FractionMath.Fraction memory utilizationMax_,
+    //     FractionMath.Fraction memory interestMin_,
+    //     FractionMath.Fraction memory interestMax_
+    // ) internal pure returns (int256, int256) {
+    //     int256 kNumerator;
+    //     {
+    //         kNumerator = interestMax_
+    //             .numerator
+    //             .toInt256()
+    //             .add(interestMin_.denominator.toInt256())
+    //             .sub(interestMin_.numerator.toInt256().mul(interestMax_.denominator.toInt256()))
+    //             .mul(utilizationMax_.numerator.toInt256());
+    //     }
+    //     int256 kDenominator;
+    //     {
+    //         kDenominator = interestMax_.denominator.toInt256().mul(interestMin_.denominator.toInt256()).mul(utilizationMax_.denominator.toInt256());
+    //     }
+    //     return (kNumerator, kDenominator);
+    // }
+
     // Helper to calculate the maximum interest rate
     function _interestRateMax(
-        uint256 utilizationNumerator_,
-        uint256 utilizationDenominator_,
+        FractionMath.Fraction memory utilization_,
         FractionMath.Fraction memory utilizationMax_,
         FractionMath.Fraction memory interestMin_,
         FractionMath.Fraction memory interestMax_
@@ -116,13 +137,13 @@ abstract contract LPoolInterest is LPoolLiquidity {
 
         int256 numerator;
         {
-            numerator = utilizationNumerator_.toInt256().mul(interestMax_.numerator.toInt256()).mul(kDenominator).sub(
-                kNumerator.mul(utilizationDenominator_.toInt256()).mul(interestMax_.denominator.toInt256())
+            numerator = utilization_.numerator.toInt256().mul(interestMax_.numerator.toInt256()).mul(kDenominator).sub(
+                kNumerator.mul(utilization_.denominator.toInt256()).mul(interestMax_.denominator.toInt256())
             );
         }
         int256 denominator;
         {
-            denominator = utilizationDenominator_.toInt256().mul(interestMax_.denominator.toInt256()).mul(kDenominator);
+            denominator = utilization_.denominator.toInt256().mul(interestMax_.denominator.toInt256()).mul(kDenominator);
         }
 
         return (numerator.toUint256(), denominator.toUint256());
@@ -131,13 +152,14 @@ abstract contract LPoolInterest is LPoolLiquidity {
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
     function interestRate(IERC20 token_) public view override returns (uint256, uint256) {
         (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(token_);
+        FractionMath.Fraction memory utilization = FractionMath.Fraction({numerator: utilizationNumerator, denominator: utilizationDenominator});
 
         FractionMath.Fraction memory utilizationMax = _maxUtilization[token_];
         FractionMath.Fraction memory interestMin = _maxInterestMin[token_];
         FractionMath.Fraction memory interestMax = _maxInterestMin[token_];
 
         if (utilizationNumerator.mul(utilizationMax.denominator) > utilizationDenominator.mul(utilizationMax.numerator))
-            return _interestRateMax(utilizationNumerator, utilizationDenominator, utilizationMax, interestMin, interestMax);
+            return _interestRateMax(utilization, utilizationMax, interestMin, interestMax);
         else return _interestRateMin(utilizationNumerator, utilizationDenominator, interestMin);
     }
 
