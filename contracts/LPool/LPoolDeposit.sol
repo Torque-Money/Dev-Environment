@@ -59,6 +59,8 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
         IERC20 convertedToken = _pseudoRandomWeightedPT();
+
+        token_.safeApprove(address(converter), amount_);
         uint256 convertedAmount = converter.swapMaxTokenOut(token_, amount_, convertedToken);
 
         uint256 totalTax = _payTax(convertedToken, convertedAmount);
