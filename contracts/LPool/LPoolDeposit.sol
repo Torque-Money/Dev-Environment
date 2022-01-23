@@ -51,6 +51,8 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         console.log("");
         console.log(totalWeightSize);
 
+        // **** So it appears we have a problem depositing when there is nothing being borrowed e.g. in the event of a liquidation - maybe unclaim afterwards ????
+
         uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
 
         uint256 cumulative = 0;

@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolClaim.sol";
 import "./LPoolDeposit.sol";
 
-import "hardhat/console.sol";
-
 abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     using SafeMath for uint256;
 
@@ -19,10 +17,6 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     // Get the available liquidity of the pool
     function liquidity(IERC20 token_) public view override(LPoolClaim, LPoolDeposit) returns (uint256) {
         uint256 claimed = totalClaimed(token_);
-
-        console.log("Claimed:");
-        console.log(claimed);
-
         return tvl(token_).sub(claimed);
     }
 
@@ -37,11 +31,6 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     function utilizationRate(IERC20 token_) public view returns (uint256, uint256) {
         uint256 _utilized = utilized(token_);
         uint256 _tvl = tvl(token_);
-
-        console.log("Utilization rate:");
-        console.log(_utilized);
-        console.log(_tvl);
-
         return (_utilized, _tvl);
     }
 }
