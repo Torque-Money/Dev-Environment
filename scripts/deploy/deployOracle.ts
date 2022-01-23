@@ -19,10 +19,16 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         saveTempConstructor(oracle.address, constructorArgs);
     } else {
-        // **** Maybe I should build custom decimals into the contract
-
-        const constructorArgs = {};
+        const constructorArgs = {
+            thresholdNumerator: 1,
+            thresholdDenominator: 200,
+            priceDecimals: 18,
+        };
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
+        const oracle = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        config.oracleAddress = oracle.address;
+
+        console.log(`Deployed: Oracle test | ${oracle.address}`);
     }
 
     saveConfig(config, configType);

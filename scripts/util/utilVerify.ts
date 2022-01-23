@@ -12,9 +12,9 @@ export function loadTempConstructor() {
     }
 }
 
-export function saveTempConstructor(key: string, constructorConfig: any) {
+export function saveTempConstructor(address: string, constructorConfig: any) {
     const tempConstructor = loadTempConstructor();
-    (tempConstructor as any)[key] = Object.values(constructorConfig).map((item: any) => item.toString());
+    (tempConstructor as any)[address] = Object.values(constructorConfig).map((item: any) => item.toString());
     fs.writeFileSync(TEMP_CONSTRUCTOR_NAME, JSON.stringify(tempConstructor));
 }
 
