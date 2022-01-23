@@ -16,10 +16,8 @@ import dotenv from "dotenv";
 import {verifyAll} from "./scripts/util/utilVerify";
 dotenv.config();
 
-import configTest from "./config.test.json";
-import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import UniswapV2Router02Abi from "./artifacts/contracts/lib/UniswapV2Router02.sol/UniswapV2Router02.json";
-import {ERC20, UniswapV2Router02} from "./typechain-types";
+import deployConverter from "./scripts/deploy/deployConverter";
+import deployResolver from "./scripts/deploy/deployResolver";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     hre.run("compile");
@@ -56,7 +54,8 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("sandbox", "A sandbox for testing", async (args, hre) => {
-    // **** I am going to now deploy my new resolver to the test net along with my new converter - when we redeploy the pool it will match with the new resolver
+    await deployConverter("test", hre);
+    await deployResolver("test", hre);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
