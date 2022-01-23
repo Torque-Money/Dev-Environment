@@ -6,6 +6,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/Set.sol";
 import "./MarginPool.sol";
 
+import "hardhat/console.sol";
+
 abstract contract MarginAccount is MarginPool {
     using SafeMath for uint256;
     using Set for Set.TokenSet;
@@ -83,6 +85,12 @@ abstract contract MarginAccount is MarginPool {
         _setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
         account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[borrowed_]).add(amount_);
         account.borrowedAmounts[borrowed_] = amount_;
+
+        console.log("Set borrowed");
+        console.log(address(borrowed_));
+        console.log(account_);
+        console.log(account.hasBorrowed);
+        console.log("");
     }
 
     // Get the borrowed for a given account
@@ -152,6 +160,10 @@ abstract contract MarginAccount is MarginPool {
     // Check if an account is currently borrowing
     function isBorrowing(address account_) public view returns (bool) {
         Account storage account = _accounts[account_];
+
+        console.log("Has borrowed");
+        console.log(account.hasBorrowed);
+
         return account.hasBorrowed > 0;
     }
 
