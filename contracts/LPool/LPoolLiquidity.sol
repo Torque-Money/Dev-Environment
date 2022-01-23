@@ -22,6 +22,7 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
 
         console.log(tvl(token_));
         console.log(claimed);
+        console.log(tvl(token_).sub(100));
 
         return tvl(token_).sub(claimed);
     }
