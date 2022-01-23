@@ -15,6 +15,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.oracleAddress = oracle.address;
     console.log(`Deployed: Oracle | ${oracle.address}`);
 
-    saveTempConstructor(oracle.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(oracle.address, constructorArgs);
     saveConfig(config, configType);
 }

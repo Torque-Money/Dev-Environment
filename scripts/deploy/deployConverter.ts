@@ -14,6 +14,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.converterAddress = converter.address;
     console.log(`Deployed: Converter | ${converter.address}`);
 
-    saveTempConstructor(converter.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(converter.address, constructorArgs);
     saveConfig(config, configType);
 }

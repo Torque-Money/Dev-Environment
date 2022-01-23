@@ -16,6 +16,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.resolverAddress = resolver.address;
     console.log(`Deployed: Resolver | ${resolver.address}`);
 
-    saveTempConstructor(resolver.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(resolver.address, constructorArgs);
     saveConfig(config, configType);
 }

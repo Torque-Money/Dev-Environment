@@ -21,6 +21,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     config.leveragePoolAddress = pool.address;
     console.log(`Deployed: Pool | ${pool.address}`);
 
-    saveTempConstructor(pool.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(pool.address, constructorArgs);
     saveConfig(config, configType);
 }

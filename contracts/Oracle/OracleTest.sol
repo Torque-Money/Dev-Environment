@@ -5,11 +5,21 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./IOracle.sol";
 
 contract OracleTest is IOracle {
-    function priceMin(IERC20 token_, uint256 amount_) external view returns (uint256);
+    mapping(IERC20 => uint256) private _prices;
 
-    function priceMax(IERC20 token_, uint256 amount_) external view returns (uint256);
+    function setPrice(IERC20 token_, uint256 price_) external {
+        _prices[token_] = price_;
+    }
 
-    function amountMin(IERC20 token_, uint256 price_) external view returns (uint256);
+    function _price(IERC20 token_) internal view returns (uint256) {
+        return _prices[token_];
+    }
 
-    function amountMax(IERC20 token_, uint256 price_) external view returns (uint256);
+    function priceMin(IERC20 token_, uint256 amount_) external view returns (uint256) {}
+
+    function priceMax(IERC20 token_, uint256 amount_) external view returns (uint256) {}
+
+    function amountMin(IERC20 token_, uint256 price_) external view returns (uint256) {}
+
+    function amountMax(IERC20 token_, uint256 price_) external view returns (uint256) {}
 }
