@@ -2,11 +2,12 @@ import {expect} from "chai";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
-import {ERC20, LPool, MarginLong, Resolver} from "../typechain-types";
+import {ERC20, LPool, MarginLong, OracleTest, Resolver} from "../typechain-types";
 
 describe("Handle dangerous account", async function () {
-    let marginLong: MarginLong;
     let pool: LPool;
+    let oracle: OracleTest;
+    let marginLong: MarginLong;
     let resolver: Resolver;
     let collateralToken: ERC20;
     let borrowedToken: ERC20;
@@ -15,6 +16,7 @@ describe("Handle dangerous account", async function () {
 
     beforeEach(async () => {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
+        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
 
@@ -25,7 +27,17 @@ describe("Handle dangerous account", async function () {
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
 
-        // **** Now here we want to deposit collateral and such into the account and see what happens and if it is liquidatable
+        const priceDecimals = await oracle.priceDecimals();
+        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
+
+        const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
+        const addCollateralAmount = ethers.BigNumber.from(10).pow(config.approved[0].decimals).mul(200);
+        const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
+
+        await pool.provideLiquidity(borrowedToken.address, addLiquidityAmount);
+        await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
+        await marginLong.borrow(borrowedToken.address, borrowAmount);
     });
 
     afterEach(async () => {});
