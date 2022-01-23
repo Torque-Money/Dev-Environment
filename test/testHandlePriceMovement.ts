@@ -53,26 +53,37 @@ describe("Handle price movement", async function () {
         await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
     });
 
-    it("should liquidate an account", async () => {
+    // it("should liquidate an account", async () => {
+    //     const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
+    //     await oracle.setPrice(borrowedToken.address, newPrice);
+
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await marginLong.liquidateAccount(signerAddress);
+    //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+
+    //     expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
+    // });
+
+    // it("should reset an account", async () => {
+    //     const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).div(3);
+    //     await oracle.setPrice(collateralToken.address, newPrice);
+
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(true);
+    //     await marginLong.resetAccount(signerAddress);
+    //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+
+    //     expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(addCollateralAmount)).to.equal(true);
+    //     expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
+    // });
+
+    it("should liquidate an account using resolver", async () => {
         const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
         await oracle.setPrice(borrowedToken.address, newPrice);
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await marginLong.liquidateAccount(signerAddress);
+        expect((await resolver.checkLiquidate())[0]).to.equal(true);
+        await resolver.executeLiquidate(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
-    });
-
-    it("should reset an account", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).div(3);
-        await oracle.setPrice(collateralToken.address, newPrice);
-
-        expect(await marginLong.resettable(signerAddress)).to.equal(true);
-        await marginLong.resetAccount(signerAddress);
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
-
-        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(addCollateralAmount)).to.equal(true);
         expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
     });
 
