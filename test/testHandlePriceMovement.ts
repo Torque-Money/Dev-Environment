@@ -53,16 +53,22 @@ describe("Handle price movement", async function () {
         await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
     });
 
-    it("should liquidate an account", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
-        await oracle.setPrice(borrowedToken.address, newPrice);
+    // it("should liquidate an account", async () => {
+    //     const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
+    //     await oracle.setPrice(borrowedToken.address, newPrice);
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await marginLong.liquidateAccount(signerAddress);
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await marginLong.liquidateAccount(signerAddress);
+    //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+    // });
+
+    it("should reset an account", async () => {
+        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).div(3);
+        await oracle.setPrice(borrowedToken.address, newPrice);
+        expect(await marginLong.resettable(signerAddress)).to.equal(true);
+        await marginLong.resetAccount(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
-
-    // it("should reset an account", async () => {});
 
     // it("should repay an account with profit", async () => {});
 
