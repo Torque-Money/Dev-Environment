@@ -43,9 +43,8 @@ abstract contract MarginLongRepayCore is Margin {
 
         pool.unclaim(token_, borrowed(token_, account_));
         pool.withdraw(token_, payoutAmount);
-
-        _setInitialBorrowPrice(token_, 0, account_);
         _setBorrowed(token_, 0, account_);
+        _setInitialBorrowPrice(token_, 0, account_);
 
         _setCollateral(token_, collateral(token_, account_).add(payoutAmount), account_);
     }
