@@ -15,6 +15,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await Pool.deploy(
         constructorArgs.converter,
+        constructorArgs.oracle,
         constructorArgs.taxPercentNumerator,
         constructorArgs.taxPercentDenominator,
         constructorArgs.blocksPerInterestApplication
