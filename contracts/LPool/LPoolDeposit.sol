@@ -75,7 +75,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     // Withdraw a given amount of collateral from the pool
     function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
-        require(amount_ > 0, "LPoolDeposit: Withdraw must be greater than 0");
+        require(amount_ > 0, "LPoolDeposit: Withdraw amount must be greater than 0");
         require(amount_ <= liquidity(token_), "LPoolDeposit: Withdraw amount exceeds available liquidity");
 
         token_.safeTransfer(_msgSender(), amount_);
