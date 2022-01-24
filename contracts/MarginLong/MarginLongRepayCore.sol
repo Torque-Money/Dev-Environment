@@ -11,43 +11,43 @@ abstract contract MarginLongRepayCore is Margin {
     using SafeERC20 for IERC20;
 
     // Check whether or not a given borrowed asset is at a loss or profit
-    function _repayIsPayout(IERC20 borrowed_, address account_) internal view returns (bool) {
-        uint256 currentPrice = _borrowedPrice(borrowed_, account_);
-        uint256 initialPrice = initialBorrowPrice(borrowed_, account_);
-        uint256 _interest = interest(borrowed_, account_);
+    function _repayIsPayout(IERC20 token_, address account_) internal view returns (bool) {
+        uint256 currentPrice = oracle.priceMin(token_, borrowed(token_, account_));
+        uint256 initialPrice = initialBorrowPrice(token_, account_);
+        uint256 _interest = interest(token_, account_);
 
         return (currentPrice > initialPrice.add(_interest));
     }
 
     // Get the repay amount when there is a payout
-    function _repayPayoutAmount(IERC20 borrowed_, address account_) internal view returns (uint256) {
-        uint256 currentPrice = _borrowedPrice(borrowed_, account_);
-        uint256 initialPrice = initialBorrowPrice(borrowed_, account_);
-        uint256 _interest = interest(borrowed_, account_);
+    function _repayPayoutAmount(IERC20 token_, address account_) internal view returns (uint256) {
+        uint256 currentPrice = oracle.priceMin(token_, borrowed(token_, account_));
+        uint256 initialPrice = initialBorrowPrice(token_, account_);
+        uint256 _interest = interest(token_, account_);
 
-        return oracle.amountMin(borrowed_, currentPrice.sub(initialPrice).sub(_interest));
+        return oracle.amountMin(token_, currentPrice.sub(initialPrice).sub(_interest));
     }
 
     // Get the repay price when there is a loss
-    function _repayLossesPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
-        uint256 currentPrice = _borrowedPrice(borrowed_, account_);
-        uint256 initialPrice = initialBorrowPrice(borrowed_, account_);
-        uint256 _interest = interest(borrowed_, account_);
+    function _repayLossesPrice(IERC20 token_, address account_) internal view returns (uint256) {
+        uint256 currentPrice = oracle.priceMin(token_, borrowed(token_, account_));
+        uint256 initialPrice = initialBorrowPrice(token_, account_);
+        uint256 _interest = interest(token_, account_);
 
         return initialPrice.add(_interest).sub(currentPrice);
     }
 
     // Repay a payout amount
-    function _repayPayout(IERC20 borrowed_, address account_) internal {
-        uint256 payoutAmount = _repayPayoutAmount(borrowed_, account_);
+    function _repayPayout(IERC20 token_, address account_) internal {
+        uint256 payoutAmount = _repayPayoutAmount(token_, account_);
 
-        pool.unclaim(borrowed_, borrowed(borrowed_, account_));
-        pool.withdraw(borrowed_, payoutAmount);
+        pool.unclaim(token_, borrowed(token_, account_));
+        pool.withdraw(token_, payoutAmount);
 
-        _setInitialBorrowPrice(borrowed_, 0, account_);
-        _setBorrowed(borrowed_, 0, account_);
+        _setInitialBorrowPrice(token_, 0, account_);
+        _setBorrowed(token_, 0, account_);
 
-        _setCollateral(borrowed_, collateral(borrowed_, account_).add(payoutAmount), account_);
+        _setCollateral(token_, collateral(token_, account_).add(payoutAmount), account_);
     }
 
     // Repay the payout amounts
@@ -67,7 +67,7 @@ abstract contract MarginLongRepayCore is Margin {
     ) internal returns (uint256) {
         while (debt_ > 0 && collateralIndex_ < collateralToken_.length) {
             uint256 collateralAmount = collateral(collateralToken_[collateralIndex_], account_);
-            uint256 collateralPrice = _collateralPrice(collateralToken_[collateralIndex_], account_);
+            uint256 collateralPrice = oracle.priceMin(collateralToken_[collateralIndex_], collateral(collateralToken_[collateralIndex_], account_));
 
             if (collateralPrice < debt_) {
                 collateralRepayAmount_[collateralIndex_] = collateralAmount;
@@ -90,17 +90,17 @@ abstract contract MarginLongRepayCore is Margin {
     }
 
     // Repay a loss for a given token
-    function _repayLoss(IERC20 borrowed_, address account_) internal {
+    function _repayLoss(IERC20 token_, address account_) internal {
         IERC20[] memory collateralTokens = _collateralTokens(account_);
         uint256[] memory collateralRepayAmounts = new uint256[](collateralTokens.length);
 
-        uint256 debt = _repayLossesPrice(borrowed_, account_);
+        uint256 debt = _repayLossesPrice(token_, account_);
         _repayLossFromCollateral(debt, account_, collateralTokens, collateralRepayAmounts, 0);
         _deposit(collateralTokens, collateralRepayAmounts);
 
-        pool.unclaim(borrowed_, borrowed(borrowed_, account_));
-        _setBorrowed(borrowed_, 0, account_);
-        _setInitialBorrowPrice(borrowed_, 0, account_);
+        pool.unclaim(token_, borrowed(token_, account_));
+        _setBorrowed(token_, 0, account_);
+        _setInitialBorrowPrice(token_, 0, account_);
     }
 
     // Pay of all of the losses using collateral
@@ -146,7 +146,7 @@ abstract contract MarginLongRepayCore is Margin {
 
     function liquidationFeePercent() public view virtual returns (uint256, uint256);
 
-    event Repay(address indexed account, IERC20 borrowed);
+    event Repay(address indexed account, IERC20 token);
     event RepayAll(address indexed account);
     event Reset(address indexed account, address resetter);
 }

@@ -11,9 +11,9 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     using SafeERC20 for IERC20;
 
     // Helper to repay a single leveraged position
-    function _repayAccount(IERC20 borrowed_, address account_) internal {
-        if (_repayIsPayout(borrowed_, account_)) _repayPayout(borrowed_, account_);
-        else _repayLoss(borrowed_, account_);
+    function _repayAccount(IERC20 token_, address account_) internal onlyBorrowedTokens(token_) {
+        if (_repayIsPayout(token_, account_)) _repayPayout(token_, account_);
+        else _repayLoss(token_, account_);
 
         if (!isBorrowing(account_)) _removeAccount(account_);
     }
@@ -26,13 +26,13 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     }
 
     // Repay a borrowed position in an account
-    function repayAccount(IERC20 borrowed_) external {
-        require(isBorrowing(borrowed_, _msgSender()), "MarginLongRepay: Cannot repay account with no leveraged position");
+    function repayAccount(IERC20 token_) external onlyBorrowedTokens(token_) {
+        require(isBorrowing(token_, _msgSender()), "MarginLongRepay: Cannot repay account with no leveraged position");
 
-        _repayAccount(borrowed_, _msgSender());
+        _repayAccount(token_, _msgSender());
         require(!resettable(_msgSender()), "MarginLongRepay: Repaying position puts account at risk");
 
-        emit Repay(_msgSender(), borrowed_);
+        emit Repay(_msgSender(), token_);
     }
 
     // Repay all borrowed positions in an account
