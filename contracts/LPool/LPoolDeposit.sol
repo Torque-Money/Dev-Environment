@@ -57,7 +57,10 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
     function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
+        require(amount_ > 0, "LPoolDeposit: Deposit amount must be greater than 0");
+
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
+
         IERC20 convertedToken = _pseudoRandomWeightedPT();
         uint256 convertedAmount = amount_;
         if (convertedToken != token_) {
@@ -72,7 +75,9 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
 
     // Withdraw a given amount of collateral from the pool
     function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
+        require(amount_ > 0, "LPoolDeposit: Withdraw must be greater than 0");
         require(amount_ <= liquidity(token_), "LPoolDeposit: Withdraw amount exceeds available liquidity");
+
         token_.safeTransfer(_msgSender(), amount_);
 
         emit Withdraw(_msgSender(), token_, amount_);
