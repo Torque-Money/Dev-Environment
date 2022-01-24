@@ -12,7 +12,7 @@ abstract contract LPoolProvide is LPoolLiquidity {
     using SafeERC20 for IERC20;
 
     // Return the amount of LP tokens received for adding a given amount of tokens as liquidity
-    function addLiquidityOutLPTokens(IERC20 token_, uint256 amount_) public view returns (uint256) {
+    function addLiquidityOutLPTokens(IERC20 token_, uint256 amount_) public view onlyApprovedPT(token_) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(LPFromPT(token_)));
 
         uint256 totalSupply = LPToken.totalSupply();
@@ -41,7 +41,7 @@ abstract contract LPoolProvide is LPoolLiquidity {
     }
 
     // Get the value for redeeming LP tokens for the underlying asset
-    function removeLiquidityOutPoolTokens(IERC20 token_, uint256 amount_) public view returns (uint256) {
+    function removeLiquidityOutPoolTokens(IERC20 token_, uint256 amount_) public view onlyLP(token_) returns (uint256) {
         LPoolToken LPToken = LPoolToken(address(token_));
         IERC20 approvedToken = PTFromLP(token_);
 

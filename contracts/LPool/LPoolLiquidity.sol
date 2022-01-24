@@ -10,19 +10,19 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     using SafeMath for uint256;
 
     // Return the total value locked of a given asset
-    function tvl(IERC20 token_) public view returns (uint256) {
+    function tvl(IERC20 token_) public view onlyPT(token_) returns (uint256) {
         return token_.balanceOf(address(this));
     }
 
     // Get the available liquidity of the pool
-    function liquidity(IERC20 token_) public view override(LPoolClaim, LPoolDeposit) returns (uint256) {
+    function liquidity(IERC20 token_) public view override(LPoolClaim, LPoolDeposit) onlyPT(token_) returns (uint256) {
         uint256 claimed = totalClaimed(token_);
 
         return tvl(token_).sub(claimed);
     }
 
     // Get the total utilized in the pool
-    function utilized(IERC20 token_) public view override(LPoolDeposit) returns (uint256) {
+    function utilized(IERC20 token_) public view override(LPoolDeposit) onlyPT(token_) returns (uint256) {
         uint256 _liquidity = liquidity(token_);
         uint256 _tvl = tvl(token_);
 
@@ -30,7 +30,7 @@ abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
     }
 
     // Get the utilization rate for a given asset
-    function utilizationRate(IERC20 token_) public view returns (uint256, uint256) {
+    function utilizationRate(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
         uint256 _utilized = utilized(token_);
         uint256 _tvl = tvl(token_);
 
