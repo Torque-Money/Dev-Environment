@@ -30,7 +30,7 @@ contract Oracle is IOracle, OracleTokens {
     }
 
     // Get the price decimals
-    function priceDecimals() public view override returns (uint256) {
+    function priceDecimals() external view override returns (uint256) {
         return _priceDecimals;
     }
 
@@ -41,7 +41,7 @@ contract Oracle is IOracle, OracleTokens {
     }
 
     // Get the threshold
-    function threshold() public view returns (uint256, uint256) {
+    function threshold() external view returns (uint256, uint256) {
         return (_threshold.numerator, _threshold.denominator);
     }
 
@@ -58,7 +58,7 @@ contract Oracle is IOracle, OracleTokens {
         }
         if (result <= 0) return 0;
 
-        return uint256(result).mul(10**priceDecimals()).mul(amount_).div(10**_decimals).div(10**decimals(token_));
+        return uint256(result).mul(10**_priceDecimals).mul(amount_).div(10**_decimals).div(10**decimals(token_));
     }
 
     // Get the price for a given token amount at the lowest threshold by the oracle

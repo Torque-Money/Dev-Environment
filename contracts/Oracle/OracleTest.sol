@@ -24,11 +24,11 @@ contract OracleTest is IOracle, OracleTokens {
         _priceDecimals = priceDecimals_;
     }
 
-    function priceDecimals() public view returns (uint256) {
+    function priceDecimals() external view returns (uint256) {
         return _priceDecimals;
     }
 
-    function threshold() public view returns (uint256, uint256) {
+    function threshold() external view returns (uint256, uint256) {
         return (_threshold.numerator, _threshold.denominator);
     }
 
