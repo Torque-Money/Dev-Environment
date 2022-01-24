@@ -4,24 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "../Converter/IConverter.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
 abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-
-    IConverter public converter;
-
-    constructor(IConverter converter_) {
-        converter = converter_;
-    }
-
-    // Set the converter to use
-    function setConverter(IConverter converter_) external onlyRole(POOL_ADMIN) {
-        converter = converter_;
-    }
 
     // Get a pseudo random token from a weighted distribution of pool tokens
     function _pseudoRandomWeightedPT() internal view returns (IERC20) {
@@ -31,7 +19,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
-            uint256 _utilized = utilized(poolTokens[i]);
+            uint256 _utilized = oracle.priceMax(poolTokens[i], utilized(poolTokens[i]));
 
             uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1);
 
