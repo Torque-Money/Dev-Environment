@@ -41,13 +41,11 @@ contract OracleTest is IOracle, OracleTokens {
     }
 
     function priceMin(IERC20 token_, uint256 amount_) public view override returns (uint256) {
-        (uint256 thresholdNumerator, uint256 thresholdDenominator) = threshold();
-        return thresholdDenominator.sub(thresholdNumerator).mul(_price(token_, amount_)).div(thresholdDenominator);
+        return _threshold.denominator.sub(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     function priceMax(IERC20 token_, uint256 amount_) public view override returns (uint256) {
-        (uint256 thresholdNumerator, uint256 thresholdDenominator) = threshold();
-        return (thresholdDenominator).add(thresholdNumerator).mul(_price(token_, amount_)).div(thresholdDenominator);
+        return (_threshold.denominator).add(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     function amountMin(IERC20 token_, uint256 price_) external view override returns (uint256) {
