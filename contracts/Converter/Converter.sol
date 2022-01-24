@@ -44,7 +44,7 @@ contract Converter is IConverter, Ownable {
         IERC20 tokenIn_,
         uint256 amountIn_,
         IERC20 tokenOut_
-    ) public view override returns (uint256) {
+    ) external view override returns (uint256) {
         address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
         path[1] = router.WETH();
@@ -59,7 +59,7 @@ contract Converter is IConverter, Ownable {
         IERC20 tokenIn_,
         IERC20 tokenOut_,
         uint256 amountOut_
-    ) public view override returns (uint256) {
+    ) external view override returns (uint256) {
         address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
         path[1] = router.WETH();
@@ -93,7 +93,7 @@ contract Converter is IConverter, Ownable {
     }
 
     // Get the minimum input tokens for required output eth
-    function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) public view override returns (uint256) {
+    function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) external view override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = router.WETH();
