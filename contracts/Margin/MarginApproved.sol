@@ -41,4 +41,6 @@ abstract contract MarginApproved is MarginCore {
     function isApprovedBorrowed(IERC20 token_) public view returns (bool) {
         return _approvedBorrowed[token_];
     }
+
+    // **** I need a system that works similarly to the pool one where we ADD the token, and then we can determine if it is approved or not
 }
