@@ -63,14 +63,12 @@ contract Oracle is IOracle, OracleTokens {
 
     // Get the price for a given token amount at the lowest threshold by the oracle
     function priceMin(IERC20 token_, uint256 amount_) public view override returns (uint256) {
-        (uint256 thresholdNumerator, uint256 thresholdDenominator) = threshold();
-        return thresholdDenominator.sub(thresholdNumerator).mul(_price(token_, amount_)).div(thresholdDenominator);
+        return _threshold.denominator.sub(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     // Get the price for a given token amount at the highest threshold by the oracle
     function priceMax(IERC20 token_, uint256 amount_) public view override returns (uint256) {
-        (uint256 thresholdNumerator, uint256 thresholdDenominator) = threshold();
-        return (thresholdDenominator).add(thresholdNumerator).mul(_price(token_, amount_)).div(thresholdDenominator);
+        return (_threshold.denominator).add(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     // Get the amount for a given token price at the lowest threshold by the oracle
