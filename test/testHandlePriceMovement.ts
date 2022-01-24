@@ -74,16 +74,25 @@ describe("Handle price movement", async function () {
     //     expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
     // });
 
-    it("should repay an account with profit", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(40);
+    // it("should repay an account with profit", async () => {
+    //     const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(40);
+    //     await oracle.setPrice(borrowedToken.address, newPrice);
+
+    //     const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+    //     await marginLong.repayAccountAll();
+    //     expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
+
+    //     expect((await pool.tvl(borrowedToken.address)).lt(addLiquidityAmount)).to.equal(true);
+    // });
+
+    it("should repay an account with a loss", async () => {
+        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(20);
         await oracle.setPrice(borrowedToken.address, newPrice);
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
         await marginLong.repayAccountAll();
-        expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
+        expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).lt(addLiquidityAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
     });
-
-    // it("should repay an account with a loss", async () => {});
 });
