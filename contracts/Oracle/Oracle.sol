@@ -11,8 +11,8 @@ import "./IOracle.sol";
 contract Oracle is IOracle, OracleTokens {
     using SafeMath for uint256;
 
-    FractionMath.Fraction private _threshold;
     uint256 private _priceDecimals;
+    FractionMath.Fraction private _threshold;
 
     constructor(
         uint256 thresholdNumerator_,
@@ -72,13 +72,13 @@ contract Oracle is IOracle, OracleTokens {
     }
 
     // Get the amount for a given token price at the lowest threshold by the oracle
-    function amountMin(IERC20 token_, uint256 price_) external view override returns (uint256) {
+    function amountMin(IERC20 token_, uint256 price_) public view override returns (uint256) {
         uint256 tokenPrice = priceMax(token_, 10**decimals(token_));
         return price_.mul(10**decimals(token_)).div(tokenPrice);
     }
 
     // Get the amount for a given token price at the highest threshold by the oracle
-    function amountMax(IERC20 token_, uint256 price_) external view override returns (uint256) {
+    function amountMax(IERC20 token_, uint256 price_) public view override returns (uint256) {
         uint256 tokenPrice = priceMin(token_, 10**decimals(token_));
         return price_.mul(10**decimals(token_)).div(tokenPrice);
     }
