@@ -13,15 +13,15 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
     using SafeERC20 for IERC20;
 
     // Deposit collateral into the account
-    function addCollateral(IERC20 collateral_, uint256 amount_) external onlyApprovedCollateral(collateral_) {
-        collateral_.safeTransferFrom(_msgSender(), address(this), amount_);
-        _setCollateral(collateral_, collateral(collateral_, _msgSender()).add(amount_), _msgSender());
+    function addCollateral(IERC20 token_, uint256 amount_) external onlyApprovedCollateralToken(token_) {
+        token_.safeTransferFrom(_msgSender(), address(this), amount_);
+        _setCollateral(token_, collateral(token_, _msgSender()).add(amount_), _msgSender());
 
-        emit AddCollateral(_msgSender(), collateral_, amount_);
+        emit AddCollateral(_msgSender(), token_, amount_);
     }
 
     // Withdraw collateral from the account
-    function removeCollateral(IERC20 collateral_, uint256 amount_) external {
+    function removeCollateral(IERC20 token_, uint256 amount_) external onlyCollateralToken(token_) {
         require(amount_ <= collateral(collateral_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
 
         _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
@@ -32,6 +32,6 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
         emit RemoveCollateral(_msgSender(), collateral_, amount_);
     }
 
-    event AddCollateral(address indexed account, IERC20 collateral, uint256 amount);
-    event RemoveCollateral(address indexed account, IERC20 collateral, uint256 amount);
+    event AddCollateral(address indexed account, IERC20 token, uint256 amount);
+    event RemoveCollateral(address indexed account, IERC20 token, uint256 amount);
 }

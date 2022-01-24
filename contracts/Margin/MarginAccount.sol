@@ -22,8 +22,6 @@ abstract contract MarginAccount is MarginPool {
 
     mapping(address => Account) private _accounts;
 
-    // **** Maybe add in some modifiers for borrowing and such ?
-
     // Set the collateral for a given asset
     function _setCollateral(
         IERC20 token_,
