@@ -14,6 +14,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "contract IERC20",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "AddBorrowedToken",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -22,7 +35,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "contract IERC20",
-        name: "collateral",
+        name: "token",
         type: "address",
       },
       {
@@ -39,6 +52,19 @@ const _abi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "contract IERC20",
+        name: "token",
+        type: "address",
+      },
+    ],
+    name: "AddCollateralToken",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "account",
@@ -47,7 +73,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "contract IERC20",
-        name: "borrowed",
+        name: "token",
         type: "address",
       },
       {
@@ -91,7 +117,7 @@ const _abi = [
       {
         indexed: false,
         internalType: "contract IERC20",
-        name: "collateral",
+        name: "token",
         type: "address",
       },
       {
@@ -107,8 +133,21 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract IERC20[]",
+        name: "token_",
+        type: "address[]",
+      },
+    ],
+    name: "addBorrowedToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "contract IERC20",
-        name: "collateral_",
+        name: "token_",
         type: "address",
       },
       {
@@ -125,8 +164,21 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract IERC20[]",
+        name: "token_",
+        type: "address[]",
+      },
+    ],
+    name: "addCollateralToken",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
       {
@@ -144,7 +196,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
       {
@@ -187,7 +239,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "collateral_",
+        name: "token_",
         type: "address",
       },
       {
@@ -243,7 +295,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
       {
@@ -267,7 +319,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
       {
@@ -329,7 +381,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
       {
@@ -357,7 +409,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "isApprovedBorrowed",
+    name: "isApprovedBorrowedToken",
     outputs: [
       {
         internalType: "bool",
@@ -376,7 +428,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "isApprovedCollateral",
+    name: "isApprovedCollateralToken",
     outputs: [
       {
         internalType: "bool",
@@ -391,7 +443,26 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
+        type: "address",
+      },
+    ],
+    name: "isBorrowedToken",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "token_",
         type: "address",
       },
       {
@@ -420,6 +491,25 @@ const _abi = [
       },
     ],
     name: "isBorrowing",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "token_",
+        type: "address",
+      },
+    ],
+    name: "isCollateralToken",
     outputs: [
       {
         internalType: "bool",
@@ -579,7 +669,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "collateral_",
+        name: "token_",
         type: "address",
       },
       {
@@ -632,7 +722,7 @@ const _abi = [
         type: "bool[]",
       },
     ],
-    name: "setApprovedBorrowed",
+    name: "setApprovedBorrowedToken",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -650,7 +740,7 @@ const _abi = [
         type: "bool[]",
       },
     ],
-    name: "setApprovedCollateral",
+    name: "setApprovedCollateralToken",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -748,7 +838,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "borrowed_",
+        name: "token_",
         type: "address",
       },
     ],
@@ -767,7 +857,7 @@ const _abi = [
     inputs: [
       {
         internalType: "contract IERC20",
-        name: "collateral_",
+        name: "token_",
         type: "address",
       },
     ],

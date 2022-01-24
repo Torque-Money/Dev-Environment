@@ -47,6 +47,37 @@ const _abi = [
         name: "amount",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "AddLiquidity",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "contract IERC20",
+        name: "token",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
     ],
     name: "Claim",
     type: "event",
@@ -116,38 +147,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "ProvideLiquidity",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "account",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "contract IERC20",
-        name: "token",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "value",
-        type: "uint256",
-      },
-    ],
-    name: "RedeemLiquidity",
+    name: "RemoveLiquidity",
     type: "event",
   },
   {
@@ -373,6 +373,54 @@ const _abi = [
     name: "addLPToken",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "token_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount_",
+        type: "uint256",
+      },
+    ],
+    name: "addLiquidity",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IERC20",
+        name: "token_",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount_",
+        type: "uint256",
+      },
+    ],
+    name: "addLiquidityOutLPTokens",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -654,7 +702,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "provideLiquidity",
+    name: "removeLiquidity",
     outputs: [
       {
         internalType: "uint256",
@@ -678,55 +726,7 @@ const _abi = [
         type: "uint256",
       },
     ],
-    name: "provideLiquidityValue",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IERC20",
-        name: "token_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "redeemLiquidity",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "contract IERC20",
-        name: "token_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount_",
-        type: "uint256",
-      },
-    ],
-    name: "redeemLiquidityValue",
+    name: "removeLiquidityOutPoolTokens",
     outputs: [
       {
         internalType: "uint256",

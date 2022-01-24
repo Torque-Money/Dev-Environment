@@ -19,25 +19,45 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface MarginApprovedInterface extends utils.Interface {
   contractName: "MarginApproved";
   functions: {
-    "isApprovedBorrowed(address)": FunctionFragment;
-    "isApprovedCollateral(address)": FunctionFragment;
+    "addBorrowedToken(address[])": FunctionFragment;
+    "addCollateralToken(address[])": FunctionFragment;
+    "isApprovedBorrowedToken(address)": FunctionFragment;
+    "isApprovedCollateralToken(address)": FunctionFragment;
+    "isBorrowedToken(address)": FunctionFragment;
+    "isCollateralToken(address)": FunctionFragment;
     "oracle()": FunctionFragment;
     "owner()": FunctionFragment;
     "pool()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setApprovedBorrowed(address[],bool[])": FunctionFragment;
-    "setApprovedCollateral(address[],bool[])": FunctionFragment;
+    "setApprovedBorrowedToken(address[],bool[])": FunctionFragment;
+    "setApprovedCollateralToken(address[],bool[])": FunctionFragment;
     "setOracle(address)": FunctionFragment;
     "setPool(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "isApprovedBorrowed",
+    functionFragment: "addBorrowedToken",
+    values: [string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addCollateralToken",
+    values: [string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isApprovedBorrowedToken",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "isApprovedCollateral",
+    functionFragment: "isApprovedCollateralToken",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBorrowedToken",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isCollateralToken",
     values: [string]
   ): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
@@ -48,11 +68,11 @@ export interface MarginApprovedInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setApprovedBorrowed",
+    functionFragment: "setApprovedBorrowedToken",
     values: [string[], boolean[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "setApprovedCollateral",
+    functionFragment: "setApprovedCollateralToken",
     values: [string[], boolean[]]
   ): string;
   encodeFunctionData(functionFragment: "setOracle", values: [string]): string;
@@ -63,11 +83,27 @@ export interface MarginApprovedInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "isApprovedBorrowed",
+    functionFragment: "addBorrowedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isApprovedCollateral",
+    functionFragment: "addCollateralToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isApprovedBorrowedToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isApprovedCollateralToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBorrowedToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isCollateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
@@ -78,11 +114,11 @@ export interface MarginApprovedInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setApprovedBorrowed",
+    functionFragment: "setApprovedBorrowedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setApprovedCollateral",
+    functionFragment: "setApprovedCollateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setOracle", data: BytesLike): Result;
@@ -93,11 +129,25 @@ export interface MarginApprovedInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "AddBorrowedToken(address)": EventFragment;
+    "AddCollateralToken(address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddBorrowedToken"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddCollateralToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type AddBorrowedTokenEvent = TypedEvent<[string], { token: string }>;
+
+export type AddBorrowedTokenEventFilter =
+  TypedEventFilter<AddBorrowedTokenEvent>;
+
+export type AddCollateralTokenEvent = TypedEvent<[string], { token: string }>;
+
+export type AddCollateralTokenEventFilter =
+  TypedEventFilter<AddCollateralTokenEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -135,12 +185,32 @@ export interface MarginApproved extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    isApprovedBorrowed(
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isBorrowedToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isCollateralToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
@@ -155,13 +225,13 @@ export interface MarginApproved extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -183,12 +253,29 @@ export interface MarginApproved extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  isApprovedBorrowed(
+  addBorrowedToken(
+    token_: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  addCollateralToken(
+    token_: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  isApprovedBorrowedToken(
     token_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isApprovedCollateral(
+  isApprovedCollateralToken(
+    token_: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isBorrowedToken(token_: string, overrides?: CallOverrides): Promise<boolean>;
+
+  isCollateralToken(
     token_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
@@ -203,13 +290,13 @@ export interface MarginApproved extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setApprovedBorrowed(
+  setApprovedBorrowedToken(
     token_: string[],
     approved_: boolean[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setApprovedCollateral(
+  setApprovedCollateralToken(
     token_: string[],
     approved_: boolean[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -231,12 +318,32 @@ export interface MarginApproved extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    isApprovedBorrowed(
+    addBorrowedToken(
+      token_: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    addCollateralToken(
+      token_: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isBorrowedToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isCollateralToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
@@ -249,13 +356,13 @@ export interface MarginApproved extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: CallOverrides
@@ -272,6 +379,12 @@ export interface MarginApproved extends BaseContract {
   };
 
   filters: {
+    "AddBorrowedToken(address)"(token?: null): AddBorrowedTokenEventFilter;
+    AddBorrowedToken(token?: null): AddBorrowedTokenEventFilter;
+
+    "AddCollateralToken(address)"(token?: null): AddCollateralTokenEventFilter;
+    AddCollateralToken(token?: null): AddCollateralTokenEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -283,12 +396,32 @@ export interface MarginApproved extends BaseContract {
   };
 
   estimateGas: {
-    isApprovedBorrowed(
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isBorrowedToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isCollateralToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -303,13 +436,13 @@ export interface MarginApproved extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -332,12 +465,32 @@ export interface MarginApproved extends BaseContract {
   };
 
   populateTransaction: {
-    isApprovedBorrowed(
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isBorrowedToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isCollateralToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -352,13 +505,13 @@ export interface MarginApproved extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }

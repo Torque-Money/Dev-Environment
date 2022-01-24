@@ -20,7 +20,9 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface MarginLongLiquidateInterface extends utils.Interface {
   contractName: "MarginLongLiquidate";
   functions: {
+    "addBorrowedToken(address[])": FunctionFragment;
     "addCollateral(address,uint256)": FunctionFragment;
+    "addCollateralToken(address[])": FunctionFragment;
     "borrowed(address,address)": FunctionFragment;
     "borrowedPrice(address)": FunctionFragment;
     "collateral(address,address)": FunctionFragment;
@@ -29,9 +31,11 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "initialBorrowBlock(address,address)": FunctionFragment;
     "initialBorrowPrice(address,address)": FunctionFragment;
     "interest(address)": FunctionFragment;
-    "isApprovedBorrowed(address)": FunctionFragment;
-    "isApprovedCollateral(address)": FunctionFragment;
+    "isApprovedBorrowedToken(address)": FunctionFragment;
+    "isApprovedCollateralToken(address)": FunctionFragment;
+    "isBorrowedToken(address)": FunctionFragment;
     "isBorrowing(address,address)": FunctionFragment;
+    "isCollateralToken(address)": FunctionFragment;
     "liquidatable(address)": FunctionFragment;
     "liquidateAccount(address)": FunctionFragment;
     "liquidationFeePercent()": FunctionFragment;
@@ -46,8 +50,8 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "removeCollateral(address,uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "resettable(address)": FunctionFragment;
-    "setApprovedBorrowed(address[],bool[])": FunctionFragment;
-    "setApprovedCollateral(address[],bool[])": FunctionFragment;
+    "setApprovedBorrowedToken(address[],bool[])": FunctionFragment;
+    "setApprovedCollateralToken(address[],bool[])": FunctionFragment;
     "setLiquidationFeePercent(uint256,uint256)": FunctionFragment;
     "setMaxLeverage(uint256)": FunctionFragment;
     "setMinCollateralPrice(uint256)": FunctionFragment;
@@ -61,8 +65,16 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   };
 
   encodeFunctionData(
+    functionFragment: "addBorrowedToken",
+    values: [string[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "addCollateral",
     values: [string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addCollateralToken",
+    values: [string[]]
   ): string;
   encodeFunctionData(
     functionFragment: "borrowed",
@@ -94,16 +106,24 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "interest", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "isApprovedBorrowed",
+    functionFragment: "isApprovedBorrowedToken",
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "isApprovedCollateral",
+    functionFragment: "isApprovedCollateralToken",
+    values: [string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isBorrowedToken",
     values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "isBorrowing",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isCollateralToken",
+    values: [string]
   ): string;
   encodeFunctionData(
     functionFragment: "liquidatable",
@@ -147,11 +167,11 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "resettable", values: [string]): string;
   encodeFunctionData(
-    functionFragment: "setApprovedBorrowed",
+    functionFragment: "setApprovedBorrowedToken",
     values: [string[], boolean[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "setApprovedCollateral",
+    functionFragment: "setApprovedCollateralToken",
     values: [string[], boolean[]]
   ): string;
   encodeFunctionData(
@@ -190,7 +210,15 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(
+    functionFragment: "addBorrowedToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "addCollateral",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addCollateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "borrowed", data: BytesLike): Result;
@@ -217,15 +245,23 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "interest", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "isApprovedBorrowed",
+    functionFragment: "isApprovedBorrowedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "isApprovedCollateral",
+    functionFragment: "isApprovedCollateralToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isBorrowedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "isBorrowing",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isCollateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -273,11 +309,11 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "resettable", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setApprovedBorrowed",
+    functionFragment: "setApprovedBorrowedToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setApprovedCollateral",
+    functionFragment: "setApprovedCollateralToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -316,7 +352,9 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "AddBorrowedToken(address)": EventFragment;
     "AddCollateral(address,address,uint256)": EventFragment;
+    "AddCollateralToken(address)": EventFragment;
     "Liquidated(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RemoveCollateral(address,address,uint256)": EventFragment;
@@ -325,7 +363,9 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "Reset(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "AddBorrowedToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddCollateral"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AddCollateralToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Liquidated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveCollateral"): EventFragment;
@@ -334,12 +374,22 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Reset"): EventFragment;
 }
 
+export type AddBorrowedTokenEvent = TypedEvent<[string], { token: string }>;
+
+export type AddBorrowedTokenEventFilter =
+  TypedEventFilter<AddBorrowedTokenEvent>;
+
 export type AddCollateralEvent = TypedEvent<
   [string, string, BigNumber],
-  { account: string; collateral: string; amount: BigNumber }
+  { account: string; token: string; amount: BigNumber }
 >;
 
 export type AddCollateralEventFilter = TypedEventFilter<AddCollateralEvent>;
+
+export type AddCollateralTokenEvent = TypedEvent<[string], { token: string }>;
+
+export type AddCollateralTokenEventFilter =
+  TypedEventFilter<AddCollateralTokenEvent>;
 
 export type LiquidatedEvent = TypedEvent<
   [string, string],
@@ -358,7 +408,7 @@ export type OwnershipTransferredEventFilter =
 
 export type RemoveCollateralEvent = TypedEvent<
   [string, string, BigNumber],
-  { account: string; collateral: string; amount: BigNumber }
+  { account: string; token: string; amount: BigNumber }
 >;
 
 export type RemoveCollateralEventFilter =
@@ -366,7 +416,7 @@ export type RemoveCollateralEventFilter =
 
 export type RepayEvent = TypedEvent<
   [string, string],
-  { account: string; borrowed: string }
+  { account: string; token: string }
 >;
 
 export type RepayEventFilter = TypedEventFilter<RepayEvent>;
@@ -410,14 +460,24 @@ export interface MarginLongLiquidate extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     addCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     borrowed(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -428,7 +488,7 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<[BigNumber]>;
 
     collateral(
-      collateral_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -441,13 +501,13 @@ export interface MarginLongLiquidate extends BaseContract {
     getBorrowingAccounts(overrides?: CallOverrides): Promise<[string[]]>;
 
     initialBorrowBlock(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     "initialBorrowPrice(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -463,29 +523,39 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<[BigNumber]>;
 
     "interest(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    isApprovedBorrowed(
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     "isBorrowing(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     "isBorrowing(address)"(
       account_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean]>;
+
+    isCollateralToken(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
@@ -526,7 +596,7 @@ export interface MarginLongLiquidate extends BaseContract {
     pool(overrides?: CallOverrides): Promise<[string]>;
 
     removeCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -537,13 +607,13 @@ export interface MarginLongLiquidate extends BaseContract {
 
     resettable(account_: string, overrides?: CallOverrides): Promise<[boolean]>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -587,12 +657,12 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<[boolean]>;
 
     totalBorrowed(
-      borrowed_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
     totalCollateral(
-      collateral_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -602,14 +672,24 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  addBorrowedToken(
+    token_: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   addCollateral(
-    collateral_: string,
+    token_: string,
     amount_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  addCollateralToken(
+    token_: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   borrowed(
-    borrowed_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -620,7 +700,7 @@ export interface MarginLongLiquidate extends BaseContract {
   ): Promise<BigNumber>;
 
   collateral(
-    collateral_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -633,13 +713,13 @@ export interface MarginLongLiquidate extends BaseContract {
   getBorrowingAccounts(overrides?: CallOverrides): Promise<string[]>;
 
   initialBorrowBlock(
-    borrowed_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
   "initialBorrowPrice(address,address)"(
-    borrowed_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -655,29 +735,36 @@ export interface MarginLongLiquidate extends BaseContract {
   ): Promise<BigNumber>;
 
   "interest(address,address)"(
-    borrowed_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  isApprovedBorrowed(
+  isApprovedBorrowedToken(
     token_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  isApprovedCollateral(
+  isApprovedCollateralToken(
     token_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  isBorrowedToken(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
   "isBorrowing(address,address)"(
-    borrowed_: string,
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   "isBorrowing(address)"(
     account_: string,
+    overrides?: CallOverrides
+  ): Promise<boolean>;
+
+  isCollateralToken(
+    token_: string,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
@@ -715,7 +802,7 @@ export interface MarginLongLiquidate extends BaseContract {
   pool(overrides?: CallOverrides): Promise<string>;
 
   removeCollateral(
-    collateral_: string,
+    token_: string,
     amount_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -726,13 +813,13 @@ export interface MarginLongLiquidate extends BaseContract {
 
   resettable(account_: string, overrides?: CallOverrides): Promise<boolean>;
 
-  setApprovedBorrowed(
+  setApprovedBorrowedToken(
     token_: string[],
     approved_: boolean[],
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setApprovedCollateral(
+  setApprovedCollateralToken(
     token_: string[],
     approved_: boolean[],
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -775,13 +862,10 @@ export interface MarginLongLiquidate extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  totalBorrowed(
-    borrowed_: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
+  totalBorrowed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   totalCollateral(
-    collateral_: string,
+    token_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -791,14 +875,24 @@ export interface MarginLongLiquidate extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addBorrowedToken(
+      token_: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     addCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    addCollateralToken(
+      token_: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     borrowed(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -809,7 +903,7 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<BigNumber>;
 
     collateral(
-      collateral_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -822,13 +916,13 @@ export interface MarginLongLiquidate extends BaseContract {
     getBorrowingAccounts(overrides?: CallOverrides): Promise<string[]>;
 
     initialBorrowBlock(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "initialBorrowPrice(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -844,29 +938,39 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<BigNumber>;
 
     "interest(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isApprovedBorrowed(
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "isBorrowing(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     "isBorrowing(address)"(
       account_: string,
+      overrides?: CallOverrides
+    ): Promise<boolean>;
+
+    isCollateralToken(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
@@ -904,7 +1008,7 @@ export interface MarginLongLiquidate extends BaseContract {
     pool(overrides?: CallOverrides): Promise<string>;
 
     removeCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -913,13 +1017,13 @@ export interface MarginLongLiquidate extends BaseContract {
 
     resettable(account_: string, overrides?: CallOverrides): Promise<boolean>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: CallOverrides
@@ -957,12 +1061,12 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<boolean>;
 
     totalBorrowed(
-      borrowed_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     totalCollateral(
-      collateral_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -973,16 +1077,22 @@ export interface MarginLongLiquidate extends BaseContract {
   };
 
   filters: {
+    "AddBorrowedToken(address)"(token?: null): AddBorrowedTokenEventFilter;
+    AddBorrowedToken(token?: null): AddBorrowedTokenEventFilter;
+
     "AddCollateral(address,address,uint256)"(
       account?: string | null,
-      collateral?: null,
+      token?: null,
       amount?: null
     ): AddCollateralEventFilter;
     AddCollateral(
       account?: string | null,
-      collateral?: null,
+      token?: null,
       amount?: null
     ): AddCollateralEventFilter;
+
+    "AddCollateralToken(address)"(token?: null): AddCollateralTokenEventFilter;
+    AddCollateralToken(token?: null): AddCollateralTokenEventFilter;
 
     "Liquidated(address,address)"(
       account?: string | null,
@@ -1004,20 +1114,20 @@ export interface MarginLongLiquidate extends BaseContract {
 
     "RemoveCollateral(address,address,uint256)"(
       account?: string | null,
-      collateral?: null,
+      token?: null,
       amount?: null
     ): RemoveCollateralEventFilter;
     RemoveCollateral(
       account?: string | null,
-      collateral?: null,
+      token?: null,
       amount?: null
     ): RemoveCollateralEventFilter;
 
     "Repay(address,address)"(
       account?: string | null,
-      borrowed?: null
+      token?: null
     ): RepayEventFilter;
-    Repay(account?: string | null, borrowed?: null): RepayEventFilter;
+    Repay(account?: string | null, token?: null): RepayEventFilter;
 
     "RepayAll(address)"(account?: string | null): RepayAllEventFilter;
     RepayAll(account?: string | null): RepayAllEventFilter;
@@ -1030,14 +1140,24 @@ export interface MarginLongLiquidate extends BaseContract {
   };
 
   estimateGas: {
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     addCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     borrowed(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1048,7 +1168,7 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<BigNumber>;
 
     collateral(
-      collateral_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1061,13 +1181,13 @@ export interface MarginLongLiquidate extends BaseContract {
     getBorrowingAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
     initialBorrowBlock(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "initialBorrowPrice(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1083,29 +1203,39 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<BigNumber>;
 
     "interest(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isApprovedBorrowed(
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "isBorrowing(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     "isBorrowing(address)"(
       account_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isCollateralToken(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1144,7 +1274,7 @@ export interface MarginLongLiquidate extends BaseContract {
     pool(overrides?: CallOverrides): Promise<BigNumber>;
 
     removeCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -1155,13 +1285,13 @@ export interface MarginLongLiquidate extends BaseContract {
 
     resettable(account_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1205,12 +1335,12 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<BigNumber>;
 
     totalBorrowed(
-      borrowed_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     totalCollateral(
-      collateral_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1221,14 +1351,24 @@ export interface MarginLongLiquidate extends BaseContract {
   };
 
   populateTransaction: {
+    addBorrowedToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     addCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    addCollateralToken(
+      token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     borrowed(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1239,7 +1379,7 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     collateral(
-      collateral_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1254,13 +1394,13 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialBorrowBlock(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "initialBorrowPrice(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
@@ -1276,29 +1416,39 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     "interest(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isApprovedBorrowed(
+    isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    isApprovedCollateral(
+    isApprovedCollateralToken(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isBorrowedToken(
       token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "isBorrowing(address,address)"(
-      borrowed_: string,
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     "isBorrowing(address)"(
       account_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isCollateralToken(
+      token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1341,7 +1491,7 @@ export interface MarginLongLiquidate extends BaseContract {
     pool(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     removeCollateral(
-      collateral_: string,
+      token_: string,
       amount_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -1355,13 +1505,13 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setApprovedBorrowed(
+    setApprovedBorrowedToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setApprovedCollateral(
+    setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1405,12 +1555,12 @@ export interface MarginLongLiquidate extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     totalBorrowed(
-      borrowed_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     totalCollateral(
-      collateral_: string,
+      token_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
