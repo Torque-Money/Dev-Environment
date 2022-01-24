@@ -31,7 +31,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max interest for minimum utilization for the given token
-    function maxInterestMin(IERC20 token_) public view returns (uint256, uint256) {
+    function maxInterestMin(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
         return (_maxInterestMin[token_].numerator, _maxInterestMin[token_].denominator);
     }
 
@@ -42,13 +42,15 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
-            _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
+            if (isPT(token_[i])) {
+                _maxInterestMin[token_[i]].numerator = percentNumerator_[i];
+                _maxInterestMin[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 
     // Get the max interest for maximum utilization for the given token
-    function maxInterestMax(IERC20 token_) public view returns (uint256, uint256) {
+    function maxInterestMax(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
         return (_maxInterestMax[token_].numerator, _maxInterestMax[token_].denominator);
     }
 
@@ -59,13 +61,15 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
-            _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
+            if (isPT(token_[i])) {
+                _maxInterestMax[token_[i]].numerator = percentNumerator_[i];
+                _maxInterestMax[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 
     // Get the max utilization threshold for the given token
-    function maxUtilization(IERC20 token_) public view returns (uint256, uint256) {
+    function maxUtilization(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
         return (_maxUtilization[token_].numerator, _maxUtilization[token_].denominator);
     }
 
@@ -76,8 +80,10 @@ abstract contract LPoolInterest is LPoolLiquidity {
         uint256[] memory percentDenominator_
     ) external onlyRole(POOL_ADMIN) {
         for (uint256 i = 0; i < token_.length; i++) {
-            _maxUtilization[token_[i]].numerator = percentNumerator_[i];
-            _maxUtilization[token_[i]].denominator = percentDenominator_[i];
+            if (isPT(token_[i])) {
+                _maxUtilization[token_[i]].numerator = percentNumerator_[i];
+                _maxUtilization[token_[i]].denominator = percentDenominator_[i];
+            }
         }
     }
 
@@ -122,7 +128,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the interest rate (in terms of numerator and denominator of ratio) for a given asset per compound
-    function interestRate(IERC20 token_) public view override returns (uint256, uint256) {
+    function interestRate(IERC20 token_) public view override onlyPT(token_) returns (uint256, uint256) {
         (uint256 utilizationNumerator, uint256 utilizationDenominator) = utilizationRate(token_);
         FractionMath.Fraction memory utilization = FractionMath.Fraction({numerator: utilizationNumerator, denominator: utilizationDenominator});
 
@@ -140,7 +146,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
         IERC20 token_,
         uint256 initialBorrow_,
         uint256 borrowBlock_
-    ) external view returns (uint256) {
+    ) external view onlyPT(token_) returns (uint256) {
         uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
 

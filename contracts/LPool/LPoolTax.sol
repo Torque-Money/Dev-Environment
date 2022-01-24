@@ -43,14 +43,14 @@ abstract contract LPoolTax is LPoolCore {
     }
 
     // Apply and distribute tax
-    function _payTax(IERC20 taxToken_, uint256 amountIn_) internal returns (uint256) {
+    function _payTax(IERC20 token_, uint256 amountIn_) internal returns (uint256) {
         address[] memory taxAccounts = _taxAccountSet.iterable();
         (uint256 taxPercentNumerator, uint256 taxPercentDenominator) = taxPercentage();
 
         uint256 tax = taxPercentNumerator.mul(amountIn_).div(taxPercentDenominator).div(taxAccounts.length);
         uint256 totalTax = tax.mul(taxAccounts.length);
 
-        for (uint256 i = 0; i < taxAccounts.length; i++) taxToken_.safeTransfer(taxAccounts[i], tax);
+        for (uint256 i = 0; i < taxAccounts.length; i++) token_.safeTransfer(taxAccounts[i], tax);
 
         return totalTax;
     }
