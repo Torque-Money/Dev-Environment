@@ -12,8 +12,8 @@ abstract contract MarginLongLiquidate is MarginLongLiquidateCore {
 
     // Helper for liquidating accounts
     function _liquidateAccount(address account_) internal {
-        _resetBorrowed(account_);
         _resetCollateral(account_);
+        _resetBorrowed(account_);
     }
 
     // Liquidate an account
