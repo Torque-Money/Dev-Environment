@@ -14,6 +14,8 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
 
     // Deposit collateral into the account
     function addCollateral(IERC20 token_, uint256 amount_) external onlyApprovedCollateralToken(token_) {
+        require(amount_ > 0, "MarginCollateral: Amount added as collateral must be greater than 0");
+
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
         _setCollateral(token_, collateral(token_, _msgSender()).add(amount_), _msgSender());
 
@@ -22,6 +24,7 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
 
     // Withdraw collateral from the account
     function removeCollateral(IERC20 token_, uint256 amount_) external onlyCollateralToken(token_) {
+        require(amount_ > 0, "MarginCollateral: Collateral amount removed must be greater than 0");
         require(amount_ <= collateral(token_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
 
         _setCollateral(token_, collateral(token_, _msgSender()).sub(amount_), _msgSender());
