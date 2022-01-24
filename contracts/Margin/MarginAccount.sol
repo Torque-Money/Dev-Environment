@@ -44,7 +44,7 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Get the total collateral price for a given account and asset borrowed
-    function collateralPrice(address account_) public view onlyCollateralToken(token_) returns (uint256) {
+    function collateralPrice(address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
 
