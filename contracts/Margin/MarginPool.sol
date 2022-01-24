@@ -9,22 +9,22 @@ abstract contract MarginPool is MarginCore {
     mapping(IERC20 => uint256) private _totalCollateral;
 
     // Get the total borrowed of a given asset
-    function totalBorrowed(IERC20 borrowed_) public view returns (uint256) {
-        return _totalBorrowed[borrowed_];
+    function totalBorrowed(IERC20 token_) public view returns (uint256) {
+        return _totalBorrowed[token_];
     }
 
     // Get the total collateral of a given asset
-    function totalCollateral(IERC20 collateral_) public view returns (uint256) {
-        return _totalCollateral[collateral_];
+    function totalCollateral(IERC20 token_) public view returns (uint256) {
+        return _totalCollateral[token_];
     }
 
     // Set the total borrowed of a given asset
-    function _setTotalBorrowed(IERC20 borrowed_, uint256 amount_) internal {
-        _totalBorrowed[borrowed_] = amount_;
+    function _setTotalBorrowed(IERC20 token_, uint256 amount_) internal {
+        _totalBorrowed[token_] = amount_;
     }
 
     // Set the total collateral of a given asset
-    function _setTotalCollateral(IERC20 collateral_, uint256 amount_) internal {
-        _totalCollateral[collateral_] = amount_;
+    function _setTotalCollateral(IERC20 token_, uint256 amount_) internal {
+        _totalCollateral[token_] = amount_;
     }
 }
