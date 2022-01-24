@@ -14,8 +14,6 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     function _repayAccount(IERC20 token_, address account_) internal {
         if (_repayIsPayout(token_, account_)) _repayPayout(token_, account_);
         else _repayLoss(token_, account_);
-
-        if (!isBorrowing(account_)) _removeAccount(account_);
     }
 
     // Helper to repay entire account

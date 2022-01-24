@@ -144,6 +144,8 @@ abstract contract MarginLongRepayCore is Margin {
         pool.unclaim(token_, borrowed(token_, account_));
         _setInitialBorrowPrice(token_, 0, account_);
         _setBorrowed(token_, 0, account_);
+
+        if (!isBorrowing(account_)) _removeAccount(account_);
     }
 
     // Reset the users borrowed amounts
@@ -151,8 +153,6 @@ abstract contract MarginLongRepayCore is Margin {
         IERC20[] memory borrowedTokens = _borrowedTokens(account_);
 
         for (uint256 i = 0; i < borrowedTokens.length; i++) _resetBorrowed(borrowedTokens[i], account_);
-
-        _removeAccount(account_);
     }
 
     function liquidationFeePercent() public view virtual returns (uint256, uint256);
