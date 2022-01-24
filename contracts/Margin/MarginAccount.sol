@@ -43,16 +43,18 @@ abstract contract MarginAccount is MarginPool {
         return account.collateralAmounts[token_];
     }
 
-    // Get the price of a token used as collateral for the asset borrowed for an account
-    function _collateralPrice(IERC20 token_, address account_) internal view returns (uint256) {
-        return oracle.priceMin(token_, collateral(token_, account_));
-    }
-
     // Get the total collateral price for a given account and asset borrowed
     function collateralPrice(address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
-        for (uint256 i = 0; i < account.collateral.count(); i++) totalPrice = totalPrice.add(_collateralPrice(account.collateral.keyAtIndex(i), account_));
+
+        for (uint256 i = 0; i < account.collateral.count(); i++) {
+            IERC20 token = account.collateral.keyAtIndex(i);
+            uint256 price = oracle.priceMin(token, collateral(token, account_));
+
+            totalPrice = totalPrice.add(price);
+        }
+
         return totalPrice;
     }
 
@@ -91,16 +93,18 @@ abstract contract MarginAccount is MarginPool {
         return account.borrowedAmounts[token_];
     }
 
-    // Get the current price of an asset borrowed
-    function _borrowedPrice(IERC20 token_, address account_) internal view returns (uint256) {
-        return oracle.priceMin(token_, borrowed(token_, account_));
-    }
-
     // Get the total price of the assets borrowed
     function borrowedPrice(address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
         uint256 totalPrice = 0;
-        for (uint256 i = 0; i < account.borrowed.count(); i++) totalPrice = totalPrice.add(_borrowedPrice(account.borrowed.keyAtIndex(i), account_));
+
+        for (uint256 i = 0; i < account.borrowed.count(); i++) {
+            IERC20 token = account.borrowed.keyAtIndex(i);
+            uint256 price = oracle.priceMin(token, borrowed(token, account_));
+
+            totalPrice = totalPrice.add(price);
+        }
+
         return totalPrice;
     }
 
@@ -162,7 +166,7 @@ abstract contract MarginAccount is MarginPool {
 
     // Get the interest accumulated for a given asset
     function interest(IERC20 token_, address account_) public view returns (uint256) {
-        uint256 borrowPrice = _borrowedPrice(token_, account_);
+        uint256 borrowPrice = oracle.priceMin(token_, borrowed(token_, account_));
         uint256 initBorrowPrice = initialBorrowPrice(token_, account_);
 
         uint256 interestPrice;
