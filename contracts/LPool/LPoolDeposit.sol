@@ -8,8 +8,6 @@ import "../Converter/IConverter.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
-import "hardhat/console.sol";
-
 abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;

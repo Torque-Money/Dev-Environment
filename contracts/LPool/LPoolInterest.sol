@@ -31,7 +31,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max interest for minimum utilization for the given token
-    function maxInterestMin(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
+    function maxInterestMin(IERC20 token_) external view onlyPT(token_) returns (uint256, uint256) {
         return (_maxInterestMin[token_].numerator, _maxInterestMin[token_].denominator);
     }
 
@@ -50,7 +50,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max interest for maximum utilization for the given token
-    function maxInterestMax(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
+    function maxInterestMax(IERC20 token_) external view onlyPT(token_) returns (uint256, uint256) {
         return (_maxInterestMax[token_].numerator, _maxInterestMax[token_].denominator);
     }
 
@@ -69,7 +69,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     }
 
     // Get the max utilization threshold for the given token
-    function maxUtilization(IERC20 token_) public view onlyPT(token_) returns (uint256, uint256) {
+    function maxUtilization(IERC20 token_) external view onlyPT(token_) returns (uint256, uint256) {
         return (_maxUtilization[token_].numerator, _maxUtilization[token_].denominator);
     }
 
