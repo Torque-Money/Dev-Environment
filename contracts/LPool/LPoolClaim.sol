@@ -34,7 +34,7 @@ abstract contract LPoolClaim is LPoolApproved {
     }
 
     // Get the amount an account has claimed
-    function claimed(IERC20 token_, address account_) external view onlyPT(token_) returns (uint256) {
+    function claimed(IERC20 token_, address account_) public view onlyPT(token_) returns (uint256) {
         return _claimed[account_][token_];
     }
 
