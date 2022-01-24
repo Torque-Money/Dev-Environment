@@ -31,17 +31,20 @@ abstract contract MarginLevel is MarginAccount {
     function marginLevel(address account_) public view returns (uint256, uint256) {
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
         uint256 _interest = interest(account_);
-        return (borrowedPrice(account_).add(collateralPrice(account_)), totalInitialBorrowPrice.add(_interest));
+        uint256 _borrowedPrice = borrowedPrice(account_);
+        uint256 _collateralPrice = collateralPrice(account_);
+
+        return (_borrowedPrice.add(_collateralPrice), totalInitialBorrowPrice.add(_interest));
     }
 
     // Check whether an account is liquidatable
     function liquidatable(address account_) public view returns (bool) {
         if (!isBorrowing(account_)) return false;
 
-        (uint256 minMarginLevelNumerator, uint256 minMarginLevelDenominator) = minMarginLevel();
         (uint256 marginLevelNumerator, uint256 marginLevelDenominator) = marginLevel(account_);
-        uint256 lhs = minMarginLevelNumerator.mul(marginLevelDenominator);
-        uint256 rhs = marginLevelNumerator.mul(minMarginLevelDenominator);
+
+        uint256 lhs = _minMarginLevel.numerator.mul(marginLevelDenominator);
+        uint256 rhs = marginLevelNumerator.mul(_minMarginLevel.denominator);
 
         return lhs >= rhs;
     }
