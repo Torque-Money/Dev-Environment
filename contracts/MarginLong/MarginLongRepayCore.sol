@@ -41,9 +41,7 @@ abstract contract MarginLongRepayCore is Margin {
     function _repayPayout(IERC20 token_, address account_) internal {
         uint256 payoutAmount = _repayPayoutAmount(token_, account_);
 
-        pool.unclaim(token_, borrowed(token_, account_));
-        _setBorrowed(token_, 0, account_);
-        _setInitialBorrowPrice(token_, 0, account_);
+        _resetBorrowed(token_, account_);
 
         pool.withdraw(token_, payoutAmount);
 
@@ -96,11 +94,10 @@ abstract contract MarginLongRepayCore is Margin {
 
         uint256 debt = _repayLossesPrice(token_, account_);
         _repayLossFromCollateral(debt, account_, collateralTokens, collateralRepayAmounts, 0);
+
         _deposit(collateralTokens, collateralRepayAmounts);
 
-        pool.unclaim(token_, borrowed(token_, account_));
-        _setBorrowed(token_, 0, account_);
-        _setInitialBorrowPrice(token_, 0, account_);
+        _resetBorrowed(token_, account_);
     }
 
     // Pay of all of the losses using collateral
@@ -114,13 +111,11 @@ abstract contract MarginLongRepayCore is Margin {
         for (uint256 i = 0; i < borrowedTokens.length; i++) {
             uint256 debt = _repayLossesPrice(borrowedTokens[i], account_);
             collateralIndex = _repayLossFromCollateral(debt, account_, collateralTokens, collateralRepayAmounts, collateralIndex);
-
-            pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));
-            _setBorrowed(borrowedTokens[i], 0, account_);
-            _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
         }
 
         _deposit(collateralTokens, collateralRepayAmounts);
+
+        _resetBorrowed(account_);
     }
 
     // Tax an accounts collateral and return the amounts taken from the collateral
