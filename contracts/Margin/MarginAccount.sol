@@ -24,28 +24,28 @@ abstract contract MarginAccount is MarginPool {
 
     // Set the collateral for a given asset
     function _setCollateral(
-        IERC20 collateral_,
+        IERC20 token_,
         uint256 amount_,
         address account_
     ) internal {
         Account storage account = _accounts[account_];
 
-        if (account.collateralAmounts[collateral_] == 0 && amount_ != 0) account.collateral.insert(collateral_);
-        else if (account.collateralAmounts[collateral_] != 0 && amount_ == 0) account.collateral.remove(collateral_);
+        if (account.collateralAmounts[token_] == 0 && amount_ != 0) account.collateral.insert(token_);
+        else if (account.collateralAmounts[token_] != 0 && amount_ == 0) account.collateral.remove(token_);
 
-        _setTotalCollateral(collateral_, totalCollateral(collateral_).sub(account.collateralAmounts[collateral_]).add(amount_));
-        account.collateralAmounts[collateral_] = amount_;
+        _setTotalCollateral(token_, totalCollateral(token_).sub(account.collateralAmounts[token_]).add(amount_));
+        account.collateralAmounts[token_] = amount_;
     }
 
     // Get the collateral for a given asset for a given account
-    function collateral(IERC20 collateral_, address account_) public view returns (uint256) {
+    function collateral(IERC20 token_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.collateralAmounts[collateral_];
+        return account.collateralAmounts[token_];
     }
 
     // Get the price of a token used as collateral for the asset borrowed for an account
-    function _collateralPrice(IERC20 collateral_, address account_) internal view returns (uint256) {
-        return oracle.priceMin(collateral_, collateral(collateral_, account_));
+    function _collateralPrice(IERC20 token_, address account_) internal view returns (uint256) {
+        return oracle.priceMin(token_, collateral(token_, account_));
     }
 
     // Get the total collateral price for a given account and asset borrowed
@@ -71,29 +71,29 @@ abstract contract MarginAccount is MarginPool {
 
     // Set the amount the user has borrowed
     function _setBorrowed(
-        IERC20 borrowed_,
+        IERC20 token_,
         uint256 amount_,
         address account_
     ) internal {
         Account storage account = _accounts[account_];
 
-        if (account.borrowedAmounts[borrowed_] == 0 && amount_ != 0) account.borrowed.insert(borrowed_);
-        else if (account.borrowedAmounts[borrowed_] != 0 && amount_ == 0) account.borrowed.remove(borrowed_);
+        if (account.borrowedAmounts[token_] == 0 && amount_ != 0) account.borrowed.insert(token_);
+        else if (account.borrowedAmounts[token_] != 0 && amount_ == 0) account.borrowed.remove(token_);
 
-        _setTotalBorrowed(borrowed_, totalBorrowed(borrowed_).sub(account.borrowedAmounts[borrowed_]).add(amount_));
-        account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[borrowed_]).add(amount_);
-        account.borrowedAmounts[borrowed_] = amount_;
+        _setTotalBorrowed(token_, totalBorrowed(token_).sub(account.borrowedAmounts[token_]).add(amount_));
+        account.hasBorrowed = account.hasBorrowed.sub(account.borrowedAmounts[token_]).add(amount_);
+        account.borrowedAmounts[token_] = amount_;
     }
 
     // Get the borrowed for a given account
-    function borrowed(IERC20 borrowed_, address account_) public view returns (uint256) {
+    function borrowed(IERC20 token_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.borrowedAmounts[borrowed_];
+        return account.borrowedAmounts[token_];
     }
 
     // Get the current price of an asset borrowed
-    function _borrowedPrice(IERC20 borrowed_, address account_) internal view returns (uint256) {
-        return oracle.priceMin(borrowed_, borrowed(borrowed_, account_));
+    function _borrowedPrice(IERC20 token_, address account_) internal view returns (uint256) {
+        return oracle.priceMin(token_, borrowed(token_, account_));
     }
 
     // Get the total price of the assets borrowed
@@ -116,14 +116,14 @@ abstract contract MarginAccount is MarginPool {
     }
 
     // Check if an account is currently borrowing a particular asset
-    function isBorrowing(IERC20 borrowed_, address account_) public view returns (bool) {
-        return borrowed(borrowed_, account_) > 0;
+    function isBorrowing(IERC20 token_, address account_) public view returns (bool) {
+        return borrowed(token_, account_) > 0;
     }
 
     // Get the initial borrow price for an account
-    function initialBorrowPrice(IERC20 borrowed_, address account_) public view returns (uint256) {
+    function initialBorrowPrice(IERC20 token_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.initialBorrowPrice[borrowed_];
+        return account.initialBorrowPrice[token_];
     }
 
     // Get the total initial borrow price for an account
@@ -136,40 +136,40 @@ abstract contract MarginAccount is MarginPool {
 
     // Set the initial borrow price for an account
     function _setInitialBorrowPrice(
-        IERC20 borrowed_,
+        IERC20 token_,
         uint256 price_,
         address account_
     ) internal {
         Account storage account = _accounts[account_];
-        account.initialBorrowPrice[borrowed_] = price_;
+        account.initialBorrowPrice[token_] = price_;
     }
 
     // Get the initial borrow block for an ccount
-    function initialBorrowBlock(IERC20 borrowed_, address account_) public view returns (uint256) {
+    function initialBorrowBlock(IERC20 token_, address account_) public view returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.initialBorrowBlock[borrowed_];
+        return account.initialBorrowBlock[token_];
     }
 
     // Set the initial borrow price for an account
     function _setInitialBorrowBlock(
-        IERC20 borrowed_,
+        IERC20 token_,
         uint256 block_,
         address account_
     ) internal {
         Account storage account = _accounts[account_];
-        account.initialBorrowBlock[borrowed_] = block_;
+        account.initialBorrowBlock[token_] = block_;
     }
 
     // Get the interest accumulated for a given asset
-    function interest(IERC20 borrowed_, address account_) public view returns (uint256) {
-        uint256 borrowPrice = _borrowedPrice(borrowed_, account_);
-        uint256 initBorrowPrice = initialBorrowPrice(borrowed_, account_);
+    function interest(IERC20 token_, address account_) public view returns (uint256) {
+        uint256 borrowPrice = _borrowedPrice(token_, account_);
+        uint256 initBorrowPrice = initialBorrowPrice(token_, account_);
 
         uint256 interestPrice;
         if (borrowPrice > initBorrowPrice) interestPrice = borrowPrice;
         else interestPrice = initBorrowPrice;
 
-        return pool.interest(borrowed_, interestPrice, initialBorrowBlock(borrowed_, account_));
+        return pool.interest(token_, interestPrice, initialBorrowBlock(token_, account_));
     }
 
     // Get the interest accumulated for the total account
