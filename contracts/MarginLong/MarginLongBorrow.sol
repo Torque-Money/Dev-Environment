@@ -10,6 +10,8 @@ abstract contract MarginLongBorrow is Margin {
 
     // Margin borrow against collateral
     function borrow(IERC20 token_, uint256 amount_) external onlyApprovedBorrowedToken(token_) {
+        require(amount_ > 0, "MarginLongBorrow: Amount borrowed must be greater than 0");
+
         if (!isBorrowing(token_, _msgSender())) {
             _setInitialBorrowBlock(token_, block.number, _msgSender());
             _addAccount(_msgSender());
