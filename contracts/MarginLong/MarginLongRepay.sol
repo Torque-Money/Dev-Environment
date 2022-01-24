@@ -22,7 +22,6 @@ abstract contract MarginLongRepay is MarginLongRepayCore {
     function _repayAccountAll(address account_) internal {
         _repayPayoutAll(account_);
         _repayLossAll(account_);
-        _removeAccount(account_);
     }
 
     // Repay a borrowed position in an account

@@ -42,9 +42,10 @@ abstract contract MarginLongRepayCore is Margin {
         uint256 payoutAmount = _repayPayoutAmount(token_, account_);
 
         pool.unclaim(token_, borrowed(token_, account_));
-        pool.withdraw(token_, payoutAmount);
         _setBorrowed(token_, 0, account_);
         _setInitialBorrowPrice(token_, 0, account_);
+
+        pool.withdraw(token_, payoutAmount);
 
         _setCollateral(token_, collateral(token_, account_).add(payoutAmount), account_);
     }
@@ -141,6 +142,22 @@ abstract contract MarginLongRepayCore is Margin {
                 pool.deposit(token_[i], amount_[i]);
             }
         }
+    }
+
+    // Remove borrowed position for an account
+    function _resetBorrowed(IERC20 token_, address account_) internal {
+        pool.unclaim(token_, borrowed(token_, account_));
+        _setInitialBorrowPrice(token_, 0, account_);
+        _setBorrowed(token_, 0, account_);
+    }
+
+    // Reset the users borrowed amounts
+    function _resetBorrowed(address account_) internal {
+        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
+
+        for (uint256 i = 0; i < borrowedTokens.length; i++) _resetBorrowed(borrowedTokens[i], account_);
+
+        _removeAccount(account_);
     }
 
     function liquidationFeePercent() public view virtual returns (uint256, uint256);

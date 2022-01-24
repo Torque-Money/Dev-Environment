@@ -38,18 +38,5 @@ abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
         for (uint256 i = 0; i < collateralTokens.length; i++) _setCollateral(collateralTokens[i], 0, account_);
     }
 
-    // Reset the users borrowed amounts
-    function _resetBorrowed(address account_) internal {
-        IERC20[] memory borrowedTokens = _borrowedTokens(account_);
-
-        for (uint256 i = 0; i < borrowedTokens.length; i++) {
-            pool.unclaim(borrowedTokens[i], borrowed(borrowedTokens[i], account_));
-            _setInitialBorrowPrice(borrowedTokens[i], 0, account_);
-            _setBorrowed(borrowedTokens[i], 0, account_);
-        }
-
-        _removeAccount(account_);
-    }
-
     event Liquidated(address indexed account, address liquidator);
 }
