@@ -135,6 +135,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "converter",
+    outputs: [
+      {
+        internalType: "contract IConverter",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "bytes32",
@@ -196,6 +209,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "oracle",
+    outputs: [
+      {
+        internalType: "contract IOracle",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -240,6 +266,32 @@ const _abi = [
       },
     ],
     name: "revokeRole",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IConverter",
+        name: "converter_",
+        type: "address",
+      },
+    ],
+    name: "setConverter",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "setOracle",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

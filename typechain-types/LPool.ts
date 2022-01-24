@@ -47,6 +47,7 @@ export interface LPoolInterface extends utils.Interface {
     "maxInterestMax(address)": FunctionFragment;
     "maxInterestMin(address)": FunctionFragment;
     "maxUtilization(address)": FunctionFragment;
+    "oracle()": FunctionFragment;
     "removeLiquidity(address,uint256)": FunctionFragment;
     "removeLiquidityOutPoolTokens(address,uint256)": FunctionFragment;
     "removeTaxAccount(address)": FunctionFragment;
@@ -58,6 +59,7 @@ export interface LPoolInterface extends utils.Interface {
     "setMaxInterestMax(address[],uint256[],uint256[])": FunctionFragment;
     "setMaxInterestMin(address[],uint256[],uint256[])": FunctionFragment;
     "setMaxUtilization(address[],uint256[],uint256[])": FunctionFragment;
+    "setOracle(address)": FunctionFragment;
     "setTaxPercentage(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "taxPercentage()": FunctionFragment;
@@ -159,6 +161,7 @@ export interface LPoolInterface extends utils.Interface {
     functionFragment: "maxUtilization",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeLiquidity",
     values: [string, BigNumberish]
@@ -203,6 +206,7 @@ export interface LPoolInterface extends utils.Interface {
     functionFragment: "setMaxUtilization",
     values: [string[], BigNumberish[], BigNumberish[]]
   ): string;
+  encodeFunctionData(functionFragment: "setOracle", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setTaxPercentage",
     values: [BigNumberish, BigNumberish]
@@ -300,6 +304,7 @@ export interface LPoolInterface extends utils.Interface {
     functionFragment: "maxUtilization",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeLiquidity",
     data: BytesLike
@@ -341,6 +346,7 @@ export interface LPoolInterface extends utils.Interface {
     functionFragment: "setMaxUtilization",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setOracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTaxPercentage",
     data: BytesLike
@@ -605,6 +611,8 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber]>;
 
+    oracle(overrides?: CallOverrides): Promise<[string]>;
+
     removeLiquidity(
       token_: string,
       amount_: BigNumberish,
@@ -668,6 +676,11 @@ export interface LPool extends BaseContract {
       token_: string[],
       percentNumerator_: BigNumberish[],
       percentDenominator_: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -818,6 +831,8 @@ export interface LPool extends BaseContract {
     overrides?: CallOverrides
   ): Promise<[BigNumber, BigNumber]>;
 
+  oracle(overrides?: CallOverrides): Promise<string>;
+
   removeLiquidity(
     token_: string,
     amount_: BigNumberish,
@@ -881,6 +896,11 @@ export interface LPool extends BaseContract {
     token_: string[],
     percentNumerator_: BigNumberish[],
     percentDenominator_: BigNumberish[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setOracle(
+    oracle_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1025,6 +1045,8 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber, BigNumber]>;
 
+    oracle(overrides?: CallOverrides): Promise<string>;
+
     removeLiquidity(
       token_: string,
       amount_: BigNumberish,
@@ -1087,6 +1109,8 @@ export interface LPool extends BaseContract {
       percentDenominator_: BigNumberish[],
       overrides?: CallOverrides
     ): Promise<void>;
+
+    setOracle(oracle_: string, overrides?: CallOverrides): Promise<void>;
 
     setTaxPercentage(
       taxPercentNumerator_: BigNumberish,
@@ -1348,6 +1372,8 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    oracle(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeLiquidity(
       token_: string,
       amount_: BigNumberish,
@@ -1411,6 +1437,11 @@ export interface LPool extends BaseContract {
       token_: string[],
       percentNumerator_: BigNumberish[],
       percentDenominator_: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1587,6 +1618,8 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     removeLiquidity(
       token_: string,
       amount_: BigNumberish,
@@ -1650,6 +1683,11 @@ export interface LPool extends BaseContract {
       token_: string[],
       percentNumerator_: BigNumberish[],
       percentDenominator_: BigNumberish[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -40,11 +40,13 @@ export interface LPoolLiquidityInterface extends utils.Interface {
     "isLP(address)": FunctionFragment;
     "isPT(address)": FunctionFragment;
     "liquidity(address)": FunctionFragment;
+    "oracle()": FunctionFragment;
     "removeTaxAccount(address)": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setApproved(address[],bool[])": FunctionFragment;
     "setConverter(address)": FunctionFragment;
+    "setOracle(address)": FunctionFragment;
     "setTaxPercentage(uint256,uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "taxPercentage()": FunctionFragment;
@@ -118,6 +120,7 @@ export interface LPoolLiquidityInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "isLP", values: [string]): string;
   encodeFunctionData(functionFragment: "isPT", values: [string]): string;
   encodeFunctionData(functionFragment: "liquidity", values: [string]): string;
+  encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "removeTaxAccount",
     values: [string]
@@ -138,6 +141,7 @@ export interface LPoolLiquidityInterface extends utils.Interface {
     functionFragment: "setConverter",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "setOracle", values: [string]): string;
   encodeFunctionData(
     functionFragment: "setTaxPercentage",
     values: [BigNumberish, BigNumberish]
@@ -210,6 +214,7 @@ export interface LPoolLiquidityInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "isLP", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "isPT", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "liquidity", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeTaxAccount",
     data: BytesLike
@@ -227,6 +232,7 @@ export interface LPoolLiquidityInterface extends utils.Interface {
     functionFragment: "setConverter",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "setOracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setTaxPercentage",
     data: BytesLike
@@ -435,6 +441,8 @@ export interface LPoolLiquidity extends BaseContract {
 
     liquidity(token_: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    oracle(overrides?: CallOverrides): Promise<[string]>;
+
     removeTaxAccount(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -460,6 +468,11 @@ export interface LPoolLiquidity extends BaseContract {
 
     setConverter(
       converter_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -574,6 +587,8 @@ export interface LPoolLiquidity extends BaseContract {
 
   liquidity(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  oracle(overrides?: CallOverrides): Promise<string>;
+
   removeTaxAccount(
     account_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -599,6 +614,11 @@ export interface LPoolLiquidity extends BaseContract {
 
   setConverter(
     converter_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setOracle(
+    oracle_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -707,6 +727,8 @@ export interface LPoolLiquidity extends BaseContract {
 
     liquidity(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    oracle(overrides?: CallOverrides): Promise<string>;
+
     removeTaxAccount(
       account_: string,
       overrides?: CallOverrides
@@ -731,6 +753,8 @@ export interface LPoolLiquidity extends BaseContract {
     ): Promise<void>;
 
     setConverter(converter_: string, overrides?: CallOverrides): Promise<void>;
+
+    setOracle(oracle_: string, overrides?: CallOverrides): Promise<void>;
 
     setTaxPercentage(
       taxPercentNumerator_: BigNumberish,
@@ -930,6 +954,8 @@ export interface LPoolLiquidity extends BaseContract {
 
     liquidity(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    oracle(overrides?: CallOverrides): Promise<BigNumber>;
+
     removeTaxAccount(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -955,6 +981,11 @@ export interface LPoolLiquidity extends BaseContract {
 
     setConverter(
       converter_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1093,6 +1124,8 @@ export interface LPoolLiquidity extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     removeTaxAccount(
       account_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1118,6 +1151,11 @@ export interface LPoolLiquidity extends BaseContract {
 
     setConverter(
       converter_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setOracle(
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -583,6 +583,19 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "oracle",
+    outputs: [
+      {
+        internalType: "contract IOracle",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -658,6 +671,19 @@ const _abi = [
       },
     ],
     name: "setConverter",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "setOracle",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
