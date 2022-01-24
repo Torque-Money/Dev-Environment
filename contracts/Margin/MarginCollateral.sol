@@ -22,14 +22,14 @@ abstract contract MarginCollateral is MarginApproved, MarginLevel, MarginLimits 
 
     // Withdraw collateral from the account
     function removeCollateral(IERC20 token_, uint256 amount_) external onlyCollateralToken(token_) {
-        require(amount_ <= collateral(collateral_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
+        require(amount_ <= collateral(token_, _msgSender()), "MarginCollateral: Cannot remove more than available collateral");
 
-        _setCollateral(collateral_, collateral(collateral_, _msgSender()).sub(amount_), _msgSender());
+        _setCollateral(token_, collateral(token_, _msgSender()).sub(amount_), _msgSender());
         require(!resettable(_msgSender()) && !liquidatable(_msgSender()), "MarginCollateral: Withdrawing desired collateral puts account at risk");
 
-        collateral_.safeTransfer(_msgSender(), amount_);
+        token_.safeTransfer(_msgSender(), amount_);
 
-        emit RemoveCollateral(_msgSender(), collateral_, amount_);
+        emit RemoveCollateral(_msgSender(), token_, amount_);
     }
 
     event AddCollateral(address indexed account, IERC20 token, uint256 amount);
