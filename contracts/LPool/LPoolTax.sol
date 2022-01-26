@@ -17,7 +17,7 @@ abstract contract LPoolTax is Initializable, LPoolCore {
     FractionMath.Fraction private _taxPercent;
     Set.AddressSet private _taxAccountSet;
 
-    function initialize(uint256 taxPercentNumerator_, uint256 taxPercentDenominator_) external initializer {
+    function initialize(uint256 taxPercentNumerator_, uint256 taxPercentDenominator_) public initializer {
         _taxPercent.numerator = taxPercentNumerator_;
         _taxPercent.denominator = taxPercentDenominator_;
     }

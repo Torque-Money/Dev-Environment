@@ -13,7 +13,7 @@ abstract contract LPoolCore is Initializable, AccessControl {
     IConverter public converter;
     IOracle public oracle;
 
-    function initialize(IConverter converter_, IOracle oracle_) external initializer {
+    function initialize(IConverter converter_, IOracle oracle_) public initializer {
         _setRoleAdmin(POOL_ADMIN, POOL_ADMIN);
         _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
         _grantRole(POOL_ADMIN, _msgSender());
