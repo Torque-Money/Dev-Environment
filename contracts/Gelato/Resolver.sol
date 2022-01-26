@@ -52,9 +52,9 @@ contract Resolver is PokeMeReady {
 
     // Repay debt for tokens
     function _repayInToken(
-        IERC20[] memory repayToken_,
+        IERC20Upgradeable[] memory repayToken_,
         uint256[] memory repayAmount_,
-        IERC20 outToken_,
+        IERC20Upgradeable outToken_,
         uint256 outAmount_
     ) internal {
         for (uint256 i = 0; i < repayToken_.length; i++) {
@@ -75,11 +75,11 @@ contract Resolver is PokeMeReady {
     }
 
     // Pay transaction
-    function _payTransaction(IERC20[] memory repayToken_, uint256[] memory repayAmount_) internal {
+    function _payTransaction(IERC20Upgradeable[] memory repayToken_, uint256[] memory repayAmount_) internal {
         (uint256 fee, address feeToken) = IPokeMe(pokeMe).getFeeDetails();
 
         if (feeToken == ETH) _repayInEth(repayToken_, repayAmount_, fee);
-        else _repayInToken(repayToken_, repayAmount_, IERC20(feeToken), fee);
+        else _repayInToken(repayToken_, repayAmount_, IERC20Upgradeable(feeToken), fee);
 
         _transfer(fee, feeToken);
 
