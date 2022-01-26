@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/math/SafeCast.sol";
@@ -8,7 +9,7 @@ import "@openzeppelin/contracts/utils/math/SignedSafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./LPoolLiquidity.sol";
 
-abstract contract LPoolInterest is LPoolLiquidity {
+abstract contract LPoolInterest is Initializable, LPoolLiquidity {
     using SafeCast for uint256;
     using SafeCast for int256;
     using SafeMath for uint256;
@@ -20,7 +21,7 @@ abstract contract LPoolInterest is LPoolLiquidity {
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax;
     mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
-    constructor(uint256 blocksPerInterestApplication_) {
+    function initialize(uint256 blocksPerInterestApplication_) external initializer {
         blocksPerInterestApplication = blocksPerInterestApplication_;
     }
 
