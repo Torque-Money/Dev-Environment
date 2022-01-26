@@ -12,6 +12,15 @@ abstract contract LPoolCore is AccessControl {
     IConverter public converter;
     IOracle public oracle;
 
+    constructor(IConverter converter_, IOracle oracle_) {
+        _setRoleAdmin(POOL_ADMIN, POOL_ADMIN);
+        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
+        _grantRole(POOL_ADMIN, _msgSender());
+
+        converter = converter_;
+        oracle = oracle_;
+    }
+
     // Set the converter to use
     function setConverter(IConverter converter_) external onlyRole(POOL_ADMIN) {
         converter = converter_;
@@ -19,15 +28,6 @@ abstract contract LPoolCore is AccessControl {
 
     // Set the oracle to use
     function setOracle(IOracle oracle_) external onlyRole(POOL_ADMIN) {
-        oracle = oracle_;
-    }
-
-    constructor(IConverter converter_, IOracle oracle_) {
-        _setRoleAdmin(POOL_ADMIN, POOL_ADMIN);
-        _setRoleAdmin(POOL_APPROVED, POOL_ADMIN);
-        _grantRole(POOL_ADMIN, _msgSender());
-
-        converter = converter_;
         oracle = oracle_;
     }
 }
