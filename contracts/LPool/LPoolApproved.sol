@@ -1,24 +1,24 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "./LPoolCore.sol";
 import "./LPoolToken.sol";
 
 abstract contract LPoolApproved is LPoolCore {
-    mapping(IERC20 => IERC20) private _PTToLP;
-    mapping(IERC20 => IERC20) private _LPToPT;
+    mapping(IERC20Upgradeable => IERC20Upgradeable) private _PTToLP;
+    mapping(IERC20Upgradeable => IERC20Upgradeable) private _LPToPT;
 
-    IERC20[] private _PTList;
+    IERC20Upgradeable[] private _PTList;
 
-    mapping(IERC20 => bool) private _approved;
+    mapping(IERC20Upgradeable => bool) private _approved;
 
-    modifier onlyPT(IERC20 token_) {
+    modifier onlyPT(IERC20Upgradeable token_) {
         require(isPT(token_), "LPoolApproved: Only pool tokens may be used");
         _;
     }
 
-    modifier onlyApprovedPT(IERC20 token_) {
+    modifier onlyApprovedPT(IERC20Upgradeable token_) {
         require(isApprovedPT(token_), "LPoolApproved: Only approved pool tokens may be used");
         _;
     }

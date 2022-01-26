@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
 /*
 Hitchens UnorderedAddressSet v0.93
 Library for managing CRUD operations in dynamic address sets.
@@ -27,46 +25,6 @@ THIS SOFTWARE IS NOT TESTED OR AUDITED. DO NOT USE FOR PRODUCTION.
 */
 
 library Set {
-    struct TokenSet {
-        mapping(IERC20 => uint256) keyPointers;
-        IERC20[] keyList;
-    }
-
-    function insert(TokenSet storage self, IERC20 key) internal {
-        require(!exists(self, key), "TokenSet: Token already exists in the set.");
-        self.keyList.push(key);
-        self.keyPointers[key] = self.keyList.length - 1;
-    }
-
-    function remove(TokenSet storage self, IERC20 key) internal {
-        require(exists(self, key), "TokenSet: Token does not exist in the set.");
-        IERC20 keyToMove = self.keyList[count(self) - 1];
-        uint256 rowToReplace = self.keyPointers[key];
-
-        self.keyPointers[keyToMove] = rowToReplace;
-        self.keyList[rowToReplace] = keyToMove;
-
-        delete self.keyPointers[key];
-        self.keyList.pop();
-    }
-
-    function count(TokenSet storage self) internal view returns (uint256) {
-        return (self.keyList.length);
-    }
-
-    function exists(TokenSet storage self, IERC20 key) internal view returns (bool) {
-        if (self.keyList.length == 0) return false;
-        return self.keyList[self.keyPointers[key]] == key;
-    }
-
-    function keyAtIndex(TokenSet storage self, uint256 index) internal view returns (IERC20) {
-        return self.keyList[index];
-    }
-
-    function iterable(TokenSet storage self) internal view returns (IERC20[] memory) {
-        return self.keyList;
-    }
-
     struct AddressSet {
         mapping(address => uint256) keyPointers;
         address[] keyList;
