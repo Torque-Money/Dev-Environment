@@ -21,7 +21,7 @@ abstract contract LPoolInterest is Initializable, LPoolLiquidity {
     mapping(IERC20 => FractionMath.Fraction) private _maxInterestMax;
     mapping(IERC20 => FractionMath.Fraction) private _maxUtilization;
 
-    function initialize(uint256 blocksPerInterestApplication_) public initializer {
+    function initializeLPoolInterest(uint256 blocksPerInterestApplication_) public initializer {
         blocksPerInterestApplication = blocksPerInterestApplication_;
     }
 

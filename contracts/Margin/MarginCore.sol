@@ -1,15 +1,16 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "../Oracle/IOracle.sol";
 import "../LPool/LPool.sol";
 
-abstract contract MarginCore is Ownable {
+abstract contract MarginCore is Initializable, Ownable {
     LPool public pool;
     IOracle public oracle;
 
-    constructor(LPool pool_, IOracle oracle_) {
+    function initializeMarginCore(LPool pool_, IOracle oracle_) public initializer {
         pool = pool_;
         oracle = oracle_;
     }

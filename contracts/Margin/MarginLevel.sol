@@ -1,17 +1,18 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginAccount.sol";
 
-abstract contract MarginLevel is MarginAccount {
+abstract contract MarginLevel is Initializable, MarginAccount {
     using SafeMath for uint256;
 
     FractionMath.Fraction private _minMarginLevel; // Percentage that the margin level may hover above before liquidation (should be above 100)
 
-    constructor(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) {
+    function initializeMarginLevel(uint256 minMarginLevelNumerator_, uint256 minMarginLevelDenominator_) public initializer {
         _minMarginLevel.numerator = minMarginLevelNumerator_;
         _minMarginLevel.denominator = minMarginLevelDenominator_;
     }

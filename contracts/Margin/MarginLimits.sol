@@ -1,16 +1,17 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MarginAccount.sol";
 
-abstract contract MarginLimits is MarginAccount {
+abstract contract MarginLimits is Initializable, MarginAccount {
     using SafeMath for uint256;
 
     uint256 public minCollateralPrice;
     uint256 public maxLeverage;
 
-    constructor(uint256 minCollateralPrice_, uint256 maxLeverage_) {
+    function initializeMarginLimits(uint256 minCollateralPrice_, uint256 maxLeverage_) public initializer {
         minCollateralPrice = minCollateralPrice_;
         maxLeverage = maxLeverage_;
     }

@@ -1,19 +1,20 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "./MarginLongRepayCore.sol";
 
-abstract contract MarginLongLiquidateCore is MarginLongRepayCore {
+abstract contract MarginLongLiquidateCore is Initializable, MarginLongRepayCore {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     FractionMath.Fraction private _liquidationFeePercent;
 
-    constructor(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) {
+    function initializeMarginLongLiquidateCore(uint256 liquidationFeePercentNumerator_, uint256 liquidationFeePercentDenominator_) public initializer {
         _liquidationFeePercent.numerator = liquidationFeePercentNumerator_;
         _liquidationFeePercent.denominator = liquidationFeePercentDenominator_;
     }
