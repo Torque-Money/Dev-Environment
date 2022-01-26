@@ -2,8 +2,8 @@
   "avgBlockTime": 1,
   "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
   "gelatoPokeMe": "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
-  "LPPrefixName": "Torque Leverage",
-  "LPPrefixSymbol": "tl",
+  "LPPrefixName": "Torque Leverage Pool",
+  "LPPrefixSymbol": "tlp",
   "approved": [
     {
       "name": "Dai",
