@@ -1,15 +1,15 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
 abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Get a pseudo random token from a weighted distribution of pool tokens
     function _pseudoRandomWeightedPT() internal view returns (IERC20) {
@@ -42,7 +42,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
+    function deposit(IERC20Upgradeable token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
         require(amount_ > 0, "LPoolDeposit: Deposit amount must be greater than 0");
 
         token_.safeTransferFrom(_msgSender(), address(this), amount_);
