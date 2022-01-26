@@ -13,16 +13,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         blocksPerInterestApplication: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
     };
     const Pool = await hre.ethers.getContractFactory("LPool");
-    const pool = await Pool.deploy(
-        constructorArgs.converter,
-        constructorArgs.oracle,
-        constructorArgs.taxPercentNumerator,
-        constructorArgs.taxPercentDenominator,
-        constructorArgs.blocksPerInterestApplication
-    );
-    config.leveragePoolAddress = pool.address;
-    console.log(`Deployed: Pool | ${pool.address}`);
+    const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
 
-    if (configType !== "fork") saveTempConstructor(pool.address, constructorArgs);
+    config.leveragePoolAddress = pool.address;
+    config.leveragePoolResolvedAddress = await pool.resolvedAddress;
+    console.log(`Deployed: Pool proxy and pool | ${pool.address} ${await pool.resolvedAddress}`);
+
+    if (configType !== "fork") saveTempConstructor(await pool.resolvedAddress, {});
     saveConfig(config, configType);
 }

@@ -17,19 +17,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     };
 
     const MarginLong = await hre.ethers.getContractFactory("MarginLong");
-    const marginLong = await MarginLong.deploy(
-        constructorArgs.pool,
-        constructorArgs.oracle,
-        constructorArgs.minMarginLevelPercentNumerator,
-        constructorArgs.minMarginLevelPercentDenominator,
-        constructorArgs.minCollateralPrice,
-        constructorArgs.maxLeverage,
-        constructorArgs.liquidationFeePercentNumerator,
-        constructorArgs.liquidationFeePercentDenominator
-    );
-    config.marginLongAddress = marginLong.address;
-    console.log(`Deployed: Margin long | ${marginLong.address}`);
+    const marginLong = await hre.upgrades.deployProxy(MarginLong, Object.values(constructorArgs));
 
-    if (configType !== "fork") saveTempConstructor(marginLong.address, constructorArgs);
+    config.marginLongAddress = marginLong.address;
+    config.marginLongResolvedAddress = await marginLong.resolvedAddress;
+    console.log(`Deployed: Margin long proxy and margin long | ${marginLong.address} ${await marginLong.resolvedAddress}`);
+
+    if (configType !== "fork") saveTempConstructor(await marginLong.resolvedAddress, {});
     saveConfig(config, configType);
 }
