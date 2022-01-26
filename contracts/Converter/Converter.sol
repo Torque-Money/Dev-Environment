@@ -2,13 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "../lib/UniswapV2Router02.sol";
 import "./IConverter.sol";
 
 contract Converter is IConverter, Ownable {
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     UniswapV2Router02 public router;
 
@@ -23,9 +22,9 @@ contract Converter is IConverter, Ownable {
 
     // Swap the given amount for the maximum tokens out
     function swapMaxTokenOut(
-        IERC20 tokenIn_,
+        IERC20Upgradeable tokenIn_,
         uint256 amountIn_,
-        IERC20 tokenOut_
+        IERC20Upgradeable tokenOut_
     ) external override returns (uint256) {
         address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
@@ -41,9 +40,9 @@ contract Converter is IConverter, Ownable {
 
     // Get the maximum output tokens for given input tokens
     function maxAmountTokenOut(
-        IERC20 tokenIn_,
+        IERC20Upgradeable tokenIn_,
         uint256 amountIn_,
-        IERC20 tokenOut_
+        IERC20Upgradeable tokenOut_
     ) external view override returns (uint256) {
         address[] memory path = new address[](3);
         path[0] = address(tokenIn_);
@@ -56,8 +55,8 @@ contract Converter is IConverter, Ownable {
 
     // Get the minimum input tokens required for the given output tokens
     function minAmountTokenInTokenOut(
-        IERC20 tokenIn_,
-        IERC20 tokenOut_,
+        IERC20Upgradeable tokenIn_,
+        IERC20Upgradeable tokenOut_,
         uint256 amountOut_
     ) external view override returns (uint256) {
         address[] memory path = new address[](3);
@@ -70,7 +69,7 @@ contract Converter is IConverter, Ownable {
     }
 
     // Swap the given amount for the maximum ETH out
-    function swapMaxEthOut(IERC20 tokenIn_, uint256 amountIn_) external override returns (uint256) {
+    function swapMaxEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = address(router.WETH());
@@ -83,7 +82,7 @@ contract Converter is IConverter, Ownable {
     }
 
     // Get the maximum output eth for given input tokens
-    function maxAmountEthOut(IERC20 tokenIn_, uint256 amountIn_) external view override returns (uint256) {
+    function maxAmountEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external view override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = router.WETH();
@@ -93,7 +92,7 @@ contract Converter is IConverter, Ownable {
     }
 
     // Get the minimum input tokens for required output eth
-    function minAmountTokenInEthOut(IERC20 tokenIn_, uint256 amountOut_) external view override returns (uint256) {
+    function minAmountTokenInEthOut(IERC20Upgradeable tokenIn_, uint256 amountOut_) external view override returns (uint256) {
         address[] memory path = new address[](2);
         path[0] = address(tokenIn_);
         path[1] = router.WETH();

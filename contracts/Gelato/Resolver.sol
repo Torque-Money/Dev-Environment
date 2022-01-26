@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../MarginLong/MarginLong.sol";
 import "../LPool/LPool.sol";
@@ -11,7 +10,7 @@ import "./PokeMeReady.sol";
 
 contract Resolver is PokeMeReady {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     IConverter public converter;
     MarginLong public marginLong;
@@ -30,7 +29,7 @@ contract Resolver is PokeMeReady {
 
     // Repay debt for eth
     function _repayInEth(
-        IERC20[] memory repayToken_,
+        IERC20Upgradeable[] memory repayToken_,
         uint256[] memory repayAmount_,
         uint256 outAmount_
     ) internal {
