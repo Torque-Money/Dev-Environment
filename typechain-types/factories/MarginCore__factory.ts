@@ -27,6 +27,24 @@ const _abi = [
     type: "event",
   },
   {
+    inputs: [
+      {
+        internalType: "contract LPool",
+        name: "pool_",
+        type: "address",
+      },
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "initializeMarginCore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "oracle",
     outputs: [

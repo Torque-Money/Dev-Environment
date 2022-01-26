@@ -370,6 +370,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract IConverter",
+        name: "converter_",
+        type: "address",
+      },
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "initializeLPoolCore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "contract IERC20",
         name: "token_",
         type: "address",

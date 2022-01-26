@@ -573,6 +573,42 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract IConverter",
+        name: "converter_",
+        type: "address",
+      },
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "initializeLPoolCore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "taxPercentNumerator_",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "taxPercentDenominator_",
+        type: "uint256",
+      },
+    ],
+    name: "initializeLPoolTax",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "contract IERC20",
         name: "token_",
         type: "address",

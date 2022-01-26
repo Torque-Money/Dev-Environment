@@ -36,6 +36,8 @@ export interface LPoolProvideInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "initializeLPoolCore(address,address)": FunctionFragment;
+    "initializeLPoolTax(uint256,uint256)": FunctionFragment;
     "interestRate(address)": FunctionFragment;
     "isApprovedLP(address)": FunctionFragment;
     "isApprovedPT(address)": FunctionFragment;
@@ -116,6 +118,14 @@ export interface LPoolProvideInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "hasRole",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeLPoolCore",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeLPoolTax",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "interestRate",
@@ -227,6 +237,14 @@ export interface LPoolProvideInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeLPoolCore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeLPoolTax",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "interestRate",
     data: BytesLike
@@ -492,6 +510,18 @@ export interface LPoolProvide extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeLPoolTax(
+      taxPercentNumerator_: BigNumberish,
+      taxPercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     interestRate(
       token_: string,
       overrides?: CallOverrides
@@ -662,6 +692,18 @@ export interface LPoolProvide extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  initializeLPoolCore(
+    converter_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeLPoolTax(
+    taxPercentNumerator_: BigNumberish,
+    taxPercentDenominator_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   interestRate(
     token_: string,
     overrides?: CallOverrides
@@ -825,6 +867,18 @@ export interface LPoolProvide extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeLPoolTax(
+      taxPercentNumerator_: BigNumberish,
+      taxPercentDenominator_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     interestRate(
       token_: string,
@@ -1106,6 +1160,18 @@ export interface LPoolProvide extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeLPoolTax(
+      taxPercentNumerator_: BigNumberish,
+      taxPercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     interestRate(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -1280,6 +1346,18 @@ export interface LPoolProvide extends BaseContract {
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeLPoolTax(
+      taxPercentNumerator_: BigNumberish,
+      taxPercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     interestRate(

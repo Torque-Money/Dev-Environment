@@ -21,6 +21,7 @@ export interface MarginApprovedInterface extends utils.Interface {
   functions: {
     "addBorrowedToken(address[])": FunctionFragment;
     "addCollateralToken(address[])": FunctionFragment;
+    "initializeMarginCore(address,address)": FunctionFragment;
     "isApprovedBorrowedToken(address)": FunctionFragment;
     "isApprovedCollateralToken(address)": FunctionFragment;
     "isBorrowedToken(address)": FunctionFragment;
@@ -43,6 +44,10 @@ export interface MarginApprovedInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "addCollateralToken",
     values: [string[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeMarginCore",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedBorrowedToken",
@@ -88,6 +93,10 @@ export interface MarginApprovedInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "addCollateralToken",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeMarginCore",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -195,6 +204,12 @@ export interface MarginApproved extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
@@ -263,6 +278,12 @@ export interface MarginApproved extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  initializeMarginCore(
+    pool_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedBorrowedToken(
     token_: string,
     overrides?: CallOverrides
@@ -325,6 +346,12 @@ export interface MarginApproved extends BaseContract {
 
     addCollateralToken(
       token_: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -406,6 +433,12 @@ export interface MarginApproved extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isApprovedBorrowedToken(
       token_: string,
       overrides?: CallOverrides
@@ -472,6 +505,12 @@ export interface MarginApproved extends BaseContract {
 
     addCollateralToken(
       token_: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

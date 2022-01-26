@@ -19,6 +19,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface MarginCoreInterface extends utils.Interface {
   contractName: "MarginCore";
   functions: {
+    "initializeMarginCore(address,address)": FunctionFragment;
     "oracle()": FunctionFragment;
     "owner()": FunctionFragment;
     "pool()": FunctionFragment;
@@ -28,6 +29,10 @@ export interface MarginCoreInterface extends utils.Interface {
     "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "initializeMarginCore",
+    values: [string, string]
+  ): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(functionFragment: "pool", values?: undefined): string;
@@ -42,6 +47,10 @@ export interface MarginCoreInterface extends utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "initializeMarginCore",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pool", data: BytesLike): Result;
@@ -99,6 +108,12 @@ export interface MarginCore extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     oracle(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -124,6 +139,12 @@ export interface MarginCore extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  initializeMarginCore(
+    pool_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   oracle(overrides?: CallOverrides): Promise<string>;
 
@@ -151,6 +172,12 @@ export interface MarginCore extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     oracle(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -181,6 +208,12 @@ export interface MarginCore extends BaseContract {
   };
 
   estimateGas: {
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     oracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -208,6 +241,12 @@ export interface MarginCore extends BaseContract {
   };
 
   populateTransaction: {
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;

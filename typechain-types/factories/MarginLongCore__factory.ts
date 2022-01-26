@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
 import type {
-  MarginCollateral,
-  MarginCollateralInterface,
-} from "../MarginCollateral";
+  MarginLongCore,
+  MarginLongCoreInterface,
+} from "../MarginLongCore";
 
 const _abi = [
   {
@@ -230,6 +230,19 @@ const _abi = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getBorrowingAccounts",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
       },
     ],
     stateMutability: "view",
@@ -885,15 +898,15 @@ const _abi = [
   },
 ];
 
-export class MarginCollateral__factory {
+export class MarginLongCore__factory {
   static readonly abi = _abi;
-  static createInterface(): MarginCollateralInterface {
-    return new utils.Interface(_abi) as MarginCollateralInterface;
+  static createInterface(): MarginLongCoreInterface {
+    return new utils.Interface(_abi) as MarginLongCoreInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): MarginCollateral {
-    return new Contract(address, _abi, signerOrProvider) as MarginCollateral;
+  ): MarginLongCore {
+    return new Contract(address, _abi, signerOrProvider) as MarginLongCore;
   }
 }

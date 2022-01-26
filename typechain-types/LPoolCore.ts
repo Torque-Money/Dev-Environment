@@ -26,6 +26,7 @@ export interface LPoolCoreInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "initializeLPoolCore(address,address)": FunctionFragment;
     "oracle()": FunctionFragment;
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
@@ -58,6 +59,10 @@ export interface LPoolCoreInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "hasRole",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeLPoolCore",
+    values: [string, string]
   ): string;
   encodeFunctionData(functionFragment: "oracle", values?: undefined): string;
   encodeFunctionData(
@@ -94,6 +99,10 @@ export interface LPoolCoreInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeLPoolCore",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "oracle", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "renounceRole",
@@ -193,6 +202,12 @@ export interface LPoolCore extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     oracle(overrides?: CallOverrides): Promise<[string]>;
 
     renounceRole(
@@ -245,6 +260,12 @@ export interface LPoolCore extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  initializeLPoolCore(
+    converter_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   oracle(overrides?: CallOverrides): Promise<string>;
 
   renounceRole(
@@ -296,6 +317,12 @@ export interface LPoolCore extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     oracle(overrides?: CallOverrides): Promise<string>;
 
@@ -382,6 +409,12 @@ export interface LPoolCore extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     oracle(overrides?: CallOverrides): Promise<BigNumber>;
 
     renounceRole(
@@ -438,6 +471,12 @@ export interface LPoolCore extends BaseContract {
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     oracle(overrides?: CallOverrides): Promise<PopulatedTransaction>;

@@ -30,6 +30,10 @@ export interface MarginLongLiquidateCoreInterface extends utils.Interface {
     "getBorrowingAccounts()": FunctionFragment;
     "initialBorrowBlock(address,address)": FunctionFragment;
     "initialBorrowPrice(address,address)": FunctionFragment;
+    "initializeMarginCore(address,address)": FunctionFragment;
+    "initializeMarginLevel(uint256,uint256)": FunctionFragment;
+    "initializeMarginLimits(uint256,uint256)": FunctionFragment;
+    "initializeMarginLongLiquidateCore(uint256,uint256)": FunctionFragment;
     "interest(address)": FunctionFragment;
     "isApprovedBorrowedToken(address)": FunctionFragment;
     "isApprovedCollateralToken(address)": FunctionFragment;
@@ -102,6 +106,22 @@ export interface MarginLongLiquidateCoreInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "initialBorrowPrice",
     values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeMarginCore",
+    values: [string, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeMarginLevel",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeMarginLimits",
+    values: [BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeMarginLongLiquidateCore",
+    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "interest", values: [string]): string;
   encodeFunctionData(
@@ -236,6 +256,22 @@ export interface MarginLongLiquidateCoreInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "initialBorrowPrice",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeMarginCore",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeMarginLevel",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeMarginLimits",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeMarginLongLiquidateCore",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "interest", data: BytesLike): Result;
@@ -508,6 +544,30 @@ export interface MarginLongLiquidateCore extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeMarginLevel(
+      minMarginLevelNumerator_: BigNumberish,
+      minMarginLevelDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeMarginLimits(
+      minCollateralPrice_: BigNumberish,
+      maxLeverage_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    initializeMarginLongLiquidateCore(
+      liquidationFeePercentNumerator_: BigNumberish,
+      liquidationFeePercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -715,6 +775,30 @@ export interface MarginLongLiquidateCore extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  initializeMarginCore(
+    pool_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeMarginLevel(
+    minMarginLevelNumerator_: BigNumberish,
+    minMarginLevelDenominator_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeMarginLimits(
+    minCollateralPrice_: BigNumberish,
+    maxLeverage_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  initializeMarginLongLiquidateCore(
+    liquidationFeePercentNumerator_: BigNumberish,
+    liquidationFeePercentDenominator_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   "interest(address)"(
     account_: string,
     overrides?: CallOverrides
@@ -912,6 +996,30 @@ export interface MarginLongLiquidateCore extends BaseContract {
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeMarginLevel(
+      minMarginLevelNumerator_: BigNumberish,
+      minMarginLevelDenominator_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeMarginLimits(
+      minCollateralPrice_: BigNumberish,
+      maxLeverage_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    initializeMarginLongLiquidateCore(
+      liquidationFeePercentNumerator_: BigNumberish,
+      liquidationFeePercentDenominator_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "interest(address)"(
       account_: string,
@@ -1173,6 +1281,30 @@ export interface MarginLongLiquidateCore extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeMarginLevel(
+      minMarginLevelNumerator_: BigNumberish,
+      minMarginLevelDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeMarginLimits(
+      minCollateralPrice_: BigNumberish,
+      maxLeverage_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    initializeMarginLongLiquidateCore(
+      liquidationFeePercentNumerator_: BigNumberish,
+      liquidationFeePercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -1379,6 +1511,30 @@ export interface MarginLongLiquidateCore extends BaseContract {
     "initialBorrowPrice(address)"(
       account_: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initializeMarginCore(
+      pool_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeMarginLevel(
+      minMarginLevelNumerator_: BigNumberish,
+      minMarginLevelDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeMarginLimits(
+      minCollateralPrice_: BigNumberish,
+      maxLeverage_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    initializeMarginLongLiquidateCore(
+      liquidationFeePercentNumerator_: BigNumberish,
+      liquidationFeePercentDenominator_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "interest(address)"(

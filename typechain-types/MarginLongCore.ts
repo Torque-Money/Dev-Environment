@@ -17,8 +17,8 @@ import { FunctionFragment, Result, EventFragment } from "@ethersproject/abi";
 import { Listener, Provider } from "@ethersproject/providers";
 import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 
-export interface MarginLongLiquidateInterface extends utils.Interface {
-  contractName: "MarginLongLiquidate";
+export interface MarginLongCoreInterface extends utils.Interface {
+  contractName: "MarginLongCore";
   functions: {
     "addBorrowedToken(address[])": FunctionFragment;
     "addCollateral(address,uint256)": FunctionFragment;
@@ -33,7 +33,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "initializeMarginCore(address,address)": FunctionFragment;
     "initializeMarginLevel(uint256,uint256)": FunctionFragment;
     "initializeMarginLimits(uint256,uint256)": FunctionFragment;
-    "initializeMarginLongLiquidateCore(uint256,uint256)": FunctionFragment;
     "interest(address)": FunctionFragment;
     "isApprovedBorrowedToken(address)": FunctionFragment;
     "isApprovedCollateralToken(address)": FunctionFragment;
@@ -41,8 +40,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "isBorrowing(address,address)": FunctionFragment;
     "isCollateralToken(address)": FunctionFragment;
     "liquidatable(address)": FunctionFragment;
-    "liquidateAccount(address)": FunctionFragment;
-    "liquidationFeePercent()": FunctionFragment;
     "marginLevel(address)": FunctionFragment;
     "maxLeverage()": FunctionFragment;
     "maxLeverageReached(address)": FunctionFragment;
@@ -56,7 +53,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "resettable(address)": FunctionFragment;
     "setApprovedBorrowedToken(address[],bool[])": FunctionFragment;
     "setApprovedCollateralToken(address[],bool[])": FunctionFragment;
-    "setLiquidationFeePercent(uint256,uint256)": FunctionFragment;
     "setMaxLeverage(uint256)": FunctionFragment;
     "setMinCollateralPrice(uint256)": FunctionFragment;
     "setMinMarginLevel(uint256,uint256)": FunctionFragment;
@@ -120,10 +116,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     functionFragment: "initializeMarginLimits",
     values: [BigNumberish, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "initializeMarginLongLiquidateCore",
-    values: [BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "interest", values: [string]): string;
   encodeFunctionData(
     functionFragment: "isApprovedBorrowedToken",
@@ -148,14 +140,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "liquidatable",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidateAccount",
-    values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "liquidationFeePercent",
-    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "marginLevel", values: [string]): string;
   encodeFunctionData(
@@ -193,10 +177,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setApprovedCollateralToken",
     values: [string[], boolean[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setLiquidationFeePercent",
-    values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "setMaxLeverage",
@@ -275,10 +255,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     functionFragment: "initializeMarginLimits",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "initializeMarginLongLiquidateCore",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "interest", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedBorrowedToken",
@@ -302,14 +278,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "liquidatable",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidateAccount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "liquidationFeePercent",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -353,10 +321,6 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setLiquidationFeePercent",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setMaxLeverage",
     data: BytesLike
   ): Result;
@@ -391,23 +355,15 @@ export interface MarginLongLiquidateInterface extends utils.Interface {
     "AddBorrowedToken(address)": EventFragment;
     "AddCollateral(address,address,uint256)": EventFragment;
     "AddCollateralToken(address)": EventFragment;
-    "Liquidated(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "RemoveCollateral(address,address,uint256)": EventFragment;
-    "Repay(address,address)": EventFragment;
-    "RepayAll(address)": EventFragment;
-    "Reset(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "AddBorrowedToken"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddCollateral"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "AddCollateralToken"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Liquidated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "RemoveCollateral"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Repay"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "RepayAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "Reset"): EventFragment;
 }
 
 export type AddBorrowedTokenEvent = TypedEvent<[string], { token: string }>;
@@ -427,13 +383,6 @@ export type AddCollateralTokenEvent = TypedEvent<[string], { token: string }>;
 export type AddCollateralTokenEventFilter =
   TypedEventFilter<AddCollateralTokenEvent>;
 
-export type LiquidatedEvent = TypedEvent<
-  [string, string],
-  { account: string; liquidator: string }
->;
-
-export type LiquidatedEventFilter = TypedEventFilter<LiquidatedEvent>;
-
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
   { previousOwner: string; newOwner: string }
@@ -450,31 +399,13 @@ export type RemoveCollateralEvent = TypedEvent<
 export type RemoveCollateralEventFilter =
   TypedEventFilter<RemoveCollateralEvent>;
 
-export type RepayEvent = TypedEvent<
-  [string, string],
-  { account: string; token: string }
->;
-
-export type RepayEventFilter = TypedEventFilter<RepayEvent>;
-
-export type RepayAllEvent = TypedEvent<[string], { account: string }>;
-
-export type RepayAllEventFilter = TypedEventFilter<RepayAllEvent>;
-
-export type ResetEvent = TypedEvent<
-  [string, string],
-  { account: string; resetter: string }
->;
-
-export type ResetEventFilter = TypedEventFilter<ResetEvent>;
-
-export interface MarginLongLiquidate extends BaseContract {
-  contractName: "MarginLongLiquidate";
+export interface MarginLongCore extends BaseContract {
+  contractName: "MarginLongCore";
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: MarginLongLiquidateInterface;
+  interface: MarginLongCoreInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -571,12 +502,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    initializeMarginLongLiquidateCore(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -624,15 +549,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    liquidateAccount(
-      account_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    liquidationFeePercent(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
     marginLevel(
       account_: string,
       overrides?: CallOverrides
@@ -676,12 +592,6 @@ export interface MarginLongLiquidate extends BaseContract {
     setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    setLiquidationFeePercent(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -807,12 +717,6 @@ export interface MarginLongLiquidate extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  initializeMarginLongLiquidateCore(
-    liquidationFeePercentNumerator_: BigNumberish,
-    liquidationFeePercentDenominator_: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   "interest(address)"(
     account_: string,
     overrides?: CallOverrides
@@ -853,15 +757,6 @@ export interface MarginLongLiquidate extends BaseContract {
   ): Promise<boolean>;
 
   liquidatable(account_: string, overrides?: CallOverrides): Promise<boolean>;
-
-  liquidateAccount(
-    account_: string,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  liquidationFeePercent(
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
 
   marginLevel(
     account_: string,
@@ -906,12 +801,6 @@ export interface MarginLongLiquidate extends BaseContract {
   setApprovedCollateralToken(
     token_: string[],
     approved_: boolean[],
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  setLiquidationFeePercent(
-    liquidationFeePercentNumerator_: BigNumberish,
-    liquidationFeePercentDenominator_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -1034,12 +923,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    initializeMarginLongLiquidateCore(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -1084,15 +967,6 @@ export interface MarginLongLiquidate extends BaseContract {
 
     liquidatable(account_: string, overrides?: CallOverrides): Promise<boolean>;
 
-    liquidateAccount(
-      account_: string,
-      overrides?: CallOverrides
-    ): Promise<[string[], BigNumber[]]>;
-
-    liquidationFeePercent(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
     marginLevel(
       account_: string,
       overrides?: CallOverrides
@@ -1134,12 +1008,6 @@ export interface MarginLongLiquidate extends BaseContract {
     setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setLiquidationFeePercent(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1202,15 +1070,6 @@ export interface MarginLongLiquidate extends BaseContract {
     "AddCollateralToken(address)"(token?: null): AddCollateralTokenEventFilter;
     AddCollateralToken(token?: null): AddCollateralTokenEventFilter;
 
-    "Liquidated(address,address)"(
-      account?: string | null,
-      liquidator?: null
-    ): LiquidatedEventFilter;
-    Liquidated(
-      account?: string | null,
-      liquidator?: null
-    ): LiquidatedEventFilter;
-
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -1230,21 +1089,6 @@ export interface MarginLongLiquidate extends BaseContract {
       token?: null,
       amount?: null
     ): RemoveCollateralEventFilter;
-
-    "Repay(address,address)"(
-      account?: string | null,
-      token?: null
-    ): RepayEventFilter;
-    Repay(account?: string | null, token?: null): RepayEventFilter;
-
-    "RepayAll(address)"(account?: string | null): RepayAllEventFilter;
-    RepayAll(account?: string | null): RepayAllEventFilter;
-
-    "Reset(address,address)"(
-      account?: string | null,
-      resetter?: null
-    ): ResetEventFilter;
-    Reset(account?: string | null, resetter?: null): ResetEventFilter;
   };
 
   estimateGas: {
@@ -1323,12 +1167,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    initializeMarginLongLiquidateCore(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -1376,13 +1214,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    liquidateAccount(
-      account_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    liquidationFeePercent(overrides?: CallOverrides): Promise<BigNumber>;
-
     marginLevel(
       account_: string,
       overrides?: CallOverrides
@@ -1426,12 +1257,6 @@ export interface MarginLongLiquidate extends BaseContract {
     setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    setLiquidationFeePercent(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1560,12 +1385,6 @@ export interface MarginLongLiquidate extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    initializeMarginLongLiquidateCore(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     "interest(address)"(
       account_: string,
       overrides?: CallOverrides
@@ -1610,15 +1429,6 @@ export interface MarginLongLiquidate extends BaseContract {
 
     liquidatable(
       account_: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    liquidateAccount(
-      account_: string,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    liquidationFeePercent(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1670,12 +1480,6 @@ export interface MarginLongLiquidate extends BaseContract {
     setApprovedCollateralToken(
       token_: string[],
       approved_: boolean[],
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setLiquidationFeePercent(
-      liquidationFeePercentNumerator_: BigNumberish,
-      liquidationFeePercentDenominator_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

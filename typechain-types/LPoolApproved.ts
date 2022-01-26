@@ -29,6 +29,7 @@ export interface LPoolApprovedInterface extends utils.Interface {
     "getRoleAdmin(bytes32)": FunctionFragment;
     "grantRole(bytes32,address)": FunctionFragment;
     "hasRole(bytes32,address)": FunctionFragment;
+    "initializeLPoolCore(address,address)": FunctionFragment;
     "isApprovedLP(address)": FunctionFragment;
     "isApprovedPT(address)": FunctionFragment;
     "isLP(address)": FunctionFragment;
@@ -72,6 +73,10 @@ export interface LPoolApprovedInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "hasRole",
     values: [BytesLike, string]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initializeLPoolCore",
+    values: [string, string]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedLP",
@@ -125,6 +130,10 @@ export interface LPoolApprovedInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "grantRole", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasRole", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "initializeLPoolCore",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedLP",
     data: BytesLike
@@ -258,6 +267,12 @@ export interface LPoolApproved extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<[boolean]>;
@@ -335,6 +350,12 @@ export interface LPoolApproved extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  initializeLPoolCore(
+    converter_: string,
+    oracle_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
   isApprovedPT(token_: string, overrides?: CallOverrides): Promise<boolean>;
@@ -411,6 +432,12 @@ export interface LPoolApproved extends BaseContract {
       account: string,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<boolean>;
 
@@ -528,6 +555,12 @@ export interface LPoolApproved extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     isApprovedLP(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedPT(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
@@ -615,6 +648,12 @@ export interface LPoolApproved extends BaseContract {
       role: BytesLike,
       account: string,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initializeLPoolCore(
+      converter_: string,
+      oracle_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedLP(

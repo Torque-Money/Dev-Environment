@@ -157,6 +157,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MarginLongBorrow__factory>;
     getContractFactory(
+      name: "MarginLongCore",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.MarginLongCore__factory>;
+    getContractFactory(
       name: "MarginLongLiquidate",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MarginLongLiquidate__factory>;
@@ -369,6 +373,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.MarginLongBorrow>;
+    getContractAt(
+      name: "MarginLongCore",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.MarginLongCore>;
     getContractAt(
       name: "MarginLongLiquidate",
       address: string,

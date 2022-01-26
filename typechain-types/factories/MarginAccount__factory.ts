@@ -234,6 +234,24 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract LPool",
+        name: "pool_",
+        type: "address",
+      },
+      {
+        internalType: "contract IOracle",
+        name: "oracle_",
+        type: "address",
+      },
+    ],
+    name: "initializeMarginCore",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "account_",
         type: "address",
