@@ -5,12 +5,11 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./MarginLongBorrow.sol";
 import "./MarginLongRepay.sol";
 import "./MarginLongLiquidate.sol";
-import "../Oracle/IOracle.sol";
 
 contract MarginLong is Initializable, MarginLongBorrow, MarginLongRepay, MarginLongLiquidate {
     function initialize(
-        LPool pool_,
-        IOracle oracle_,
+        address pool_,
+        address oracle_,
         uint256 minMarginLevelNumerator_,
         uint256 minMarginLevelDenominator_,
         uint256 minCollateralPrice_,
