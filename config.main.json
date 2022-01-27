@@ -15,7 +15,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
-      "leveragePool": false
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Wrapped Fantom",
@@ -28,7 +36,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
-      "leveragePool": true
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Wrapped Bitcoin",
@@ -41,7 +57,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
-      "leveragePool": true
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Wrapped Ethereum",
@@ -54,7 +78,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
-      "leveragePool": true
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "USD Coin",
@@ -67,7 +99,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
-      "leveragePool": false
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Tether",
@@ -80,20 +120,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
-      "leveragePool": false
-    },
-    {
-      "name": "Magic Internet Money",
-      "symbol": "MIM",
-      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/162.png",
-      "address": "0x82f0b8b456c1a451378467398982d4834b6829c1",
-      "decimals": 18,
-      "priceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
-      "reservePriceFeed": "0x28de48d3291f31f839274b8d82691c77df1c5ced",
-      "oracle": true,
-      "marginLongCollateral": true,
-      "marginLongBorrow": false,
-      "leveragePool": false
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Chainlink",
@@ -106,7 +141,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
-      "leveragePool": true
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     }
   ],
   "leveragePoolAddress": "0x162A433068F51e18b7d13932F27e66a3f99E6890",

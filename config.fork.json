@@ -1,1 +1,58 @@
-{"routerAddress":"0xf491e7b69e4244ad4002bc14e878a34207e38c29","gelatoPokeMe":"0x6EDe1597c05A0ca77031cBA43Ab887ccf24cd7e8","LPPrefixName":"Torque Leverage Pool","LPPrefixSymbol":"tlp","approved":[{"name":"USD Coin","symbol":"USDC","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png","address":"0x04068DA6C83AFCFA0e13ba15A6696662335D5B75","decimals":6,"priceFeed":"0x2553f4eeb82d5a26427b8d1106c51499cba5d99c","reservePriceFeed":"0x2553f4eeb82d5a26427b8d1106c51499cba5d99c","oracle":true,"marginLongCollateral":true,"marginLongBorrow":false,"leveragePool":false},{"name":"Chainlink","symbol":"LINK","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png","address":"0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8","decimals":18,"priceFeed":"0x221c773d8647bc3034e91a0c47062e26d20d97b4","reservePriceFeed":"0x221c773d8647bc3034e91a0c47062e26d20d97b4","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true}],"leveragePoolAddress":"0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d","leveragePoolResolvedAddress":"0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d","oracleAddress":"0x162A433068F51e18b7d13932F27e66a3f99E6890","converterAddress":"0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07","marginLongAddress":"0x04C89607413713Ec9775E14b954286519d836FEf","marginLongResolvedAddress":"0x04C89607413713Ec9775E14b954286519d836FEf","resolverAddress":"0x4C4a2f8c81640e47606d3fd77B353E87Ba015584","timelockAddress":"0x21dF544947ba3E8b3c32561399E88B52Dc8b2823"}
+{
+  "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
+  "gelatoPokeMe": "0x6EDe1597c05A0ca77031cBA43Ab887ccf24cd7e8",
+  "LPPrefixName": "Torque Leverage Pool",
+  "LPPrefixSymbol": "tlp",
+  "approved": [
+    {
+      "name": "USD Coin",
+      "symbol": "USDC",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+      "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
+      "decimals": 6,
+      "priceFeed": "0x2553f4eeb82d5a26427b8d1106c51499cba5d99c",
+      "reservePriceFeed": "0x2553f4eeb82d5a26427b8d1106c51499cba5d99c",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": false,
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
+    },
+    {
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+      "address": "0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8",
+      "decimals": 18,
+      "priceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
+      "reservePriceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
+    }
+  ],
+  "leveragePoolAddress": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
+  "leveragePoolResolvedAddress": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
+  "oracleAddress": "0x162A433068F51e18b7d13932F27e66a3f99E6890",
+  "converterAddress": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
+  "marginLongAddress": "0x04C89607413713Ec9775E14b954286519d836FEf",
+  "marginLongResolvedAddress": "0x04C89607413713Ec9775E14b954286519d836FEf",
+  "resolverAddress": "0x4C4a2f8c81640e47606d3fd77B353E87Ba015584",
+  "timelockAddress": "0x21dF544947ba3E8b3c32561399E88B52Dc8b2823"
+}

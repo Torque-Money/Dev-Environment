@@ -15,7 +15,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": false,
-      "leveragePool": false
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     },
     {
       "name": "Wrapped Eth",
@@ -28,7 +36,15 @@
       "oracle": true,
       "marginLongCollateral": true,
       "marginLongBorrow": true,
-      "leveragePool": true
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 5,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 5,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 70,
+        "maxUtilizationDenominator": 100
+      }
     }
   ],
   "leveragePoolAddress": "0x401aa3EaD5f7609D7aCcb7Ef4119FF8c0c4a5e28",
