@@ -2,6 +2,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AggregatorV3Interface } from "./AggregatorV3Interface";
+export type { IERC20Upgradeable } from "./IERC20Upgradeable";
 export type { AccessControl } from "./AccessControl";
 export type { IAccessControl } from "./IAccessControl";
 export type { Ownable } from "./Ownable";
@@ -26,7 +27,6 @@ export type { LPoolLiquidity } from "./LPoolLiquidity";
 export type { LPoolProvide } from "./LPoolProvide";
 export type { LPoolTax } from "./LPoolTax";
 export type { LPoolToken } from "./LPoolToken";
-export type { Margin } from "./Margin";
 export type { MarginAccount } from "./MarginAccount";
 export type { MarginApproved } from "./MarginApproved";
 export type { MarginBorrowers } from "./MarginBorrowers";
@@ -48,6 +48,7 @@ export type { OracleTest } from "./OracleTest";
 export type { OracleTokens } from "./OracleTokens";
 
 export { AggregatorV3Interface__factory } from "./factories/AggregatorV3Interface__factory";
+export { IERC20Upgradeable__factory } from "./factories/IERC20Upgradeable__factory";
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { IAccessControl__factory } from "./factories/IAccessControl__factory";
 export { Ownable__factory } from "./factories/Ownable__factory";
@@ -72,7 +73,6 @@ export { LPoolLiquidity__factory } from "./factories/LPoolLiquidity__factory";
 export { LPoolProvide__factory } from "./factories/LPoolProvide__factory";
 export { LPoolTax__factory } from "./factories/LPoolTax__factory";
 export { LPoolToken__factory } from "./factories/LPoolToken__factory";
-export { Margin__factory } from "./factories/Margin__factory";
 export { MarginAccount__factory } from "./factories/MarginAccount__factory";
 export { MarginApproved__factory } from "./factories/MarginApproved__factory";
 export { MarginBorrowers__factory } from "./factories/MarginBorrowers__factory";

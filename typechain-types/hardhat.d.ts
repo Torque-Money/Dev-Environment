@@ -17,6 +17,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AggregatorV3Interface__factory>;
     getContractFactory(
+      name: "IERC20Upgradeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Upgradeable__factory>;
+    getContractFactory(
       name: "AccessControl",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AccessControl__factory>;
@@ -113,10 +117,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.LPoolToken__factory>;
     getContractFactory(
-      name: "Margin",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.Margin__factory>;
-    getContractFactory(
       name: "MarginAccount",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.MarginAccount__factory>;
@@ -198,6 +198,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.AggregatorV3Interface>;
+    getContractAt(
+      name: "IERC20Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Upgradeable>;
     getContractAt(
       name: "AccessControl",
       address: string,
@@ -318,11 +323,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.LPoolToken>;
-    getContractAt(
-      name: "Margin",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.Margin>;
     getContractAt(
       name: "MarginAccount",
       address: string,

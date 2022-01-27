@@ -10,7 +10,7 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IERC20",
+        internalType: "address",
         name: "token_",
         type: "address",
       },
@@ -34,7 +34,7 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IERC20",
+        internalType: "address",
         name: "token_",
         type: "address",
       },
@@ -71,7 +71,7 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IERC20",
+        internalType: "address",
         name: "token_",
         type: "address",
       },
@@ -95,7 +95,7 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "contract IERC20",
+        internalType: "address",
         name: "token_",
         type: "address",
       },

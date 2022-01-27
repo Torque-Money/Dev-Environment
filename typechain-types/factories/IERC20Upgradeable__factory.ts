@@ -4,23 +4,76 @@
 
 import { Contract, Signer, utils } from "ethers";
 import { Provider } from "@ethersproject/providers";
-import type { IConverter, IConverterInterface } from "../IConverter";
+import type {
+  IERC20Upgradeable,
+  IERC20UpgradeableInterface,
+} from "../IERC20Upgradeable";
 
 const _abi = [
   {
+    anonymous: false,
     inputs: [
       {
+        indexed: true,
         internalType: "address",
-        name: "tokenIn_",
+        name: "owner",
         type: "address",
       },
       {
+        indexed: true,
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+      {
+        indexed: false,
         internalType: "uint256",
-        name: "amountIn_",
+        name: "value",
         type: "uint256",
       },
     ],
-    name: "maxAmountEthOut",
+    name: "Approval",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "from",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "to",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
+    ],
+    name: "Transfer",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "spender",
+        type: "address",
+      },
+    ],
+    name: "allowance",
     outputs: [
       {
         internalType: "uint256",
@@ -35,103 +88,21 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "tokenIn_",
+        name: "spender",
         type: "address",
       },
       {
         internalType: "uint256",
-        name: "amountIn_",
+        name: "amount",
         type: "uint256",
       },
-      {
-        internalType: "address",
-        name: "tokenOut_",
-        type: "address",
-      },
     ],
-    name: "maxAmountTokenOut",
+    name: "approve",
     outputs: [
       {
-        internalType: "uint256",
+        internalType: "bool",
         name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "tokenIn_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amountOut_",
-        type: "uint256",
-      },
-    ],
-    name: "minAmountTokenInEthOut",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "tokenIn_",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "tokenOut_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amountOut_",
-        type: "uint256",
-      },
-    ],
-    name: "minAmountTokenInTokenOut",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "tokenIn_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amountIn_",
-        type: "uint256",
-      },
-    ],
-    name: "swapMaxEthOut",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
+        type: "bool",
       },
     ],
     stateMutability: "nonpayable",
@@ -141,26 +112,82 @@ const _abi = [
     inputs: [
       {
         internalType: "address",
-        name: "tokenIn_",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amountIn_",
-        type: "uint256",
-      },
-      {
-        internalType: "address",
-        name: "tokenOut_",
+        name: "account",
         type: "address",
       },
     ],
-    name: "swapMaxTokenOut",
+    name: "balanceOf",
     outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalSupply",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "transfer",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "sender",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "transferFrom",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "nonpayable",
@@ -168,15 +195,15 @@ const _abi = [
   },
 ];
 
-export class IConverter__factory {
+export class IERC20Upgradeable__factory {
   static readonly abi = _abi;
-  static createInterface(): IConverterInterface {
-    return new utils.Interface(_abi) as IConverterInterface;
+  static createInterface(): IERC20UpgradeableInterface {
+    return new utils.Interface(_abi) as IERC20UpgradeableInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IConverter {
-    return new Contract(address, _abi, signerOrProvider) as IConverter;
+  ): IERC20Upgradeable {
+    return new Contract(address, _abi, signerOrProvider) as IERC20Upgradeable;
   }
 }

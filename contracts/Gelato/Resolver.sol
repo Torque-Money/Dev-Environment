@@ -69,7 +69,7 @@ contract Resolver is PokeMeReady {
 
                 break;
             } else {
-                IConverter(repayToken_[i]).safeApprove(converter, repayAmount_[i]);
+                IERC20Upgradeable(repayToken_[i]).safeApprove(converter, repayAmount_[i]);
                 IConverter(converter).swapMaxTokenOut(repayToken_[i], repayAmount_[i], outToken_);
                 repayAmount_[i] = 0;
             }
