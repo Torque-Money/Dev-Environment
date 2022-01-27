@@ -9,95 +9,95 @@ import "./IConverter.sol";
 contract Converter is IConverter, Ownable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
-    UniswapV2Router02 public router;
+    address public router;
 
-    constructor(UniswapV2Router02 router_) {
+    constructor(address router_) {
         router = router_;
     }
 
     // Set the router to be used
-    function setRouter(UniswapV2Router02 router_) external onlyOwner {
+    function setRouter(address router_) external onlyOwner {
         router = router_;
     }
 
     // Swap the given amount for the maximum tokens out
     function swapMaxTokenOut(
-        IERC20Upgradeable tokenIn_,
+        address tokenIn_,
         uint256 amountIn_,
-        IERC20Upgradeable tokenOut_
+        address tokenOut_
     ) external override returns (uint256) {
         address[] memory path = new address[](3);
-        path[0] = address(tokenIn_);
-        path[1] = router.WETH();
-        path[2] = address(tokenOut_);
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
+        path[2] = tokenOut_;
 
-        tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
-        tokenIn_.safeApprove(address(router), amountIn_);
-        uint256 amountOut = router.swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
+        IERC20Upgradeable(tokenIn_).safeTransferFrom(_msgSender(), address(this), amountIn_);
+        IERC20Upgradeable(tokenIn_).safeApprove(router, amountIn_);
+        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForTokens(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
         return amountOut;
     }
 
     // Get the maximum output tokens for given input tokens
     function maxAmountTokenOut(
-        IERC20Upgradeable tokenIn_,
+        address tokenIn_,
         uint256 amountIn_,
-        IERC20Upgradeable tokenOut_
+        address tokenOut_
     ) external view override returns (uint256) {
         address[] memory path = new address[](3);
-        path[0] = address(tokenIn_);
-        path[1] = router.WETH();
-        path[2] = address(tokenOut_);
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
+        path[2] = tokenOut_;
 
-        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
+        uint256 amountOut = UniswapV2Router02(router).getAmountsOut(amountIn_, path)[1];
         return amountOut;
     }
 
     // Get the minimum input tokens required for the given output tokens
     function minAmountTokenInTokenOut(
-        IERC20Upgradeable tokenIn_,
-        IERC20Upgradeable tokenOut_,
+        address tokenIn_,
+        address tokenOut_,
         uint256 amountOut_
     ) external view override returns (uint256) {
         address[] memory path = new address[](3);
-        path[0] = address(tokenIn_);
-        path[1] = router.WETH();
-        path[2] = address(tokenOut_);
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
+        path[2] = tokenOut_;
 
-        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
+        uint256 amountIn = UniswapV2Router02(router).getAmountsIn(amountOut_, path)[0];
         return amountIn;
     }
 
     // Swap the given amount for the maximum ETH out
-    function swapMaxEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external override returns (uint256) {
+    function swapMaxEthOut(address tokenIn_, uint256 amountIn_) external override returns (uint256) {
         address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = address(router.WETH());
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
 
-        tokenIn_.safeTransferFrom(_msgSender(), address(this), amountIn_);
-        tokenIn_.safeApprove(address(router), amountIn_);
-        uint256 amountOut = router.swapExactTokensForETH(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
+        IERC20Upgradeable(tokenIn_).safeTransferFrom(_msgSender(), address(this), amountIn_);
+        IERC20Upgradeable(tokenIn_).safeApprove(router, amountIn_);
+        uint256 amountOut = UniswapV2Router02(router).swapExactTokensForETH(amountIn_, 0, path, _msgSender(), block.timestamp + 1)[1];
 
         return amountOut;
     }
 
     // Get the maximum output eth for given input tokens
-    function maxAmountEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external view override returns (uint256) {
+    function maxAmountEthOut(address tokenIn_, uint256 amountIn_) external view override returns (uint256) {
         address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = router.WETH();
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
 
-        uint256 amountOut = router.getAmountsOut(amountIn_, path)[1];
+        uint256 amountOut = UniswapV2Router02(router).getAmountsOut(amountIn_, path)[1];
         return amountOut;
     }
 
     // Get the minimum input tokens for required output eth
-    function minAmountTokenInEthOut(IERC20Upgradeable tokenIn_, uint256 amountOut_) external view override returns (uint256) {
+    function minAmountTokenInEthOut(address tokenIn_, uint256 amountOut_) external view override returns (uint256) {
         address[] memory path = new address[](2);
-        path[0] = address(tokenIn_);
-        path[1] = router.WETH();
+        path[0] = tokenIn_;
+        path[1] = UniswapV2Router02(router).WETH();
 
-        uint256 amountIn = router.getAmountsIn(amountOut_, path)[0];
+        uint256 amountIn = UniswapV2Router02(router).getAmountsIn(amountOut_, path)[0];
         return amountIn;
     }
 }

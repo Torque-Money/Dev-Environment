@@ -5,26 +5,26 @@ import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeab
 
 interface IConverter {
     function swapMaxTokenOut(
-        IERC20Upgradeable tokenIn_,
+        address tokenIn_,
         uint256 amountIn_,
-        IERC20Upgradeable tokenOut_
+        address tokenOut_
     ) external returns (uint256);
 
     function maxAmountTokenOut(
-        IERC20Upgradeable tokenIn_,
+        address tokenIn_,
         uint256 amountIn_,
-        IERC20Upgradeable tokenOut_
+        address tokenOut_
     ) external view returns (uint256);
 
     function minAmountTokenInTokenOut(
-        IERC20Upgradeable tokenIn_,
-        IERC20Upgradeable tokenOut_,
+        address tokenIn_,
+        address tokenOut_,
         uint256 amountOut_
     ) external view returns (uint256);
 
-    function swapMaxEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external returns (uint256);
+    function swapMaxEthOut(address tokenIn_, uint256 amountIn_) external returns (uint256);
 
-    function maxAmountEthOut(IERC20Upgradeable tokenIn_, uint256 amountIn_) external view returns (uint256);
+    function maxAmountEthOut(address tokenIn_, uint256 amountIn_) external view returns (uint256);
 
-    function minAmountTokenInEthOut(IERC20Upgradeable tokenIn_, uint256 amountOut_) external view returns (uint256);
+    function minAmountTokenInEthOut(address tokenIn_, uint256 amountOut_) external view returns (uint256);
 }
