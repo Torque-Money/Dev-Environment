@@ -24,7 +24,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await oracle.transferOwnership(config.timelockAddress);
 
     const resolver = await hre.ethers.getContractAt("Resolver", config.resolverAddress);
-    await resolver.transferOwnership(config.resolverAddress);
+    await resolver.transferOwnership(config.timelockAddress);
 
     console.log("Setup: Timelock");
 }
