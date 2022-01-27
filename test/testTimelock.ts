@@ -36,12 +36,15 @@ describe("Timelock", async function () {
             description: "Set new router",
         };
 
-        const id = await timelock.hashOperation(request.address, request.value, request.calldata, request.predecessor, request.description);
         await timelock.schedule(request.address, request.value, request.calldata, request.predecessor, request.description, minDelay);
 
-        // Try and execute before time
-        // Try and execute as non user
-        // Execute after the time as the timelock
+        const execute = async () => await timelock.execute(request.address, request.value, request.calldata, request.predecessor, request.description);
+        await shouldFail(execute);
+        await shouldFail(async () => await converter.setRouter(config.routerAddress));
+
+        await waitTime(minDelay);
+
+        await execute();
     });
 });
 
