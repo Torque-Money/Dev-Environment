@@ -14,26 +14,17 @@ describe("Timelock", async function () {
     let minDelay: BigNumber;
 
     const waitTime = async (seconds: BigNumber) => {
-        await network.provider.send("evm_increaseTime", [seconds.toString()]);
+        await network.provider.send("evm_increaseTime", [seconds.toNumber()]);
         await network.provider.send("evm_mine");
     };
 
-    const executeAdminOnly = async ({
-        address,
-        value,
-        calldata,
-        predecessor,
-        description,
-    }: {
-        address: string;
-        value: number;
-        calldata: string;
-        predecessor?: string;
-        description?: string;
-    }) => {
-        await timelock.schedule(address, value, calldata, predecessor || "", description || "", minDelay);
+    const executeAdminOnly = async ({address, value, calldata, description}: {address: string; value: number; calldata: string; description?: string}) => {
+        const parsedPredecessor = ethers.constants.HashZero;
+        const parsedDescription = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(description || ""));
 
-        const execute = async () => await timelock.execute(address, value, calldata, predecessor || "", description || "");
+        await timelock.schedule(address, value, calldata, parsedPredecessor, parsedDescription, minDelay);
+
+        const execute = async () => await timelock.execute(address, value, calldata, parsedPredecessor, parsedDescription);
         await shouldFail(execute);
 
         await waitTime(minDelay);
@@ -58,39 +49,39 @@ describe("Timelock", async function () {
         });
     });
 
-    it("should execute an admin only request to the leveraging pool", async () => {
-        const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        await shouldFail(async () => await pool.setConverter(config.converterAddress));
+    // it("should execute an admin only request to the leveraging pool", async () => {
+    //     const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
+    //     await shouldFail(async () => await pool.setConverter(config.converterAddress));
 
-        await executeAdminOnly({
-            address: pool.address,
-            value: 0,
-            calldata: pool.interface.encodeFunctionData("setConverter", [config.converterAddress]),
-        });
-    });
+    //     await executeAdminOnly({
+    //         address: pool.address,
+    //         value: 0,
+    //         calldata: pool.interface.encodeFunctionData("setConverter", [config.converterAddress]),
+    //     });
+    // });
 
-    it("should execute an admin only request to the margin long", async () => {
-        const marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        await shouldFail(async () => await marginLong.setOracle(config.oracleAddress));
+    // it("should execute an admin only request to the margin long", async () => {
+    //     const marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
+    //     await shouldFail(async () => await marginLong.setOracle(config.oracleAddress));
 
-        await executeAdminOnly({
-            address: marginLong.address,
-            value: 0,
-            calldata: marginLong.interface.encodeFunctionData("setOracle", [config.oracleAddress]),
-        });
-    });
+    //     await executeAdminOnly({
+    //         address: marginLong.address,
+    //         value: 0,
+    //         calldata: marginLong.interface.encodeFunctionData("setOracle", [config.oracleAddress]),
+    //     });
+    // });
 
-    it("should execute an admin only request to the oracle", async () => {
-        const oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
-        const token = config.approved[0];
-        await shouldFail(async () => await oracle.setPriceFeed([token.address], [token.priceFeed], [token.reservePriceFeed], [token.decimals], [true]));
+    // it("should execute an admin only request to the oracle", async () => {
+    //     const oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
+    //     const token = config.approved[0];
+    //     await shouldFail(async () => await oracle.setPriceFeed([token.address], [token.priceFeed], [token.reservePriceFeed], [token.decimals], [true]));
 
-        await executeAdminOnly({
-            address: oracle.address,
-            value: 0,
-            calldata: oracle.interface.encodeFunctionData("setPriceFeed", [[token.address], [token.priceFeed], [token.reservePriceFeed], [token.decimals], [true]]),
-        });
-    });
+    //     await executeAdminOnly({
+    //         address: oracle.address,
+    //         value: 0,
+    //         calldata: oracle.interface.encodeFunctionData("setPriceFeed", [[token.address], [token.priceFeed], [token.reservePriceFeed], [token.decimals], [true]]),
+    //     });
+    // });
 });
 
 // describe("DAO", async () => {
