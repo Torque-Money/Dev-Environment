@@ -10,8 +10,6 @@ contract TimelockTax is Context {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    // **** Potentially change this to be made into the onlyOwner of the timelock itself for delayed operations ?
-
     address public taxAccount;
     FractionMath.Fraction private _taxPercentage;
 
