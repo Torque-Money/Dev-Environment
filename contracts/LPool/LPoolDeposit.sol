@@ -22,7 +22,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
             uint256 _utilized = IOracle(oracle).priceMax(poolTokens[i], utilized(poolTokens[i]));
 
-            uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1);
+            uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1); // **** Is there another way of doing this ?
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
