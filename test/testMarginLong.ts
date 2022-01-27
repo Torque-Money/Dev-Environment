@@ -47,6 +47,8 @@ describe("MarginLong", async function () {
         const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
         await marginLong.addCollateral(collateralToken.address, collateralAmount);
 
+        console.log("Signer address:", await marginLong.collateralPrice(signerAddress));
+
         await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
 
         const borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(1);
