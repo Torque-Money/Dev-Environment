@@ -115,5 +115,6 @@
   "converterAddress": "0xB0D4afd8879eD9F52b28595d31B441D079B2Ca07",
   "marginLongAddress": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f",
   "marginLongResolvedAddress": "",
-  "resolverAddress": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d"
+  "resolverAddress": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
+  "timelockAddress": ""
 }

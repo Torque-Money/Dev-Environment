@@ -5,21 +5,31 @@ import {saveTempConstructor} from "../util/utilVerify";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
     const constructorArgs = {
-        // converter: config.converterAddress,
-        // oracle: config.oracleAddress,
-        // taxPercentNumerator: 5,
-        // taxPercentDenominator: 100,
-        // timePerInterestApplication: hre.ethers.BigNumber.from(2628000),
+        minDelay: hre.ethers.BigNumber.from(259200),
+        proposers: [signerAddress],
+        executors: [hre.ethers.constants.AddressZero],
+        taxPercentageNumerator: 5,
+        taxPercentageDenominator: 100,
+        taxCooldown: hre.ethers.BigNumber.from(10).pow(3).mul(2628),
     };
 
-    // const Pool = await hre.ethers.getContractFactory("LPool");
-    // const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
+    const Timelock = await hre.ethers.getContractFactory("Timelock");
+    const timelock = await Timelock.deploy(
+        constructorArgs.minDelay,
+        constructorArgs.proposers,
+        constructorArgs.executors,
+        constructorArgs.taxPercentageDenominator,
+        constructorArgs.taxPercentageDenominator,
+        constructorArgs.taxCooldown
+    );
 
-    // config.leveragePoolAddress = pool.address;
-    // config.leveragePoolResolvedAddress = await pool.resolvedAddress;
-    // console.log(`Deployed: Pool proxy and pool | ${pool.address} ${await pool.resolvedAddress}`);
+    config.timelockAddress = timelock.address;
+    console.log(`Deployed: Timelock | ${timelock.address}`);
 
-    if (configType !== "fork") saveTempConstructor(await pool.resolvedAddress, {});
+    if (configType !== "fork") saveTempConstructor(timelock.address, constructorArgs);
     saveConfig(config, configType);
 }

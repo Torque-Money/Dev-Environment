@@ -53,6 +53,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "TimelockController",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockController__factory>;
+    getContractFactory(
       name: "ERC20",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC20__factory>;
@@ -212,6 +216,14 @@ declare module "hardhat/types/runtime" {
       name: "OracleTokens",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OracleTokens__factory>;
+    getContractFactory(
+      name: "Timelock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Timelock__factory>;
+    getContractFactory(
+      name: "TimelockTax",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockTax__factory>;
 
     getContractAt(
       name: "AggregatorV3Interface",
@@ -263,6 +275,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "TimelockController",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockController>;
     getContractAt(
       name: "ERC20",
       address: string,
@@ -463,6 +480,16 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OracleTokens>;
+    getContractAt(
+      name: "Timelock",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Timelock>;
+    getContractAt(
+      name: "TimelockTax",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockTax>;
 
     // default types
     getContractFactory(
