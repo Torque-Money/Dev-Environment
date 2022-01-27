@@ -1,9 +1,10 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "../Oracle/IOracle.sol";
+import "../Converter/IConverter.sol";
 import "./LPoolApproved.sol";
 import "./LPoolTax.sol";
 
@@ -12,14 +13,14 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Get a pseudo random token from a weighted distribution of pool tokens
-    function _pseudoRandomWeightedPT() internal view returns (IERC20) {
-        IERC20[] memory poolTokens = _poolTokens();
+    function _pseudoRandomWeightedPT() internal view returns (address) {
+        address[] memory poolTokens = _poolTokens();
         uint256[] memory weights = new uint256[](poolTokens.length);
 
         uint256 totalWeightSize;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
-            uint256 _utilized = oracle.priceMax(poolTokens[i], utilized(poolTokens[i]));
+            uint256 _utilized = IOracle(oracle).priceMax(poolTokens[i], utilized(poolTokens[i]));
 
             uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1);
 
@@ -30,7 +31,7 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
         uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
 
         uint256 cumulative = 0;
-        IERC20 selected;
+        address selected;
         for (uint256 i = 0; i < poolTokens.length; i++) {
             cumulative = cumulative.add(weights[i]);
             if (randomSample <= cumulative) {
@@ -42,16 +43,16 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     }
 
     // Deposit a given amount of collateral into the pool and transfer a portion as a tax to the tax account
-    function deposit(IERC20Upgradeable token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
+    function deposit(address token_, uint256 amount_) external onlyRole(POOL_APPROVED) {
         require(amount_ > 0, "LPoolDeposit: Deposit amount must be greater than 0");
 
-        token_.safeTransferFrom(_msgSender(), address(this), amount_);
+        IERC20Upgradeable(token_).safeTransferFrom(_msgSender(), address(this), amount_);
 
-        IERC20 convertedToken = _pseudoRandomWeightedPT();
+        address convertedToken = _pseudoRandomWeightedPT();
         uint256 convertedAmount = amount_;
         if (convertedToken != token_) {
-            token_.safeApprove(address(converter), amount_);
-            convertedAmount = converter.swapMaxTokenOut(token_, amount_, convertedToken);
+            IERC20Upgradeable(token_).safeApprove(converter, amount_);
+            convertedAmount = IConverter(converter).swapMaxTokenOut(token_, amount_, convertedToken);
         }
 
         uint256 totalTax = _payTax(convertedToken, convertedAmount);
@@ -60,21 +61,21 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
     }
 
     // Withdraw a given amount of collateral from the pool
-    function withdraw(IERC20 token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
+    function withdraw(address token_, uint256 amount_) external onlyRole(POOL_APPROVED) onlyApprovedPT(token_) {
         require(amount_ > 0, "LPoolDeposit: Withdraw amount must be greater than 0");
         require(amount_ <= liquidity(token_), "LPoolDeposit: Withdraw amount exceeds available liquidity");
 
-        token_.safeTransfer(_msgSender(), amount_);
+        IERC20Upgradeable(token_).safeTransfer(_msgSender(), amount_);
 
         emit Withdraw(_msgSender(), token_, amount_);
     }
 
-    function liquidity(IERC20 token_) public view virtual returns (uint256);
+    function liquidity(address token_) public view virtual returns (uint256);
 
-    function utilized(IERC20 token_) public view virtual returns (uint256);
+    function utilized(address token_) public view virtual returns (uint256);
 
-    function interestRate(IERC20 token_) public view virtual returns (uint256, uint256);
+    function interestRate(address token_) public view virtual returns (uint256, uint256);
 
-    event Deposit(address indexed account, IERC20 tokenIn, uint256 amountIn, IERC20 convertedToken, uint256 convertedAmount);
-    event Withdraw(address indexed account, IERC20 token, uint256 amount);
+    event Deposit(address indexed account, address tokenIn, uint256 amountIn, address convertedToken, uint256 convertedAmount);
+    event Withdraw(address indexed account, address token, uint256 amount);
 }

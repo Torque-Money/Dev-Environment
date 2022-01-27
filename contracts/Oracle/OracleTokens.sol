@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 abstract contract OracleTokens is Ownable {
@@ -12,16 +11,16 @@ abstract contract OracleTokens is Ownable {
         uint256 decimals;
         bool supported;
     }
-    mapping(IERC20 => Token) private _tokens;
+    mapping(address => Token) private _tokens;
 
-    modifier onlySupported(IERC20 token_) {
+    modifier onlySupported(address token_) {
         require(isSupported(token_), "OracleTokens: Only supported tokens may be used");
         _;
     }
 
     // Set the price feed for a given asset along with the decimals
     function setPriceFeed(
-        IERC20[] memory token_,
+        address[] memory token_,
         AggregatorV3Interface[] memory priceFeed_,
         AggregatorV3Interface[] memory reservePriceFeed_,
         uint256[] memory correctDecimals_,
@@ -38,22 +37,22 @@ abstract contract OracleTokens is Ownable {
     }
 
     // Check if an asset is supported by the oracle
-    function isSupported(IERC20 token_) public view returns (bool) {
+    function isSupported(address token_) public view returns (bool) {
         return _tokens[token_].supported;
     }
 
     // Get the price feed for a given asset
-    function priceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
+    function priceFeed(address token_) public view returns (AggregatorV3Interface) {
         return _tokens[token_].priceFeed;
     }
 
     // Get the reserve price feed for a given asset
-    function reservePriceFeed(IERC20 token_) public view returns (AggregatorV3Interface) {
+    function reservePriceFeed(address token_) public view returns (AggregatorV3Interface) {
         return _tokens[token_].reservePriceFeed;
     }
 
     // Get the correct decimals for a given asset
-    function decimals(IERC20 token_) public view returns (uint256) {
+    function decimals(address token_) public view returns (uint256) {
         return _tokens[token_].decimals;
     }
 }

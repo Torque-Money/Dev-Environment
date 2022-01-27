@@ -2,8 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../lib/FractionMath.sol";
 import "../lib/Set.sol";
@@ -11,7 +10,7 @@ import "./LPoolCore.sol";
 
 abstract contract LPoolTax is Initializable, LPoolCore {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
     using Set for Set.AddressSet;
 
     FractionMath.Fraction private _taxPercent;
@@ -44,13 +43,13 @@ abstract contract LPoolTax is Initializable, LPoolCore {
     }
 
     // Apply and distribute tax
-    function _payTax(IERC20 token_, uint256 amountIn_) internal returns (uint256) {
+    function _payTax(address token_, uint256 amountIn_) internal returns (uint256) {
         address[] memory taxAccounts = _taxAccountSet.iterable();
 
         uint256 tax = _taxPercent.numerator.mul(amountIn_).div(_taxPercent.denominator).div(taxAccounts.length);
         uint256 totalTax = tax.mul(taxAccounts.length);
 
-        for (uint256 i = 0; i < taxAccounts.length; i++) token_.safeTransfer(taxAccounts[i], tax);
+        for (uint256 i = 0; i < taxAccounts.length; i++) IERC20Upgradeable(token_).safeTransfer(taxAccounts[i], tax);
 
         return totalTax;
     }

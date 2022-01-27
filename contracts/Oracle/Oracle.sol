@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "../lib/FractionMath.sol";
@@ -46,7 +45,7 @@ contract Oracle is IOracle, OracleTokens {
     }
 
     // Get the price of an asset in terms of the default stablecoin
-    function _price(IERC20 token_, uint256 amount_) internal view onlySupported(token_) returns (uint256) {
+    function _price(address token_, uint256 amount_) internal view onlySupported(token_) returns (uint256) {
         AggregatorV3Interface feed = priceFeed(token_);
         (, int256 result, , , ) = feed.latestRoundData();
         uint256 _decimals = feed.decimals();
@@ -62,23 +61,23 @@ contract Oracle is IOracle, OracleTokens {
     }
 
     // Get the price for a given token amount at the lowest threshold by the oracle
-    function priceMin(IERC20 token_, uint256 amount_) public view override returns (uint256) {
+    function priceMin(address token_, uint256 amount_) public view override returns (uint256) {
         return _threshold.denominator.sub(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     // Get the price for a given token amount at the highest threshold by the oracle
-    function priceMax(IERC20 token_, uint256 amount_) public view override returns (uint256) {
+    function priceMax(address token_, uint256 amount_) public view override returns (uint256) {
         return (_threshold.denominator).add(_threshold.numerator).mul(_price(token_, amount_)).div(_threshold.denominator);
     }
 
     // Get the amount for a given token price at the lowest threshold by the oracle
-    function amountMin(IERC20 token_, uint256 price_) external view override returns (uint256) {
+    function amountMin(address token_, uint256 price_) external view override returns (uint256) {
         uint256 tokenPrice = priceMax(token_, 10**decimals(token_));
         return price_.mul(10**decimals(token_)).div(tokenPrice);
     }
 
     // Get the amount for a given token price at the highest threshold by the oracle
-    function amountMax(IERC20 token_, uint256 price_) external view override returns (uint256) {
+    function amountMax(address token_, uint256 price_) external view override returns (uint256) {
         uint256 tokenPrice = priceMin(token_, 10**decimals(token_));
         return price_.mul(10**decimals(token_)).div(tokenPrice);
     }
