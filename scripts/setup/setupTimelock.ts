@@ -22,4 +22,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     if (configType !== "fork") oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
     else oracle = await hre.ethers.getContractAt("OracleTest", config.oracleAddress);
     await oracle.transferOwnership(config.oracleAddress);
+
+    console.log("Setup: Timelock");
 }
