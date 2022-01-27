@@ -1,4 +1,3 @@
-import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers, network} from "hardhat";
 import config from "../config.fork.json";
@@ -19,6 +18,29 @@ describe("Timelock", async function () {
         await network.provider.send("evm_mine");
     };
 
+    const executeAdminOnly = async ({
+        address,
+        value,
+        calldata,
+        predecessor,
+        description,
+    }: {
+        address: string;
+        value: number;
+        calldata: string;
+        predecessor?: string;
+        description?: string;
+    }) => {
+        await timelock.schedule(address, value, calldata, predecessor || "", description || "", minDelay);
+
+        const execute = async () => await timelock.execute(address, value, calldata, predecessor || "", description || "");
+        await shouldFail(execute);
+
+        await waitTime(minDelay);
+
+        await execute();
+    };
+
     beforeEach(async () => {
         timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
 
@@ -27,25 +49,16 @@ describe("Timelock", async function () {
 
     it("should execute an admin only request to the converter", async () => {
         const converter = await ethers.getContractAt("Converter", config.converterAddress);
+        await shouldFail(async () => await converter.setRouter(config.routerAddress));
 
-        const request = {
+        await executeAdminOnly({
             address: converter.address,
             value: 0,
             calldata: converter.interface.encodeFunctionData("setRouter", [config.routerAddress]),
-            predecessor: "",
-            description: "Set new router",
-        };
-
-        await timelock.schedule(request.address, request.value, request.calldata, request.predecessor, request.description, minDelay);
-
-        const execute = async () => await timelock.execute(request.address, request.value, request.calldata, request.predecessor, request.description);
-        await shouldFail(execute);
-        await shouldFail(async () => await converter.setRouter(config.routerAddress));
-
-        await waitTime(minDelay);
-
-        await execute();
+        });
     });
+
+    it("should execute an admin only request to the leveraging pool", async () => {});
 });
 
 // describe("DAO", async () => {
