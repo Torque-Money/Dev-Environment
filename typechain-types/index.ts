@@ -2,7 +2,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export type { AggregatorV3Interface } from "./AggregatorV3Interface";
+export type { AccessControlUpgradeable } from "./AccessControlUpgradeable";
+export type { IAccessControlUpgradeable } from "./IAccessControlUpgradeable";
+export type { OwnableUpgradeable } from "./OwnableUpgradeable";
 export type { IERC20Upgradeable } from "./IERC20Upgradeable";
+export type { ERC165Upgradeable } from "./ERC165Upgradeable";
+export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { AccessControl } from "./AccessControl";
 export type { IAccessControl } from "./IAccessControl";
 export type { Ownable } from "./Ownable";
@@ -48,7 +53,12 @@ export type { OracleTest } from "./OracleTest";
 export type { OracleTokens } from "./OracleTokens";
 
 export { AggregatorV3Interface__factory } from "./factories/AggregatorV3Interface__factory";
+export { AccessControlUpgradeable__factory } from "./factories/AccessControlUpgradeable__factory";
+export { IAccessControlUpgradeable__factory } from "./factories/IAccessControlUpgradeable__factory";
+export { OwnableUpgradeable__factory } from "./factories/OwnableUpgradeable__factory";
 export { IERC20Upgradeable__factory } from "./factories/IERC20Upgradeable__factory";
+export { ERC165Upgradeable__factory } from "./factories/ERC165Upgradeable__factory";
+export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__factory";
 export { AccessControl__factory } from "./factories/AccessControl__factory";
 export { IAccessControl__factory } from "./factories/IAccessControl__factory";
 export { Ownable__factory } from "./factories/Ownable__factory";
