@@ -327,19 +327,6 @@ const _abi = [
     type: "function",
   },
   {
-    inputs: [],
-    name: "blocksPerInterestApplication",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -495,7 +482,7 @@ const _abi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "blocksPerInterestApplication_",
+        name: "timePerInterestApplication_",
         type: "uint256",
       },
     ],
@@ -536,7 +523,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "borrowBlock_",
+        name: "borrowTime_",
         type: "uint256",
       },
     ],
@@ -825,19 +812,6 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "uint256",
-        name: "blocksPerInterestApplication_",
-        type: "uint256",
-      },
-    ],
-    name: "setBlocksPerInterestApplication",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
         internalType: "address",
         name: "converter_",
         type: "address",
@@ -951,6 +925,19 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "timePerInterestApplication_",
+        type: "uint256",
+      },
+    ],
+    name: "setTimePerInterestApplication",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",
@@ -976,6 +963,19 @@ const _abi = [
         name: "",
         type: "uint256",
       },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "timePerInterestApplication",
+    outputs: [
       {
         internalType: "uint256",
         name: "",

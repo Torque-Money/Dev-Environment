@@ -10,8 +10,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         oracle: config.oracleAddress,
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
-        blocksPerInterestApplication: hre.ethers.BigNumber.from(2628000).div(config.avgBlockTime),
+        timePerInterestApplication: hre.ethers.BigNumber.from(2628000),
     };
+
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
 

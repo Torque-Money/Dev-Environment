@@ -28,8 +28,8 @@ export interface MarginLongCoreInterface extends utils.Interface {
     "collateral(address,address)": FunctionFragment;
     "collateralPrice(address)": FunctionFragment;
     "getBorrowingAccounts()": FunctionFragment;
-    "initialBorrowBlock(address,address)": FunctionFragment;
     "initialBorrowPrice(address,address)": FunctionFragment;
+    "initialBorrowTime(address,address)": FunctionFragment;
     "initializeMarginCore(address,address)": FunctionFragment;
     "initializeMarginLevel(uint256,uint256)": FunctionFragment;
     "initializeMarginLimits(uint256,uint256)": FunctionFragment;
@@ -97,11 +97,11 @@ export interface MarginLongCoreInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "initialBorrowBlock",
+    functionFragment: "initialBorrowPrice",
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "initialBorrowPrice",
+    functionFragment: "initialBorrowTime",
     values: [string, string]
   ): string;
   encodeFunctionData(
@@ -236,11 +236,11 @@ export interface MarginLongCoreInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "initialBorrowBlock",
+    functionFragment: "initialBorrowPrice",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "initialBorrowPrice",
+    functionFragment: "initialBorrowTime",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -467,12 +467,6 @@ export interface MarginLongCore extends BaseContract {
 
     getBorrowingAccounts(overrides?: CallOverrides): Promise<[string[]]>;
 
-    initialBorrowBlock(
-      token_: string,
-      account_: string,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     "initialBorrowPrice(address,address)"(
       token_: string,
       account_: string,
@@ -480,6 +474,12 @@ export interface MarginLongCore extends BaseContract {
     ): Promise<[BigNumber]>;
 
     "initialBorrowPrice(address)"(
+      account_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
+    initialBorrowTime(
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -682,12 +682,6 @@ export interface MarginLongCore extends BaseContract {
 
   getBorrowingAccounts(overrides?: CallOverrides): Promise<string[]>;
 
-  initialBorrowBlock(
-    token_: string,
-    account_: string,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   "initialBorrowPrice(address,address)"(
     token_: string,
     account_: string,
@@ -695,6 +689,12 @@ export interface MarginLongCore extends BaseContract {
   ): Promise<BigNumber>;
 
   "initialBorrowPrice(address)"(
+    account_: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  initialBorrowTime(
+    token_: string,
     account_: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -888,12 +888,6 @@ export interface MarginLongCore extends BaseContract {
 
     getBorrowingAccounts(overrides?: CallOverrides): Promise<string[]>;
 
-    initialBorrowBlock(
-      token_: string,
-      account_: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     "initialBorrowPrice(address,address)"(
       token_: string,
       account_: string,
@@ -901,6 +895,12 @@ export interface MarginLongCore extends BaseContract {
     ): Promise<BigNumber>;
 
     "initialBorrowPrice(address)"(
+      account_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialBorrowTime(
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1132,12 +1132,6 @@ export interface MarginLongCore extends BaseContract {
 
     getBorrowingAccounts(overrides?: CallOverrides): Promise<BigNumber>;
 
-    initialBorrowBlock(
-      token_: string,
-      account_: string,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     "initialBorrowPrice(address,address)"(
       token_: string,
       account_: string,
@@ -1145,6 +1139,12 @@ export interface MarginLongCore extends BaseContract {
     ): Promise<BigNumber>;
 
     "initialBorrowPrice(address)"(
+      account_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialBorrowTime(
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1350,12 +1350,6 @@ export interface MarginLongCore extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    initialBorrowBlock(
-      token_: string,
-      account_: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     "initialBorrowPrice(address,address)"(
       token_: string,
       account_: string,
@@ -1363,6 +1357,12 @@ export interface MarginLongCore extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     "initialBorrowPrice(address)"(
+      account_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialBorrowTime(
+      token_: string,
       account_: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

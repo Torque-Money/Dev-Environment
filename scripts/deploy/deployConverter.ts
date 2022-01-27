@@ -11,6 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const Converter = await hre.ethers.getContractFactory("Converter");
     const converter = await Converter.deploy(constructorArgs.router);
+
     config.converterAddress = converter.address;
     console.log(`Deployed: Converter | ${converter.address}`);
 

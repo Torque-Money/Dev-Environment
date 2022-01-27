@@ -29,7 +29,6 @@ export interface LPoolInterface extends utils.Interface {
     "addLiquidity(address,uint256)": FunctionFragment;
     "addLiquidityOutLPTokens(address,uint256)": FunctionFragment;
     "addTaxAccount(address)": FunctionFragment;
-    "blocksPerInterestApplication()": FunctionFragment;
     "claim(address,uint256)": FunctionFragment;
     "claimed(address,address)": FunctionFragment;
     "converter()": FunctionFragment;
@@ -58,15 +57,16 @@ export interface LPoolInterface extends utils.Interface {
     "renounceRole(bytes32,address)": FunctionFragment;
     "revokeRole(bytes32,address)": FunctionFragment;
     "setApproved(address[],bool[])": FunctionFragment;
-    "setBlocksPerInterestApplication(uint256)": FunctionFragment;
     "setConverter(address)": FunctionFragment;
     "setMaxInterestMax(address[],uint256[],uint256[])": FunctionFragment;
     "setMaxInterestMin(address[],uint256[],uint256[])": FunctionFragment;
     "setMaxUtilization(address[],uint256[],uint256[])": FunctionFragment;
     "setOracle(address)": FunctionFragment;
     "setTaxPercentage(uint256,uint256)": FunctionFragment;
+    "setTimePerInterestApplication(uint256)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "taxPercentage()": FunctionFragment;
+    "timePerInterestApplication()": FunctionFragment;
     "totalClaimed(address)": FunctionFragment;
     "tvl(address)": FunctionFragment;
     "unclaim(address,uint256)": FunctionFragment;
@@ -104,10 +104,6 @@ export interface LPoolInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "addTaxAccount",
     values: [string]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "blocksPerInterestApplication",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "claim",
@@ -207,10 +203,6 @@ export interface LPoolInterface extends utils.Interface {
     values: [string[], boolean[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "setBlocksPerInterestApplication",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setConverter",
     values: [string]
   ): string;
@@ -232,11 +224,19 @@ export interface LPoolInterface extends utils.Interface {
     values: [BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "setTimePerInterestApplication",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "taxPercentage",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "timePerInterestApplication",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -280,10 +280,6 @@ export interface LPoolInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "addTaxAccount",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "blocksPerInterestApplication",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "claim", data: BytesLike): Result;
@@ -360,10 +356,6 @@ export interface LPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setBlocksPerInterestApplication",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setConverter",
     data: BytesLike
   ): Result;
@@ -385,11 +377,19 @@ export interface LPoolInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setTimePerInterestApplication",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "taxPercentage",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "timePerInterestApplication",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -569,10 +569,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    blocksPerInterestApplication(
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     claim(
       token_: string,
       amount_: BigNumberish,
@@ -612,7 +608,7 @@ export interface LPool extends BaseContract {
       oracle_: string,
       taxPercentNumerator_: BigNumberish,
       taxPercentDenominator_: BigNumberish,
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -623,7 +619,7 @@ export interface LPool extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initializeLPoolInterest(
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -636,7 +632,7 @@ export interface LPool extends BaseContract {
     interest(
       token_: string,
       initialBorrow_: BigNumberish,
-      borrowBlock_: BigNumberish,
+      borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
@@ -707,11 +703,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setBlocksPerInterestApplication(
-      blocksPerInterestApplication_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     setConverter(
       converter_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -749,12 +740,19 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setTimePerInterestApplication(
+      timePerInterestApplication_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+    timePerInterestApplication(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     totalClaimed(
       token_: string,
@@ -817,8 +815,6 @@ export interface LPool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  blocksPerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
-
   claim(
     token_: string,
     amount_: BigNumberish,
@@ -858,7 +854,7 @@ export interface LPool extends BaseContract {
     oracle_: string,
     taxPercentNumerator_: BigNumberish,
     taxPercentDenominator_: BigNumberish,
-    blocksPerInterestApplication_: BigNumberish,
+    timePerInterestApplication_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -869,7 +865,7 @@ export interface LPool extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initializeLPoolInterest(
-    blocksPerInterestApplication_: BigNumberish,
+    timePerInterestApplication_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -882,7 +878,7 @@ export interface LPool extends BaseContract {
   interest(
     token_: string,
     initialBorrow_: BigNumberish,
-    borrowBlock_: BigNumberish,
+    borrowTime_: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
@@ -953,11 +949,6 @@ export interface LPool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setBlocksPerInterestApplication(
-    blocksPerInterestApplication_: BigNumberish,
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
   setConverter(
     converter_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -995,12 +986,19 @@ export interface LPool extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setTimePerInterestApplication(
+    timePerInterestApplication_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   supportsInterface(
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+  timePerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
 
   totalClaimed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1057,8 +1055,6 @@ export interface LPool extends BaseContract {
 
     addTaxAccount(account_: string, overrides?: CallOverrides): Promise<void>;
 
-    blocksPerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
-
     claim(
       token_: string,
       amount_: BigNumberish,
@@ -1098,7 +1094,7 @@ export interface LPool extends BaseContract {
       oracle_: string,
       taxPercentNumerator_: BigNumberish,
       taxPercentDenominator_: BigNumberish,
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1109,7 +1105,7 @@ export interface LPool extends BaseContract {
     ): Promise<void>;
 
     initializeLPoolInterest(
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1122,7 +1118,7 @@ export interface LPool extends BaseContract {
     interest(
       token_: string,
       initialBorrow_: BigNumberish,
-      borrowBlock_: BigNumberish,
+      borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1193,11 +1189,6 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setBlocksPerInterestApplication(
-      blocksPerInterestApplication_: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     setConverter(converter_: string, overrides?: CallOverrides): Promise<void>;
 
     setMaxInterestMax(
@@ -1229,12 +1220,19 @@ export interface LPool extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setTimePerInterestApplication(
+      timePerInterestApplication_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
+
+    timePerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalClaimed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1410,8 +1408,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    blocksPerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
-
     claim(
       token_: string,
       amount_: BigNumberish,
@@ -1454,7 +1450,7 @@ export interface LPool extends BaseContract {
       oracle_: string,
       taxPercentNumerator_: BigNumberish,
       taxPercentDenominator_: BigNumberish,
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1465,7 +1461,7 @@ export interface LPool extends BaseContract {
     ): Promise<BigNumber>;
 
     initializeLPoolInterest(
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -1478,7 +1474,7 @@ export interface LPool extends BaseContract {
     interest(
       token_: string,
       initialBorrow_: BigNumberish,
-      borrowBlock_: BigNumberish,
+      borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1546,11 +1542,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setBlocksPerInterestApplication(
-      blocksPerInterestApplication_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     setConverter(
       converter_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1588,12 +1579,19 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setTimePerInterestApplication(
+      timePerInterestApplication_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     taxPercentage(overrides?: CallOverrides): Promise<BigNumber>;
+
+    timePerInterestApplication(overrides?: CallOverrides): Promise<BigNumber>;
 
     totalClaimed(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1662,10 +1660,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    blocksPerInterestApplication(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     claim(
       token_: string,
       amount_: BigNumberish,
@@ -1708,7 +1702,7 @@ export interface LPool extends BaseContract {
       oracle_: string,
       taxPercentNumerator_: BigNumberish,
       taxPercentDenominator_: BigNumberish,
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1719,7 +1713,7 @@ export interface LPool extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initializeLPoolInterest(
-      blocksPerInterestApplication_: BigNumberish,
+      timePerInterestApplication_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1732,7 +1726,7 @@ export interface LPool extends BaseContract {
     interest(
       token_: string,
       initialBorrow_: BigNumberish,
-      borrowBlock_: BigNumberish,
+      borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1818,11 +1812,6 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setBlocksPerInterestApplication(
-      blocksPerInterestApplication_: BigNumberish,
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     setConverter(
       converter_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1860,12 +1849,21 @@ export interface LPool extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    setTimePerInterestApplication(
+      timePerInterestApplication_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     supportsInterface(
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     taxPercentage(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    timePerInterestApplication(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     totalClaimed(
       token_: string,

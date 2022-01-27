@@ -312,7 +312,26 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "initialBorrowBlock",
+    name: "initialBorrowPrice",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account_",
+        type: "address",
+      },
+    ],
+    name: "initialBorrowPrice",
     outputs: [
       {
         internalType: "uint256",
@@ -336,26 +355,7 @@ const _abi = [
         type: "address",
       },
     ],
-    name: "initialBorrowPrice",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "account_",
-        type: "address",
-      },
-    ],
-    name: "initialBorrowPrice",
+    name: "initialBorrowTime",
     outputs: [
       {
         internalType: "uint256",
