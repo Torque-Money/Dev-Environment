@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "./LPoolClaim.sol";
 import "./LPoolDeposit.sol";
 
 abstract contract LPoolLiquidity is LPoolClaim, LPoolDeposit {
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
 
     // Return the total value locked of a given asset
     function tvl(address token_) public view onlyPT(token_) returns (uint256) {

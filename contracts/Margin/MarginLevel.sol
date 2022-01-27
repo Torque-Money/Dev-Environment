@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../lib/FractionMath.sol";
 import "./MarginAccount.sol";
 
 abstract contract MarginLevel is Initializable, MarginAccount {
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
 
     FractionMath.Fraction private _minMarginLevel; // Percentage that the margin level may hover above before liquidation (should be above 100)
 

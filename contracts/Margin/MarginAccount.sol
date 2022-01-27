@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "../LPool/LPool.sol";
 import "../Oracle/IOracle.sol";
 import "../lib/Set.sol";
 import "./MarginPool.sol";
 
 abstract contract MarginAccount is MarginPool {
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
     using Set for Set.AddressSet;
 
     struct Account {

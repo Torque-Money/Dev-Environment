@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "./LPoolApproved.sol";
 
 abstract contract LPoolClaim is LPoolApproved {
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
 
     mapping(address => mapping(address => uint256)) private _claimed;
     mapping(address => uint256) private _totalClaimed;
