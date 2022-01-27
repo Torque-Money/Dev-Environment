@@ -8,6 +8,8 @@ import {Timelock} from "../typechain-types";
 // **** I need a seperate function to delay the time to make the timelock instant
 // **** Dont forget to revoke the admin role from the timelock (or dont initially)
 
+// **** I need the timelock to control the proxy upgrade address also ****
+
 describe("Timelock", async function () {
     let timelock: Timelock;
     let minDelay: BigNumber;
