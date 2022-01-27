@@ -27,8 +27,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
     await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
-    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.marginLongAddress);
-    await leveragePool.grantRole(hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE")), config.resolverAddress);
+    const POOL_APPROVED_ROLE = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE"));
+    await leveragePool.grantRole(POOL_APPROVED_ROLE, config.marginLongAddress);
+    await leveragePool.grantRole(POOL_APPROVED_ROLE, config.resolverAddress);
 
     await leveragePool.addTaxAccount(signerAddress);
 
