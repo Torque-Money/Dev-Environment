@@ -157,7 +157,7 @@ abstract contract MarginLongRepayCore is MarginLongCore {
 
     function liquidationFeePercent() public view virtual returns (uint256, uint256);
 
-    event Repay(address indexed account, IERC20 token);
+    event Repay(address indexed account, address token);
     event RepayAll(address indexed account);
     event Reset(address indexed account, address resetter);
 }
