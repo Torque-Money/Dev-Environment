@@ -12,16 +12,16 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await leveragePool.addLPToken(leveragePoolApprovedTokens, approvedNames, approvedSymbols);
     await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true));
 
-    const maxInterestMinNumerator = Array(leveragePoolApprovedTokens.length).fill(15);
-    const maxInterestMinDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    const maxInterestMinNumerator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinNumerator);
+    const maxInterestMinDenominator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinDenominator);
     await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator);
 
-    const maxInterestMaxNumerator = Array(leveragePoolApprovedTokens.length).fill(45);
-    const maxInterestMaxDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    const maxInterestMaxNumerator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMaxNumerator);
+    const maxInterestMaxDenominator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMaxDenominator);
     await leveragePool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator);
 
-    const maxUtilizationNumerator = Array(leveragePoolApprovedTokens.length).fill(60);
-    const maxUtilizationDenominator = Array(leveragePoolApprovedTokens.length).fill(100);
+    const maxUtilizationNumerator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxUtilizationNumerator);
+    const maxUtilizationDenominator = config.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxUtilizationDenominator);
     await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator);
 
     const POOL_APPROVED_ROLE = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE"));
