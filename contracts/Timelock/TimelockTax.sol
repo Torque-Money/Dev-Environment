@@ -46,7 +46,7 @@ contract TimelockTax is Context {
 
     // Claim tax for a given token
     function claimTax(address token_) external onlyTaxAccount {
-        require(block.timestamp >= lastTax.add(taxCooldown));
+        require(block.timestamp > lastTax.add(taxCooldown), "TimelockTax: Too early to claim tax");
 
         uint256 bal = IERC20(token_).balanceOf(address(this));
         uint256 tax = bal.mul(_taxPercentage.numerator).div(_taxPercentage.denominator);
