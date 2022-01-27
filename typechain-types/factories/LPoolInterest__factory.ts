@@ -518,7 +518,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "initialBorrow_",
+        name: "borrowPrice_",
         type: "uint256",
       },
       {

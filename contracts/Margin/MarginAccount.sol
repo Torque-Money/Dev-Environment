@@ -167,14 +167,7 @@ abstract contract MarginAccount is MarginPool {
 
     // Get the interest accumulated for a given asset
     function interest(address token_, address account_) public view onlyBorrowedToken(token_) returns (uint256) {
-        uint256 borrowPrice = IOracle(oracle).priceMin(token_, borrowed(token_, account_));
-        uint256 initBorrowPrice = initialBorrowPrice(token_, account_);
-
-        uint256 interestPrice;
-        if (borrowPrice > initBorrowPrice) interestPrice = borrowPrice;
-        else interestPrice = initBorrowPrice;
-
-        return LPool(pool).interest(token_, interestPrice, initialBorrowTime(token_, account_));
+        return LPool(pool).interest(token_, initialBorrowPrice(token_, account_), initialBorrowTime(token_, account_));
     }
 
     // Get the interest accumulated for the total account

@@ -631,7 +631,7 @@ export interface LPool extends BaseContract {
 
     interest(
       token_: string,
-      initialBorrow_: BigNumberish,
+      borrowPrice_: BigNumberish,
       borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
@@ -877,7 +877,7 @@ export interface LPool extends BaseContract {
 
   interest(
     token_: string,
-    initialBorrow_: BigNumberish,
+    borrowPrice_: BigNumberish,
     borrowTime_: BigNumberish,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
@@ -1117,7 +1117,7 @@ export interface LPool extends BaseContract {
 
     interest(
       token_: string,
-      initialBorrow_: BigNumberish,
+      borrowPrice_: BigNumberish,
       borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1473,7 +1473,7 @@ export interface LPool extends BaseContract {
 
     interest(
       token_: string,
-      initialBorrow_: BigNumberish,
+      borrowPrice_: BigNumberish,
       borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -1725,7 +1725,7 @@ export interface LPool extends BaseContract {
 
     interest(
       token_: string,
-      initialBorrow_: BigNumberish,
+      borrowPrice_: BigNumberish,
       borrowTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
