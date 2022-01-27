@@ -14,19 +14,19 @@ abstract contract LPoolInterest is Initializable, LPoolLiquidity {
     using SafeMathUpgradeable for uint256;
     using SignedSafeMathUpgradeable for int256;
 
-    uint256 public blocksPerInterestApplication;
+    uint256 public timePerInterestApplication;
 
     mapping(address => FractionMath.Fraction) private _maxInterestMin;
     mapping(address => FractionMath.Fraction) private _maxInterestMax;
     mapping(address => FractionMath.Fraction) private _maxUtilization;
 
-    function initializeLPoolInterest(uint256 blocksPerInterestApplication_) public initializer {
-        blocksPerInterestApplication = blocksPerInterestApplication_;
+    function initializeLPoolInterest(uint256 timePerInterestApplication_) public initializer {
+        timePerInterestApplication = timePerInterestApplication_;
     }
 
-    // Set the number of blocks the interest rate is calculated for
-    function setBlocksPerInterestApplication(uint256 blocksPerInterestApplication_) external onlyRole(POOL_ADMIN) {
-        blocksPerInterestApplication = blocksPerInterestApplication_;
+    // Set the time the interest rate is applied after
+    function setTimePerInterestApplication(uint256 timePerInterestApplication_) external onlyRole(POOL_ADMIN) {
+        timePerInterestApplication = timePerInterestApplication_;
     }
 
     // Get the max interest for minimum utilization for the given token
@@ -140,15 +140,15 @@ abstract contract LPoolInterest is Initializable, LPoolLiquidity {
         else return _interestRateMin(utilization, interestMin);
     }
 
-    // Get the accumulated interest on a given asset for a given number of blocks
+    // Get the accumulated interest on a given asset for a given amount of time
     function interest(
         address token_,
         uint256 initialBorrow_,
-        uint256 borrowBlock_
+        uint256 borrowTime_
     ) public view onlyPT(token_) returns (uint256) {
-        uint256 blocksSinceBorrow = block.number.sub(borrowBlock_);
+        uint256 timeSinceBorrow = block.timestamp.sub(borrowTime_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
 
-        return initialBorrow_.mul(interestRateNumerator).mul(blocksSinceBorrow).div(interestRateDenominator).div(blocksPerInterestApplication);
+        return initialBorrow_.mul(interestRateNumerator).mul(timeSinceBorrow).div(interestRateDenominator).div(timePerInterestApplication);
     }
 }

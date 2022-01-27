@@ -14,7 +14,7 @@ abstract contract MarginLongBorrow is MarginLongCore {
         require(amount_ > 0, "MarginLongBorrow: Amount borrowed must be greater than 0");
 
         if (!isBorrowing(token_, _msgSender())) {
-            _setInitialBorrowBlock(token_, block.number, _msgSender());
+            _setInitialBorrowTime(token_, block.timestamp, _msgSender());
             _addAccount(_msgSender());
         }
 

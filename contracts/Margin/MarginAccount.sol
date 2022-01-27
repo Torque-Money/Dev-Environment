@@ -17,7 +17,7 @@ abstract contract MarginAccount is MarginPool {
         Set.AddressSet borrowed;
         mapping(address => uint256) borrowedAmounts;
         mapping(address => uint256) initialBorrowPrice;
-        mapping(address => uint256) initialBorrowBlock;
+        mapping(address => uint256) initialBorrowTime;
         uint256 hasBorrowed;
     }
 
@@ -149,20 +149,20 @@ abstract contract MarginAccount is MarginPool {
         return total;
     }
 
-    // Set the initial borrow price for an account
-    function _setInitialBorrowBlock(
+    // Set the initial borrow time for an asset for an account
+    function _setInitialBorrowTime(
         address token_,
-        uint256 block_,
+        uint256 time_,
         address account_
     ) internal {
         Account storage account = _accounts[account_];
-        account.initialBorrowBlock[token_] = block_;
+        account.initialBorrowTime[token_] = time_;
     }
 
-    // Get the initial borrow block for an ccount
-    function initialBorrowBlock(address token_, address account_) public view onlyBorrowedToken(token_) returns (uint256) {
+    // Get the initial borrow time for an account
+    function initialBorrowTime(address token_, address account_) public view onlyBorrowedToken(token_) returns (uint256) {
         Account storage account = _accounts[account_];
-        return account.initialBorrowBlock[token_];
+        return account.initialBorrowTime[token_];
     }
 
     // Get the interest accumulated for a given asset
@@ -174,7 +174,7 @@ abstract contract MarginAccount is MarginPool {
         if (borrowPrice > initBorrowPrice) interestPrice = borrowPrice;
         else interestPrice = initBorrowPrice;
 
-        return LPool(pool).interest(token_, interestPrice, initialBorrowBlock(token_, account_));
+        return LPool(pool).interest(token_, interestPrice, initialBorrowTime(token_, account_));
     }
 
     // Get the interest accumulated for the total account

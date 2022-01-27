@@ -11,10 +11,10 @@ contract LPool is Initializable, LPoolProvide, LPoolInterest {
         address oracle_,
         uint256 taxPercentNumerator_,
         uint256 taxPercentDenominator_,
-        uint256 blocksPerInterestApplication_
+        uint256 timePerInterestApplication_
     ) external initializer {
         initializeLPoolCore(converter_, oracle_);
         initializeLPoolTax(taxPercentNumerator_, taxPercentDenominator_);
-        initializeLPoolInterest(blocksPerInterestApplication_);
+        initializeLPoolInterest(timePerInterestApplication_);
     }
 }
