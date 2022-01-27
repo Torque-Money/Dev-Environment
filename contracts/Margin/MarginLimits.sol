@@ -35,6 +35,7 @@ abstract contract MarginLimits is Initializable, MarginAccount {
     function maxLeverageReached(address account_) public view returns (bool) {
         uint256 collateralPrice = collateralPrice(account_);
         uint256 totalInitialBorrowPrice = initialBorrowPrice(account_);
+
         return (collateralPrice.mul(maxLeverage) < totalInitialBorrowPrice);
     }
 
