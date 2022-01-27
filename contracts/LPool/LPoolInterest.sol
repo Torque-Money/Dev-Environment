@@ -143,12 +143,12 @@ abstract contract LPoolInterest is Initializable, LPoolLiquidity {
     // Get the accumulated interest on a given asset for a given amount of time
     function interest(
         address token_,
-        uint256 initialBorrow_,
+        uint256 borrowPrice_,
         uint256 borrowTime_
     ) public view onlyPT(token_) returns (uint256) {
         uint256 timeSinceBorrow = block.timestamp.sub(borrowTime_);
         (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(token_);
 
-        return initialBorrow_.mul(interestRateNumerator).mul(timeSinceBorrow).div(interestRateDenominator).div(timePerInterestApplication);
+        return borrowPrice_.mul(interestRateNumerator).mul(timeSinceBorrow).div(interestRateDenominator).div(timePerInterestApplication);
     }
 }
