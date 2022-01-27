@@ -2,13 +2,15 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-abstract contract MarginCore is Initializable, Ownable {
+abstract contract MarginCore is Initializable, OwnableUpgradeable {
     address public pool;
     address public oracle;
 
     function initializeMarginCore(address pool_, address oracle_) public initializer {
+        __Ownable_init();
+
         pool = pool_;
         oracle = oracle_;
     }
