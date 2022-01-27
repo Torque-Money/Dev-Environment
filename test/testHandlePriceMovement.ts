@@ -34,7 +34,7 @@ describe("Handle price movement", async function () {
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
 
-        await pool.provideLiquidity(borrowedToken.address, addLiquidityAmount);
+        await pool.addLiquidity(borrowedToken.address, addLiquidityAmount);
         await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
         await marginLong.borrow(borrowedToken.address, borrowAmount);
     });
@@ -47,7 +47,7 @@ describe("Handle price movement", async function () {
         }
 
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        await pool.redeemLiquidity(lpToken.address, LPTokenAmount);
+        await pool.removeLiquidity(lpToken.address, LPTokenAmount);
     });
 
     it("should liquidate an account", async () => {
