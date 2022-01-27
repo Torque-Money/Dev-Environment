@@ -159,7 +159,7 @@ abstract contract MarginAccount is MarginPool {
         account.initialBorrowTime[token_] = time_;
     }
 
-    // Get the initial borrow time for an account
+    // Get the initial borrow time for an asset for an account
     function initialBorrowTime(address token_, address account_) public view onlyBorrowedToken(token_) returns (uint256) {
         Account storage account = _accounts[account_];
         return account.initialBorrowTime[token_];
