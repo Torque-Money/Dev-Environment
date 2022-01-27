@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "../MarginLong/MarginLong.sol";
@@ -8,7 +9,7 @@ import "../LPool/LPool.sol";
 import "../Converter/IConverter.sol";
 import "./PokeMeReady.sol";
 
-contract Resolver is PokeMeReady {
+contract Resolver is Ownable, PokeMeReady {
     using SafeMath for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -25,6 +26,21 @@ contract Resolver is PokeMeReady {
         marginLong = marginLong_;
         pool = pool_;
         converter = converter_;
+    }
+
+    // Set the converter to use
+    function setConverter(address converter_) external onlyOwner {
+        converter = converter_;
+    }
+
+    // Set the margin long to use
+    function setMarginLong(address marginLong_) external onlyOwner {
+        marginLong = marginLong_;
+    }
+
+    // Set the pool to use
+    function setPool(address pool_) external onlyOwner {
+        pool = pool_;
     }
 
     // Repay debt for eth
