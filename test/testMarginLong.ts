@@ -56,7 +56,7 @@ describe("MarginLong", async function () {
     it("should prevent bad leverage positions and should open and repay a leveraged position", async () => {
         await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        const tokensProvided = ethers.BigNumber.from(10).pow(18).mul(50);
+        const tokensProvided = ethers.BigNumber.from(10).pow(18).mul(50); // **** Incorrect decimals here - make a change where each test uses the config nicely
 
         const providedValue = await pool.addLiquidityOutLPTokens(borrowedToken.address, tokensProvided);
         await pool.addLiquidity(borrowedToken.address, tokensProvided);
