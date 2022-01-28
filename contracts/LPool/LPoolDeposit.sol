@@ -22,13 +22,13 @@ abstract contract LPoolDeposit is LPoolApproved, LPoolTax {
             (uint256 interestRateNumerator, uint256 interestRateDenominator) = interestRate(poolTokens[i]);
             uint256 _utilized = IOracle(oracle).priceMax(poolTokens[i], utilized(poolTokens[i]));
 
-            uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1); // **** Is there another way of doing this ?
+            uint256 weightSize = _utilized.mul(interestRateNumerator).div(interestRateDenominator).add(1);
 
             weights[i] = weightSize;
             totalWeightSize = totalWeightSize.add(weightSize);
         }
 
-        uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, _msgSender()))).mod(totalWeightSize);
+        uint256 randomSample = uint256(keccak256(abi.encodePacked(block.difficulty, block.number, gasleft(), _msgSender()))).mod(totalWeightSize);
 
         uint256 cumulative = 0;
         address selected;
