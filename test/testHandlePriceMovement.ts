@@ -5,13 +5,17 @@ import config from "../config.fork.json";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("Handle price movement", async function () {
-    let pool: LPool;
-    let oracle: OracleTest;
-    let priceDecimals: BigNumber;
-    let marginLong: MarginLong;
     let collateralToken: ERC20;
     let borrowedToken: ERC20;
+
     let lpToken: ERC20;
+
+    let priceDecimals: BigNumber;
+
+    let oracle: OracleTest;
+    let pool: LPool;
+    let marginLong: MarginLong;
+
     let signerAddress: string;
 
     const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
