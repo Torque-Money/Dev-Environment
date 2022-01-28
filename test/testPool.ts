@@ -1,4 +1,5 @@
 import {expect} from "chai";
+import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
@@ -14,9 +15,15 @@ describe("Pool", async function () {
 
     let signerAddress: string;
 
+    let depositAmount: BigNumber;
+
     beforeEach(async () => {
+        approvedToken = config.approved[1];
+        token = await ethers.getContractAt("ERC20", approvedToken.address);
+
+        depositAmount = ethers.BigNumber.from(10).pow(approvedToken.decimals).mul(50);
+
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        token = await ethers.getContractAt("ERC20", config.approved[1].address);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
@@ -27,18 +34,17 @@ describe("Pool", async function () {
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const initialBalance = await token.balanceOf(signerAddress);
 
-        const tokensProvided = ethers.BigNumber.from(1000000);
-        const providedValue = await pool.addLiquidityOutLPTokens(token.address, tokensProvided);
-        await pool.addLiquidity(token.address, tokensProvided);
+        const providedValue = await pool.addLiquidityOutLPTokens(token.address, depositAmount);
+        await pool.addLiquidity(token.address, depositAmount);
 
-        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(tokensProvided));
-        expect(await lpToken.balanceOf(signerAddress)).to.equal(tokensProvided);
+        expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(depositAmount));
+        expect(await lpToken.balanceOf(signerAddress)).to.equal(depositAmount);
 
-        expect(await token.balanceOf(pool.address)).to.equal(tokensProvided);
-        expect(await pool.liquidity(token.address)).to.equal(tokensProvided);
-        expect(await pool.tvl(token.address)).to.equal(tokensProvided);
+        expect(await token.balanceOf(pool.address)).to.equal(depositAmount);
+        expect(await pool.liquidity(token.address)).to.equal(depositAmount);
+        expect(await pool.tvl(token.address)).to.equal(depositAmount);
 
-        expect(await pool.removeLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(tokensProvided);
+        expect(await pool.removeLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(depositAmount);
 
         await pool.removeLiquidity(lpToken.address, providedValue);
 
