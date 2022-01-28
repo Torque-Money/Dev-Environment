@@ -1,0 +1,3 @@
+[submodule "Torque-Leverage-Contracts"]
+	path = Torque-Leverage-Contracts
+	url = https://github.com/Torque-Money/Torque-Leverage-Contracts.git
