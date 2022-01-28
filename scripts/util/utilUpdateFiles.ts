@@ -3,7 +3,7 @@ import fs from "fs-extra";
 export default async function main() {
     const compiledContracts = process.cwd() + "/artifacts/contracts";
     const configs = [process.cwd() + "/config.main.json", process.cwd() + "/config.test.json", process.cwd() + "/config.fork.json"];
-    const abis = ["/v1/LPool/LPool.sol/LPool.json", "/v1/MarginLong/MarginLong.sol/MarginLong.json", "/v1/Oracle/Oracle.sol/Oracle.json"];
+    const abis = ["/v1/LPool/LPool.sol/LPool.json", "/v1/MarginLong/MarginLong.sol/MarginLong.json", "/Oracle/Oracle.sol/Oracle.json"];
     const typeChain = process.cwd() + "/typechain-types";
 
     const outRoot = process.cwd() + "/../Torque-Frontend/src";
