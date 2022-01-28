@@ -48,6 +48,7 @@ export interface TimelockInterface extends utils.Interface {
     "setTaxAccount(address)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "taxAccount()": FunctionFragment;
+    "taxClaimAvailable(address)": FunctionFragment;
     "taxCooldown()": FunctionFragment;
     "taxPercentage()": FunctionFragment;
     "updateDelay(uint256)": FunctionFragment;
@@ -167,6 +168,10 @@ export interface TimelockInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
+    functionFragment: "taxClaimAvailable",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "taxCooldown",
     values?: undefined
   ): string;
@@ -260,6 +265,10 @@ export interface TimelockInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "taxAccount", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "taxClaimAvailable",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "taxCooldown",
     data: BytesLike
@@ -524,6 +533,11 @@ export interface Timelock extends BaseContract {
 
     taxAccount(overrides?: CallOverrides): Promise<[string]>;
 
+    taxClaimAvailable(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     taxCooldown(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
@@ -663,6 +677,11 @@ export interface Timelock extends BaseContract {
 
   taxAccount(overrides?: CallOverrides): Promise<string>;
 
+  taxClaimAvailable(
+    token_: string,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   taxCooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
   taxPercentage(overrides?: CallOverrides): Promise<[BigNumber, BigNumber]>;
@@ -683,7 +702,7 @@ export interface Timelock extends BaseContract {
 
     cancel(id: BytesLike, overrides?: CallOverrides): Promise<void>;
 
-    claimTax(token_: string, overrides?: CallOverrides): Promise<void>;
+    claimTax(token_: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     execute(
       target: string,
@@ -795,6 +814,11 @@ export interface Timelock extends BaseContract {
     ): Promise<boolean>;
 
     taxAccount(overrides?: CallOverrides): Promise<string>;
+
+    taxClaimAvailable(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     taxCooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -1026,6 +1050,11 @@ export interface Timelock extends BaseContract {
 
     taxAccount(overrides?: CallOverrides): Promise<BigNumber>;
 
+    taxClaimAvailable(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     taxCooldown(overrides?: CallOverrides): Promise<BigNumber>;
 
     taxPercentage(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1184,6 +1213,11 @@ export interface Timelock extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     taxAccount(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    taxClaimAvailable(
+      token_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     taxCooldown(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 

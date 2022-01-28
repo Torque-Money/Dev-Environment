@@ -1,6 +1,6 @@
+import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers, network, upgrades} from "hardhat";
-import proxyConfig from "../.openzeppelin/unknown-31337.json";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
 import {Timelock} from "../typechain-types";
@@ -106,5 +106,55 @@ describe("Timelock", async function () {
             value: 0,
             calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.marginLongAddress, config.marginLongLogicAddress]),
         });
+    });
+
+    it("should correctly allocate tax to the timelock", async () => {
+        const signer = ethers.provider.getSigner();
+        const signerAddress = await signer.getAddress();
+
+        const collateralApproved = config.approved[0];
+        const collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
+
+        const borrowedApproved = config.approved[1];
+        const borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+
+        const depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(30);
+        const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
+        const borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
+
+        const timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
+        const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
+        const marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
+        const oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
+        const lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
+
+        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+
+        const priceDecimals = await oracle.priceDecimals();
+        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
+
+        await pool.addLiquidity(borrowedToken.address, depositAmount);
+        await marginLong.addCollateral(collateralToken.address, collateralAmount);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(10));
+        await marginLong.liquidateAccount(signerAddress);
+
+        const amount = await marginLong.collateral(collateralToken.address, signerAddress);
+        if (amount.gt(0)) await marginLong.removeCollateral(collateralToken.address, amount);
+
+        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
+        if (LPTokenAmount.gt(0)) await pool.removeLiquidity(lpToken.address, LPTokenAmount);
+
+        const timelockNewBalance = await borrowedToken.balanceOf(timelock.address);
+
+        expect(timelockNewBalance.gt(timelockInitialBalance)).to.equal(true);
+
+        const initialBalance = await borrowedToken.balanceOf(signerAddress);
+        const taxClaimAvailable = await timelock.taxClaimAvailable(borrowedToken.address);
+        expect(taxClaimAvailable.gt(0)).to.equal(true);
+        await timelock.claimTax(borrowedToken.address);
+        expect((await borrowedToken.balanceOf(signerAddress)).sub(initialBalance).eq(taxClaimAvailable)).to.equal(true);
     });
 });
