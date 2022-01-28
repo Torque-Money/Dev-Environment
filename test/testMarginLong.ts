@@ -53,7 +53,7 @@ describe("MarginLong", async function () {
 
     afterEach(async () => {
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount);
+        if (LPTokenAmount.gt(0)) await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount);
     });
 
     it("deposit and undeposit collateral into the account", async () => {

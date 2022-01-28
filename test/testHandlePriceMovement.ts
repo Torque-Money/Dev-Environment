@@ -62,7 +62,7 @@ describe("Handle price movement", async function () {
         }
 
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        await pool.removeLiquidity(lpToken.address, LPTokenAmount);
+        if (LPTokenAmount.gt(0)) await pool.removeLiquidity(lpToken.address, LPTokenAmount);
     });
 
     it("should liquidate an account", async () => {
