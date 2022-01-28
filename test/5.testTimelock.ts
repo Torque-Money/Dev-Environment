@@ -94,7 +94,6 @@ describe("Timelock", async function () {
         const proxyAdmin = await upgrades.admin.getInstance();
 
         await shouldFail(async () => proxyAdmin.upgrade(config.leveragePoolAddress, config.leveragePoolLogicAddress));
-
         await executeAdminOnly({
             address: proxyAdmin.address,
             value: 0,
@@ -102,5 +101,10 @@ describe("Timelock", async function () {
         });
 
         await shouldFail(async () => proxyAdmin.upgrade(config.marginLongAddress, config.marginLongLogicAddress));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.marginLongAddress, config.marginLongLogicAddress]),
+        });
     });
 });
