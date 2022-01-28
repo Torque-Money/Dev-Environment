@@ -5,9 +5,13 @@ import {shouldFail} from "../scripts/util/utilsTest";
 import {ERC20, LPool} from "../typechain-types";
 
 describe("Pool", async function () {
-    let pool: LPool;
+    let approvedToken: any;
     let token: ERC20;
+
     let lpToken: ERC20;
+
+    let pool: LPool;
+
     let signerAddress: string;
 
     beforeEach(async () => {
