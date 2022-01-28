@@ -1,33 +1,46 @@
 import {expect} from "chai";
+import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
-import {ERC20, Oracle} from "../typechain-types";
+import {ERC20, OracleTest} from "../typechain-types";
 
 describe("Oracle", async function () {
-    let oracle: Oracle;
+    let tokenApproved: any;
     let token: ERC20;
+
+    let oracle: OracleTest;
+
     let lpToken: ERC20;
 
+    let tokenAmount: BigNumber;
+    let tokenPrice: BigNumber;
+
     beforeEach(async () => {
-        oracle = await ethers.getContractAt("Oracle", config.oracleAddress);
-        token = await ethers.getContractAt("ERC20", config.approved[1].address);
+        tokenApproved = config.approved[1].address;
+        token = await ethers.getContractAt("ERC20", tokenApproved.address);
+
+        tokenAmount = ethers.BigNumber.from(10).pow(tokenApproved.decimals).mul(10);
+
+        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
+
+        const priceDecimals = await oracle.priceDecimals();
+        tokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);
+        await oracle.setPrice(token.address, tokenPrice);
 
         const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
     });
 
     it("should get the prices for the accepted tokens", async () => {
-        const tokenAmount = ethers.BigNumber.from(1000000);
-
         expect(await oracle.priceMin(token.address, tokenAmount)).to.not.equal(0);
         expect(await oracle.priceMax(token.address, tokenAmount)).to.not.equal(0);
 
-        expect(await oracle.amountMin(token.address, tokenAmount)).to.not.equal(0);
-        expect(await oracle.amountMax(token.address, tokenAmount)).to.not.equal(0);
+        expect(await oracle.amountMin(token.address, tokenPrice)).to.not.equal(0);
+        expect(await oracle.amountMax(token.address, tokenPrice)).to.not.equal(0);
     });
 
-    it("should not get the prices of non accepted tokens", async () => {
+    it("should not work for non accepted tokens", async () => {
         await shouldFail(async () => await oracle.priceMin(lpToken.address, 0));
         await shouldFail(async () => await oracle.priceMax(lpToken.address, 0));
 
