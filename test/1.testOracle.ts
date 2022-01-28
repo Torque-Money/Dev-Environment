@@ -17,7 +17,7 @@ describe("Oracle", async function () {
     let tokenPrice: BigNumber;
 
     beforeEach(async () => {
-        tokenApproved = config.approved[1].address;
+        tokenApproved = config.approved[1];
         token = await ethers.getContractAt("ERC20", tokenApproved.address);
 
         tokenAmount = ethers.BigNumber.from(10).pow(tokenApproved.decimals).mul(10);
