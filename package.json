@@ -1,5 +1,5 @@
 {
-  "name": "torque-protocol",
+  "name": "torque-leverage",
   "version": "1.0.0",
   "scripts": {
     "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
