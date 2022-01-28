@@ -11,7 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         oracle: config.oracleAddress,
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
-        timePerInterestApplication: hre.ethers.BigNumber.from(2628000),
+        timePerInterestApplication: hre.ethers.BigNumber.from(10).pow(4).mul(3154),
     };
 
     const Pool = await hre.ethers.getContractFactory("LPool");
