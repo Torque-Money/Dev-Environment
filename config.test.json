@@ -48,11 +48,11 @@
     }
   ],
   "leveragePoolAddress": "0x401aa3EaD5f7609D7aCcb7Ef4119FF8c0c4a5e28",
-  "leveragePoolResolvedAddress": "",
+  "leveragePoolLogicAddress": "",
   "oracleAddress": "0xFAa5FD5C48d479c98668B761D97d78D6aB367E0a",
   "converterAddress": "0xeEb94948a878e8f77D7F058EFE4E420E216CF314",
   "marginLongAddress": "0xE2F676DE188404bF5aF7Fc75cD8FCC951c18B8AA",
-  "marginLongResolvedAddress": "",
+  "marginLongLogicAddress": "",
   "resolverAddress": "0xd4C511a386032D2A70C57048b4d7dB6408D41F78",
   "timelockAddress": ""
 }

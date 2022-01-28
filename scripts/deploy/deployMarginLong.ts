@@ -1,6 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
 import {saveTempConstructor} from "../util/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -20,9 +21,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const marginLong = await hre.upgrades.deployProxy(MarginLong, Object.values(constructorArgs));
 
     config.marginLongAddress = marginLong.address;
-    config.marginLongResolvedAddress = await marginLong.resolvedAddress;
-    console.log(`Deployed: Margin long proxy and margin long | ${marginLong.address} ${await marginLong.resolvedAddress}`);
+    config.marginLongLogicAddress = await getImplementationAddress(hre.ethers.provider, marginLong.address);
+    console.log(`Deployed: Margin long proxy and margin long | ${marginLong.address} ${config.marginLongLogicAddress}`);
 
-    if (configType !== "fork") saveTempConstructor(await marginLong.resolvedAddress, {});
+    if (configType !== "fork") saveTempConstructor(config.marginLongLogicAddress, {});
     saveConfig(config, configType);
 }

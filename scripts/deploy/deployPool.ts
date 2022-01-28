@@ -1,6 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
 import {saveTempConstructor} from "../util/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -17,9 +18,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
 
     config.leveragePoolAddress = pool.address;
-    config.leveragePoolResolvedAddress = await pool.resolvedAddress;
-    console.log(`Deployed: Pool proxy and pool | ${pool.address} ${await pool.resolvedAddress}`);
+    config.leveragePoolLogicAddress = await getImplementationAddress(hre.ethers.provider, pool.address);
+    console.log(`Deployed: Pool proxy and pool | ${pool.address} ${config.leveragePoolLogicAddress}`);
 
-    if (configType !== "fork") saveTempConstructor(await pool.resolvedAddress, {});
+    if (configType !== "fork") saveTempConstructor(config.leveragePoolLogicAddress, {});
     saveConfig(config, configType);
 }
