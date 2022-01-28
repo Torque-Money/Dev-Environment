@@ -91,11 +91,16 @@ describe("Timelock", async function () {
     });
 
     it("should attempt to upgrade the margin and pool", async () => {
-        // **** Do this using the admin proxy to upgrade the contract
-
-        // **** PANIC STATIONS - THOSE IMPLEMENTATIONS OF POOL AND MARGIN ARE NOT CORRECT ADDRESSES
-
         const proxyAdmin = await upgrades.admin.getInstance();
-        await shouldFail(async () => proxyAdmin.upgrade());
+
+        await shouldFail(async () => proxyAdmin.upgrade(config.leveragePoolAddress, config.leveragePoolLogicAddress));
+
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.leveragePoolAddress, config.leveragePoolLogicAddress]),
+        });
+
+        await shouldFail(async () => proxyAdmin.upgrade(config.marginLongAddress, config.marginLongLogicAddress));
     });
 });
