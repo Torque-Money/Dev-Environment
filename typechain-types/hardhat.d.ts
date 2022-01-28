@@ -101,6 +101,54 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.UniswapV2Router02__factory>;
     getContractFactory(
+      name: "IOracle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IOracle__factory>;
+    getContractFactory(
+      name: "Oracle",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Oracle__factory>;
+    getContractFactory(
+      name: "OracleTest",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OracleTest__factory>;
+    getContractFactory(
+      name: "OracleTokens",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OracleTokens__factory>;
+    getContractFactory(
+      name: "Timelock",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Timelock__factory>;
+    getContractFactory(
+      name: "TimelockTax",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.TimelockTax__factory>;
+    getContractFactory(
+      name: "Converter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Converter__factory>;
+    getContractFactory(
+      name: "IConverter",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IConverter__factory>;
+    getContractFactory(
+      name: "IPokeMe",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPokeMe__factory>;
+    getContractFactory(
+      name: "PokeMeReady",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.PokeMeReady__factory>;
+    getContractFactory(
+      name: "Resolver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.Resolver__factory>;
+    getContractFactory(
+      name: "UniswapV2Router02",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.UniswapV2Router02__factory>;
+    getContractFactory(
       name: "LPool",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.LPool__factory>;
@@ -305,6 +353,66 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC165>;
+    getContractAt(
+      name: "Converter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Converter>;
+    getContractAt(
+      name: "IConverter",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IConverter>;
+    getContractAt(
+      name: "IPokeMe",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPokeMe>;
+    getContractAt(
+      name: "PokeMeReady",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.PokeMeReady>;
+    getContractAt(
+      name: "Resolver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Resolver>;
+    getContractAt(
+      name: "UniswapV2Router02",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.UniswapV2Router02>;
+    getContractAt(
+      name: "IOracle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IOracle>;
+    getContractAt(
+      name: "Oracle",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Oracle>;
+    getContractAt(
+      name: "OracleTest",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OracleTest>;
+    getContractAt(
+      name: "OracleTokens",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OracleTokens>;
+    getContractAt(
+      name: "Timelock",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.Timelock>;
+    getContractAt(
+      name: "TimelockTax",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.TimelockTax>;
     getContractAt(
       name: "Converter",
       address: string,
