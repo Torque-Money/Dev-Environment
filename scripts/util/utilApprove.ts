@@ -11,11 +11,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     for (const approved of config.approved) {
         const token = new hre.ethers.Contract(approved.address, ERC20Abi.abi, signer) as ERC20;
-        const tokenBalance = await token.balanceOf(signerAddress);
 
-        await token.approve(config.leveragePoolAddress, tokenBalance);
-        await token.approve(config.marginLongAddress, tokenBalance);
+        const approvedAmount = hre.ethers.BigNumber.from(2).pow(255);
 
-        console.log(`Approve: Approved contracts to spend ${tokenBalance.toString()} tokens with address ${approved.address}`);
+        await token.approve(config.leveragePoolAddress, approvedAmount);
+        await token.approve(config.marginLongAddress, approvedAmount);
+
+        console.log(`Approve: Approved contracts to spend tokens with address ${approved.address}`);
     }
 }
