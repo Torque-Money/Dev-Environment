@@ -5,7 +5,10 @@ import config from "../config.fork.json";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("Handle price movement", async function () {
+    let collateralApproved: any;
     let collateralToken: ERC20;
+
+    let borrowedApproved: any;
     let borrowedToken: ERC20;
 
     let lpToken: ERC20;
@@ -23,20 +26,24 @@ describe("Handle price movement", async function () {
     const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
 
     beforeEach(async () => {
+        collateralApproved = config.approved[0];
+        collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
+
+        borrowedApproved = config.approved[1];
+        borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
 
-        collateralToken = await ethers.getContractAt("ERC20", config.approved[0].address);
-        borrowedToken = await ethers.getContractAt("ERC20", config.approved[1].address);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
 
         priceDecimals = await oracle.priceDecimals();
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
+
+        const signer = ethers.provider.getSigner();
+        signerAddress = await signer.getAddress();
 
         await pool.addLiquidity(borrowedToken.address, addLiquidityAmount);
         await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
