@@ -21,9 +21,9 @@ describe("Handle price movement", async function () {
 
     let signerAddress: string;
 
-    const addLiquidityAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
-    const addCollateralAmount = ethers.BigNumber.from(10).pow(config.approved[0].decimals).mul(200);
-    const borrowAmount = ethers.BigNumber.from(10).pow(config.approved[1].decimals).mul(30);
+    let depositAmount: BigNumber;
+    let collateralAmount: BigNumber;
+    let borrowedAmount: BigNumber;
 
     beforeEach(async () => {
         collateralApproved = config.approved[0];
@@ -31,6 +31,10 @@ describe("Handle price movement", async function () {
 
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+
+        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(30);
+        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
@@ -45,9 +49,9 @@ describe("Handle price movement", async function () {
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
 
-        await pool.addLiquidity(borrowedToken.address, addLiquidityAmount);
-        await marginLong.addCollateral(collateralToken.address, addCollateralAmount);
-        await marginLong.borrow(borrowedToken.address, borrowAmount);
+        await pool.addLiquidity(borrowedToken.address, depositAmount);
+        await marginLong.addCollateral(collateralToken.address, collateralAmount);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
     });
 
     afterEach(async () => {
@@ -69,7 +73,7 @@ describe("Handle price movement", async function () {
         await marginLong.liquidateAccount(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
 
     it("should reset an account", async () => {
@@ -80,8 +84,8 @@ describe("Handle price movement", async function () {
         await marginLong.resetAccount(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(addCollateralAmount)).to.equal(true);
-        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
+        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
 
     it("should repay an account with profit", async () => {
@@ -92,7 +96,7 @@ describe("Handle price movement", async function () {
         await marginLong.repayAccountAll();
         expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).lt(addLiquidityAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).lt(depositAmount)).to.equal(true);
     });
 
     it("should repay an account with a loss", async () => {
@@ -103,6 +107,6 @@ describe("Handle price movement", async function () {
         await marginLong.repayAccountAll();
         expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).gt(addLiquidityAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
 });
