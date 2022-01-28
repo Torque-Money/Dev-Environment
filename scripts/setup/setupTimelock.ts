@@ -26,7 +26,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const resolver = await hre.ethers.getContractAt("Resolver", config.resolverAddress);
     await resolver.transferOwnership(config.timelockAddress);
 
-    // **** I need to hand over the proxy admin to the timelock as well
+    await hre.upgrades.admin.transferProxyAdminOwnership(config.timelockAddress);
 
     console.log("Setup: Timelock");
 }
