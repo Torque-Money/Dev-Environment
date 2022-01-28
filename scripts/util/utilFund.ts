@@ -1,7 +1,7 @@
 import {chooseConfig, ConfigType} from "./utilConfig";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import UniswapV2Router02Abi from "../../artifacts/contracts/v1/lib/UniswapV2Router02.sol/UniswapV2Router02.json";
+import UniswapV2Router02Abi from "../../artifacts/contracts/lib/UniswapV2Router02.sol/UniswapV2Router02.json";
 import {UniswapV2Router02} from "../../typechain-types";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
