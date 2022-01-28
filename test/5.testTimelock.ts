@@ -1,13 +1,9 @@
 import {BigNumber} from "ethers";
-import {ethers, network} from "hardhat";
+import {ethers, network, upgrades} from "hardhat";
+import proxyConfig from "../.openzeppelin/unknown-31337.json";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
 import {Timelock} from "../typechain-types";
-
-// **** I need a seperate function to delay the time to make the timelock instant
-// **** Dont forget to revoke the admin role from the timelock (or dont initially)
-
-// **** I need the timelock to control the proxy upgrade address also ****
 
 describe("Timelock", async function () {
     let timelock: Timelock;
@@ -92,5 +88,14 @@ describe("Timelock", async function () {
             value: 0,
             calldata: resolver.interface.encodeFunctionData("setConverter", [config.converterAddress]),
         });
+    });
+
+    it("should attempt to upgrade the margin and pool", async () => {
+        // **** Do this using the admin proxy to upgrade the contract
+
+        // **** PANIC STATIONS - THOSE IMPLEMENTATIONS OF POOL AND MARGIN ARE NOT CORRECT ADDRESSES
+
+        const proxyAdmin = await upgrades.admin.getInstance();
+        await shouldFail(async () => proxyAdmin.upgrade());
     });
 });
