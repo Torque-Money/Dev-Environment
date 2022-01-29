@@ -5,6 +5,8 @@ import {saveTempConstructor} from "../util/utilVerify";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
+    // **** Add option for test here too AND include default price in the setup script
+
     if (configType !== "fork") {
         const constructorArgs = {
             thresholdNumerator: 1,
