@@ -6,50 +6,51 @@ import "@openzeppelin/hardhat-upgrades";
 
 import {task} from "hardhat/config";
 
-import deploy from "./scripts/deploy/deploy";
-import setup from "./scripts/setup/setup";
-
-import utilFund from "./scripts/util/utilFund";
-import utilApprove from "./scripts/util/utilApprove";
-import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
-
 import dotenv from "dotenv";
-import {verifyAll} from "./scripts/util/utilVerify";
 dotenv.config();
 
-task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
-    await hre.run("compile");
+// import deploy from "./scripts/deploy/deploy";
+// import setup from "./scripts/setup/setup";
 
-    await deploy("main", hre);
-    await setup("main", hre);
+// import utilFund from "./scripts/util/utilFund";
+// import utilApprove from "./scripts/util/utilApprove";
+// import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
-    await utilUpdateFiles();
-});
+// import {verifyAll} from "./scripts/util/utilVerify";
 
-task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
-    await hre.run("compile");
+// task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+//     await hre.run("compile");
 
-    await deploy("test", hre);
-    await setup("test", hre);
+//     await deploy("main", hre);
+//     await setup("main", hre);
 
-    await utilUpdateFiles();
-});
+//     await utilUpdateFiles();
+// });
 
-task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
-    await hre.run("compile");
+// task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
+//     await hre.run("compile");
 
-    await deploy("fork", hre);
-    await setup("fork", hre);
+//     await deploy("test", hre);
+//     await setup("test", hre);
 
-    await utilFund("fork", hre);
-    await utilApprove("fork", hre);
+//     await utilUpdateFiles();
+// });
 
-    await utilUpdateFiles();
-});
+// task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
+//     await hre.run("compile");
 
-task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
-    await verifyAll(hre);
-});
+//     await deploy("fork", hre);
+//     await setup("fork", hre);
+
+//     await utilFund("fork", hre);
+//     await utilApprove("fork", hre);
+
+//     await utilUpdateFiles();
+// });
+
+// task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
+//     await verifyAll(hre);
+// });
 
 // task("sandbox", "A sandbox for testing", async (args, hre) => {});
 
