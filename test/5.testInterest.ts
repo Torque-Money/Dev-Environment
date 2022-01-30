@@ -47,20 +47,30 @@ describe("Interest", async function () {
         signerAddress = await signer.getAddress();
 
         await pool.addLiquidity(borrowedToken.address, depositAmount);
+
+        const availableCollateral = await collateralToken.balanceOf(signerAddress);
+        await marginLong.addCollateral(collateralToken.address, availableCollateral);
     });
 
     afterEach(async () => {
+        const collateral = await marginLong.collateral(collateralToken.address, signerAddress);
+        if (collateral.gt(0)) await marginLong.removeCollateral(collateralToken.address, collateral);
+
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
         if (LPTokenAmount.gt(0)) await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount);
     });
 
-    it("should borrow below the max utilization", async () => {});
+    it("should borrow below the max utilization", async () => {
+        const maxUtilization = await pool.maxUtilization(borrowedToken.address);
+        await marginLong.borrow(borrowedToken.address, depositAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2));
+        await marginLong.repayAccount(borrowedToken.address);
+    });
 
-    it("should borrow at the max utilization", async () => {});
+    // it("should borrow at the max utilization", async () => {});
 
-    it("should borrow below 100% utilization", async () => {});
+    // it("should borrow below 100% utilization", async () => {});
 
-    it("should borrow at 100% utilization", async () => {});
+    // it("should borrow at 100% utilization", async () => {});
 
     // **** Perhaps there are some wacky broken tests when it is ok if someone is already borrowing ?
 
