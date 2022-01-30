@@ -102,7 +102,7 @@ describe("MarginLong", async function () {
 
         await shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, collateralValue));
 
-        await marginLong.repayAccount(borrowedToken.address);
+        await marginLong["repayAccount(address)"](borrowedToken.address);
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
@@ -123,7 +123,7 @@ describe("MarginLong", async function () {
 
         expect((await marginLong.getBorrowingAccounts()).length).to.not.equal(0);
 
-        await marginLong.repayAccountAll();
+        await marginLong["repayAccount()"]();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 

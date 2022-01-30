@@ -70,7 +70,7 @@ describe("Interest", async function () {
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
         expect(interestNumerator.mul(maxInterestMinDenominator).mul(2).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
 
-        await marginLong.repayAccount(borrowedToken.address);
+        await marginLong["repayAccount(address)"](borrowedToken.address);
     });
 
     it("should borrow at the max utilization", async () => {
@@ -82,7 +82,7 @@ describe("Interest", async function () {
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
         expect(interestNumerator.mul(maxInterestMinDenominator).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
 
-        await marginLong.repayAccount(borrowedToken.address);
+        await marginLong["repayAccount(address)"](borrowedToken.address);
     });
 
     it("should borrow below 100% utilization", async () => {
@@ -102,7 +102,7 @@ describe("Interest", async function () {
                 .eq(interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))))
         ).to.equal(true);
 
-        await marginLong.repayAccount(borrowedToken.address);
+        await marginLong["repayAccount(address)"](borrowedToken.address);
     });
 
     it("should borrow at 100% utilization", async () => {
@@ -112,7 +112,7 @@ describe("Interest", async function () {
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
         expect(interestNumerator.mul(maxInterestMaxDenominator).eq(maxInterestMaxNumerator.mul(interestDenominator))).to.equal(true);
 
-        await marginLong.repayAccount(borrowedToken.address);
+        await marginLong["repayAccount(address)"](borrowedToken.address);
     });
 
     // **** Perhaps there are some wacky broken tests when it is ok if someone is already borrowing ?

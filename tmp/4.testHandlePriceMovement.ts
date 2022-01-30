@@ -93,7 +93,7 @@ describe("Handle price movement", async function () {
         await oracle.setPrice(borrowedToken.address, newPrice);
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
-        await marginLong.repayAccountAll();
+        await marginLong["repayAccount()"]();
         expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
 
         expect((await pool.tvl(borrowedToken.address)).lt(depositAmount)).to.equal(true);
@@ -104,7 +104,7 @@ describe("Handle price movement", async function () {
         await oracle.setPrice(borrowedToken.address, newPrice);
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
-        await marginLong.repayAccountAll();
+        await marginLong["repayAccount()"]();
         expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
 
         expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
