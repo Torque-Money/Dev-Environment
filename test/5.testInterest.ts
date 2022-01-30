@@ -1,3 +1,4 @@
+import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
@@ -62,13 +63,47 @@ describe("Interest", async function () {
 
     it("should borrow below the max utilization", async () => {
         const maxUtilization = await pool.maxUtilization(borrowedToken.address);
-        await marginLong.borrow(borrowedToken.address, depositAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2));
+        const tempBorrowAmount = depositAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2);
+        await marginLong.borrow(borrowedToken.address, tempBorrowAmount);
+
+        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
+        const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
+        expect(interestNumerator.mul(maxInterestMinDenominator).mul(2).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
+
         await marginLong.repayAccount(borrowedToken.address);
     });
 
-    // it("should borrow at the max utilization", async () => {});
+    it("should borrow at the max utilization", async () => {
+        const maxUtilization = await pool.maxUtilization(borrowedToken.address);
+        const tempBorrowAmount = depositAmount.mul(maxUtilization[0]).div(maxUtilization[1]);
+        await marginLong.borrow(borrowedToken.address, tempBorrowAmount);
 
-    // it("should borrow below 100% utilization", async () => {});
+        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
+        const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
+        expect(interestNumerator.mul(maxInterestMinDenominator).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
+
+        await marginLong.repayAccount(borrowedToken.address);
+    });
+
+    it("should borrow below 100% utilization", async () => {
+        const maxUtilization = await pool.maxUtilization(borrowedToken.address);
+
+        const tempBorrowAmount = depositAmount.mul(maxUtilization[0].add(maxUtilization[1])).div(maxUtilization[1]).div(2);
+        await marginLong.borrow(borrowedToken.address, tempBorrowAmount);
+
+        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
+        const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(borrowedToken.address);
+        const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
+        expect(
+            interestNumerator
+                .mul(maxInterestMinDenominator)
+                .mul(maxInterestMaxDenominator)
+                .mul(2)
+                .eq(interestDenominator.mul(maxInterestMaxNumerator).mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator)))
+        ).to.equal(true);
+
+        await marginLong.repayAccount(borrowedToken.address);
+    });
 
     // it("should borrow at 100% utilization", async () => {});
 
