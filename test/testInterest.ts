@@ -61,4 +61,6 @@ describe("Interest", async function () {
     it("should borrow below 100% utilization", async () => {});
 
     it("should borrow at 100% utilization", async () => {});
+
+    // **** Perhaps there are some wacky broken tests when it is ok if someone is already borrowing ?
 });
