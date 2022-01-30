@@ -2,19 +2,19 @@
   "manifestVersion": "3.2",
   "admin": {
     "address": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f",
-    "txHash": "0xbc0e36ead9279c2cc3647bac2a89502fe9f8a3b277ca02be1a00b31023b41031",
+    "txHash": "0x45d83ce2be0af697b59c910094fd5c6f3634d2cba945b559962681654eb7b98f",
     "deployTransaction": {
-      "hash": "0xbc0e36ead9279c2cc3647bac2a89502fe9f8a3b277ca02be1a00b31023b41031",
+      "hash": "0x45d83ce2be0af697b59c910094fd5c6f3634d2cba945b559962681654eb7b98f",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x5c61ff65a0cebf941e8ecbb3e9b87b131a488f1114e93de1bd9e65ff256d1b4d",
+      "blockHash": "0xc0f5e2788540e7bac7c26e060eae259d91fa573c303e62cc1aa6d4b2cac0fcbb",
       "blockNumber": 28793950,
       "transactionIndex": 0,
       "confirmations": 1,
       "from": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       "gasPrice": {
         "type": "BigNumber",
-        "hex": "0x6654f5ca"
+        "hex": "0x665ba29f"
       },
       "gasLimit": {
         "type": "BigNumber",
@@ -27,9 +27,9 @@
       },
       "nonce": 65,
       "data": "0x608060405234801561001057600080fd5b50600080546001600160a01b031916339081178255604051909182917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908290a350610759806100616000396000f3fe60806040526004361061007b5760003560e01c80639623609d1161004e5780639623609d1461011157806399a88ec414610124578063f2fde38b14610144578063f3b7dead146101645761007b565b8063204e1c7a14610080578063715018a6146100bc5780637eff275e146100d35780638da5cb5b146100f3575b600080fd5b34801561008c57600080fd5b506100a061009b366004610515565b610184565b6040516001600160a01b03909116815260200160405180910390f35b3480156100c857600080fd5b506100d1610215565b005b3480156100df57600080fd5b506100d16100ee366004610554565b610292565b3480156100ff57600080fd5b506000546001600160a01b03166100a0565b6100d161011f36600461058c565b61031c565b34801561013057600080fd5b506100d161013f366004610554565b6103ad565b34801561015057600080fd5b506100d161015f366004610515565b610405565b34801561017057600080fd5b506100a061017f366004610515565b6104ef565b6000806000836001600160a01b03166040516101aa90635c60da1b60e01b815260040190565b600060405180830381855afa9150503d80600081146101e5576040519150601f19603f3d011682016040523d82523d6000602084013e6101ea565b606091505b5091509150816101f957600080fd5b8080602001905181019061020d9190610538565b949350505050565b6000546001600160a01b031633146102485760405162461bcd60e51b815260040161023f906106c0565b60405180910390fd5b600080546040516001600160a01b03909116907f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0908390a3600080546001600160a01b0319169055565b6000546001600160a01b031633146102bc5760405162461bcd60e51b815260040161023f906106c0565b6040516308f2839760e41b81526001600160a01b038281166004830152831690638f283970906024015b600060405180830381600087803b15801561030057600080fd5b505af1158015610314573d6000803e3d6000fd5b505050505050565b6000546001600160a01b031633146103465760405162461bcd60e51b815260040161023f906106c0565b60405163278f794360e11b81526001600160a01b03841690634f1ef286903490610376908690869060040161065d565b6000604051808303818588803b15801561038f57600080fd5b505af11580156103a3573d6000803e3d6000fd5b5050505050505050565b6000546001600160a01b031633146103d75760405162461bcd60e51b815260040161023f906106c0565b604051631b2ce7f360e11b81526001600160a01b038281166004830152831690633659cfe6906024016102e6565b6000546001600160a01b0316331461042f5760405162461bcd60e51b815260040161023f906106c0565b6001600160a01b0381166104945760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b606482015260840161023f565b600080546040516001600160a01b03808516939216917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e091a3600080546001600160a01b0319166001600160a01b0392909216919091179055565b6000806000836001600160a01b03166040516101aa906303e1469160e61b815260040190565b600060208284031215610526578081fd5b81356105318161070b565b9392505050565b600060208284031215610549578081fd5b81516105318161070b565b60008060408385031215610566578081fd5b82356105718161070b565b915060208301356105818161070b565b809150509250929050565b6000806000606084860312156105a0578081fd5b83356105ab8161070b565b925060208401356105bb8161070b565b9150604084013567ffffffffffffffff808211156105d7578283fd5b818601915086601f8301126105ea578283fd5b8135818111156105fc576105fc6106f5565b604051601f8201601f19908116603f01168101908382118183101715610624576106246106f5565b8160405282815289602084870101111561063c578586fd5b82602086016020830137856020848301015280955050505050509250925092565b600060018060a01b038416825260206040818401528351806040850152825b818110156106985785810183015185820160600152820161067c565b818111156106a95783606083870101525b50601f01601f191692909201606001949350505050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e6572604082015260600190565b634e487b7160e01b600052604160045260246000fd5b6001600160a01b038116811461072057600080fd5b5056fea2646970667358221220d849f96f3086b9f82cdcf665adb8c697ace05638da1c7c16ab2d26293717af6764736f6c63430008020033",
-      "r": "0x1a7e2ce29a663203b89c19218d35740ffca6b08218894972345a6e74e002b383",
-      "s": "0x49db8d457eafa754c85636ebe736cdebf955525adf8381752cf53a5cfd46dbb1",
-      "v": 62710,
+      "r": "0xbdb562878e3de4c2b58d40834f9a51af9e51ac3143a0a52306c2b989eeb472bc",
+      "s": "0x6fa129e1b3755b3d2d865912b766e739a3bc37a7da3c2ebf848a8b14f7bd0b65",
+      "v": 62709,
       "creates": "0x5081a39b8A5f0E35a8D959395a630b68B74Dd30f",
       "chainId": 31337
     }
@@ -37,19 +37,233 @@
   "proxies": [
     {
       "address": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
-      "txHash": "0x7d478bda1adc605d1daa4e770981286071b2b45fa884393d3cc0716dad5ef90c",
+      "txHash": "0xd0c4d5d8058269e28066ba6e5979cb2971199e0ecb5065519838a031cffb7255",
       "kind": "transparent"
     },
     {
       "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
-      "txHash": "0xd180303ee4aac3f152b008841b29ff837b0038e2fcd1b8e625598ec7117294b1",
+      "txHash": "0x85fbe65edf4dafbcba6121a0a81e8d61adc4fccc85c2ef5337e814cd804a84df",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "3123f4ef98e54161cd9e728bc4e0dccba52c1befbb47813463d8575e632dc119": {
+    "e112460fedcfe2194727ad40bf505439c13585bb0773e96696a90121cd8b91bf": {
+      "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
+      "txHash": "0x95ba76e0499c2ef0cf7a49f4ee4b17ec34f7fda7ecfd657ae2a148429f0c7373",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:82"
+          },
+          {
+            "contract": "MarginCore",
+            "label": "pool",
+            "type": "t_address",
+            "src": "contracts/v1/Margin/MarginCore.sol:8"
+          },
+          {
+            "contract": "MarginCore",
+            "label": "oracle",
+            "type": "t_address",
+            "src": "contracts/v1/Margin/MarginCore.sol:9"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_collateralTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:7"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_borrowedTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:8"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_approvedCollateralTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:10"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_approvedBorrowedTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:11"
+          },
+          {
+            "contract": "MarginPool",
+            "label": "_totalBorrowed",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/v1/Margin/MarginPool.sol:7"
+          },
+          {
+            "contract": "MarginPool",
+            "label": "_totalCollateral",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/v1/Margin/MarginPool.sol:8"
+          },
+          {
+            "contract": "MarginAccount",
+            "label": "_accounts",
+            "type": "t_mapping(t_address,t_struct(Account)10080_storage)",
+            "src": "contracts/v1/Margin/MarginAccount.sol:25"
+          },
+          {
+            "contract": "MarginLevel",
+            "label": "_minMarginLevel",
+            "type": "t_struct(Fraction)7141_storage",
+            "src": "contracts/v1/Margin/MarginLevel.sol:13"
+          },
+          {
+            "contract": "MarginLimits",
+            "label": "minCollateralPrice",
+            "type": "t_uint256",
+            "src": "contracts/v1/Margin/MarginLimits.sol:11"
+          },
+          {
+            "contract": "MarginLimits",
+            "label": "maxLeverage",
+            "type": "t_uint256",
+            "src": "contracts/v1/Margin/MarginLimits.sol:12"
+          },
+          {
+            "contract": "MarginBorrowers",
+            "label": "_accountSet",
+            "type": "t_struct(AddressSet)7558_storage",
+            "src": "contracts/v1/Margin/MarginBorrowers.sol:9"
+          },
+          {
+            "contract": "MarginLongLiquidateCore",
+            "label": "_liquidationFeePercent",
+            "type": "t_struct(Fraction)7141_storage",
+            "src": "contracts/v1/MarginLong/MarginLongLiquidateCore.sol:15"
+          }
+        ],
+        "types": {
+          "t_struct(Fraction)7141_storage": {
+            "label": "struct FractionMath.Fraction",
+            "members": [
+              {
+                "label": "numerator",
+                "type": "t_uint256"
+              },
+              {
+                "label": "denominator",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_struct(AddressSet)7558_storage": {
+            "label": "struct Set.AddressSet",
+            "members": [
+              {
+                "label": "keyPointers",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "keyList",
+                "type": "t_array(t_address)dyn_storage"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_address,t_struct(Account)10080_storage)": {
+            "label": "mapping(address => struct MarginAccount.Account)"
+          },
+          "t_struct(Account)10080_storage": {
+            "label": "struct MarginAccount.Account",
+            "members": [
+              {
+                "label": "collateral",
+                "type": "t_struct(AddressSet)7558_storage"
+              },
+              {
+                "label": "collateralAmounts",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "borrowed",
+                "type": "t_struct(AddressSet)7558_storage"
+              },
+              {
+                "label": "borrowedAmounts",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "initialBorrowPrice",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "initialBorrowTime",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "accumulatedInterest",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "hasBorrowed",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "98ce4f70b43f4b58bd86ba0f0cfcc2ddee8aa77c54cc8745fd2219c49ce036f4": {
       "address": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
-      "txHash": "0x24735601f1170d841c2400f95859e8aa846063965c80ff2df3676f20d7c3d502",
+      "txHash": "0x20986f5aaba311a5c73e88fb6557c1897cd8593d1f1c63fda0efcfe61a301172",
       "layout": {
         "storage": [
           {
@@ -152,25 +366,25 @@
             "contract": "LPoolInterest",
             "label": "timePerInterestApplication",
             "type": "t_uint256",
-            "src": "contracts/v1/LPool/LPoolInterest.sol:13"
+            "src": "contracts/v1/LPool/LPoolInterest.sol:15"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMin",
             "type": "t_mapping(t_address,t_struct(Fraction)7141_storage)",
-            "src": "contracts/v1/LPool/LPoolInterest.sol:15"
+            "src": "contracts/v1/LPool/LPoolInterest.sol:17"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMax",
             "type": "t_mapping(t_address,t_struct(Fraction)7141_storage)",
-            "src": "contracts/v1/LPool/LPoolInterest.sol:16"
+            "src": "contracts/v1/LPool/LPoolInterest.sol:18"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxUtilization",
             "type": "t_mapping(t_address,t_struct(Fraction)7141_storage)",
-            "src": "contracts/v1/LPool/LPoolInterest.sol:17"
+            "src": "contracts/v1/LPool/LPoolInterest.sol:19"
           }
         ],
         "types": {
@@ -245,220 +459,6 @@
                 "type": "t_bytes32"
               }
             ]
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          }
-        }
-      }
-    },
-    "e112460fedcfe2194727ad40bf505439c13585bb0773e96696a90121cd8b91bf": {
-      "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
-      "txHash": "0x19cfb7931180231c46274b56479494798da8a498d36f157bb9d2752313b0246f",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "_owner",
-            "type": "t_address",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
-          },
-          {
-            "contract": "OwnableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:82"
-          },
-          {
-            "contract": "MarginCore",
-            "label": "pool",
-            "type": "t_address",
-            "src": "contracts/v1/Margin/MarginCore.sol:8"
-          },
-          {
-            "contract": "MarginCore",
-            "label": "oracle",
-            "type": "t_address",
-            "src": "contracts/v1/Margin/MarginCore.sol:9"
-          },
-          {
-            "contract": "MarginApproved",
-            "label": "_collateralTokens",
-            "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/v1/Margin/MarginApproved.sol:7"
-          },
-          {
-            "contract": "MarginApproved",
-            "label": "_borrowedTokens",
-            "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/v1/Margin/MarginApproved.sol:8"
-          },
-          {
-            "contract": "MarginApproved",
-            "label": "_approvedCollateralTokens",
-            "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/v1/Margin/MarginApproved.sol:10"
-          },
-          {
-            "contract": "MarginApproved",
-            "label": "_approvedBorrowedTokens",
-            "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/v1/Margin/MarginApproved.sol:11"
-          },
-          {
-            "contract": "MarginPool",
-            "label": "_totalBorrowed",
-            "type": "t_mapping(t_address,t_uint256)",
-            "src": "contracts/v1/Margin/MarginPool.sol:7"
-          },
-          {
-            "contract": "MarginPool",
-            "label": "_totalCollateral",
-            "type": "t_mapping(t_address,t_uint256)",
-            "src": "contracts/v1/Margin/MarginPool.sol:8"
-          },
-          {
-            "contract": "MarginAccount",
-            "label": "_accounts",
-            "type": "t_mapping(t_address,t_struct(Account)10067_storage)",
-            "src": "contracts/v1/Margin/MarginAccount.sol:25"
-          },
-          {
-            "contract": "MarginLevel",
-            "label": "_minMarginLevel",
-            "type": "t_struct(Fraction)7141_storage",
-            "src": "contracts/v1/Margin/MarginLevel.sol:13"
-          },
-          {
-            "contract": "MarginLimits",
-            "label": "minCollateralPrice",
-            "type": "t_uint256",
-            "src": "contracts/v1/Margin/MarginLimits.sol:11"
-          },
-          {
-            "contract": "MarginLimits",
-            "label": "maxLeverage",
-            "type": "t_uint256",
-            "src": "contracts/v1/Margin/MarginLimits.sol:12"
-          },
-          {
-            "contract": "MarginBorrowers",
-            "label": "_accountSet",
-            "type": "t_struct(AddressSet)7558_storage",
-            "src": "contracts/v1/Margin/MarginBorrowers.sol:9"
-          },
-          {
-            "contract": "MarginLongLiquidateCore",
-            "label": "_liquidationFeePercent",
-            "type": "t_struct(Fraction)7141_storage",
-            "src": "contracts/v1/MarginLong/MarginLongLiquidateCore.sol:15"
-          }
-        ],
-        "types": {
-          "t_struct(Fraction)7141_storage": {
-            "label": "struct FractionMath.Fraction",
-            "members": [
-              {
-                "label": "numerator",
-                "type": "t_uint256"
-              },
-              {
-                "label": "denominator",
-                "type": "t_uint256"
-              }
-            ]
-          },
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_struct(AddressSet)7558_storage": {
-            "label": "struct Set.AddressSet",
-            "members": [
-              {
-                "label": "keyPointers",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "keyList",
-                "type": "t_array(t_address)dyn_storage"
-              }
-            ]
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_array(t_address)dyn_storage": {
-            "label": "address[]"
-          },
-          "t_mapping(t_address,t_struct(Account)10067_storage)": {
-            "label": "mapping(address => struct MarginAccount.Account)"
-          },
-          "t_struct(Account)10067_storage": {
-            "label": "struct MarginAccount.Account",
-            "members": [
-              {
-                "label": "collateral",
-                "type": "t_struct(AddressSet)7558_storage"
-              },
-              {
-                "label": "collateralAmounts",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "borrowed",
-                "type": "t_struct(AddressSet)7558_storage"
-              },
-              {
-                "label": "borrowedAmounts",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "initialBorrowPrice",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "initialBorrowTime",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "accumulatedInterest",
-                "type": "t_mapping(t_address,t_uint256)"
-              },
-              {
-                "label": "hasBorrowed",
-                "type": "t_uint256"
-              }
-            ]
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)"
-          },
-          "t_bool": {
-            "label": "bool"
           },
           "t_array(t_uint256)49_storage": {
             "label": "uint256[49]"
