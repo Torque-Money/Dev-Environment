@@ -45,6 +45,27 @@
         "maxUtilizationNumerator": 50,
         "maxUtilizationDenominator": 100
       }
+    },
+    {
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+      "address": "0x01be23585060835e02b77ef475b0cc51aa1e0709",
+      "decimals": 18,
+      "priceFeed": "0xd8bD0a1cB028a31AA859A21A3758685a95dE4623",
+      "reservePriceFeed": "0xd8bD0a1cB028a31AA859A21A3758685a95dE4623",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 10,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 50,
+        "maxUtilizationDenominator": 100
+      }
     }
   ],
   "leveragePoolAddress": "0x401aa3EaD5f7609D7aCcb7Ef4119FF8c0c4a5e28",
