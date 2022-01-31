@@ -14,6 +14,8 @@ describe("Handle price movement", async function () {
     let lpToken: ERC20;
 
     let priceDecimals: BigNumber;
+    let initialCollateralTokenPrice: BigNumber;
+    let initialBorrowTokenPrice: BigNumber;
 
     let oracle: OracleTest;
     let pool: LPool;
@@ -43,8 +45,10 @@ describe("Handle price movement", async function () {
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
         priceDecimals = await oracle.priceDecimals();
-        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
-        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
+        initialCollateralTokenPrice = ethers.BigNumber.from(10).pow(priceDecimals);
+        initialBorrowTokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);
+        await oracle.setPrice(collateralToken.address, initialCollateralTokenPrice);
+        await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
@@ -66,9 +70,13 @@ describe("Handle price movement", async function () {
     });
 
     it("should liquidate an account", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
-        // **** Setting the price too low in this block breaks it because it cannot deal with it - to fix this for this test I need to figure out how much to manipulate the price so it is fine ?
-        await oracle.setPrice(borrowedToken.address, newPrice);
+        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        const [priceChangeNumerator, priceChangeDenominator] = [
+            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
+            leverageNumerator.mul(maxLeverageNumerator),
+        ];
+        await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator));
 
         expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await marginLong.liquidateAccount(signerAddress);
@@ -78,8 +86,7 @@ describe("Handle price movement", async function () {
     });
 
     it("should reset an account", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).div(3);
-        await oracle.setPrice(collateralToken.address, newPrice);
+        await oracle.setPrice(collateralToken.address, 0);
 
         expect(await marginLong.resettable(signerAddress)).to.equal(true);
         await marginLong.resetAccount(signerAddress);
@@ -90,8 +97,7 @@ describe("Handle price movement", async function () {
     });
 
     it("should repay an account with profit", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(40);
-        await oracle.setPrice(borrowedToken.address, newPrice);
+        await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(110).div(100));
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
         await marginLong["repayAccount()"]();
@@ -101,8 +107,13 @@ describe("Handle price movement", async function () {
     });
 
     it("should repay an account with a loss", async () => {
-        const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(20);
-        await oracle.setPrice(borrowedToken.address, newPrice);
+        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        const [priceChangeNumerator, priceChangeDenominator] = [
+            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).sub(1),
+            leverageNumerator.mul(maxLeverageNumerator),
+        ];
+        await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator));
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
         await marginLong["repayAccount()"]();
