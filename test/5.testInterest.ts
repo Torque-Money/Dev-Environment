@@ -21,7 +21,6 @@ describe("Interest", async function () {
     let signerAddress: string;
 
     let depositAmount: BigNumber;
-    let collateralAmount: BigNumber;
     let borrowedAmount: BigNumber;
 
     beforeEach(async () => {
@@ -30,10 +29,6 @@ describe("Interest", async function () {
 
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
-
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
-        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
 
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
@@ -45,13 +40,15 @@ describe("Interest", async function () {
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(20));
 
+        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
+        const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
+
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
 
         await pool.addLiquidity(borrowedToken.address, depositAmount);
-
-        const availableCollateral = await collateralToken.balanceOf(signerAddress);
-        await marginLong.addCollateral(collateralToken.address, availableCollateral);
+        await marginLong.addCollateral(collateralToken.address, collateralAmount);
     });
 
     afterEach(async () => {
@@ -117,7 +114,7 @@ describe("Interest", async function () {
     });
 
     it("should accumulate interest over the given year as according to the rate", async () => {
-        await marginLong.borrow(borrowedToken.address, depositAmount);
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
         const timePerInterestApplication = await pool.timePerInterestApplication();
@@ -133,16 +130,14 @@ describe("Interest", async function () {
     });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        // **** TODO Maybe standardize the leverage amount in ALL of the borrow tests just like I did for the previous one to make sure it always works properly + deposit the total balance worth for max leverage
-
-        await marginLong.borrow(borrowedToken.address, depositAmount.div(2));
+        await marginLong.borrow(borrowedToken.address, borrowedAmount.div(2));
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(borrowedToken.address);
         const timePerInterestApplication = await pool.timePerInterestApplication();
         await wait(timePerInterestApplication);
         const initialInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
-        await marginLong.borrow(borrowedToken.address, depositAmount.div(2));
+        await marginLong.borrow(borrowedToken.address, borrowedAmount.div(2));
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(borrowedToken.address);
         await wait(timePerInterestApplication);
