@@ -23,9 +23,9 @@ describe("Handle price movement", async function () {
 
     let signerAddress: string;
 
-    let depositAmount: BigNumber;
     let collateralAmount: BigNumber;
     let borrowedAmount: BigNumber;
+    let depositAmount: BigNumber;
 
     beforeEach(async () => {
         collateralApproved = config.approved[0];
@@ -33,10 +33,6 @@ describe("Handle price movement", async function () {
 
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
-
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(30);
-        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10); // Test requires position to have a current leverage > 1 (just write this into the test ?)
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
@@ -49,6 +45,13 @@ describe("Handle price movement", async function () {
         initialBorrowTokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);
         await oracle.setPrice(collateralToken.address, initialCollateralTokenPrice);
         await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice);
+
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
+        const collateralPrice = await oracle.priceMin(collateralToken.address, collateralAmount);
+        const leveragedPrice = collateralPrice.mul(maxLeverageNumerator).div(maxLeverageDenominator).div(10);
+        borrowedAmount = await oracle.amountMin(borrowedToken.address, leveragedPrice);
+        depositAmount = borrowedAmount;
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();

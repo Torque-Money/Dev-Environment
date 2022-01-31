@@ -7,7 +7,7 @@
       "hash": "0x71b8c196adedea9e5ac62cef0ef62808156657ec1ddd4bddbe399f5278559477",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x7ed36d473e3cca0a921c97cb00873b417a8a78f9d50212d7d0e0c8a123aa9954",
+      "blockHash": "0xb5f7a679a2362a3dcc0e75c6cbb4e1e7cc0ce94f4156ad3391240ae39b5964b5",
       "blockNumber": 28793950,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -42,7 +42,7 @@
     },
     {
       "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
-      "txHash": "0x0bb223d65a96d9c8f475592ae235956c73f3d80f1280f1696f7eebd71fd6ff6a",
+      "txHash": "0x5c04dddce3c3db067a71fca0a5fd3287e92e7108c90f6607de95182e9d4de842",
       "kind": "transparent"
     }
   ],
@@ -255,9 +255,9 @@
         }
       }
     },
-    "dc4afc47dc1ef15fa0dc8c38260f5c75fc71394e1fa45fc8dae7081dbf1a6bdb": {
+    "0a9e040b511f7b1adba2bcbd6c3e45132ba911c1558628c3ed9a3093ec092872": {
       "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
-      "txHash": "0x0fc5fd4a89bec97619a5f5d27c1a7b2e37c8a1483d1ad468c16d1c30dadd2da6",
+      "txHash": "0x3f9f156205de3294f4680c798e7f51ea5a89072fcd3cf64e3e7733fa6dc91f71",
       "layout": {
         "storage": [
           {
@@ -354,7 +354,7 @@
             "contract": "MarginLimits",
             "label": "minCollateralPrice",
             "type": "t_uint256",
-            "src": "contracts/v1/Margin/MarginLimits.sol:10"
+            "src": "contracts/v1/Margin/MarginLimits.sol:8"
           },
           {
             "contract": "MarginBorrowers",
