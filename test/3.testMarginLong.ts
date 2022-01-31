@@ -93,6 +93,8 @@ describe("MarginLong", async function () {
 
     //     await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000));
     //     await shouldFail(async () => await marginLong.borrow(borrowedToken.address, depositAmount));
+
+    //     await marginLong.removeCollateral(collateralToken.address, collateralAmount);
     // });
 
     // it("should open and repay a leveraged position", async () => {
@@ -143,8 +145,19 @@ describe("MarginLong", async function () {
     // });
 
     it("should borrow against equity", async () => {
-        // **** First borrow a large amount
-        // **** Next increase the price dramatically
-        // **** Check that the leverage has gone down and attempt to borrow more
+        await marginLong.addCollateral(collateralToken.address, collateralAmount);
+
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+
+        const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
+
+        await oracle.setPrice(borrowedToken.address, 3000);
+
+        const [currentMarginLevelNumerator, currentMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
+
+        expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
+
+        await marginLong["repayAccount()"]();
+        await marginLong.removeCollateral(collateralToken.address, collateralAmount);
     });
 });
