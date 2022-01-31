@@ -86,7 +86,7 @@ describe("Handle price movement", async function () {
     // });
 
     it("should reset an account", async () => {
-        await oracle.setPrice(collateralToken.address, 0);
+        await oracle.setPrice(collateralToken.address, 1);
 
         expect(await marginLong.resettable(signerAddress)).to.equal(true);
         await marginLong.resetAccount(signerAddress);
