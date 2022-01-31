@@ -2,6 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
+import wait from "../scripts/util/utilWait";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("Interest", async function () {
@@ -115,7 +116,23 @@ describe("Interest", async function () {
     //     await marginLong["repayAccount(address)"](borrowedToken.address);
     // });
 
-    // **** Test the interest over the given time period
+    it("should accumulate interest over the given year as according to the rate", async () => {
+        await marginLong.borrow(borrowedToken.address, depositAmount);
+
+        const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
+        const timePerInterestApplication = await pool.timePerInterestApplication();
+        await wait(timePerInterestApplication);
+
+        const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
+        const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
+
+        console.log(interest, initialBorrowPrice.mul(interestNumerator).div(interestDenominator));
+        // expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
+
+        // **** Now I need to look at the collateral to see if that works properly ?
+
+        await marginLong["repayAccount(address)"](borrowedToken.address);
+    });
 
     // **** Test the accumulation of interest after a reborrow
 
