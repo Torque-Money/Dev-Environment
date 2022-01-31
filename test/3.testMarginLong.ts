@@ -18,6 +18,8 @@ describe("MarginLong", async function () {
     let marginLong: MarginLong;
     let pool: LPool;
 
+    let priceDecimals: BigNumber;
+
     let signerAddress: string;
 
     let depositAmount: BigNumber;
@@ -37,11 +39,11 @@ describe("MarginLong", async function () {
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
-        const priceDecimals = await oracle.priceDecimals();
+        priceDecimals = await oracle.priceDecimals();
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
 
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
+        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(100);
         collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
         borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
 
@@ -83,15 +85,14 @@ describe("MarginLong", async function () {
     // });
 
     it("should prevent bad leverage positions", async () => {
-        // **** Attempt to borrow more than the backing collateral initially
-
-        await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
 
         await marginLong.addCollateral(collateralToken.address, collateralAmount);
 
-        await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        // **** Attempt to borrow more than the maximum leverage level that IS allowed
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000));
+        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, depositAmount));
     });
 
     // it("should open and repay a leveraged position", async () => {
