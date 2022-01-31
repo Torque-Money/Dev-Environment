@@ -138,10 +138,4 @@ describe("Interest", async function () {
         // **** Then I want to open the new amount which will change the rate, then I check that the interest accumulated is what it should be
         // **** Finally repay the position
     });
-
-    it("should borrow against equity", async () => {
-        // **** First borrow a large amount
-        // **** Next increase the price dramatically
-        // **** Check that the leverage has gone down and attempt to borrow more
-    });
 });

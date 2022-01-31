@@ -136,4 +136,14 @@ describe("MarginLong", async function () {
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
     });
+
+    it("should borrow against equity", async () => {
+        // **** First borrow a large amount
+        // **** Next increase the price dramatically
+        // **** Check that the leverage has gone down and attempt to borrow more
+    });
+
+    it("should not exceed maximum leverage", async () => {
+        // **** Attempt to borrow more than the backing collateral initially
+    });
 });
