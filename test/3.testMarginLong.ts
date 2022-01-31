@@ -75,12 +75,12 @@ describe("MarginLong", async function () {
     //     expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
     // });
 
-    it("should not allow bad deposits", async () => {
-        shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
-        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+    // it("should not allow bad deposits", async () => {
+    //     shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
+    //     shouldFail(async () => await marginLong.addCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
-    });
+    //     shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+    // });
 
     it("should prevent bad leverage positions", async () => {
         // **** Attempt to borrow more than the backing collateral initially
