@@ -67,6 +67,7 @@ describe("Handle price movement", async function () {
 
     it("should liquidate an account", async () => {
         const newPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(10);
+        // **** Setting the price too low in this block breaks it because it cannot deal with it - to fix this for this test I need to figure out how much to manipulate the price so it is fine ?
         await oracle.setPrice(borrowedToken.address, newPrice);
 
         expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
