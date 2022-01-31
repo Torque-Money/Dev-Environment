@@ -84,16 +84,16 @@ describe("MarginLong", async function () {
     //     shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
     // });
 
-    it("should prevent bad leverage positions", async () => {
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
+    // it("should prevent bad leverage positions", async () => {
+    //     await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        await marginLong.addCollateral(collateralToken.address, collateralAmount);
+    //     await marginLong.addCollateral(collateralToken.address, collateralAmount);
 
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
+    //     await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000));
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, depositAmount));
-    });
+    //     await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000));
+    //     await shouldFail(async () => await marginLong.borrow(borrowedToken.address, depositAmount));
+    // });
 
     // it("should open and repay a leveraged position", async () => {
     //     await marginLong.borrow(borrowedToken.address, borrowedAmount);
@@ -142,9 +142,9 @@ describe("MarginLong", async function () {
     //     expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
     // });
 
-    // it("should borrow against equity", async () => {
-    //     // **** First borrow a large amount
-    //     // **** Next increase the price dramatically
-    //     // **** Check that the leverage has gone down and attempt to borrow more
-    // });
+    it("should borrow against equity", async () => {
+        // **** First borrow a large amount
+        // **** Next increase the price dramatically
+        // **** Check that the leverage has gone down and attempt to borrow more
+    });
 });
