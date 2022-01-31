@@ -42,7 +42,7 @@ describe("Interest", async function () {
 
         depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
         const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();

@@ -31,10 +31,6 @@ describe("MarginLong", async function () {
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
 
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
-        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
-
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
@@ -43,7 +39,11 @@ describe("MarginLong", async function () {
 
         const priceDecimals = await oracle.priceDecimals();
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
-        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(20));
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
+
+        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
+        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
