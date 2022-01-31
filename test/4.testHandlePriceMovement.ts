@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
+import {ERC20, LPool, MarginLong, OracleTest, Timelock} from "../typechain-types";
 
 describe("Handle price movement", async function () {
     let collateralApproved: any;
@@ -20,6 +20,7 @@ describe("Handle price movement", async function () {
     let oracle: OracleTest;
     let pool: LPool;
     let marginLong: MarginLong;
+    let timelock: Timelock;
 
     let signerAddress: string;
 
@@ -37,6 +38,7 @@ describe("Handle price movement", async function () {
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
+        timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
@@ -81,9 +83,13 @@ describe("Handle price movement", async function () {
         ];
         await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator));
 
+        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+
         expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await marginLong.liquidateAccount(signerAddress);
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+
+        expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
 
         expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
