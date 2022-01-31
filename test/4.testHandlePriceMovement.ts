@@ -36,7 +36,7 @@ describe("Handle price movement", async function () {
 
         depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(30);
         collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10);
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(10); // Test requires position to have a current leverage > 1 (just write this into the test ?)
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
