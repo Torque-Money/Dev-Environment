@@ -38,7 +38,7 @@ describe("Interest", async function () {
 
         const priceDecimals = await oracle.priceDecimals();
         await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals));
-        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(20));
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30));
 
         depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
         const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);

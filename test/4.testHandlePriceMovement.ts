@@ -48,12 +48,9 @@ describe("Handle price movement", async function () {
         await oracle.setPrice(collateralToken.address, initialCollateralTokenPrice);
         await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice);
 
-        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
         collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        const collateralPrice = await oracle.priceMin(collateralToken.address, collateralAmount);
-        const leveragedPrice = collateralPrice.mul(maxLeverageNumerator).div(maxLeverageDenominator).div(10);
-        borrowedAmount = await oracle.amountMin(borrowedToken.address, leveragedPrice);
-        depositAmount = borrowedAmount;
+        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
