@@ -9,10 +9,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const constructorArgs = {
         pool: config.leveragePoolAddress,
         oracle: config.oracleAddress,
-        minMarginLevelPercentNumerator: 105,
-        minMarginLevelPercentDenominator: 100,
         minCollateralPrice: hre.ethers.BigNumber.from(10).pow(18).mul(100),
-        maxLeverage: 125,
+        maxLeverageNumerator: 125,
+        maxLeverageDenominator: 1,
         liquidationFeePercentNumerator: 10,
         liquidationFeePercentDenominator: 100,
     };
