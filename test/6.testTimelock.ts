@@ -1,18 +1,13 @@
-import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers, network, upgrades} from "hardhat";
+import {ethers, upgrades} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
+import wait from "../scripts/util/utilWait";
 import {Timelock} from "../typechain-types";
 
 describe("Timelock", async function () {
     let timelock: Timelock;
     let minDelay: BigNumber;
-
-    const waitTime = async (seconds: BigNumber) => {
-        await network.provider.send("evm_increaseTime", [seconds.toNumber()]);
-        await network.provider.send("evm_mine");
-    };
 
     const executeAdminOnly = async ({address, value, calldata, description}: {address: string; value: number; calldata: string; description?: string}) => {
         const parsedPredecessor = ethers.constants.HashZero;
@@ -23,7 +18,7 @@ describe("Timelock", async function () {
         const execute = async () => await timelock.execute(address, value, calldata, parsedPredecessor, parsedDescription);
         await shouldFail(execute);
 
-        await waitTime(minDelay);
+        await wait(minDelay);
 
         await execute();
     };
