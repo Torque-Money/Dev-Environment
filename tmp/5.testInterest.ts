@@ -66,7 +66,7 @@ describe("Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
-        expect(interestNumerator.mul(maxInterestMinDenominator).mul(2).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
+        expect(interestNumerator.mul(maxInterestMinDenominator).mul(2)).to.equal(maxInterestMinNumerator.mul(interestDenominator));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
@@ -78,7 +78,7 @@ describe("Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
-        expect(interestNumerator.mul(maxInterestMinDenominator).eq(maxInterestMinNumerator.mul(interestDenominator))).to.equal(true);
+        expect(interestNumerator.mul(maxInterestMinDenominator)).to.equal(maxInterestMinNumerator.mul(interestDenominator));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
@@ -92,13 +92,9 @@ describe("Interest", async function () {
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(borrowedToken.address);
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(borrowedToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
-        expect(
-            interestNumerator
-                .mul(maxInterestMinDenominator)
-                .mul(maxInterestMaxDenominator)
-                .mul(2)
-                .eq(interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))))
-        ).to.equal(true);
+        expect(interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2)).to.equal(
+            interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator)))
+        );
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
@@ -108,7 +104,7 @@ describe("Interest", async function () {
 
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(borrowedToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
-        expect(interestNumerator.mul(maxInterestMaxDenominator).eq(maxInterestMaxNumerator.mul(interestDenominator))).to.equal(true);
+        expect(interestNumerator.mul(maxInterestMaxDenominator)).to.equal(maxInterestMaxNumerator.mul(interestDenominator));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
@@ -123,8 +119,8 @@ describe("Interest", async function () {
         const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
 
-        expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
-        expect((await marginLong.accountPrice(signerAddress)).eq((await marginLong.collateralPrice(signerAddress)).sub(interest))).to.equal(true);
+        expect(interest).to.equal(initialBorrowPrice.mul(interestNumerator).div(interestDenominator));
+        expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
@@ -143,10 +139,10 @@ describe("Interest", async function () {
         await wait(timePerInterestApplication);
         const currentInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
-        expect(currentInterestRateNumerator.mul(initialInterestRateDenominator).eq(initialInterestRateNumerator.mul(currentInterestRateDenominator))).to.equal(false);
+        expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
-        expect(currentInterest.eq(initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator))));
+        expect(currentInterest).to.equal(initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
