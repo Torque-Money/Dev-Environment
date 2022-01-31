@@ -116,23 +116,32 @@ describe("Interest", async function () {
     //     await marginLong["repayAccount(address)"](borrowedToken.address);
     // });
 
-    it("should accumulate interest over the given year as according to the rate", async () => {
-        await marginLong.borrow(borrowedToken.address, depositAmount);
+    // it("should accumulate interest over the given year as according to the rate", async () => {
+    //     await marginLong.borrow(borrowedToken.address, depositAmount);
 
-        const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
-        const timePerInterestApplication = await pool.timePerInterestApplication();
-        await wait(timePerInterestApplication);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(borrowedToken.address);
+    //     const timePerInterestApplication = await pool.timePerInterestApplication();
+    //     await wait(timePerInterestApplication);
 
-        const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
-        const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
+    //     const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
+    //     const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
 
-        expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
-        expect((await marginLong.accountPrice(signerAddress)).eq((await marginLong.collateralPrice(signerAddress)).sub(interest))).to.equal(true);
+    //     expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
+    //     expect((await marginLong.accountPrice(signerAddress)).eq((await marginLong.collateralPrice(signerAddress)).sub(interest))).to.equal(true);
 
-        await marginLong["repayAccount(address)"](borrowedToken.address);
+    //     await marginLong["repayAccount(address)"](borrowedToken.address);
+    // });
+
+    it("should accumulate the given interest first before borrowing more", async () => {
+        // **** TODO Maybe standardize the leverage amount in ALL of the borrow tests just like I did for the previous one to make sure it always works properly + deposit the total balance worth for max leverage
+        // **** First I want to borrow half
+        // **** Then I want to open the new amount which will change the rate, then I check that the interest accumulated is what it should be
+        // **** Finally repay the position
     });
 
-    // **** Test the accumulation of interest after a reborrow
-
-    // **** Test borrowing against equity
+    it("should borrow against equity", async () => {
+        // **** First borrow a large amount
+        // **** Next increase the price dramatically
+        // **** Check that the leverage has gone down and attempt to borrow more
+    });
 });
