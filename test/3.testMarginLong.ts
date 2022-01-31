@@ -56,31 +56,31 @@ describe("MarginLong", async function () {
         if (LPTokenAmount.gt(0)) await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount);
     });
 
-    it("deposit and undeposit collateral into the account", async () => {
-        const initialBalance = await collateralToken.balanceOf(signerAddress);
-        await marginLong.addCollateral(collateralToken.address, collateralAmount);
+    // it("deposit and undeposit collateral into the account", async () => {
+    //     const initialBalance = await collateralToken.balanceOf(signerAddress);
+    //     await marginLong.addCollateral(collateralToken.address, collateralAmount);
 
-        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
-        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
+    //     expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
+    //     expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
 
-        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
-        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
+    //     expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
+    //     expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
 
-        await marginLong.removeCollateral(collateralToken.address, collateralAmount);
+    //     await marginLong.removeCollateral(collateralToken.address, collateralAmount);
 
-        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
-        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
+    //     expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
+    //     expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
 
-        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
-        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
-    });
+    //     expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
+    //     expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
+    // });
 
-    it("should not allow bad deposits", async () => {
-        shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
-        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+    // it("should not allow bad deposits", async () => {
+    //     shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
+    //     shouldFail(async () => await marginLong.addCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
 
-        shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
-    });
+    //     shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+    // });
 
     it("should prevent bad leverage positions and should open and repay a leveraged position", async () => {
         await shouldFail(async () => await marginLong.borrow(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
@@ -137,13 +137,13 @@ describe("MarginLong", async function () {
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
     });
 
-    it("should borrow against equity", async () => {
-        // **** First borrow a large amount
-        // **** Next increase the price dramatically
-        // **** Check that the leverage has gone down and attempt to borrow more
-    });
+    // it("should borrow against equity", async () => {
+    //     // **** First borrow a large amount
+    //     // **** Next increase the price dramatically
+    //     // **** Check that the leverage has gone down and attempt to borrow more
+    // });
 
-    it("should not exceed maximum leverage", async () => {
-        // **** Attempt to borrow more than the backing collateral initially
-    });
+    // it("should not exceed maximum leverage", async () => {
+    //     // **** Attempt to borrow more than the backing collateral initially
+    // });
 });
