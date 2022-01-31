@@ -109,8 +109,8 @@ describe("MarginLong", async function () {
         const collateralValue = await marginLong.collateral(collateralToken.address, signerAddress);
         await marginLong.removeCollateral(collateralToken.address, collateralValue);
 
-        expect(await pool.liquidity(borrowedToken.address)).to.equal(depositAmount);
-        expect(await pool.tvl(borrowedToken.address)).to.equal(depositAmount);
+        expect((await pool.liquidity(borrowedToken.address)).gte(depositAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gte(depositAmount)).to.equal(true);
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
@@ -130,8 +130,8 @@ describe("MarginLong", async function () {
         const collateralValue = await marginLong.collateral(collateralToken.address, signerAddress);
         await marginLong.removeCollateral(collateralToken.address, collateralValue);
 
-        expect(await pool.liquidity(borrowedToken.address)).to.equal(depositAmount);
-        expect(await pool.tvl(borrowedToken.address)).to.equal(depositAmount);
+        expect((await pool.liquidity(borrowedToken.address)).gte(depositAmount)).to.equal(true);
+        expect((await pool.tvl(borrowedToken.address)).gte(depositAmount)).to.equal(true);
         expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
         expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
         expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
