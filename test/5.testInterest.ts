@@ -126,10 +126,8 @@ describe("Interest", async function () {
         const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
 
-        console.log(interest, initialBorrowPrice.mul(interestNumerator).div(interestDenominator));
-        // expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
-
-        // **** Now I need to look at the collateral to see if that works properly ?
+        expect(interest.eq(initialBorrowPrice.mul(interestNumerator).div(interestDenominator))).to.equal(true);
+        expect((await marginLong.accountPrice(signerAddress)).eq((await marginLong.collateralPrice(signerAddress)).sub(interest))).to.equal(true);
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
