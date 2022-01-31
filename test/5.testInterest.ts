@@ -115,9 +115,9 @@ describe("Interest", async function () {
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
 
-    // **** Perhaps there are some wacky broken tests when it is ok if someone is already borrowing ?
-
     // **** Test the interest over the given time period
 
     // **** Test the accumulation of interest after a reborrow
+
+    // **** Test borrowing against equity
 });
