@@ -128,5 +128,7 @@ describe("Handle price movement", async function () {
         expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
 
-    // **** Add in a test which will liquidate an account that exceeds the leverage limit without being under the minimum collateral price
+    it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
+        // **** Test
+    });
 });
