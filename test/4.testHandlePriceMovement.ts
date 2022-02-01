@@ -135,6 +135,7 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
+        await marginLong["repayAccount()"]();
         await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(300));
 
         await marginLong.borrow(borrowedToken.address, borrowedAmount);
