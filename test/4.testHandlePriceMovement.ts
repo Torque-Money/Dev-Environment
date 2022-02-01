@@ -82,6 +82,8 @@ describe("Handle price movement", async function () {
             maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
             leverageNumerator.mul(maxLeverageNumerator),
         ];
+
+        // **** It seems like that because of this, the price isnt being paid off for some reason
         await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator));
 
         const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
