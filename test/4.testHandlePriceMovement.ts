@@ -2,6 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
+import {shouldFail} from "../scripts/util/utilsTest";
 import {ERC20, LPool, MarginLong, OracleTest, Timelock} from "../typechain-types";
 
 describe("Handle price movement", async function () {
