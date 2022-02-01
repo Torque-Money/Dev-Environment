@@ -141,14 +141,15 @@ describe("Interest", async function () {
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(borrowedToken.address);
         await wait(timePerInterestApplication);
+
         const currentInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
-        // expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
-        console.log(currentInterestRateNumerator.mul(initialInterestRateDenominator), initialInterestRateNumerator.mul(currentInterestRateDenominator));
+        expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
-        // expect(currentInterest).to.equal(initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
-        console.log(initialInterest, currentInterest, initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
+        const expectedCurrentInterest = initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator));
+        const ROUND_CONSTANT = 1e3;
+        expect(expectedCurrentInterest.sub(currentInterest).mul(ROUND_CONSTANT).div(currentInterest).toNumber() / ROUND_CONSTANT).to.equal(0);
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
