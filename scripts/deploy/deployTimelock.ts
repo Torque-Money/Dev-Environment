@@ -19,12 +19,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const Timelock = await hre.ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(
+        constructorArgs.taxPercentageDenominator,
+        constructorArgs.taxPercentageDenominator,
+        constructorArgs.taxCooldown,
         constructorArgs.minDelay,
         constructorArgs.proposers,
-        constructorArgs.executors,
-        constructorArgs.taxPercentageDenominator,
-        constructorArgs.taxPercentageDenominator,
-        constructorArgs.taxCooldown
+        constructorArgs.executors
     );
     await timelock.deployed();
 
