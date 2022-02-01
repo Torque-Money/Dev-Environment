@@ -31,7 +31,7 @@ task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
     await hre.run("compile");
 
     await deploy("test", hre);
-    // await setup("test", hre);
+    await setup("test", hre);
 
     await utilUpdateFiles();
 });
