@@ -2,7 +2,7 @@ import {BigNumber} from "ethers";
 import {ethers, upgrades} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
-import wait from "../scripts/util/utilWait";
+import {wait} from "../scripts/util/utilsTest";
 import {Timelock} from "../typechain-types";
 
 describe("Timelock", async function () {

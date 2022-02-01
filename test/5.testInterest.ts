@@ -2,7 +2,8 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
-import wait from "../scripts/util/utilWait";
+import {approxEqual} from "../scripts/util/utilsTest";
+import {wait} from "../scripts/util/utilsTest";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("Interest", async function () {
@@ -148,8 +149,7 @@ describe("Interest", async function () {
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
         const expectedCurrentInterest = initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator));
-        const ROUND_CONSTANT = 1e3;
-        expect(expectedCurrentInterest.sub(currentInterest).mul(ROUND_CONSTANT).div(currentInterest).toNumber() / ROUND_CONSTANT).to.equal(0);
+        await approxEqual(currentInterest, expectedCurrentInterest, 3);
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
