@@ -9,48 +9,48 @@ import {task} from "hardhat/config";
 import dotenv from "dotenv";
 dotenv.config();
 
-// import deploy from "./scripts/deploy/deploy";
-// import setup from "./scripts/setup/setup";
+import deploy from "./scripts/deploy/deploy";
+import setup from "./scripts/setup/setup";
 
-// import utilFund from "./scripts/util/utilFund";
-// import utilApprove from "./scripts/util/utilApprove";
-// import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
+import utilFund from "./scripts/util/utilFund";
+import utilApprove from "./scripts/util/utilApprove";
+import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
-// import {verifyAll} from "./scripts/util/utilVerify";
+import {verifyAll} from "./scripts/util/utilVerify";
 
-// task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("main", hre);
-//     await setup("main", hre);
+    await deploy("main", hre);
+    await setup("main", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("test", hre);
-//     // await setup("test", hre);
+    await deploy("test", hre);
+    // await setup("test", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("fork", hre);
-//     await setup("fork", hre);
+    await deploy("fork", hre);
+    await setup("fork", hre);
 
-//     await utilFund("fork", hre);
-//     await utilApprove("fork", hre);
+    await utilFund("fork", hre);
+    await utilApprove("fork", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
-//     await verifyAll(hre);
-// });
+task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
+    await verifyAll(hre);
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
