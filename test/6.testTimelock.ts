@@ -11,7 +11,7 @@ describe("Timelock", async function () {
 
     const executeAdminOnly = async ({address, value, calldata, description}: {address: string; value: number; calldata: string; description?: string}) => {
         const parsedPredecessor = ethers.constants.HashZero;
-        const parsedDescription = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(description || ""));
+        const parsedDescription = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(description || Date.now().toString()));
 
         await timelock.schedule(address, value, calldata, parsedPredecessor, parsedDescription, minDelay);
 
