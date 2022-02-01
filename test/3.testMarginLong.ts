@@ -101,8 +101,6 @@ describe("MarginLong", async function () {
         await marginLong.addCollateral(collateralToken.address, collateralAmount);
         await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
-        console.log("Made it here");
-
         expect((await marginLong.getBorrowingAccounts()).length).to.not.equal(0);
 
         expect(await pool.liquidity(borrowedToken.address)).to.equal(depositAmount.sub(borrowedAmount));
