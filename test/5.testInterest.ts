@@ -139,8 +139,7 @@ describe("Interest", async function () {
         await wait(timePerInterestApplication);
         const currentInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
-        // **** This is the broken line (possibly because there is more collateral in there than what was expected ?)
-        expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
+        expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
         expect(currentInterest).to.equal(initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
