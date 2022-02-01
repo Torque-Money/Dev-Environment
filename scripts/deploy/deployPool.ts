@@ -16,6 +16,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
+    await pool.deployed();
 
     config.leveragePoolAddress = pool.address;
     config.leveragePoolLogicAddress = await getImplementationAddress(hre.ethers.provider, pool.address);

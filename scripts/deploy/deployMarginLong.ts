@@ -18,6 +18,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const MarginLong = await hre.ethers.getContractFactory("MarginLong");
     const marginLong = await hre.upgrades.deployProxy(MarginLong, Object.values(constructorArgs));
+    await marginLong.deployed();
 
     config.marginLongAddress = marginLong.address;
     config.marginLongLogicAddress = await getImplementationAddress(hre.ethers.provider, marginLong.address);

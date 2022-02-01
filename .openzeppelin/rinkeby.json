@@ -47,6 +47,16 @@
       "address": "0xab9271Ce90E8C595Bf1360b96F52D235BFC7Cf96",
       "txHash": "0x10cc75f0f65aa7cbb57117521617c866a2876e0c8be7914d96d49cfc37855a1d",
       "kind": "transparent"
+    },
+    {
+      "address": "0xa1a65CCfCBE830AB193d5177D5A9622a00F25E4B",
+      "txHash": "0xea7a423b79f780f7b968804ba809d10f9c1476dbf3ad137d35738537a5ba34d1",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xAc8349109dc0e7eD08f1Beb91830b5eF7331a167",
+      "txHash": "0x186b2ef8285b6efdeb19c8b5923b7f9a3e05a91a7d99db8a54dd16882efe5d24",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -248,6 +258,214 @@
                 "type": "t_bytes32"
               }
             ]
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "0a9e040b511f7b1adba2bcbd6c3e45132ba911c1558628c3ed9a3093ec092872": {
+      "address": "0x7Ed5C4874Dd59aE767abeA36d70AB1a8aBd3e60d",
+      "txHash": "0x17cccb1fea2c93a7d0afd1a492726bf5dd0613c9ba64a2ec68c56a809bc639ef",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:31"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
+          },
+          {
+            "contract": "OwnableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:82"
+          },
+          {
+            "contract": "MarginCore",
+            "label": "pool",
+            "type": "t_address",
+            "src": "contracts/v1/Margin/MarginCore.sol:8"
+          },
+          {
+            "contract": "MarginCore",
+            "label": "oracle",
+            "type": "t_address",
+            "src": "contracts/v1/Margin/MarginCore.sol:9"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_collateralTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:7"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_borrowedTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:8"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_approvedCollateralTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:10"
+          },
+          {
+            "contract": "MarginApproved",
+            "label": "_approvedBorrowedTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/v1/Margin/MarginApproved.sol:11"
+          },
+          {
+            "contract": "MarginPool",
+            "label": "_totalBorrowed",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/v1/Margin/MarginPool.sol:7"
+          },
+          {
+            "contract": "MarginPool",
+            "label": "_totalCollateral",
+            "type": "t_mapping(t_address,t_uint256)",
+            "src": "contracts/v1/Margin/MarginPool.sol:8"
+          },
+          {
+            "contract": "MarginAccount",
+            "label": "_accounts",
+            "type": "t_mapping(t_address,t_struct(Account)10062_storage)",
+            "src": "contracts/v1/Margin/MarginAccount.sol:25"
+          },
+          {
+            "contract": "MarginLevel",
+            "label": "_maxLeverage",
+            "type": "t_struct(Fraction)7147_storage",
+            "src": "contracts/v1/Margin/MarginLevel.sol:11"
+          },
+          {
+            "contract": "MarginLimits",
+            "label": "minCollateralPrice",
+            "type": "t_uint256",
+            "src": "contracts/v1/Margin/MarginLimits.sol:8"
+          },
+          {
+            "contract": "MarginBorrowers",
+            "label": "_accountSet",
+            "type": "t_struct(AddressSet)7564_storage",
+            "src": "contracts/v1/Margin/MarginBorrowers.sol:9"
+          },
+          {
+            "contract": "MarginLongLiquidateCore",
+            "label": "_liquidationFeePercent",
+            "type": "t_struct(Fraction)7147_storage",
+            "src": "contracts/v1/MarginLong/MarginLongLiquidateCore.sol:15"
+          }
+        ],
+        "types": {
+          "t_struct(Fraction)7147_storage": {
+            "label": "struct FractionMath.Fraction",
+            "members": [
+              {
+                "label": "numerator",
+                "type": "t_uint256"
+              },
+              {
+                "label": "denominator",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_struct(AddressSet)7564_storage": {
+            "label": "struct Set.AddressSet",
+            "members": [
+              {
+                "label": "keyPointers",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "keyList",
+                "type": "t_array(t_address)dyn_storage"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]"
+          },
+          "t_mapping(t_address,t_struct(Account)10062_storage)": {
+            "label": "mapping(address => struct MarginAccount.Account)"
+          },
+          "t_struct(Account)10062_storage": {
+            "label": "struct MarginAccount.Account",
+            "members": [
+              {
+                "label": "collateral",
+                "type": "t_struct(AddressSet)7564_storage"
+              },
+              {
+                "label": "collateralAmounts",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "borrowed",
+                "type": "t_struct(AddressSet)7564_storage"
+              },
+              {
+                "label": "borrowedAmounts",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "initialBorrowPrice",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "initialBorrowTime",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "accumulatedInterest",
+                "type": "t_mapping(t_address,t_uint256)"
+              },
+              {
+                "label": "hasBorrowed",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
           },
           "t_array(t_uint256)49_storage": {
             "label": "uint256[49]"
