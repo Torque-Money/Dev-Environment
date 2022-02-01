@@ -122,8 +122,8 @@ describe("Interest", async function () {
 
         const interest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
-
-        expect(interest).to.equal(initialBorrowPrice.mul(interestNumerator).div(interestDenominator));
+        const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator);
+        await approxEqual(interest, expectedInterest, 3);
         expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
