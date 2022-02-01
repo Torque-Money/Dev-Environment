@@ -12,19 +12,19 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         minDelay: hre.ethers.BigNumber.from(259200),
         proposers: [signerAddress],
         executors: [hre.ethers.constants.AddressZero],
-        taxPercentageNumerator: 5,
-        taxPercentageDenominator: 100,
-        taxCooldown: hre.ethers.BigNumber.from(10).pow(3).mul(2628),
+        // taxPercentageNumerator: 5,
+        // taxPercentageDenominator: 100,
+        // taxCooldown: hre.ethers.BigNumber.from(10).pow(3).mul(2628),
     };
 
     const Timelock = await hre.ethers.getContractFactory("Timelock");
     const timelock = await Timelock.deploy(
         constructorArgs.minDelay,
         constructorArgs.proposers,
-        constructorArgs.executors,
-        constructorArgs.taxPercentageDenominator,
-        constructorArgs.taxPercentageDenominator,
-        constructorArgs.taxCooldown
+        constructorArgs.executors
+        // constructorArgs.taxPercentageDenominator,
+        // constructorArgs.taxPercentageDenominator,
+        // constructorArgs.taxCooldown
     );
     await timelock.deployed();
 
