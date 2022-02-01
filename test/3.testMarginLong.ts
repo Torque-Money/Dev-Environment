@@ -98,6 +98,7 @@ describe("MarginLong", async function () {
     // });
 
     it("should open and repay a leveraged position", async () => {
+        await marginLong.addCollateral(collateralToken.address, collateralAmount);
         await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
         console.log("Made it here");
