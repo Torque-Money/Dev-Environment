@@ -52,11 +52,14 @@ describe("Interest", async function () {
     });
 
     afterEach(async () => {
-        const collateral = await marginLong.collateral(collateralToken.address, signerAddress);
-        if (collateral.gt(0)) await marginLong.removeCollateral(collateralToken.address, collateral);
+        const potentialCollateralTokens = [collateralToken, borrowedToken];
+        for (const token of potentialCollateralTokens) {
+            const amount = await marginLong.collateral(token.address, signerAddress);
+            if (amount.gt(0)) await marginLong.removeCollateral(token.address, amount);
+        }
 
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount);
+        if (LPTokenAmount.gt(0)) await pool.removeLiquidity(lpToken.address, LPTokenAmount);
     });
 
     it("should borrow below the max utilization", async () => {
