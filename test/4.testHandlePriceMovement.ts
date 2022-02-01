@@ -139,7 +139,7 @@ describe("Handle price movement", async function () {
 
         await marginLong.borrow(borrowedToken.address, borrowedAmount);
 
-        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(2));
+        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(10));
 
         await marginLong.liquidateAccount(signerAddress);
     });
