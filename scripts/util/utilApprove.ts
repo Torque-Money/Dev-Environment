@@ -7,7 +7,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const signer = hre.ethers.provider.getSigner();
-    const signerAddress = await signer.getAddress();
 
     for (const approved of config.approved) {
         const token = new hre.ethers.Contract(approved.address, ERC20Abi.abi, signer) as ERC20;
