@@ -18,6 +18,11 @@ import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import {verifyAll} from "./scripts/util/utilVerify";
 
+import deployPool from "./scripts/deploy/deployPool";
+import deployMarginLong from "./scripts/deploy/deployMarginLong";
+import deployResolver from "./scripts/deploy/deployResolver";
+import deployTimelock from "./scripts/deploy/deployTimelock";
+
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
 
@@ -52,7 +57,14 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-// task("sandbox", "A sandbox for testing", async (args, hre) => {});
+task("sandbox", "A sandbox for testing", async (args, hre) => {
+    // await deployConverter(configType, hre);
+    // await deployOracle(configType, hre);
+    await deployPool("test", hre);
+    // await deployMarginLong("test", hre);
+    // await deployResolver("test", hre);
+    // await deployTimelock("test", hre);
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;

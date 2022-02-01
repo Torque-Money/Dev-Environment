@@ -31,6 +31,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         config.oracleAddress = oracle.address;
         console.log(`Deployed: Oracle test | ${oracle.address}`);
+
+        if (configType === "test") saveTempConstructor(oracle.address, constructorArgs);
     }
 
     saveConfig(config, configType);
