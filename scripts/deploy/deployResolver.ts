@@ -13,6 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
     const resolver = await Resolver.deploy(constructorArgs.pokeMe, constructorArgs.marginLong, constructorArgs.pool, constructorArgs.converter);
+    await resolver.deployed();
 
     config.resolverAddress = resolver.address;
     console.log(`Deployed: Resolver | ${resolver.address}`);

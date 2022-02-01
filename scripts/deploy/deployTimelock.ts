@@ -26,6 +26,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         constructorArgs.taxPercentageDenominator,
         constructorArgs.taxCooldown
     );
+    await timelock.deployed();
 
     config.timelockAddress = timelock.address;
     console.log(`Deployed: Timelock | ${timelock.address}`);

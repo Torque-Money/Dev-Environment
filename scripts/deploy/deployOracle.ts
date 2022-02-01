@@ -14,6 +14,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         const Oracle = await hre.ethers.getContractFactory("Oracle");
         const oracle = await Oracle.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        await oracle.deployed();
 
         config.oracleAddress = oracle.address;
         console.log(`Deployed: Oracle | ${oracle.address}`);
@@ -28,6 +29,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
         const oracle = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        await oracle.deployed();
 
         config.oracleAddress = oracle.address;
         console.log(`Deployed: Oracle test | ${oracle.address}`);
