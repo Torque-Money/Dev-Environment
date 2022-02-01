@@ -159,8 +159,6 @@ describe("MarginLong", async function () {
         expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
 
         await marginLong["repayAccount()"]();
-        await marginLong.removeCollateral(collateralToken.address, collateralAmount);
-
         const potentialCollateralTokens = [collateralToken, borrowedToken];
         for (const token of potentialCollateralTokens) {
             const amount = await marginLong.collateral(token.address, signerAddress);
