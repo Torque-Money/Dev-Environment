@@ -131,8 +131,9 @@ describe("Interest", async function () {
     it("should accumulate the given interest first before borrowing more", async () => {
         await marginLong.borrow(borrowedToken.address, borrowedAmount.div(2));
 
-        const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(borrowedToken.address);
         const timePerInterestApplication = await pool.timePerInterestApplication();
+
+        const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(borrowedToken.address);
         await wait(timePerInterestApplication);
         const initialInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
@@ -143,11 +144,11 @@ describe("Interest", async function () {
         const currentInterest = await marginLong["interest(address,address)"](borrowedToken.address, signerAddress);
 
         // expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
-        console.log(currentInterestRateNumerator.mul(initialInterestRateDenominator)), initialInterestRateNumerator.mul(currentInterestRateDenominator);
+        console.log(currentInterestRateNumerator.mul(initialInterestRateDenominator), initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](borrowedToken.address, signerAddress);
         // expect(currentInterest).to.equal(initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
-        console.log(currentInterest, initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
+        console.log(initialInterest, currentInterest, initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator)));
 
         await marginLong["repayAccount(address)"](borrowedToken.address);
     });
