@@ -72,6 +72,9 @@ describe("Handle price movement", async function () {
     });
 
     // it("should liquidate an account", async () => {
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+
     //     const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
     //     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
     //     const [priceChangeNumerator, priceChangeDenominator] = [
@@ -92,6 +95,9 @@ describe("Handle price movement", async function () {
     // });
 
     // it("should reset an account", async () => {
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.resetAccount(signerAddress));
+
     //     await oracle.setPrice(collateralToken.address, 1);
 
     //     expect(await marginLong.resettable(signerAddress)).to.equal(true);
@@ -129,6 +135,12 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
-        // **** Test
+        await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(300));
+
+        await marginLong.borrow(borrowedToken.address, borrowedAmount);
+
+        await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(2));
+
+        await marginLong.liquidateAccount(signerAddress);
     });
 });
