@@ -2,17 +2,16 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
-import {shouldFail} from "../scripts/util/utilsTest";
-import {ERC20, LPool, MarginLong, OracleTest, Resolver, Timelock} from "../typechain-types";
+import {Converter, ERC20} from "../typechain-types";
 
-describe("Handle price movement", async function () {
+describe("Converter", async function () {
     let collateralApproved: any;
     let collateralToken: ERC20;
 
     let borrowedApproved: any;
     let borrowedToken: ERC20;
 
-    let resolver: Resolver;
+    let converter: Converter;
 
     let signerAddress: string;
 
@@ -25,11 +24,33 @@ describe("Handle price movement", async function () {
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
 
-        resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
+        converter = await ethers.getContractAt("Converter", config.converterAddress);
 
-        const swapAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(10);
+        swapAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(10);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
     });
+
+    it("should convert one token into another", async () => {
+        await (await collateralToken.approve(converter.address, swapAmount)).wait();
+
+        const initialAmount = await borrowedToken.balanceOf(signerAddress);
+
+        await (await converter.swapMaxTokenOut(collateralToken.address, swapAmount, borrowedToken.address)).wait();
+
+        expect((await borrowedToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
+
+    it("should convert one token into ETH", async () => {
+        await (await collateralToken.approve(converter.address, swapAmount)).wait();
+
+        const initialAmount = await ethers.provider.getBalance(signerAddress);
+
+        await converter.swapMaxEthOut(collateralToken.address, swapAmount);
+
+        expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
+
+    // **** Perhaps regarding the resolver, the amount that there is claimed to be sent to the contract is not actually in the contract ?
 });
