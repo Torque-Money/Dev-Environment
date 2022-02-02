@@ -113,6 +113,7 @@ describe("Handle price movement", async function () {
 
     it("should liquidate an account with the resolver", async () => {
         const converter = await ethers.getContractAt("Converter", config.converterAddress);
+        borrowedToken.approve(converter.address, depositAmount);
         await (await converter.swapMaxEthOut(borrowedToken.address, depositAmount)).wait();
 
         // expect((await resolver.checkLiquidate())[0]).to.equal(false);
