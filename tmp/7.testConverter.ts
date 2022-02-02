@@ -51,6 +51,4 @@ describe("Converter", async function () {
 
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     });
-
-    // **** Perhaps regarding the resolver, the amount that there is claimed to be sent to the contract is not actually in the contract ?
 });

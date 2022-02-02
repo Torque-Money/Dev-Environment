@@ -112,6 +112,8 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
+        // **** Perhaps regarding the resolver, the amount that there is claimed to be sent to the contract is not actually in the contract ?
+
         expect((await resolver.checkLiquidate())[0]).to.equal(false);
         await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
 
