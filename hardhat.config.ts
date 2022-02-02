@@ -60,7 +60,7 @@ task("sandbox", "Sandbox test", async (args, hre) => {
 
     const token = config.approved[1].address;
     console.log(token);
-    console.log(await pool.isPT(token));
+    console.log(await pool.isApprovedPT(token));
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
