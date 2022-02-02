@@ -7,7 +7,7 @@
       "hash": "0xa5c9ab453a5767cc4ee9821132304e26c1878f12e828b2dd92f6a83c96ee2deb",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x16425b89238261a41ef476a9f6a6454a45701eb446090543c1311faaf40a4211",
+      "blockHash": "0x90d0b720d1644953fa92825011b7c377bcd7821e0e9bbb1c875866b46473d035",
       "blockNumber": 28793950,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -115,7 +115,7 @@
           {
             "contract": "LPoolApproved",
             "label": "_PTList",
-            "type": "t_struct(AddressSet)7234_storage",
+            "type": "t_struct(AddressSet)7246_storage",
             "src": "contracts/v1/LPool/LPoolApproved.sol:14"
           },
           {
@@ -139,13 +139,13 @@
           {
             "contract": "LPoolTax",
             "label": "_taxPercent",
-            "type": "t_struct(Fraction)6817_storage",
+            "type": "t_struct(Fraction)6829_storage",
             "src": "contracts/v1/LPool/LPoolTax.sol:17"
           },
           {
             "contract": "LPoolTax",
             "label": "_taxAccountSet",
-            "type": "t_struct(AddressSet)7234_storage",
+            "type": "t_struct(AddressSet)7246_storage",
             "src": "contracts/v1/LPool/LPoolTax.sol:18"
           },
           {
@@ -157,19 +157,19 @@
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMin",
-            "type": "t_mapping(t_address,t_struct(Fraction)6817_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)6829_storage)",
             "src": "contracts/v1/LPool/LPoolInterest.sol:15"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMax",
-            "type": "t_mapping(t_address,t_struct(Fraction)6817_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)6829_storage)",
             "src": "contracts/v1/LPool/LPoolInterest.sol:16"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxUtilization",
-            "type": "t_mapping(t_address,t_struct(Fraction)6817_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)6829_storage)",
             "src": "contracts/v1/LPool/LPoolInterest.sol:17"
           }
         ],
@@ -177,13 +177,13 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Fraction)6817_storage)": {
+          "t_mapping(t_address,t_struct(Fraction)6829_storage)": {
             "label": "mapping(address => struct FractionMath.Fraction)"
           },
           "t_address": {
             "label": "address"
           },
-          "t_struct(Fraction)6817_storage": {
+          "t_struct(Fraction)6829_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -196,7 +196,7 @@
               }
             ]
           },
-          "t_struct(AddressSet)7234_storage": {
+          "t_struct(AddressSet)7246_storage": {
             "label": "struct Set.AddressSet",
             "members": [
               {
@@ -341,13 +341,13 @@
           {
             "contract": "MarginAccount",
             "label": "_accounts",
-            "type": "t_mapping(t_address,t_struct(Account)9776_storage)",
+            "type": "t_mapping(t_address,t_struct(Account)9788_storage)",
             "src": "contracts/v1/Margin/MarginAccount.sol:25"
           },
           {
             "contract": "MarginLevel",
             "label": "_maxLeverage",
-            "type": "t_struct(Fraction)6817_storage",
+            "type": "t_struct(Fraction)6829_storage",
             "src": "contracts/v1/Margin/MarginLevel.sol:11"
           },
           {
@@ -359,18 +359,18 @@
           {
             "contract": "MarginBorrowers",
             "label": "_accountSet",
-            "type": "t_struct(AddressSet)7234_storage",
+            "type": "t_struct(AddressSet)7246_storage",
             "src": "contracts/v1/Margin/MarginBorrowers.sol:9"
           },
           {
             "contract": "MarginLongLiquidateCore",
             "label": "_liquidationFeePercent",
-            "type": "t_struct(Fraction)6817_storage",
+            "type": "t_struct(Fraction)6829_storage",
             "src": "contracts/v1/MarginLong/MarginLongLiquidateCore.sol:15"
           }
         ],
         "types": {
-          "t_struct(Fraction)6817_storage": {
+          "t_struct(Fraction)6829_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -386,7 +386,7 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_struct(AddressSet)7234_storage": {
+          "t_struct(AddressSet)7246_storage": {
             "label": "struct Set.AddressSet",
             "members": [
               {
@@ -408,15 +408,15 @@
           "t_array(t_address)dyn_storage": {
             "label": "address[]"
           },
-          "t_mapping(t_address,t_struct(Account)9776_storage)": {
+          "t_mapping(t_address,t_struct(Account)9788_storage)": {
             "label": "mapping(address => struct MarginAccount.Account)"
           },
-          "t_struct(Account)9776_storage": {
+          "t_struct(Account)9788_storage": {
             "label": "struct MarginAccount.Account",
             "members": [
               {
                 "label": "collateral",
-                "type": "t_struct(AddressSet)7234_storage"
+                "type": "t_struct(AddressSet)7246_storage"
               },
               {
                 "label": "collateralAmounts",
@@ -424,7 +424,7 @@
               },
               {
                 "label": "borrowed",
-                "type": "t_struct(AddressSet)7234_storage"
+                "type": "t_struct(AddressSet)7246_storage"
               },
               {
                 "label": "borrowedAmounts",
