@@ -1,6 +1,6 @@
 {
   "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-  "gelatoPokeMe": "0x8c089073A9594a4FB03Fa99feee3effF0e2Bc58a",
+  "taskTreasury": "0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60",
   "LPPrefixName": "Torque Leverage Pool",
   "LPPrefixSymbol": "tlp",
   "approved": [

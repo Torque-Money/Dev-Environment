@@ -5,14 +5,17 @@ import {saveTempConstructor} from "../util/utilVerify";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
     const constructorArgs = {
-        pokeMe: config.gelatoPokeMe,
+        taskTreasury: config.taskTreasury,
+        depositReceiver: signerAddress,
         marginLong: config.marginLongAddress,
-        pool: config.leveragePoolAddress,
         converter: config.converterAddress,
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
-    const resolver = await Resolver.deploy(constructorArgs.pokeMe, constructorArgs.marginLong, constructorArgs.pool, constructorArgs.converter);
+    const resolver = await Resolver.deploy(constructorArgs.taskTreasury, constructorArgs.depositReceiver, constructorArgs.marginLong, constructorArgs.converter);
     await resolver.deployed();
 
     config.resolverAddress = resolver.address;
