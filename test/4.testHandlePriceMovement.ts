@@ -3,7 +3,7 @@ import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
-import {ERC20, LPool, MarginLong, OracleTest, Timelock} from "../typechain-types";
+import {ERC20, LPool, MarginLong, OracleTest, Resolver, Timelock} from "../typechain-types";
 
 describe("Handle price movement", async function () {
     let collateralApproved: any;
@@ -22,6 +22,7 @@ describe("Handle price movement", async function () {
     let pool: LPool;
     let marginLong: MarginLong;
     let timelock: Timelock;
+    let resolver: Resolver;
 
     let signerAddress: string;
 
@@ -108,6 +109,28 @@ describe("Handle price movement", async function () {
         expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
         expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
+
+    it("should liquidate an account with the resolver", async () => {
+        const [canLiquidate, executeLiquidate] = await resolver.checkLiquidate();
+        expect().to.equal(false);
+        await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+
+        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        const [priceChangeNumerator, priceChangeDenominator] = [
+            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
+            leverageNumerator.mul(maxLeverageNumerator),
+        ];
+        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
+
+        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+
+        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+        await (await marginLong.liquidateAccount(signerAddress)).wait();
+        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+    });
+
+    it("should reset an account with the resolver", async () => {});
 
     it("should repay an account with profit", async () => {
         await (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(110).div(100))).wait();
