@@ -128,6 +128,8 @@ describe("Handle price movement", async function () {
         expect((await resolver.checkLiquidate())[0]).to.equal(true);
         await (await resolver.executeLiquidate(signerAddress)).wait();
 
+        // **** Also check if the deposited funds increased in value
+
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
 
