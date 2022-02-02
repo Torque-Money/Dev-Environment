@@ -5,11 +5,11 @@ import config from "../config.fork.json";
 import {Converter, ERC20} from "../typechain-types";
 
 describe("Converter", async function () {
-    let collateralApproved: any;
-    let collateralToken: ERC20;
+    let inApproved: any;
+    let inToken: ERC20;
 
-    let borrowedApproved: any;
-    let borrowedToken: ERC20;
+    let outApproved: any;
+    let outToken: ERC20;
 
     let converter: Converter;
 
@@ -18,36 +18,36 @@ describe("Converter", async function () {
     let swapAmount: BigNumber;
 
     beforeEach(async () => {
-        collateralApproved = config.approved[0];
-        collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
+        inApproved = config.approved[0];
+        inToken = await ethers.getContractAt("ERC20", inApproved.address);
 
-        borrowedApproved = config.approved[1];
-        borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+        outApproved = config.approved[1];
+        outToken = await ethers.getContractAt("ERC20", outApproved.address);
 
         converter = await ethers.getContractAt("Converter", config.converterAddress);
 
-        swapAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(10);
+        swapAmount = ethers.BigNumber.from(10).pow(inApproved.decimals).mul(1);
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
     });
 
     it("should convert one token into another", async () => {
-        await (await collateralToken.approve(converter.address, swapAmount)).wait();
+        await (await inToken.approve(converter.address, swapAmount)).wait();
 
-        const initialAmount = await borrowedToken.balanceOf(signerAddress);
+        const initialAmount = await outToken.balanceOf(signerAddress);
 
-        await (await converter.swapMaxTokenOut(collateralToken.address, swapAmount, borrowedToken.address)).wait();
+        await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
 
-        expect((await borrowedToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+        expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
     });
 
     it("should convert one token into ETH", async () => {
-        await (await collateralToken.approve(converter.address, swapAmount)).wait();
+        await (await inToken.approve(converter.address, swapAmount)).wait();
 
         const initialAmount = await ethers.provider.getBalance(signerAddress);
 
-        await converter.swapMaxEthOut(collateralToken.address, swapAmount);
+        await converter.swapMaxEthOut(inToken.address, swapAmount);
 
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     });
