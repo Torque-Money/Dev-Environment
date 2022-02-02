@@ -124,6 +124,7 @@ describe("Handle price movement", async function () {
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
         expect((await resolver.checkLiquidate())[0]).to.equal(true);
+
         await (await resolver.executeLiquidate(signerAddress)).wait();
 
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
