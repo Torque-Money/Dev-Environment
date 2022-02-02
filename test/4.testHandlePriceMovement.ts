@@ -73,47 +73,47 @@ describe("Handle price movement", async function () {
         if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
     });
 
-    it("should liquidate an account", async () => {
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+    // it("should liquidate an account", async () => {
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
 
-        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-        const [priceChangeNumerator, priceChangeDenominator] = [
-            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
-            leverageNumerator.mul(maxLeverageNumerator),
-        ];
-        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
+    //     const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+    //     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+    //     const [priceChangeNumerator, priceChangeDenominator] = [
+    //         maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
+    //         leverageNumerator.mul(maxLeverageNumerator),
+    //     ];
+    //     (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+    //     const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
+    //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+    //     expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
-    });
+    //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
+    // });
 
-    it("should reset an account", async () => {
-        expect(await marginLong.resettable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.resetAccount(signerAddress));
+    // it("should reset an account", async () => {
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.resetAccount(signerAddress));
 
-        await (await oracle.setPrice(collateralToken.address, 1)).wait();
+    //     await (await oracle.setPrice(collateralToken.address, 1)).wait();
 
-        expect(await marginLong.resettable(signerAddress)).to.equal(true);
-        await (await marginLong.resetAccount(signerAddress)).wait();
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(true);
+    //     await (await marginLong.resetAccount(signerAddress)).wait();
+    //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
-        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
-    });
+    //     expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
+    //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
+    // });
 
     it("should liquidate an account with the resolver", async () => {
         const [canLiquidate, executeLiquidate] = await resolver.checkLiquidate();
-        expect().to.equal(false);
-        await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+        expect(canLiquidate).to.equal(false);
+        await shouldFail(async () => await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: executeLiquidate}));
 
         const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
         const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
@@ -123,49 +123,49 @@ describe("Handle price movement", async function () {
         ];
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+        const [newCanLiquidate, newExecuteLiquidate] = await resolver.checkLiquidate();
+        expect(newCanLiquidate).to.equal(true);
+        await (await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: newExecuteLiquidate})).wait();
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
 
-    it("should reset an account with the resolver", async () => {});
+    // it("should reset an account with the resolver", async () => {});
 
-    it("should repay an account with profit", async () => {
-        await (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(110).div(100))).wait();
+    // it("should repay an account with profit", async () => {
+    //     await (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(110).div(100))).wait();
 
-        const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
-        await (await marginLong["repayAccount()"]()).wait();
-        expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
+    //     const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+    //     await (await marginLong["repayAccount()"]()).wait();
+    //     expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).lt(depositAmount)).to.equal(true);
-    });
+    //     expect((await pool.tvl(borrowedToken.address)).lt(depositAmount)).to.equal(true);
+    // });
 
-    it("should repay an account with a loss", async () => {
-        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-        const [priceChangeNumerator, priceChangeDenominator] = [
-            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).sub(1),
-            leverageNumerator.mul(maxLeverageNumerator),
-        ];
-        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
+    // it("should repay an account with a loss", async () => {
+    //     const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+    //     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+    //     const [priceChangeNumerator, priceChangeDenominator] = [
+    //         maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).sub(1),
+    //         leverageNumerator.mul(maxLeverageNumerator),
+    //     ];
+    //     (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
-        await (await marginLong["repayAccount()"]()).wait();
-        expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
+    //     const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+    //     await (await marginLong["repayAccount()"]()).wait();
+    //     expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
-    });
+    //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
+    // });
 
-    it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
-        await marginLong["repayAccount()"]();
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(300))).wait();
+    // it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
+    //     await marginLong["repayAccount()"]();
+    //     await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(300))).wait();
 
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+    //     await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
 
-        await (await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(10))).wait();
+    //     await (await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(10))).wait();
 
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-    });
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
+    // });
 });
