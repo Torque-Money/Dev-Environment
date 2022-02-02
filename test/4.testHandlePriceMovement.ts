@@ -111,9 +111,8 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
-        const [canLiquidate, executeLiquidate] = await resolver.checkLiquidate();
-        expect(canLiquidate).to.equal(false);
-        await shouldFail(async () => await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: executeLiquidate}));
+        expect((await resolver.checkLiquidate())[0]).to.equal(false);
+        await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
 
         const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
         const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
@@ -123,9 +122,8 @@ describe("Handle price movement", async function () {
         ];
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        const [newCanLiquidate, newExecuteLiquidate] = await resolver.checkLiquidate();
-        expect(newCanLiquidate).to.equal(true);
-        await (await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: newExecuteLiquidate})).wait();
+        expect((await resolver.checkLiquidate())[0]).to.equal(true);
+        await (await resolver.executeLiquidate(signerAddress)).wait();
 
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
