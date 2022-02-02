@@ -93,6 +93,7 @@ describe("Handle price movement", async function () {
     //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
     //     expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+    // Add support for checking that the timelock tax works
 
     //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     // });

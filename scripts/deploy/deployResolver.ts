@@ -11,11 +11,18 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const constructorArgs = {
         taskTreasury: config.taskTreasury,
         depositReceiver: signerAddress,
+        ethAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
         marginLong: config.marginLongAddress,
         converter: config.converterAddress,
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
-    const resolver = await Resolver.deploy(constructorArgs.taskTreasury, constructorArgs.depositReceiver, constructorArgs.marginLong, constructorArgs.converter);
+    const resolver = await Resolver.deploy(
+        constructorArgs.taskTreasury,
+        constructorArgs.depositReceiver,
+        constructorArgs.ethAddress,
+        constructorArgs.marginLong,
+        constructorArgs.converter
+    );
     await resolver.deployed();
 
     config.resolverAddress = resolver.address;
