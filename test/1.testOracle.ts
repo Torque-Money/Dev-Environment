@@ -26,7 +26,7 @@ describe("Oracle", async function () {
 
         const priceDecimals = await oracle.priceDecimals();
         tokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);
-        await oracle.setPrice(token.address, tokenPrice);
+        await (await oracle.setPrice(token.address, tokenPrice)).wait();
 
         const pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));

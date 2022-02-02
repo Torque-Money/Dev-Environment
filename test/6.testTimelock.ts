@@ -13,9 +13,9 @@ describe("Timelock", async function () {
         const parsedPredecessor = ethers.constants.HashZero;
         const parsedDescription = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(description || Date.now().toString()));
 
-        await timelock.schedule(address, value, calldata, parsedPredecessor, parsedDescription, minDelay);
+        await (await timelock.schedule(address, value, calldata, parsedPredecessor, parsedDescription, minDelay)).wait();
 
-        const execute = async () => await timelock.execute(address, value, calldata, parsedPredecessor, parsedDescription);
+        const execute = async () => await (await timelock.execute(address, value, calldata, parsedPredecessor, parsedDescription)).wait();
         await shouldFail(execute);
 
         await wait(minDelay);

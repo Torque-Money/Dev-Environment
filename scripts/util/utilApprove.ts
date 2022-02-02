@@ -13,8 +13,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         const approvedAmount = hre.ethers.BigNumber.from(2).pow(255);
 
-        await token.approve(config.leveragePoolAddress, approvedAmount);
-        await token.approve(config.marginLongAddress, approvedAmount);
+        await (await token.approve(config.leveragePoolAddress, approvedAmount)).wait();
+        await (await token.approve(config.marginLongAddress, approvedAmount)).wait();
 
         console.log(`Approve: Approved contracts to spend tokens with address ${approved.address}`);
     }

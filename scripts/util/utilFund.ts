@@ -16,6 +16,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const PERCENTAGE = 80;
         const balance = (await hre.ethers.provider.getBalance(signerAddress)).mul(PERCENTAGE).div(100);
 
-        await router.swapExactETHForTokens(0, [await router.WETH(), approved.address], signerAddress, Date.now(), {value: balance.div(config.approved.length)});
+        await (
+            await router.swapExactETHForTokens(0, [await router.WETH(), approved.address], signerAddress, Date.now(), {value: balance.div(config.approved.length)})
+        ).wait();
     }
 }
