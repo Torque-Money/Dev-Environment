@@ -8,23 +8,23 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const converter = await hre.ethers.getContractAt("Converter", config.converterAddress);
-    await converter.transferOwnership(config.timelockAddress);
+    await (await converter.transferOwnership(config.timelockAddress)).wait();
 
     const pool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
     const POOL_ADMIN_ROLE = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE"));
-    await pool.grantRole(POOL_ADMIN_ROLE, config.timelockAddress);
-    await pool.renounceRole(POOL_ADMIN_ROLE, signerAddress);
+    await (await pool.grantRole(POOL_ADMIN_ROLE, config.timelockAddress)).wait();
+    await (await pool.renounceRole(POOL_ADMIN_ROLE, signerAddress)).wait();
 
     const margin = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
-    await margin.transferOwnership(config.timelockAddress);
+    await (await margin.transferOwnership(config.timelockAddress)).wait();
 
     let oracle;
     if (configType !== "fork") oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
     else oracle = await hre.ethers.getContractAt("OracleTest", config.oracleAddress);
-    await oracle.transferOwnership(config.timelockAddress);
+    await (await oracle.transferOwnership(config.timelockAddress)).wait();
 
     const resolver = await hre.ethers.getContractAt("Resolver", config.resolverAddress);
-    await resolver.transferOwnership(config.timelockAddress);
+    await (await resolver.transferOwnership(config.timelockAddress)).wait();
 
     await hre.upgrades.admin.transferProxyAdminOwnership(config.timelockAddress);
 

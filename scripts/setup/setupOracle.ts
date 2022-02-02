@@ -13,7 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const reservePriceFeeds = config.approved.filter((approved) => approved.oracle).map((approved) => approved.reservePriceFeed);
     const correctDecimals = config.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
     const oracleSupported = Array(oracleApproved.length).fill(true);
-    await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported);
+    await (await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported)).wait();
 
     console.log("Setup: Oracle");
 }
