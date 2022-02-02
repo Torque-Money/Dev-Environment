@@ -58,7 +58,7 @@ task("sandbox", "Sandbox test", async (args, hre) => {
 
     const pool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
-    console.log(await pool.LPFromPT(config.approved[0].address));
+    console.log(await pool.isPT(config.approved[0].address));
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
