@@ -41,6 +41,7 @@ describe("Handle price movement", async function () {
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
+        resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
