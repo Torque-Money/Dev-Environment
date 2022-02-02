@@ -12,7 +12,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         minCollateralPrice: hre.ethers.BigNumber.from(10).pow(18).mul(100),
         maxLeverageNumerator: 125,
         maxLeverageDenominator: 1,
-        liquidationFeePercentNumerator: 10,
+        liquidationFeePercentNumerator: 5,
         liquidationFeePercentDenominator: 100,
     };
 
