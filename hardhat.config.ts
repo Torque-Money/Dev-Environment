@@ -31,7 +31,7 @@ task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
 task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
     await hre.run("compile");
 
-    await deploy("test", hre);
+    // await deploy("test", hre);
     await setup("test", hre);
 
     await utilUpdateFiles();
@@ -58,7 +58,9 @@ task("sandbox", "Sandbox test", async (args, hre) => {
 
     const pool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
 
-    console.log(await pool.isPT(config.approved[0].address));
+    const token = config.approved[0].address;
+    console.log(token);
+    console.log(await pool.isPT(token));
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
