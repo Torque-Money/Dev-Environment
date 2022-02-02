@@ -17,6 +17,7 @@ import utilApprove from "./scripts/util/utilApprove";
 import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import {verifyAll} from "./scripts/util/utilVerify";
+import {chooseConfig} from "./scripts/util/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -50,6 +51,14 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
 
 task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
     await verifyAll(hre);
+});
+
+task("sandbox", "Sandbox test", async (args, hre) => {
+    const config = chooseConfig("test");
+
+    const pool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
+
+    console.log(await pool.LPFromPT(config.approved[0].address));
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
