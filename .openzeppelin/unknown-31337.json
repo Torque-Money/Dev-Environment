@@ -7,7 +7,7 @@
       "hash": "0xa1f166ffe877b5f46769e1a1cebc6acbd38c3c95c6f5527bfc5130bf0d278aef",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x394596161d523c44e8fa35232abd6cda1a636fd10cbed2a30da00f924c3b76fc",
+      "blockHash": "0x2c648c7ab8760330e95b92f55ca874fe95ba42b64d2018cbd52c61b98ade7aba",
       "blockNumber": 28793950,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -36,16 +36,6 @@
   },
   "proxies": [
     {
-      "address": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
-      "txHash": "0x43db49f66de8d59ae589e37a19b4eddaebdadec1740bebbc73d51d58e201f074",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
-      "txHash": "0x7cd18b674d1af5f03a193e7bba784933ce429805c127ea631dbfb465a8d892e2",
-      "kind": "transparent"
-    },
-    {
       "address": "0x18E317A7D70d8fBf8e6E893616b52390EbBdb629",
       "txHash": "0x9e33617ce8843e60a8eb75ac68859ecfab06653ae286f53d28ab38851d76b18e",
       "kind": "transparent"
@@ -53,6 +43,16 @@
     {
       "address": "0x4b6aB5F819A515382B0dEB6935D793817bB4af28",
       "txHash": "0x6c4ec79ec24902db398503237d0fdd0ce0feb3114f02770df99826abd4c35cf0",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x1fA02b2d6A771842690194Cf62D91bdd92BfE28d",
+      "txHash": "0x43db49f66de8d59ae589e37a19b4eddaebdadec1740bebbc73d51d58e201f074",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
+      "txHash": "0x7cd18b674d1af5f03a193e7bba784933ce429805c127ea631dbfb465a8d892e2",
       "kind": "transparent"
     }
   ],
