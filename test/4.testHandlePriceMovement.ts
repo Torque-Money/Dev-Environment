@@ -112,25 +112,21 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
-        const converter = await ethers.getContractAt("Converter", config.converterAddress);
-        borrowedToken.approve(converter.address, depositAmount);
-        await (await converter.swapMaxEthOut(borrowedToken.address, depositAmount)).wait();
+        expect((await resolver.checkLiquidate())[0]).to.equal(false);
+        await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
 
-        // expect((await resolver.checkLiquidate())[0]).to.equal(false);
-        // await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
+        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        const [priceChangeNumerator, priceChangeDenominator] = [
+            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
+            leverageNumerator.mul(maxLeverageNumerator),
+        ];
+        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        // const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        // const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-        // const [priceChangeNumerator, priceChangeDenominator] = [
-        //     maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
-        //     leverageNumerator.mul(maxLeverageNumerator),
-        // ];
-        // (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
+        expect((await resolver.checkLiquidate())[0]).to.equal(true);
+        await (await resolver.executeLiquidate(signerAddress)).wait();
 
-        // expect((await resolver.checkLiquidate())[0]).to.equal(true);
-        // await (await resolver.executeLiquidate(signerAddress)).wait();
-
-        // expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
 
     // it("should reset an account with the resolver", async () => {});
