@@ -35,7 +35,7 @@ describe("Pool", async function () {
         const initialBalance = await token.balanceOf(signerAddress);
 
         const providedValue = await pool.addLiquidityOutLPTokens(token.address, depositAmount);
-        await pool.addLiquidity(token.address, depositAmount);
+        await (await pool.addLiquidity(token.address, depositAmount)).wait();
 
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance.sub(depositAmount));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(depositAmount);
@@ -46,7 +46,7 @@ describe("Pool", async function () {
 
         expect(await pool.removeLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(depositAmount);
 
-        await pool.removeLiquidity(lpToken.address, providedValue);
+        await (await pool.removeLiquidity(lpToken.address, providedValue)).wait();
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await token.balanceOf(signerAddress)).to.equal(initialBalance);
