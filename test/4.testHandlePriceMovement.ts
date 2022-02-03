@@ -125,6 +125,13 @@ describe("Handle price movement", async function () {
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
         expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+
+        const initialBalance = await borrowedToken.balanceOf(signerAddress);
+        const claimAvailable = await timelock.taxClaimAvailable(borrowedToken.address);
+        expect(claimAvailable.gt(0)).to.equal(true);
+        await (await timelock.claimTax(borrowedToken.address)).wait();
+        await shouldFail(async () => await timelock.claimTax(borrowedToken.address));
+        expect((await borrowedToken.balanceOf(signerAddress)).sub(initialBalance)).to.equal(claimAvailable);
     });
 
     // it("should liquidate an account with the resolver", async () => {
