@@ -56,12 +56,12 @@ describe("Converter", async function () {
     it("should convert WETH to another", async () => {
         await (await weth.approve(converter.address, wethSwapAmount)).wait();
 
-        const initialInAmount = await inToken.balanceOf(signerAddress);
+        const initialInAmount = await weth.balanceOf(signerAddress);
         const initialOutAmount = await outToken.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(weth.address, wethSwapAmount, outToken.address)).wait();
 
-        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
+        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
