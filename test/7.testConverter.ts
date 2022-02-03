@@ -44,68 +44,80 @@ describe("Converter", async function () {
 
         await (await inToken.approve(converter.address, swapAmount)).wait();
 
+        const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await outToken.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
 
+        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should convert WETH to another", async () => {
         await (await weth.approve(converter.address, wethSwapAmount)).wait();
 
+        const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await outToken.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(weth.address, wethSwapAmount, outToken.address)).wait();
 
+        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should convert another to WETH", async () => {
         await (await inToken.approve(converter.address, swapAmount)).wait();
 
+        const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await weth.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(inToken.address, swapAmount, weth.address)).wait();
 
+        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should convert one token into ETH", async () => {
         await (await inToken.approve(converter.address, swapAmount)).wait();
 
+        const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
         await converter.swapMaxEthOut(inToken.address, swapAmount);
 
+        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should convert WETH into ETH", async () => {
         await (await weth.approve(converter.address, wethSwapAmount)).wait();
 
+        const initialInAmount = await weth.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
         await converter.swapMaxEthOut(weth.address, wethSwapAmount);
 
+        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should swap some ETH into the given token", async () => {
+        const initialInAmount = await ethers.provider.getBalance(signerAddress);
         const initialOutAmount = await outToken.balanceOf(signerAddress);
 
         await (await converter.swapMaxEthIn(outToken.address, {value: 100})).wait();
 
+        expect((await ethers.provider.getBalance(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
     it("should swap some ETH into WETH", async () => {
+        const initialInAmount = await ethers.provider.getBalance(signerAddress);
         const initialOutAmount = await weth.balanceOf(signerAddress);
 
         await (await converter.swapMaxEthIn(weth.address, {value: 100})).wait();
 
+        expect((await ethers.provider.getBalance(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
-
-    // **** I need to test the amounts taken in as well as well as output
 });
