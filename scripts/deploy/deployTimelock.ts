@@ -9,7 +9,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const constructorArgs = {
-        minDelay: hre.ethers.BigNumber.from(259200),
+        minDelay: hre.ethers.BigNumber.from(86400),
         proposers: [signerAddress],
         executors: [hre.ethers.constants.AddressZero],
         taxPercentageNumerator: 5,
