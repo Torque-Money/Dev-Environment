@@ -65,6 +65,7 @@ task("sandbox", "Sandbox test", async (args, hre) => {
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
+
 const NETWORK_URL_TEST = process.env.NETWORK_URL;
 
 export default {
