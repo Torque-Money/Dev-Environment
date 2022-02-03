@@ -51,7 +51,25 @@ describe("Converter", async function () {
         expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
     });
 
-    it("should convert weth to another", async () => {});
+    it("should convert WETH to another", async () => {
+        await (await weth.approve(converter.address, wethSwapAmount)).wait();
+
+        const initialAmount = await outToken.balanceOf(signerAddress);
+
+        await (await converter.swapMaxTokenOut(weth.address, wethSwapAmount, outToken.address)).wait();
+
+        expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
+
+    it("should convert another to WETH", async () => {
+        await (await inToken.approve(converter.address, swapAmount)).wait();
+
+        const initialAmount = await weth.balanceOf(signerAddress);
+
+        await (await converter.swapMaxTokenOut(inToken.address, swapAmount, weth.address)).wait();
+
+        expect((await weth.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
 
     it("should convert one token into ETH", async () => {
         await (await inToken.approve(converter.address, swapAmount)).wait();
@@ -63,6 +81,16 @@ describe("Converter", async function () {
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     });
 
+    it("should convert WETH into ETH", async () => {
+        await (await weth.approve(converter.address, wethSwapAmount)).wait();
+
+        const initialAmount = await ethers.provider.getBalance(signerAddress);
+
+        await converter.swapMaxEthOut(weth.address, wethSwapAmount);
+
+        expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
+
     it("should swap some ETH into the given token", async () => {
         const initialAmount = await outToken.balanceOf(signerAddress);
 
@@ -70,4 +98,6 @@ describe("Converter", async function () {
 
         expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
     });
+
+    // **** I need to test the amounts taken in as well as well as output
 });
