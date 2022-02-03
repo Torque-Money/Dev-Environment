@@ -3,7 +3,7 @@ import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/util/utilsTest";
-import {ERC20, LPool, MarginLong, OracleTest, Resolver, Timelock} from "../typechain-types";
+import {ERC20, ITaskTreasury, LPool, MarginLong, OracleTest, Resolver, Timelock} from "../typechain-types";
 
 describe("Handle price movement", async function () {
     let collateralApproved: any;
@@ -23,6 +23,7 @@ describe("Handle price movement", async function () {
     let marginLong: MarginLong;
     let timelock: Timelock;
     let resolver: Resolver;
+    let taskTreasury: ITaskTreasury;
 
     let signerAddress: string;
 
@@ -42,6 +43,7 @@ describe("Handle price movement", async function () {
         marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
         timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
         resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
+        taskTreasury = await ethers.getContractAt("ITaskTreasury", config.taskTreasury);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
@@ -112,9 +114,9 @@ describe("Handle price movement", async function () {
     //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     // });
 
-    it("should liquidate an account with the resolver", async () => {
-        // **** Perhaps regarding the resolver, the amount that there is claimed to be sent to the contract is not actually in the contract ?
+    // it("should test the timelock tax", async () => {});
 
+    it("should liquidate an account with the resolver", async () => {
         expect((await resolver.checkLiquidate())[0]).to.equal(false);
         await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
 
@@ -126,10 +128,13 @@ describe("Handle price movement", async function () {
         ];
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
+        const ethAddress = await resolver.ethAddress();
+        const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
+
         expect((await resolver.checkLiquidate())[0]).to.equal(true);
         await (await resolver.executeLiquidate(signerAddress)).wait();
 
-        // **** Also check if the deposited funds increased in value
+        expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
 
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
     });
