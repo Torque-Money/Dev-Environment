@@ -135,9 +135,9 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
-        // const [initialCanExecute, initialCallData] =
-        expect((await resolver.checkLiquidate())[0]).to.equal(false);
-        await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
+        const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
+        expect(initialCanExecute).to.equal(false);
+        await shouldFail(async () => await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
 
         const ethAddress = await resolver.ethAddress();
         const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
@@ -150,8 +150,9 @@ describe("Handle price movement", async function () {
         ];
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        expect((await resolver.checkLiquidate())[0]).to.equal(true);
-        await (await resolver.executeLiquidate(signerAddress)).wait();
+        const [canExecute, callData] = await resolver.checkLiquidate();
+        expect(canExecute).to.equal(true);
+        await ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
 
         expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
