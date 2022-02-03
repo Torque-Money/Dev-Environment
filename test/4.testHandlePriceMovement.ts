@@ -135,6 +135,7 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
+        // const [initialCanExecute, initialCallData] =
         expect((await resolver.checkLiquidate())[0]).to.equal(false);
         await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
 
