@@ -2,6 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
+import {shouldFail} from "../scripts/util/utilsTest";
 import {Converter, ERC20} from "../typechain-types";
 
 describe("Converter", async function () {
@@ -11,11 +12,14 @@ describe("Converter", async function () {
     let outApproved: any;
     let outToken: ERC20;
 
+    let weth: ERC20;
+
     let converter: Converter;
 
     let signerAddress: string;
 
     let swapAmount: BigNumber;
+    let wethSwapAmount: BigNumber;
 
     beforeEach(async () => {
         inApproved = config.approved[0];
@@ -26,6 +30,9 @@ describe("Converter", async function () {
 
         converter = await ethers.getContractAt("Converter", config.converterAddress);
 
+        weth = await ethers.getContractAt("ERC20", await (await ethers.getContractAt("UniswapV2Router02", config.routerAddress)).WETH());
+        wethSwapAmount = ethers.BigNumber.from(10).pow(18).mul(1);
+
         swapAmount = ethers.BigNumber.from(10).pow(inApproved.decimals).mul(1);
 
         const signer = ethers.provider.getSigner();
@@ -33,6 +40,8 @@ describe("Converter", async function () {
     });
 
     it("should convert one token into another", async () => {
+        await shouldFail(async () => await converter.swapMaxTokenOut(inToken.address, swapAmount, inToken.address));
+
         await (await inToken.approve(converter.address, swapAmount)).wait();
 
         const initialAmount = await outToken.balanceOf(signerAddress);
@@ -41,6 +50,8 @@ describe("Converter", async function () {
 
         expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
     });
+
+    it("should convert weth to another", async () => {});
 
     it("should convert one token into ETH", async () => {
         await (await inToken.approve(converter.address, swapAmount)).wait();
