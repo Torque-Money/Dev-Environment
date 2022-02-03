@@ -9,7 +9,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const constructorArgs = {
         converter: config.converterAddress,
         oracle: config.oracleAddress,
-        taxPercentNumerator: 5,
+        taxPercentNumerator: 1,
         taxPercentDenominator: 100,
         timePerInterestApplication: hre.ethers.BigNumber.from(10).pow(4).mul(3154),
     };
