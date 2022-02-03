@@ -109,38 +109,7 @@ describe("Handle price movement", async function () {
     //     expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     // });
 
-    it("should test the timelock tax", async () => {
-        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-        const [priceChangeNumerator, priceChangeDenominator] = [
-            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
-            leverageNumerator.mul(maxLeverageNumerator),
-        ];
-        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
-
-        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
-
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
-
-        expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
-
-        const initialBalance = await borrowedToken.balanceOf(signerAddress);
-        const claimAvailable = await timelock.taxClaimAvailable(borrowedToken.address);
-        expect(claimAvailable.gt(0)).to.equal(true);
-        await (await timelock.claimTax(borrowedToken.address)).wait();
-        await shouldFail(async () => await timelock.claimTax(borrowedToken.address));
-        expect((await borrowedToken.balanceOf(signerAddress)).sub(initialBalance)).to.equal(claimAvailable);
-    });
-
-    // it("should liquidate an account with the resolver", async () => {
-    //     expect((await resolver.checkLiquidate())[0]).to.equal(false);
-    //     await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
-
-    //     const ethAddress = await resolver.ethAddress();
-    //     const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
-
+    // it("should test the timelock tax", async () => {
     //     const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
     //     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
     //     const [priceChangeNumerator, priceChangeDenominator] = [
@@ -149,13 +118,44 @@ describe("Handle price movement", async function () {
     //     ];
     //     (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-    //     expect((await resolver.checkLiquidate())[0]).to.equal(true);
-    //     await (await resolver.executeLiquidate(signerAddress)).wait();
+    //     const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
 
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
     //     expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
-    //     expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+    //     expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+
+    //     const initialBalance = await borrowedToken.balanceOf(signerAddress);
+    //     const claimAvailable = await timelock.taxClaimAvailable(borrowedToken.address);
+    //     expect(claimAvailable.gt(0)).to.equal(true);
+    //     await (await timelock.claimTax(borrowedToken.address)).wait();
+    //     await shouldFail(async () => await timelock.claimTax(borrowedToken.address));
+    //     expect((await borrowedToken.balanceOf(signerAddress)).sub(initialBalance)).to.equal(claimAvailable);
     // });
+
+    it("should liquidate an account with the resolver", async () => {
+        expect((await resolver.checkLiquidate())[0]).to.equal(false);
+        await shouldFail(async () => await resolver.executeLiquidate(signerAddress));
+
+        const ethAddress = await resolver.ethAddress();
+        const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
+
+        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        const [priceChangeNumerator, priceChangeDenominator] = [
+            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).add(1),
+            leverageNumerator.mul(maxLeverageNumerator),
+        ];
+        (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
+
+        expect((await resolver.checkLiquidate())[0]).to.equal(true);
+        await (await resolver.executeLiquidate(signerAddress)).wait();
+
+        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
+
+        expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+    });
 
     // it("should reset an account with the resolver", async () => {
     //     expect((await resolver.checkReset())[0]).to.equal(false);
