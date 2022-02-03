@@ -93,14 +93,6 @@ describe("Converter", async function () {
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     });
 
-    it("should get the WETH contract and prove it is a contract", async () => {
-        console.log(weth.address);
-
-        const newWeth = await ethers.getContractAt("WETH", weth.address);
-
-        await (await newWeth.withdraw(0)).wait();
-    });
-
     // it("should swap some ETH into the given token", async () => {
     //     const initialAmount = await outToken.balanceOf(signerAddress);
 
