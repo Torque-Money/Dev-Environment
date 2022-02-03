@@ -10,9 +10,9 @@ import deployTimelock from "./deployTimelock";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await deployConverter(configType, hre);
-    await deployOracle(configType, hre);
-    await deployPool(configType, hre);
-    await deployMarginLong(configType, hre);
-    await deployResolver(configType, hre);
-    await deployTimelock(configType, hre);
+    // await deployOracle(configType, hre);
+    // await deployPool(configType, hre);
+    // await deployMarginLong(configType, hre);
+    // await deployResolver(configType, hre);
+    // await deployTimelock(configType, hre);
 }

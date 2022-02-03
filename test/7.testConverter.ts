@@ -81,17 +81,17 @@ describe("Converter", async function () {
     //     expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     // });
 
-    // it("should convert WETH into ETH", async () => {
-    //     await (await weth.approve(converter.address, wethSwapAmount)).wait();
+    it("should convert WETH into ETH", async () => {
+        await (await weth.approve(converter.address, wethSwapAmount)).wait();
 
-    //     const initialAmount = await ethers.provider.getBalance(signerAddress);
+        const initialAmount = await ethers.provider.getBalance(signerAddress);
 
-    //     // **** This one is the broken one ?
+        // **** This one is the broken one ?
 
-    //     await converter.swapMaxEthOut(weth.address, wethSwapAmount);
+        await converter.swapMaxEthOut(weth.address, wethSwapAmount);
 
-    //     expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
-    // });
+        expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
 
     it("should get the WETH contract and prove it is a contract", async () => {
         console.log(weth.address);
