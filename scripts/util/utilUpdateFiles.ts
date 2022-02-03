@@ -7,7 +7,7 @@ export default async function main() {
         "/v1/LPool/LPool.sol/LPool.json",
         "/v1/MarginLong/MarginLong.sol/MarginLong.json",
         "/Oracle/Oracle.sol/Oracle.json",
-        "/Converter/Coverter.sol/Converter.json",
+        "/Converter/Converter.sol/Converter.json",
     ];
     const typeChain = process.cwd() + "/typechain-types";
 
