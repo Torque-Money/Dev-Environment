@@ -32,15 +32,15 @@ describe("Converter", async function () {
         signerAddress = await signer.getAddress();
     });
 
-    // it("should convert one token into another", async () => {
-    //     await (await inToken.approve(converter.address, swapAmount)).wait();
+    it("should convert one token into another", async () => {
+        await (await inToken.approve(converter.address, swapAmount)).wait();
 
-    //     const initialAmount = await outToken.balanceOf(signerAddress);
+        const initialAmount = await outToken.balanceOf(signerAddress);
 
-    //     await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
+        await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
 
-    //     expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
-    // });
+        expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
 
     it("should convert one token into ETH", async () => {
         await (await inToken.approve(converter.address, swapAmount)).wait();
@@ -49,10 +49,14 @@ describe("Converter", async function () {
 
         await converter.swapMaxEthOut(inToken.address, swapAmount);
 
-        // **** We are trying to burn what is not being sent, so something is being calculated wrong ?
-
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialAmount)).to.equal(true);
     });
 
-    // **** Test all conversions
+    it("should swap some ETH into the given token", async () => {
+        const initialAmount = await outToken.balanceOf(signerAddress);
+
+        await (await converter.swapMaxEthIn(outToken.address, {value: 100})).wait();
+
+        expect((await outToken.balanceOf(signerAddress)).gt(initialAmount)).to.equal(true);
+    });
 });
