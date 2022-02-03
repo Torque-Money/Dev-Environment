@@ -1,1 +1,79 @@
-{"routerAddress":"0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D","taskTreasury":"0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60","LPPrefixName":"Torque Leverage Pool","LPPrefixSymbol":"tlp","approved":[{"name":"Dai","symbol":"DAI","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png","address":"0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658","decimals":18,"priceFeed":"0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF","reservePriceFeed":"0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF","oracle":true,"marginLongCollateral":true,"marginLongBorrow":false,"leveragePool":false,"setup":{"maxInterestMinNumerator":10,"maxInterestMinDenominator":100,"maxInterestMaxNumerator":40,"maxInterestMaxDenominator":100,"maxUtilizationNumerator":50,"maxUtilizationDenominator":100}},{"name":"Wrapped Eth","symbol":"wETH","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png","address":"0xc778417e063141139fce010982780140aa0cd5ab","decimals":18,"priceFeed":"0x8A753747A1Fa494EC906cE90E9f37563A8AF630e","reservePriceFeed":"0x8A753747A1Fa494EC906cE90E9f37563A8AF630e","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true,"setup":{"maxInterestMinNumerator":10,"maxInterestMinDenominator":100,"maxInterestMaxNumerator":40,"maxInterestMaxDenominator":100,"maxUtilizationNumerator":50,"maxUtilizationDenominator":100}},{"name":"Chainlink","symbol":"LINK","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png","address":"0x01be23585060835e02b77ef475b0cc51aa1e0709","decimals":18,"priceFeed":"0xd8bD0a1cB028a31AA859A21A3758685a95dE4623","reservePriceFeed":"0xd8bD0a1cB028a31AA859A21A3758685a95dE4623","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true,"setup":{"maxInterestMinNumerator":10,"maxInterestMinDenominator":100,"maxInterestMaxNumerator":40,"maxInterestMaxDenominator":100,"maxUtilizationNumerator":50,"maxUtilizationDenominator":100}}],"leveragePoolAddress":"0xB260f7e2669055236C31939C180097ED5A9837da","leveragePoolLogicAddress":"0x10B87B06f1Eb8592960C3e0184C946b30226bBcA","oracleAddress":"0xeA8Cb017127e605facE9511A0e2e1160f35d2C88","converterAddress":"0x4DBD6D4D743e5D6FB4589ed3249e7b6419a724B7","marginLongAddress":"0xB1391dcD288dE71C33FbD76286Fb3e69c715c9E2","marginLongLogicAddress":"0xa817Ac55045F3Ad06605072868AF332F0307Ed2F","resolverAddress":"0x97323760e2C7C201C515A1304F7841084658f47E","timelockAddress":"0x1f18cD368C9e41604CD5a6aC5235E818954A5FcC"}
+{
+  "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+  "taskTreasury": "0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60",
+  "LPPrefixName": "Torque Leverage Pool",
+  "LPPrefixSymbol": "tlp",
+  "approved": [
+    {
+      "name": "Dai",
+      "symbol": "DAI",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+      "address": "0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658",
+      "decimals": 18,
+      "priceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
+      "reservePriceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": false,
+      "leveragePool": false,
+      "setup": {
+        "maxInterestMinNumerator": 10,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 50,
+        "maxUtilizationDenominator": 100
+      }
+    },
+    {
+      "name": "Wrapped Eth",
+      "symbol": "wETH",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18,
+      "priceFeed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
+      "reservePriceFeed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 10,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 50,
+        "maxUtilizationDenominator": 100
+      }
+    },
+    {
+      "name": "Chainlink",
+      "symbol": "LINK",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+      "address": "0x01be23585060835e02b77ef475b0cc51aa1e0709",
+      "decimals": 18,
+      "priceFeed": "0xd8bD0a1cB028a31AA859A21A3758685a95dE4623",
+      "reservePriceFeed": "0xd8bD0a1cB028a31AA859A21A3758685a95dE4623",
+      "oracle": true,
+      "marginLongCollateral": true,
+      "marginLongBorrow": true,
+      "leveragePool": true,
+      "setup": {
+        "maxInterestMinNumerator": 10,
+        "maxInterestMinDenominator": 100,
+        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxDenominator": 100,
+        "maxUtilizationNumerator": 50,
+        "maxUtilizationDenominator": 100
+      }
+    }
+  ],
+  "leveragePoolAddress": "0xB260f7e2669055236C31939C180097ED5A9837da",
+  "leveragePoolLogicAddress": "0x10B87B06f1Eb8592960C3e0184C946b30226bBcA",
+  "oracleAddress": "0xeA8Cb017127e605facE9511A0e2e1160f35d2C88",
+  "converterAddress": "0x4DBD6D4D743e5D6FB4589ed3249e7b6419a724B7",
+  "marginLongAddress": "0xB1391dcD288dE71C33FbD76286Fb3e69c715c9E2",
+  "marginLongLogicAddress": "0xa817Ac55045F3Ad06605072868AF332F0307Ed2F",
+  "resolverAddress": "0x97323760e2C7C201C515A1304F7841084658f47E",
+  "timelockAddress": "0x1f18cD368C9e41604CD5a6aC5235E818954A5FcC"
+}
