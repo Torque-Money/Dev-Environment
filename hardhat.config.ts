@@ -44,7 +44,7 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await setup("fork", hre);
 
     await utilFund("fork", hre);
-    // await utilApprove("fork", hre);
+    await utilApprove("fork", hre);
 
     await utilUpdateFiles();
 });
