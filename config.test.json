@@ -1,6 +1,7 @@
 {
   "nativeCoin": {
     "name": "ETH",
+    "decimals": 18,
     "wrappedName": "wETH",
     "wrappedAddress": "0xc778417e063141139fce010982780140aa0cd5ab",
     "wrappedDecimals": 18
