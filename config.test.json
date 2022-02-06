@@ -1,10 +1,45 @@
 {
   "nativeCoin": {
-    "name": "ETH",
+    "name": "Ethereum",
+    "symbol": "ETH",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    "address": "",
     "decimals": 18,
-    "wrappedName": "wETH",
-    "wrappedAddress": "0xc778417e063141139fce010982780140aa0cd5ab",
-    "wrappedDecimals": 18
+    "priceFeed": "",
+    "reservePriceFeed": "",
+    "oracle": false,
+    "marginLongCollateral": false,
+    "marginLongBorrow": false,
+    "leveragePool": false,
+    "setup": {
+      "maxInterestMinNumerator": 0,
+      "maxInterestMinDenominator": 0,
+      "maxInterestMaxNumerator": 0,
+      "maxInterestMaxDenominator": 0,
+      "maxUtilizationNumerator": 0,
+      "maxUtilizationDenominator": 0
+    }
+  },
+  "wrappedCoin": {
+    "name": "Wrapped Ethereum",
+    "symbol": "wETH",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+    "decimals": 18,
+    "priceFeed": "",
+    "reservePriceFeed": "",
+    "oracle": false,
+    "marginLongCollateral": false,
+    "marginLongBorrow": false,
+    "leveragePool": false,
+    "setup": {
+      "maxInterestMinNumerator": 0,
+      "maxInterestMinDenominator": 0,
+      "maxInterestMaxNumerator": 0,
+      "maxInterestMaxDenominator": 0,
+      "maxUtilizationNumerator": 0,
+      "maxUtilizationDenominator": 0
+    }
   },
   "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
   "taskTreasury": "0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60",
@@ -33,7 +68,7 @@
       }
     },
     {
-      "name": "Wrapped Eth",
+      "name": "Wrapped Ethereum",
       "symbol": "wETH",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
