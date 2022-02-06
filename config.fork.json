@@ -3,7 +3,7 @@
     "name": "Fantom",
     "symbol": "FTM",
     "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
-    "address": "",
+    "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
     "decimals": 18,
     "priceFeed": "",
     "reservePriceFeed": "",

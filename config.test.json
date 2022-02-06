@@ -3,7 +3,7 @@
     "name": "Ethereum",
     "symbol": "ETH",
     "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
-    "address": "",
+    "address": "0xc778417e063141139fce010982780140aa0cd5ab",
     "decimals": 18,
     "priceFeed": "",
     "reservePriceFeed": "",
