@@ -1,6 +1,5 @@
 {
   "name": "torque-margin",
-  "version": "1.0.0",
   "scripts": {
     "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
