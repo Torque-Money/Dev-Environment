@@ -1,10 +1,45 @@
 {
   "nativeCoin": {
-    "name": "FTM",
+    "name": "Fantom",
+    "symbol": "FTM",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
+    "address": "",
     "decimals": 18,
-    "wrappedName": "wFTM",
-    "wrappedAddress": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
-    "wrappedDecimals": 18
+    "priceFeed": "",
+    "reservePriceFeed": "",
+    "oracle": false,
+    "marginLongCollateral": false,
+    "marginLongBorrow": false,
+    "leveragePool": false,
+    "setup": {
+      "maxInterestMinNumerator": 0,
+      "maxInterestMinDenominator": 0,
+      "maxInterestMaxNumerator": 0,
+      "maxInterestMaxDenominator": 0,
+      "maxUtilizationNumerator": 0,
+      "maxUtilizationDenominator": 0
+    }
+  },
+  "wrappedCoin": {
+    "name": "Wrapped Fantom",
+    "symbol": "wFTM",
+    "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
+    "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
+    "decimals": 18,
+    "priceFeed": "",
+    "reservePriceFeed": "",
+    "oracle": false,
+    "marginLongCollateral": false,
+    "marginLongBorrow": false,
+    "leveragePool": false,
+    "setup": {
+      "maxInterestMinNumerator": 0,
+      "maxInterestMinDenominator": 0,
+      "maxInterestMaxNumerator": 0,
+      "maxInterestMaxDenominator": 0,
+      "maxUtilizationNumerator": 0,
+      "maxUtilizationDenominator": 0
+    }
   },
   "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
   "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
