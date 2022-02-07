@@ -11,7 +11,7 @@ export default async function main() {
     ];
     const typeChain = process.cwd() + "/typechain-types";
 
-    const outRoot = process.cwd() + "/../Torque-dApp/src";
+    const outRoot = process.cwd() + "/../Torque-dApp";
     const outConfigDir = outRoot + "/config";
 
     for (const abi of abis) {
