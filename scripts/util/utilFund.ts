@@ -8,7 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const router = await hre.ethers.getContractAt("UniswapV2Router02", config.routerAddress);
-    const weth = await hre.ethers.getContractAt("WETH", await router.WETH());
+    const weth = await hre.ethers.getContractAt("WETH", config.wrappedCoin.address);
 
     const initialBalance = await hre.ethers.provider.getBalance(signerAddress);
     const PERCENTAGE = 60;
