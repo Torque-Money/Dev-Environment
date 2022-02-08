@@ -12,6 +12,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
         await (await token.approve(config.leveragePoolAddress, approvedAmount)).wait();
         await (await token.approve(config.marginLongAddress, approvedAmount)).wait();
+        await (await token.approve(config.flashBorrower, approvedAmount)).wait();
 
         console.log(`Approve: Approved contracts to spend tokens with address ${approved.address}`);
     }
