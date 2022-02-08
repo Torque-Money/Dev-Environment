@@ -7,8 +7,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const constructorArgs = {
         pool: config.leveragePoolAddress,
-        maxFeePercentNumerator: 10, // **** Needs changing
-        maxFeePercentDenominator: 100,
+        maxFeePercentNumerator: 1,
+        maxFeePercentDenominator: 1000000,
     };
 
     const FlashLender = await hre.ethers.getContractFactory("FlashLender");
