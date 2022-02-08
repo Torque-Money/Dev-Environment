@@ -26,6 +26,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const POOL_APPROVED_ROLE = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_APPROVED_ROLE"));
     await (await leveragePool.grantRole(POOL_APPROVED_ROLE, config.marginLongAddress)).wait();
+    await (await leveragePool.grantRole(POOL_APPROVED_ROLE, config.flashLender)).wait();
 
     await (await leveragePool.addTaxAccount(config.timelockAddress)).wait();
 

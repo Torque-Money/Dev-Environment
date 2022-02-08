@@ -7,7 +7,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const constructorArgs = {
         pool: config.leveragePoolAddress,
-        maxFeePercentNumerator: 10,
+        maxFeePercentNumerator: 10, // **** Needs changing
         maxFeePercentDenominator: 100,
     };
 
