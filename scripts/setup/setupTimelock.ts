@@ -26,6 +26,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const resolver = await hre.ethers.getContractAt("Resolver", config.resolverAddress);
     await (await resolver.transferOwnership(config.timelockAddress)).wait();
 
+    const flashLender = await hre.ethers.getContractAt("FlashLender", config.flashLender);
+    await (await flashLender.transferOwnership(config.timelockAddress)).wait();
+
     await hre.upgrades.admin.transferProxyAdminOwnership(config.timelockAddress);
 
     console.log("Setup: Timelock");
