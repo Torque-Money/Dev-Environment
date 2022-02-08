@@ -21,6 +21,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     await (await weth.approve(config.leveragePoolAddress, approvedAmount)).wait();
     await (await weth.approve(config.marginLongAddress, approvedAmount)).wait();
+    await (await weth.approve(config.flashBorrower, approvedAmount)).wait();
 
     console.log(`Approve: Approved contracts to spend tokens with address ${weth.address}`);
 }
