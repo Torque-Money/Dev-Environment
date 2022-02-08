@@ -28,13 +28,13 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         };
 
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
-        const oracle = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
-        await oracle.deployed();
+        const oracleTest = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        await oracleTest.deployed();
 
-        config.oracleAddress = oracle.address;
-        console.log(`Deployed: Oracle test | ${oracle.address}`);
+        config.oracleAddress = oracleTest.address;
+        console.log(`Deployed: Oracle test | ${oracleTest.address}`);
 
-        if (configType === "test") saveTempConstructor(oracle.address, constructorArgs);
+        if (configType !== "fork") saveTempConstructor(oracleTest.address, constructorArgs);
     }
 
     saveConfig(config, configType);
