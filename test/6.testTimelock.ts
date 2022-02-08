@@ -85,6 +85,17 @@ describe("Timelock", async function () {
         });
     });
 
+    it("should execute an admin only request to the flash lender", async () => {
+        const flashLender = await ethers.getContractAt("FlashLender", config.flashLender);
+        await shouldFail(async () => await flashLender.setFeePercent(1, 1000000));
+
+        await executeAdminOnly({
+            address: flashLender.address,
+            value: 0,
+            calldata: flashLender.interface.encodeFunctionData("setFeePercent", [1, 1000000]),
+        });
+    });
+
     it("should attempt to upgrade the margin and pool", async () => {
         const proxyAdmin = await upgrades.admin.getInstance();
 
