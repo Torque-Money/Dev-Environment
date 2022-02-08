@@ -11,13 +11,13 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         maxFeePercentDenominator: 100,
     };
 
-    const FlashLender = await hre.ethers.getContractFactory("");
-    const converter = await Converter.deploy(constructorArgs.router);
-    await converter.deployed();
+    const FlashLender = await hre.ethers.getContractFactory("FlashLender");
+    const flashLender = await FlashLender.deploy(constructorArgs.pool, constructorArgs.maxFeePercentNumerator, constructorArgs.maxFeePercentDenominator);
+    await flashLender.deployed();
 
-    config.converterAddress = converter.address;
-    console.log(`Deployed: Converter | ${converter.address}`);
+    config.flashLender = flashLender.address;
+    console.log(`Deployed: FlashLender | ${flashLender.address}`);
 
-    if (configType !== "fork") saveTempConstructor(converter.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(flashLender.address, constructorArgs);
     saveConfig(config, configType);
 }
