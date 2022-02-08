@@ -70,4 +70,8 @@ describe("FlashLend", async function () {
 
         await shouldFail(async () => await flashBorrower.callFlashLoan(token.address, maxAmount));
     });
+
+    it("should require a minimum of zero", async () => {
+        await shouldFail(async () => await flashBorrower.callFlashLoan(token.address, 0));
+    });
 });
