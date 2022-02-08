@@ -38,6 +38,9 @@ describe("FlashLend", async function () {
     });
 
     // It should execute a normal flashloan
+    it("should execute a flash loan", async () => {
+        // **** First we have to send funds to the contract to be used
+    });
 
     // It should attempt to borrow more than what is available
 
