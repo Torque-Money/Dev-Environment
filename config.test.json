@@ -59,12 +59,12 @@
       "marginLongBorrow": false,
       "leveragePool": false,
       "setup": {
-        "maxInterestMinNumerator": 10,
-        "maxInterestMinDenominator": 100,
-        "maxInterestMaxNumerator": 40,
-        "maxInterestMaxDenominator": 100,
-        "maxUtilizationNumerator": 50,
-        "maxUtilizationDenominator": 100
+        "maxInterestMinNumerator": 0,
+        "maxInterestMinDenominator": 0,
+        "maxInterestMaxNumerator": 0,
+        "maxInterestMaxDenominator": 0,
+        "maxUtilizationNumerator": 0,
+        "maxUtilizationDenominator": 0
       }
     },
     {
