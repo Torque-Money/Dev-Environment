@@ -9,12 +9,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const constructorArgs = {
-        minDelay: hre.ethers.BigNumber.from(86400),
+        minDelay: hre.ethers.BigNumber.from(86400).mul(3),
         proposers: [signerAddress],
         executors: [hre.ethers.constants.AddressZero],
-        taxPercentageNumerator: 5,
+        taxPercentageNumerator: 10,
         taxPercentageDenominator: 100,
-        taxCooldown: hre.ethers.BigNumber.from(10).pow(3).mul(2628),
+        taxCooldown: hre.ethers.BigNumber.from(86400).mul(30),
     };
 
     const Timelock = await hre.ethers.getContractFactory("Timelock");
