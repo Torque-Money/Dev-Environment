@@ -2,6 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
+import {shouldFail} from "../scripts/util/utilsTest";
 import {ERC20, FlashBorrower, FlashLender, LPool} from "../typechain-types";
 
 describe("FlashLend", async function () {
@@ -27,7 +28,7 @@ describe("FlashLend", async function () {
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
 
-        lpToken = await ethers.getContractAt("ERC20", await pool.PTFromLP(token.address));
+        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
 
         const signer = ethers.provider.getSigner();
         signerAddress = await signer.getAddress();
@@ -46,21 +47,27 @@ describe("FlashLend", async function () {
         expect(maxAmount).to.equal(depositAmount);
 
         const [feePercentNumerator, feePercentDenominator] = await flashLender.feePercent();
-        const fee = await flashLender.flashFee(token.address, depositAmount);
-        expect(fee).to.equal(depositAmount.mul(feePercentNumerator).div(feePercentDenominator));
+        const fee = await flashLender.flashFee(token.address, maxAmount);
+        expect(fee).to.equal(maxAmount.mul(feePercentNumerator).div(feePercentDenominator));
 
         await (await token.transfer(flashBorrower.address, fee)).wait();
 
-        await (await flashBorrower.callFlashLoan(token.address, depositAmount)).wait();
+        await (await flashBorrower.callFlashLoan(token.address, maxAmount)).wait();
 
         expect((await pool.liquidity(token.address)).gt(depositAmount)).to.equal(true);
         expect((await pool.tvl(token.address)).gt(depositAmount)).to.equal(true);
         expect((await token.balanceOf(pool.address)).gt(depositAmount)).to.equal(true);
     });
 
-    // It should attempt to borrow more than what is available
+    it("should fail to borrow more than what is available", async () => {
+        const maxAmount = await flashLender.maxFlashLoan(token.address);
 
-    // It should fail to repay what is required
+        await shouldFail(async () => await flashBorrower.callFlashLoan(token.address, maxAmount.add(1)));
+    });
 
-    // It should attempt to repay more than what is available
+    it("should fail to repay the loan", async () => {
+        const maxAmount = await flashLender.maxFlashLoan(token.address);
+
+        await shouldFail(async () => await flashBorrower.callFlashLoan(token.address, maxAmount));
+    });
 });
