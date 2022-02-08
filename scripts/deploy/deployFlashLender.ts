@@ -7,12 +7,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const constructorArgs = {
         pool: config.leveragePoolAddress,
-        maxFeePercentNumerator: 1,
-        maxFeePercentDenominator: 1000000,
+        feePercentNumerator: 1,
+        feePercentDenominator: 1000000,
     };
 
     const FlashLender = await hre.ethers.getContractFactory("FlashLender");
-    const flashLender = await FlashLender.deploy(constructorArgs.pool, constructorArgs.maxFeePercentNumerator, constructorArgs.maxFeePercentDenominator);
+    const flashLender = await FlashLender.deploy(constructorArgs.pool, constructorArgs.feePercentNumerator, constructorArgs.feePercentDenominator);
     await flashLender.deployed();
 
     config.flashLender = flashLender.address;
