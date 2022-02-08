@@ -7,8 +7,8 @@ import setupMarginLong from "./setupMarginLong";
 import setupTimelock from "./setupTimelock";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
-    // await setupPool(configType, hre);
-    // await setupOracle(configType, hre);
-    // await setupMarginLong(configType, hre);
+    await setupPool(configType, hre);
+    await setupOracle(configType, hre);
+    await setupMarginLong(configType, hre);
     await setupTimelock(configType, hre);
 }
