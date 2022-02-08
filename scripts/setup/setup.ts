@@ -9,6 +9,6 @@ import setupTimelock from "./setupTimelock";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     // await setupPool(configType, hre);
     // await setupOracle(configType, hre);
-    await setupMarginLong(configType, hre);
-    // await setupTimelock(configType, hre);
+    // await setupMarginLong(configType, hre);
+    // await setupTimelock(configType, hre); // **** THIS HAS NOT BEEN RUN YET - IT IS NOT SETUP TO WORK WITH THE TIMELOCK
 }
