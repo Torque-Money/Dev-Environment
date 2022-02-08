@@ -80,11 +80,11 @@
       "marginLongBorrow": true,
       "leveragePool": true,
       "setup": {
-        "maxInterestMinNumerator": 10,
+        "maxInterestMinNumerator": 25,
         "maxInterestMinDenominator": 100,
-        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxNumerator": 75,
         "maxInterestMaxDenominator": 100,
-        "maxUtilizationNumerator": 50,
+        "maxUtilizationNumerator": 80,
         "maxUtilizationDenominator": 100
       }
     },
@@ -101,11 +101,11 @@
       "marginLongBorrow": true,
       "leveragePool": true,
       "setup": {
-        "maxInterestMinNumerator": 10,
+        "maxInterestMinNumerator": 25,
         "maxInterestMinDenominator": 100,
-        "maxInterestMaxNumerator": 40,
+        "maxInterestMaxNumerator": 75,
         "maxInterestMaxDenominator": 100,
-        "maxUtilizationNumerator": 50,
+        "maxUtilizationNumerator": 80,
         "maxUtilizationDenominator": 100
       }
     }

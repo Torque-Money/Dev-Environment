@@ -82,7 +82,7 @@
       "setup": {
         "maxInterestMinNumerator": 25,
         "maxInterestMinDenominator": 100,
-        "maxInterestMaxNumerator": 90,
+        "maxInterestMaxNumerator": 75,
         "maxInterestMaxDenominator": 100,
         "maxUtilizationNumerator": 80,
         "maxUtilizationDenominator": 100
