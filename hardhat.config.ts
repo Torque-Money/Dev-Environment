@@ -73,12 +73,12 @@ export default {
         compilers: [{version: "0.8.9", settings: {optimizer: {enabled: true, runs: 200}}}],
     },
     networks: {
-        // hardhat: {
-        //     forking: {
-        //         url: NETWORK_URL,
-        //         blockNumber: PINNED_BLOCK,
-        //     },
-        // },
+        hardhat: {
+            forking: {
+                url: NETWORK_URL,
+                blockNumber: PINNED_BLOCK,
+            },
+        },
         mainnet: {
             url: NETWORK_URL,
             accounts: [process.env.PRIVATE_KEY],
