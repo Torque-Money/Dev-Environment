@@ -166,7 +166,7 @@ describe("MarginLong", async function () {
         }
     });
 
-    it("should fail to withdraw LP tokens when they are being used", async () => {
+    it("should fail to redeem LP tokens when they are being used", async () => {
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
         await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
