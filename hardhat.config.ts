@@ -74,6 +74,7 @@ export default {
     },
     networks: {
         hardhat: {
+            chainId: 1337,
             forking: {
                 url: NETWORK_URL,
                 blockNumber: PINNED_BLOCK,
