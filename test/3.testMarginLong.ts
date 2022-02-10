@@ -55,7 +55,7 @@ describe("MarginLong", async function () {
 
     afterEach(async () => {
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(await pool.LPFromPT(borrowedToken.address), LPTokenAmount)).wait();
+        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
     });
 
     it("deposit and undeposit collateral into the account", async () => {
@@ -166,5 +166,18 @@ describe("MarginLong", async function () {
         }
     });
 
-    it("should fail to withdraw LP tokens when they are being used", async () => {});
+    it("should fail to withdraw LP tokens when they are being used", async () => {
+        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+
+        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+
+        await shouldFail(async () => await pool.removeLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
+
+        await (await marginLong["repayAccount()"]()).wait();
+        const potentialCollateralTokens = [collateralToken, borrowedToken];
+        for (const token of potentialCollateralTokens) {
+            const amount = await marginLong.collateral(token.address, signerAddress);
+            if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
+        }
+    });
 });
