@@ -165,4 +165,6 @@ describe("MarginLong", async function () {
             if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
         }
     });
+
+    it("should fail to withdraw LP tokens when they are being used", async () => {});
 });
