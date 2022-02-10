@@ -74,10 +74,10 @@ export default {
     },
     networks: {
         hardhat: {
-            forking: {
-                url: NETWORK_URL,
-                blockNumber: PINNED_BLOCK,
-            },
+            // forking: {
+            //     url: NETWORK_URL,
+            //     blockNumber: PINNED_BLOCK,
+            // },
         },
         mainnet: {
             url: NETWORK_URL,
