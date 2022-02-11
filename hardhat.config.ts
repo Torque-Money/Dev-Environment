@@ -53,16 +53,6 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-task("sandbox", "Sandbox test", async (args, hre) => {
-    const config = chooseConfig("test");
-
-    const pool = await hre.ethers.getContractAt("LPool", config.leveragePoolAddress);
-
-    const token = config.approved[1].address;
-    console.log(token);
-    console.log(await pool.isApprovedPT(token));
-});
-
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
 
