@@ -1,0 +1,18 @@
+{
+  "0x034f91d348ce6e69b4972fe327a3014ddba5ec83": [
+    "Torque Leverage Pool Wrapped Fantom",
+    "tlpwFTM"
+  ],
+  "0xcab7c2c32231978319aa039c774f35530c560d27": [
+    "Torque Leverage Pool Wrapped Bitcoin",
+    "tlpwBTC"
+  ],
+  "0x9365b582a48534463232c7686e948f511034eb34": [
+    "Torque Leverage Pool Wrapped Ethereum",
+    "tlpwETH"
+  ],
+  "0xc3c680c73cb9fce516ea1e39ed8b9e8c3863eb03": [
+    "Torque Leverage Pool Chainlink",
+    "tlpLINK"
+  ]
+}
