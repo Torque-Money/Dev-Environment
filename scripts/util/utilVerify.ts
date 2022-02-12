@@ -20,6 +20,14 @@ export function saveTempConstructor(address: string, constructorConfig: any) {
 
 export async function verifyAll(hre: HardhatRuntimeEnvironment) {
     const tempConstructor = loadTempConstructor();
-    for (const [key, value] of Object.entries(tempConstructor)) await hre.run("verify:verify", {address: key, constructorArguments: value});
+    const tempStorage = JSON.parse(JSON.stringify(tempConstructor));
+
+    for (const [key, value] of Object.entries(tempConstructor)) {
+        await hre.run("verify:verify", {address: key, constructorArguments: value});
+
+        delete tempStorage[key];
+        fs.writeFileSync(TEMP_CONSTRUCTOR_NAME, JSON.stringify(tempStorage));
+    }
+
     fs.unlinkSync(TEMP_CONSTRUCTOR_NAME);
 }
