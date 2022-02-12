@@ -53,6 +53,16 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
+task("sandbox", "Testing sandbox", async (args, hre) => {
+    // const encodedName = hre.ethers.utils.defaultAbiCoder.encode(["string"], ["Torque Leverage Pool Wrapped Fantom"]);
+    // console.log(encodedName);
+
+    // const encodedSymbol = hre.ethers.utils.defaultAbiCoder.encode(["string"], ["tlpwFTM"]);
+    // console.log(encodedSymbol);
+
+    await hre.run("verify:verify", {address: "0x034f91d348ce6e69b4972fe327a3014ddba5ec83", constructorArguments: ["Torque Leverage Pool Wrapped Fantom", "tlpwFTM"]});
+});
+
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
 
