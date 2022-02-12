@@ -17,7 +17,6 @@ import utilApprove from "./scripts/util/utilApprove";
 import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import {verifyAll} from "./scripts/util/utilVerify";
-import {chooseConfig} from "./scripts/util/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -54,12 +53,6 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("sandbox", "Testing sandbox", async (args, hre) => {
-    // const encodedName = hre.ethers.utils.defaultAbiCoder.encode(["string"], ["Torque Leverage Pool Wrapped Fantom"]);
-    // console.log(encodedName);
-
-    // const encodedSymbol = hre.ethers.utils.defaultAbiCoder.encode(["string"], ["tlpwFTM"]);
-    // console.log(encodedSymbol);
-
     await hre.run("verify:verify", {address: "0x034f91d348ce6e69b4972fe327a3014ddba5ec83", constructorArguments: ["Torque Leverage Pool Wrapped Fantom", "tlpwFTM"]});
 });
 
@@ -81,10 +74,12 @@ export default {
             },
         },
         mainnet: {
+            chainId: 250,
             url: NETWORK_URL,
             accounts: [process.env.PRIVATE_KEY],
         },
         testnet: {
+            chainId: 4,
             url: NETWORK_URL_TEST,
             accounts: [process.env.PRIVATE_KEY],
         },
