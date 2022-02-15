@@ -6,7 +6,7 @@ export default async function main() {
     const abis = [
         "/LPool/V1/LPool.sol/LPool.json",
         "/Margin/V1/MarginLong/MarginLong.sol/MarginLong.json",
-        "/Oracle/IOracle.sol/IOracle.json",
+        "/Oracle/V1/IOracle.sol/IOracle.json",
         "/Converter/Converter.sol/Converter.json",
     ];
     const typeChain = process.cwd() + "/typechain-types";
