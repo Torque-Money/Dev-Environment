@@ -202,6 +202,7 @@
   "marginLongLogicAddress": "0xdeBAa1dbde108285F8F969983ed21eD6F90d3Ec1",
   "resolverAddress": "0x4814C82cd6f6E0354C561b2FF73eCc0245F5BdA9",
   "timelockAddress": "0x37359D21C9c5A55DB1dE5Cd4C12e749Ea5cE74A3",
+  "timelockLogicAddress": "",
   "flashLender": "0x268bE1d67Ac0849e0C9Cff698851Ef8233Ff1b5E",
   "flashBorrower": ""
 }

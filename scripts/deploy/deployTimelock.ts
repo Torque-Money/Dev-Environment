@@ -8,6 +8,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
+    // **** This needs to be changed because it is now controlled by a proxy (therefore it will not have constructor args + change the configs to include the logic address)
+
     const constructorArgs = {
         minDelay: hre.ethers.BigNumber.from(86400).mul(3),
         proposers: [signerAddress],
