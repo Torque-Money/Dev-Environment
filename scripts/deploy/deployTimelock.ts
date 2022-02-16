@@ -1,14 +1,13 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
 import {saveTempConstructor} from "../util/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
-
-    // **** This needs to be changed because it is now controlled by a proxy (therefore it will not have constructor args + change the configs to include the logic address)
 
     const constructorArgs = {
         minDelay: hre.ethers.BigNumber.from(86400).mul(3),
@@ -20,19 +19,13 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     };
 
     const Timelock = await hre.ethers.getContractFactory("Timelock");
-    const timelock = await Timelock.deploy(
-        constructorArgs.minDelay,
-        constructorArgs.proposers,
-        constructorArgs.executors,
-        constructorArgs.taxPercentageNumerator,
-        constructorArgs.taxPercentageDenominator,
-        constructorArgs.taxCooldown
-    );
+    const timelock = await hre.upgrades.deployProxy(Timelock, Object.values(constructorArgs));
     await timelock.deployed();
 
     config.timelockAddress = timelock.address;
-    console.log(`Deployed: Timelock | ${timelock.address}`);
+    config.timelockLogicAddress = await getImplementationAddress(hre.ethers.provider, timelock.address);
+    console.log(`Deployed: Timelock proxy and timelock | ${timelock.address} ${config.timelockAddress}`);
 
-    if (configType !== "fork") saveTempConstructor(timelock.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(timelock.address, {});
     saveConfig(config, configType);
 }
