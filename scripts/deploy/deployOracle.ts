@@ -37,8 +37,19 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         if (configType !== "fork") saveTempConstructor(oracleTest.address, constructorArgs);
     }
 
-    // **** Now I need a seperate change where I add in the reserve Oracle based off of this
-    // **** I also need to add in deployment scripts for the reserve and the reserve treasury (both proxies)
+    const constructorArgs = {
+        oracle: config.oracleAddress,
+        pool: config.leveragePoolAddress,
+    };
+
+    const OracleReserve = await hre.ethers.getContractFactory("OracleReserve");
+    const oracleReserve = await OracleReserve.deploy(constructorArgs.oracle, constructorArgs.pool);
+    await oracleReserve.deployed();
+
+    config.oracleReserveAddress = oracleReserve.address;
+    console.log(`Deployed: Oracle reserve | ${oracleReserve.address}`);
+
+    if (configType !== "fork") saveTempConstructor(config.oracleReserveAddress, constructorArgs);
 
     saveConfig(config, configType);
 }
