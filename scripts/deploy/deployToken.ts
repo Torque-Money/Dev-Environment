@@ -42,3 +42,5 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     saveConfig(config, configType);
 }
+
+// **** Now I need to set up the reserve treasury and the reserve
