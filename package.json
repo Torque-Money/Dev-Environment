@@ -1,5 +1,5 @@
 {
-  "name": "torque-margin",
+  "name": "torque-monorepo",
   "scripts": {
     "format": "npx prettier --write '{contracts,scripts}/**/*.{sol,ts}'",
     "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
