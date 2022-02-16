@@ -1,55 +1,44 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../util/utilConfig";
 import {saveTempConstructor} from "../util/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    if (configType === "main") {
+    {
         const constructorArgs = {
-            thresholdNumerator: 1,
-            thresholdDenominator: 200,
-            priceDecimals: 18,
+            name: "TAU",
+            symbol: "TAU",
         };
 
-        const Oracle = await hre.ethers.getContractFactory("Oracle");
-        const oracle = await Oracle.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
-        await oracle.deployed();
+        const ReserveToken = await hre.ethers.getContractFactory("ReserveToken");
+        const reserveToken = await hre.upgrades.deployProxy(ReserveToken, Object.values(constructorArgs));
+        await reserveToken.deployed();
 
-        config.oracleAddress = oracle.address;
-        console.log(`Deployed: Oracle | ${oracle.address}`);
+        config.reserveTokenAddress = reserveToken.address;
+        config.reserveTokenLogicAddress = await getImplementationAddress(hre.ethers.provider, reserveToken.address);
+        console.log(`Deployed: Reserve token proxy and token | ${reserveToken.address} ${config.reserveTokenLogicAddress}`);
 
-        saveTempConstructor(oracle.address, constructorArgs);
-    } else {
-        const constructorArgs = {
-            thresholdNumerator: 1,
-            thresholdDenominator: 200,
-            priceDecimals: 18,
-        };
-
-        const OracleTest = await hre.ethers.getContractFactory("OracleTest");
-        const oracleTest = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
-        await oracleTest.deployed();
-
-        config.oracleAddress = oracleTest.address;
-        console.log(`Deployed: Oracle test | ${oracleTest.address}`);
-
-        if (configType !== "fork") saveTempConstructor(oracleTest.address, constructorArgs);
+        if (configType !== "fork") saveTempConstructor(config.reserveTokenLogicAddress, {});
     }
 
-    const constructorArgs = {
-        oracle: config.oracleAddress,
-        pool: config.leveragePoolAddress,
-    };
+    {
+        const constructorArgs = {
+            name: "Wrapped TAU",
+            symbol: "wTAU",
+        };
 
-    const OracleReserve = await hre.ethers.getContractFactory("OracleReserve");
-    const oracleReserve = await OracleReserve.deploy(constructorArgs.oracle, constructorArgs.pool);
-    await oracleReserve.deployed();
+        const WrappedReserveToken = await hre.ethers.getContractFactory("ReserveTokenWrapped");
+        const wrappedReserveToken = await hre.upgrades.deployProxy(WrappedReserveToken, Object.values(constructorArgs));
+        await wrappedReserveToken.deployed();
 
-    config.oracleReserveAddress = oracleReserve.address;
-    console.log(`Deployed: Oracle reserve | ${oracleReserve.address}`);
+        config.wrappedReserveTokenAddress = wrappedReserveToken.address;
+        config.wrappedReserveTokenLogicAddress = await getImplementationAddress(hre.ethers.provider, wrappedReserveToken.address);
+        console.log(`Deployed: Reserve wrapped token proxy and wrapped token | ${wrappedReserveToken.address} ${config.wrappedReserveTokenLogicAddress}`);
 
-    if (configType !== "fork") saveTempConstructor(config.oracleReserveAddress, constructorArgs);
+        if (configType !== "fork") saveTempConstructor(config.wrappedReserveTokenLogicAddress, {});
+    }
 
     saveConfig(config, configType);
 }
