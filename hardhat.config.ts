@@ -18,6 +18,8 @@ import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
 
 import {verifyAll} from "./scripts/util/utilVerify";
 
+import {chooseConfig} from "./scripts/util/utilConfig";
+
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
 
@@ -50,6 +52,21 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
 
 task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
     await verifyAll(hre);
+});
+
+task("sandbox", "Sandbox test", async (args, hre) => {
+    const config = chooseConfig("main");
+
+    const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
+
+    const BTC = "0x321162Cd933E2Be498Cd2267a90534A804051b11";
+    const account = "0x2eF15adAFA815Ca7A5ef307FC915EC0006EA64C7";
+
+    const isBorrowedToken = await marginLong.isBorrowedToken(BTC);
+    console.log(isBorrowedToken);
+
+    const isBorrowing = await marginLong["isBorrowing(address,address)"](BTC, account);
+    console.log(isBorrowing);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
