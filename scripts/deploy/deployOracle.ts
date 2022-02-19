@@ -42,14 +42,14 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         pool: config.leveragePoolAddress,
     };
 
-    const OracleReserve = await hre.ethers.getContractFactory("OracleReserve");
-    const oracleReserve = await OracleReserve.deploy(constructorArgs.oracle, constructorArgs.pool);
-    await oracleReserve.deployed();
+    const OracleTreasurer = await hre.ethers.getContractFactory("OracleTreasurer");
+    const oracleTreasurer = await OracleTreasurer.deploy(constructorArgs.oracle, constructorArgs.pool);
+    await oracleTreasurer.deployed();
 
-    config.oracleReserveAddress = oracleReserve.address;
-    console.log(`Deployed: Oracle reserve | ${oracleReserve.address}`);
+    config.oracleTreasurerAddress = oracleTreasurer.address;
+    console.log(`Deployed: Oracle treasurer | ${oracleTreasurer.address}`);
 
-    if (configType !== "fork") saveTempConstructor(config.oracleReserveAddress, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(oracleTreasurer.address, constructorArgs);
 
     saveConfig(config, configType);
 }
