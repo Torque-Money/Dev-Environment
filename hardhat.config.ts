@@ -9,65 +9,65 @@ import {task} from "hardhat/config";
 import dotenv from "dotenv";
 dotenv.config();
 
-// import deploy from "./scripts/deploy/deploy";
-// import setup from "./scripts/setup/setup";
+import deploy from "./scripts/deploy/deploy";
+import setup from "./scripts/setup/setup";
 
-// import utilFund from "./scripts/utils/utilFund";
-// import utilApprove from "./scripts/utils/utilApprove";
-// import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
+import utilFund from "./scripts/utils/utilFund";
+import utilApprove from "./scripts/utils/utilApprove";
+import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 
-// import {verifyAll} from "./scripts/utils/utilVerify";
+import {verifyAll} from "./scripts/utils/utilVerify";
 
-// import {chooseConfig} from "./scripts/utils/utilConfig";
+import {chooseConfig} from "./scripts/utils/utilConfig";
 
-// task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("main", hre);
-//     await setup("main", hre);
+    await deploy("main", hre);
+    await setup("main", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("test", hre);
-//     await setup("test", hre);
+    await deploy("test", hre);
+    await setup("test", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
-//     await hre.run("compile");
+task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
+    await hre.run("compile");
 
-//     await deploy("fork", hre);
-//     await setup("fork", hre);
+    await deploy("fork", hre);
+    await setup("fork", hre);
 
-//     await utilFund("fork", hre);
-//     await utilApprove("fork", hre);
+    await utilFund("fork", hre);
+    await utilApprove("fork", hre);
 
-//     await utilUpdateFiles();
-// });
+    await utilUpdateFiles();
+});
 
-// task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
-//     await verifyAll(hre);
-// });
+task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
+    await verifyAll(hre);
+});
 
-// task("sandbox", "Sandbox test", async (args, hre) => {
-//     const config = chooseConfig("main");
+task("sandbox", "Sandbox test", async (args, hre) => {
+    const config = chooseConfig("main");
 
-//     const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
+    const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
 
-//     const BTC = "0x321162Cd933E2Be498Cd2267a90534A804051b11";
-//     const account = "0x2eF15adAFA815Ca7A5ef307FC915EC0006EA64C7";
+    const BTC = "0x321162Cd933E2Be498Cd2267a90534A804051b11";
+    const account = "0x2eF15adAFA815Ca7A5ef307FC915EC0006EA64C7";
 
-//     const isBorrowedToken = await marginLong.isBorrowedToken(BTC);
-//     console.log(isBorrowedToken);
+    const isBorrowedToken = await marginLong.isBorrowedToken(BTC);
+    console.log(isBorrowedToken);
 
-//     const isBorrowing = await marginLong["isBorrowing(address,address)"](BTC, account);
-//     console.log(isBorrowing);
-// });
+    const isBorrowing = await marginLong["isBorrowing(address,address)"](BTC, account);
+    console.log(isBorrowing);
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
@@ -79,23 +79,23 @@ export default {
         compilers: [{version: "0.8.9", settings: {optimizer: {enabled: true, runs: 200}}}],
     },
     networks: {
-        // hardhat: {
-        //     chainId: 1337,
-        //     forking: {
-        //         url: NETWORK_URL,
-        //         blockNumber: PINNED_BLOCK,
-        //     },
-        // },
-        // mainnet: {
-        //     chainId: 250,
-        //     url: NETWORK_URL,
-        //     accounts: [process.env.PRIVATE_KEY],
-        // },
-        // testnet: {
-        //     chainId: 4,
-        //     url: NETWORK_URL_TEST,
-        //     accounts: [process.env.PRIVATE_KEY],
-        // },
+        hardhat: {
+            chainId: 1337,
+            forking: {
+                url: NETWORK_URL,
+                blockNumber: PINNED_BLOCK,
+            },
+        },
+        mainnet: {
+            chainId: 250,
+            url: NETWORK_URL,
+            accounts: [process.env.PRIVATE_KEY],
+        },
+        testnet: {
+            chainId: 4,
+            url: NETWORK_URL_TEST,
+            accounts: [process.env.PRIVATE_KEY],
+        },
     },
     etherscan: {
         apiKey: {
