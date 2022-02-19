@@ -108,7 +108,7 @@
   "leveragePoolAddress": "0xB260f7e2669055236C31939C180097ED5A9837da",
   "leveragePoolLogicAddress": "0x10B87B06f1Eb8592960C3e0184C946b30226bBcA",
   "oracleAddress": "0xeA8Cb017127e605facE9511A0e2e1160f35d2C88",
-  "oracleReserveAddress": "",
+  "oracleTreasurerAddress": "",
   "converterAddress": "0x4DBD6D4D743e5D6FB4589ed3249e7b6419a724B7",
   "marginLongAddress": "0xB1391dcD288dE71C33FbD76286Fb3e69c715c9E2",
   "marginLongLogicAddress": "0xa817Ac55045F3Ad06605072868AF332F0307Ed2F",
@@ -119,6 +119,10 @@
   "reserveTokenLogicAddress": "",
   "wrappedReserveTokenAddress": "",
   "wrappedReserveTokenLogicAddress": "",
+  "treasuryAddress": "",
+  "treasuryLogicAddress": "",
+  "treasurerAddress": "",
+  "treasurerLogicAddress": "",
   "flashLender": "",
   "flashBorrower": ""
 }
