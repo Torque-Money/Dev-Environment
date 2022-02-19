@@ -10,10 +10,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const oracleApproved = config.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
     const priceFeeds = config.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
-    const reservePriceFeeds = config.approved.filter((approved) => approved.oracle).map((approved) => approved.reservePriceFeed);
     const correctDecimals = config.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
     const oracleSupported = Array(oracleApproved.length).fill(true);
-    await (await oracle.setPriceFeed(oracleApproved, priceFeeds, reservePriceFeeds, correctDecimals, oracleSupported)).wait();
+    await (await oracle.setPriceFeed(oracleApproved, priceFeeds, correctDecimals, oracleSupported)).wait();
 
     console.log("Setup: Oracle");
 }
