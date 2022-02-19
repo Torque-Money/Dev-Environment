@@ -1,5 +1,5 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {ConfigType} from "../util/utilConfig";
+import {ConfigType} from "../utils/utilConfig";
 
 import setupPool from "./setupPool";
 import setupOracle from "./setupOracle";

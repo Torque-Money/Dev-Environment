@@ -12,13 +12,13 @@ dotenv.config();
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 
-import utilFund from "./scripts/util/utilFund";
-import utilApprove from "./scripts/util/utilApprove";
-import utilUpdateFiles from "./scripts/util/utilUpdateFiles";
+import utilFund from "./scripts/utils/utilFund";
+import utilApprove from "./scripts/utils/utilApprove";
+import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 
-import {verifyAll} from "./scripts/util/utilVerify";
+import {verifyAll} from "./scripts/utils/utilVerify";
 
-import {chooseConfig} from "./scripts/util/utilConfig";
+import {chooseConfig} from "./scripts/utils/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
