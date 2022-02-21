@@ -56,7 +56,7 @@
         "maxUtilizationDenominator": 0
       }
     },
-    "LPTokens": {
+    "lpTokens": {
       "beaconAddress": "",
       "tokens": []
     },
