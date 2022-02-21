@@ -4,9 +4,7 @@ import {chooseConfig, ConfigType} from "../utils/utilConfig";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    let oracle;
-    if (configType === "main") oracle = await hre.ethers.getContractAt("Oracle", config.contracts.oracleAddress);
-    else oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
+    let oracle = await hre.ethers.getContractAt("OracleApproved", config.contracts.oracleAddress);
 
     const oracleApproved = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
     const priceFeeds = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
