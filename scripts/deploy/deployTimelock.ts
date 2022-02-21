@@ -19,10 +19,10 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const timelock = await hre.upgrades.deployProxy(Timelock, Object.values(constructorArgs));
     await timelock.deployed();
 
-    config.timelockAddress = timelock.address;
-    config.timelockLogicAddress = await getImplementationAddress(hre.ethers.provider, timelock.address);
-    console.log(`Deployed: Timelock proxy and timelock | ${timelock.address} ${config.timelockAddress}`);
+    config.contracts.timelockAddress = timelock.address;
+    const implementation = await getImplementationAddress(hre.ethers.provider, timelock.address);
+    console.log(`Deployed: Timelock, implementation | ${timelock.address} ${implementation}`);
 
-    if (configType !== "fork") saveTempConstructor(timelock.address, {});
+    if (configType !== "fork") saveTempConstructor(implementation, {});
     saveConfig(config, configType);
 }
