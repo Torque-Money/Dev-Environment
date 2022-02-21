@@ -29,5 +29,5 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     await (await leveragePool.addTaxAccount(config.contracts.timelockAddress)).wait();
 
-    console.log("Setup: Leverage pool");
+    console.log("Setup: LPool");
 }
