@@ -22,7 +22,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     config.contracts.marginLongAddress = marginLong.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, marginLong.address);
-    console.log(`Deployed: Margin long, implementation | ${marginLong.address}, ${implementation}`);
+    console.log(`Deployed: MarginLong, implementation | ${marginLong.address}, ${implementation}`);
 
     if (configType !== "fork") saveTempConstructor(implementation, {});
     saveConfig(config, configType);

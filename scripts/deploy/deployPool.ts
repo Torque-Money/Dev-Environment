@@ -7,8 +7,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        converter: config.converterAddress,
-        oracle: config.oracleAddress,
+        converter: config.contracts.converterAddress,
+        oracle: config.contracts.oracleAddress,
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
         timePerInterestApplication: hre.ethers.BigNumber.from(86400).mul(365),
@@ -18,10 +18,10 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
     await pool.deployed();
 
-    config.leveragePoolAddress = pool.address;
-    config.leveragePoolLogicAddress = await getImplementationAddress(hre.ethers.provider, pool.address);
-    console.log(`Deployed: Pool proxy and pool | ${pool.address} ${config.leveragePoolLogicAddress}`);
+    config.contracts.leveragePoolAddress = pool.address;
+    const implementation = await getImplementationAddress(hre.ethers.provider, pool.address);
+    console.log(`Deployed: LPool, implementation | ${pool.address} ${implementation}`);
 
-    if (configType !== "fork") saveTempConstructor(config.leveragePoolLogicAddress, {});
+    if (configType !== "fork") saveTempConstructor(implementation, {});
     saveConfig(config, configType);
 }
