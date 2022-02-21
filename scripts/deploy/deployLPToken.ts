@@ -6,6 +6,8 @@ import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
+    // **** Here we are going to use a beacon proxy and deploy new tokens off of it
+
     // const constructorArgs = {
     //     converter: config.converterAddress,
     //     oracle: config.oracleAddress,
