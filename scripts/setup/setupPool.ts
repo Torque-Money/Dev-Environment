@@ -11,6 +11,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();
     await (await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true))).wait();
 
+    const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
+    for (const lpToken of LPTokens) {
+        const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
+        await (await LPToken.grantRole(TOKEN_ADMIN, leveragePool.address)).wait();
+    }
+
     const maxInterestMinNumerator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinNumerator);
     const maxInterestMinDenominator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinDenominator);
     await (await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator)).wait();

@@ -29,6 +29,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const flashLender = await hre.ethers.getContractAt("FlashLender", config.flashLender);
     await (await flashLender.transferOwnership(config.timelockAddress)).wait();
 
+    // **** Do not forget the token roles - make sure to clear cache before deploying on testnet or mainnet
+
     await hre.upgrades.admin.transferProxyAdminOwnership(config.timelockAddress);
 
     console.log("Setup: Timelock");
