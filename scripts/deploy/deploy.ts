@@ -8,11 +8,13 @@ import deployMarginLong from "./deployMarginLong";
 import deployResolver from "./deployResolver";
 import deployFlashLender from "./deployFlashLender";
 import deployTimelock from "./deployTimelock";
+import deployLPToken from "./deployLPToken";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await deployConverter(configType, hre);
     await deployOracle(configType, hre);
     await deployPool(configType, hre);
+    await deployLPToken(configType, hre);
     await deployMarginLong(configType, hre);
     await deployResolver(configType, hre);
     await deployFlashLender(configType, hre);
