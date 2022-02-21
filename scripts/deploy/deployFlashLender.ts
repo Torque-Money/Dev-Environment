@@ -1,36 +1,34 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        pool: config.leveragePoolAddress,
+        pool: config.contracts.leveragePoolAddress,
         feePercentNumerator: 1,
         feePercentDenominator: 1000000,
     };
 
     const FlashLender = await hre.ethers.getContractFactory("FlashLender");
-    const flashLender = await FlashLender.deploy(constructorArgs.pool, constructorArgs.feePercentNumerator, constructorArgs.feePercentDenominator);
+    const flashLender = await hre.upgrades.deployProxy(FlashLender, Object.values(constructorArgs));
     await flashLender.deployed();
 
-    config.flashLender = flashLender.address;
-    console.log(`Deployed: FlashLender | ${flashLender.address}`);
+    config.contracts.flashLender = flashLender.address;
+    const implementation = await getImplementationAddress(hre.ethers.provider, flashLender.address);
+    console.log(`Deployed: FlashLender, implementation | ${flashLender.address}, ${implementation}`);
 
     if (configType === "fork") {
-        const constructorArgsBorrower = {
-            lender: flashLender.address,
-        };
+        const FlashBorrowerTest = await hre.ethers.getContractFactory("FlashBorrowerTest");
+        const flashBorrowerTest = await hre.upgrades.deployProxy(FlashBorrowerTest);
+        await flashBorrowerTest.deployed();
 
-        const FlashBorrower = await hre.ethers.getContractFactory("FlashBorrower");
-        const flashBorrower = await FlashBorrower.deploy(constructorArgsBorrower.lender);
-        await flashBorrower.deployed();
-
-        config.flashBorrower = flashBorrower.address;
-        console.log(`Deployed: FlashBorrower | ${flashBorrower.address}`);
+        config.contracts.flashBorrowerTest = flashBorrowerTest.address;
+        console.log(`Deployed: FlashBorrowerTest | ${flashBorrowerTest.address}`);
     }
 
-    if (configType !== "fork") saveTempConstructor(flashLender.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(implementation, {});
     saveConfig(config, configType);
 }

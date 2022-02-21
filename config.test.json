@@ -13,7 +13,7 @@
     "resolverAddress": "0x97323760e2C7C201C515A1304F7841084658f47E",
     "timelockAddress": "0x1f18cD368C9e41604CD5a6aC5235E818954A5FcC",
     "flashLender": "",
-    "flashBorrower": ""
+    "flashBorrowerTest": ""
   },
   "tokens": {
     "nativeCoin": {
