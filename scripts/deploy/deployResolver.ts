@@ -1,6 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -9,25 +10,20 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const constructorArgs = {
-        taskTreasury: config.taskTreasury,
+        taskTreasury: config.setup.taskTreasury,
         depositReceiver: signerAddress,
         ethAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-        marginLong: config.marginLongAddress,
-        converter: config.converterAddress,
+        marginLong: config.contracts.marginLongAddress,
+        converter: config.contracts.converterAddress,
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
-    const resolver = await Resolver.deploy(
-        constructorArgs.taskTreasury,
-        constructorArgs.depositReceiver,
-        constructorArgs.ethAddress,
-        constructorArgs.marginLong,
-        constructorArgs.converter
-    );
+    const resolver = await hre.upgrades.deployProxy(Resolver, Object.values(constructorArgs));
     await resolver.deployed();
 
-    config.resolverAddress = resolver.address;
-    console.log(`Deployed: Resolver | ${resolver.address}`);
+    config.contracts.resolverAddress = resolver.address;
+    const implementation = await getImplementationAddress(hre.ethers.provider, resolver.address);
+    console.log(`Deployed: Resolver, implementation | ${resolver.address}, ${implementation}`);
 
-    if (configType !== "fork") saveTempConstructor(resolver.address, constructorArgs);
+    if (configType !== "fork") saveTempConstructor(implementation, {});
     saveConfig(config, configType);
 }
