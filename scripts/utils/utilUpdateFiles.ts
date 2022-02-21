@@ -4,8 +4,8 @@ export default async function main() {
     const compiledContracts = process.cwd() + "/artifacts/contracts";
     const configs = [process.cwd() + "/config.main.json", process.cwd() + "/config.test.json", process.cwd() + "/config.fork.json"];
     const abis = [
-        "/LPool/V1/LPool.sol/LPool.json",
-        "/Margin/V1/MarginLong/MarginLong.sol/MarginLong.json",
+        "/LPool/LPool.sol/LPool.json",
+        "/Margin/MarginLong/MarginLong.sol/MarginLong.json",
         "/Oracle/IOracle.sol/IOracle.json",
         "/Converter/Converter.sol/Converter.json",
     ];
