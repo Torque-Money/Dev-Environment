@@ -58,7 +58,7 @@
     },
     "lpTokens": {
       "beaconAddress": "",
-      "tokens": []
+      "tokens": [""]
     },
     "approved": [
       {
