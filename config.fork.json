@@ -27,6 +27,7 @@
       "marginLongCollateral": false,
       "marginLongBorrow": false,
       "leveragePool": false,
+      "flashLender": false,
       "setup": {
         "maxInterestMinNumerator": 0,
         "maxInterestMinDenominator": 0,
@@ -47,6 +48,7 @@
       "marginLongCollateral": false,
       "marginLongBorrow": false,
       "leveragePool": false,
+      "flashLender": false,
       "setup": {
         "maxInterestMinNumerator": 0,
         "maxInterestMinDenominator": 0,
@@ -72,6 +74,7 @@
         "marginLongCollateral": true,
         "marginLongBorrow": false,
         "leveragePool": false,
+        "flashLender": false,
         "setup": {
           "maxInterestMinNumerator": 0,
           "maxInterestMinDenominator": 0,
@@ -92,6 +95,7 @@
         "marginLongCollateral": true,
         "marginLongBorrow": true,
         "leveragePool": true,
+        "flashLender": true,
         "setup": {
           "maxInterestMinNumerator": 25,
           "maxInterestMinDenominator": 100,
@@ -112,6 +116,7 @@
         "marginLongCollateral": true,
         "marginLongBorrow": true,
         "leveragePool": true,
+        "flashLender": true,
         "setup": {
           "maxInterestMinNumerator": 25,
           "maxInterestMinDenominator": 100,

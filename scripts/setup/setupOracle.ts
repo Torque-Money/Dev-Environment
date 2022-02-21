@@ -5,14 +5,14 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     let oracle;
-    if (configType === "main") oracle = await hre.ethers.getContractAt("Oracle", config.oracleAddress);
-    else oracle = await hre.ethers.getContractAt("OracleTest", config.oracleAddress);
+    if (configType === "main") oracle = await hre.ethers.getContractAt("Oracle", config.contracts.oracleAddress);
+    else oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
-    const oracleApproved = config.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
-    const priceFeeds = config.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
-    const correctDecimals = config.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
-    const oracleSupported = Array(oracleApproved.length).fill(true);
-    await (await oracle.setPriceFeed(oracleApproved, priceFeeds, correctDecimals, oracleSupported)).wait();
+    const oracleApproved = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
+    const priceFeeds = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
+    const correctDecimals = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
+    const isApproved = Array(oracleApproved.length).fill(true);
+    await (await oracle.approvePriceFeed(oracleApproved, priceFeeds, correctDecimals, isApproved)).wait();
 
     console.log("Setup: Oracle");
 }
