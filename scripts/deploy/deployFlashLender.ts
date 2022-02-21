@@ -26,7 +26,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         await flashBorrowerTest.deployed();
 
         config.contracts.flashBorrowerTest = flashBorrowerTest.address;
-        console.log(`Deployed: FlashBorrowerTest | ${flashBorrowerTest.address}`);
+        const implementation = await getImplementationAddress(hre.ethers.provider, flashBorrowerTest.address);
+        console.log(`Deployed: FlashBorrowerTest, implementation | ${flashBorrowerTest.address}, ${implementation}`);
     }
 
     if (configType !== "fork") saveTempConstructor(implementation, {});

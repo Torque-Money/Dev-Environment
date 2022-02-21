@@ -1,6 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -13,13 +14,14 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         };
 
         const Oracle = await hre.ethers.getContractFactory("Oracle");
-        const oracle = await Oracle.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        const oracle = await hre.upgrades.deployProxy(Oracle, Object.values(constructorArgs));
         await oracle.deployed();
 
-        config.oracleAddress = oracle.address;
-        console.log(`Deployed: Oracle | ${oracle.address}`);
+        config.contracts.oracleAddress = oracle.address;
+        const implementation = await getImplementationAddress(hre.ethers.provider, oracle.address);
+        console.log(`Deployed: Oracle, implementation | ${oracle.address}, ${implementation}`);
 
-        saveTempConstructor(oracle.address, constructorArgs);
+        saveTempConstructor(implementation, {});
     } else {
         const constructorArgs = {
             thresholdNumerator: 1,
@@ -28,28 +30,15 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         };
 
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
-        const oracleTest = await OracleTest.deploy(constructorArgs.thresholdNumerator, constructorArgs.thresholdDenominator, constructorArgs.priceDecimals);
+        const oracleTest = await hre.upgrades.deployProxy(OracleTest, Object.values(constructorArgs));
         await oracleTest.deployed();
 
-        config.oracleAddress = oracleTest.address;
-        console.log(`Deployed: Oracle test | ${oracleTest.address}`);
+        config.contracts.oracleAddress = oracleTest.address;
+        const implementation = await getImplementationAddress(hre.ethers.provider, oracleTest.address);
+        console.log(`Deployed: OracleTest, implementation | ${oracleTest.address}, ${implementation}`);
 
-        if (configType !== "fork") saveTempConstructor(oracleTest.address, constructorArgs);
+        if (configType !== "fork") saveTempConstructor(implementation, {});
     }
-
-    const constructorArgs = {
-        oracle: config.oracleAddress,
-        pool: config.leveragePoolAddress,
-    };
-
-    const OracleTreasurer = await hre.ethers.getContractFactory("OracleTreasurer");
-    const oracleTreasurer = await OracleTreasurer.deploy(constructorArgs.oracle, constructorArgs.pool);
-    await oracleTreasurer.deployed();
-
-    config.oracleTreasurerAddress = oracleTreasurer.address;
-    console.log(`Deployed: Oracle treasurer | ${oracleTreasurer.address}`);
-
-    if (configType !== "fork") saveTempConstructor(oracleTreasurer.address, constructorArgs);
 
     saveConfig(config, configType);
 }
