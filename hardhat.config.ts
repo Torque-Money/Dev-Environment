@@ -3,6 +3,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
+import "@openzeppelin/hardhat-defender";
 
 import {task} from "hardhat/config";
 
@@ -17,8 +18,6 @@ import utilApprove from "./scripts/utils/utilApprove";
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
-
-import {chooseConfig} from "./scripts/utils/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -54,21 +53,6 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-task("sandbox", "Sandbox test", async (args, hre) => {
-    const config = chooseConfig("main");
-
-    const marginLong = await hre.ethers.getContractAt("MarginLong", config.marginLongAddress);
-
-    const BTC = "0x321162Cd933E2Be498Cd2267a90534A804051b11";
-    const account = "0x2eF15adAFA815Ca7A5ef307FC915EC0006EA64C7";
-
-    const isBorrowedToken = await marginLong.isBorrowedToken(BTC);
-    console.log(isBorrowedToken);
-
-    const isBorrowing = await marginLong["isBorrowing(address,address)"](BTC, account);
-    console.log(isBorrowing);
-});
-
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
 
@@ -102,5 +86,9 @@ export default {
             opera: process.env.FTMSCAN_API_KEY,
             rinkeby: process.env.ETHERSCAN_API_KEY,
         },
+    },
+    defender: {
+        apiKey: process.env.OZ_API_KEY,
+        apiSecret: process.env.OZ_API_SECRET,
     },
 };
