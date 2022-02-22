@@ -79,8 +79,10 @@ export async function getOracleTokens(configType: ConfigType, hre: HardhatRuntim
 export async function getTokenAmount(hre: HardhatRuntimeEnvironment, tokens: ERC20[]) {
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
+    const distributeAmount = 3; // Pool, collateral, borrow
+
     const amounts: ethers.BigNumber[] = [];
-    for (const token of tokens) amounts.push((await token.balanceOf(signerAddress)).div(3 + 1));
+    for (const token of tokens) amounts.push((await token.balanceOf(signerAddress)).div(distributeAmount));
 
     return amounts;
 }
