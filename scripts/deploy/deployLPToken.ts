@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
-import {getImplementationAddress} from "@openzeppelin/upgrades-core";
+import {getBeaconAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -11,7 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await beacon.deployed();
 
     config.tokens.lpTokens.beaconAddress = beacon.address;
-    const implementation = await getImplementationAddress(hre.ethers.provider, beacon.address);
+    const implementation = await getBeaconAddress(hre.ethers.provider, beacon.address);
     console.log(`Deployed: Beacon | ${beacon.address}`);
 
     const tokens = [];
