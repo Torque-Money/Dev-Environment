@@ -9,20 +9,15 @@ import {IOracle, LPool, LPoolToken} from "../typechain-types";
 
 describe("Oracle", async function () {
     let oracleTokens: Token[];
-    let oracleTokenAmounts: BigNumber[];
     let lpTokens: LPoolToken[];
 
     let oracle: IOracle;
     let pool: LPool;
 
-    let tokenPrice: BigNumber = hre.ethers.BigNumber.from(100);
+    let bigNum = hre.ethers.BigNumber.from(10).pow(255);
 
     beforeEach(async () => {
         const oracleTokens = await getOracleTokens("fork", hre);
-        const oracleTokenAmounts = await getTokenAmount(
-            hre,
-            oracleTokens.map((token) => token.token)
-        );
 
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
         for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, hre.ethers.BigNumber.from(30));
@@ -32,24 +27,27 @@ describe("Oracle", async function () {
     });
 
     it("should get the prices for the accepted tokens", async () => {
-        for (let i = 0; i < oracleTokens.length; i++) {
-            expect(await oracle.priceMin(oracleTokens[i].token.address, oracleTokenAmounts[i])).to.not.equal(0);
-            expect(await oracle.priceMax(oracleTokens[i].token.address, oracleTokenAmounts[i])).to.not.equal(0);
+        for (const oracleToken of oracleTokens) {
+            expect(await oracle.priceMin(oracleToken.token.address, bigNum)).to.not.equal(0);
+            expect(await oracle.priceMax(oracleToken.token.address, bigNum)).to.not.equal(0);
 
-            expect(await oracle.amountMin(oracleTokens[i].token.address, tokenPrice)).to.not.equal(0);
-            expect(await oracle.amountMax(oracleTokens[i].token.address, tokenPrice)).to.not.equal(0);
+            expect(await oracle.amountMin(oracleToken.token.address, bigNum)).to.not.equal(0);
+            expect(await oracle.amountMax(oracleToken.token.address, bigNum)).to.not.equal(0);
         }
     });
 
     it("should get the prices for LP tokens", async () => {
-        // **** First we need to stake some tokens and then we need to unstake them ?
+        for (const lpToken of lpTokens) {
+            const poolToken = await pool.PTFromLP(lpToken.address);
+            await (await pool.provideLiquidity(poolToken, 1)).wait();
 
-        for (let i = 0; i < oracleTokens.length; i++) {
-            expect(await oracle.priceMin(oracleTokens[i].token.address, oracleTokenAmounts[i])).to.not.equal(0);
-            expect(await oracle.priceMax(oracleTokens[i].token.address, oracleTokenAmounts[i])).to.not.equal(0);
+            expect(await oracle.priceMin(lpToken.address, bigNum)).to.not.equal(0);
+            expect(await oracle.priceMax(lpToken.address, bigNum)).to.not.equal(0);
 
-            expect(await oracle.amountMin(oracleTokens[i].token.address, tokenPrice)).to.not.equal(0);
-            expect(await oracle.amountMax(oracleTokens[i].token.address, tokenPrice)).to.not.equal(0);
+            expect(await oracle.amountMin(lpToken.address, bigNum)).to.not.equal(0);
+            expect(await oracle.amountMax(lpToken.address, bigNum)).to.not.equal(0);
+
+            await (await pool.)
         }
     });
 
