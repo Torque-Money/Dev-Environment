@@ -1,3 +1,14 @@
-// **** I want a method to automatically unborrow all as well as to automatically withdraw all collateral
+import {HardhatRuntimeEnvironment} from "hardhat/types";
+import {MarginLong} from "../../../typechain-types";
+import {chooseConfig, ConfigType} from "../utilConfig";
 
-// **** For pool AND this, add helpers for the cleanups and the things that CAN be repeated without needing to be tested individually
+export async function withdrawCollateral(configType: ConfigType, hre: HardhatRuntimeEnvironment, marginLong: MarginLong) {
+    const config = chooseConfig(configType);
+
+    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
+
+    for (const token of config.tokens.approved.filter((approved) => approved.marginLongCollateral)) {
+        const available = await marginLong.collateral(token.address, signerAddress);
+        if (available.gt(0)) await marginLong.removeCollateral(token.address, available);
+    }
+}
