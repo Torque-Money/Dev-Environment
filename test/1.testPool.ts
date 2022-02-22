@@ -1,12 +1,15 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
-import config from "../config.fork.json";
-import {shouldFail} from "../scripts/utils/helpers/utilTest";
+import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {LPool, LPoolToken} from "../typechain-types";
 
 describe("Pool", async function () {
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
+
     let poolTokens: Token[];
     let lpTokens: LPoolToken[];
 
@@ -17,7 +20,7 @@ describe("Pool", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens("fork", hre);
+        poolTokens = await getPoolTokens(configType, hre);
         provideAmounts = await getTokenAmount(
             hre,
             poolTokens.map((token) => token.token)
@@ -25,7 +28,7 @@ describe("Pool", async function () {
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        lpTokens = await getLPTokens("fork", hre, pool);
+        lpTokens = await getLPTokens(configType, hre, pool);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
@@ -71,8 +74,11 @@ describe("Pool", async function () {
         const poolToken = poolTokens[index].token;
         const lpToken = lpTokens[index];
 
-        await shouldFail(async () => await pool.provideLiquidity(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
-        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, hre.ethers.BigNumber.from(2).pow(255)));
+        await shouldFail(async () => await pool.provideLiquidity(poolToken.address, 0));
+        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, 0));
+
+        await shouldFail(async () => await pool.provideLiquidity(poolToken.address, BIG_NUM));
+        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, BIG_NUM));
     });
 
     it("should fail to access out of bounds operations", async () => {

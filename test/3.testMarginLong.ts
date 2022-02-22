@@ -1,14 +1,18 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
-import config from "../config.fork.json";
+import {removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getLPTokens, getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
-import {IOracle, LPool, LPoolToken, MarginLong} from "../typechain-types";
+import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {IOracle, LPool, MarginLong} from "../typechain-types";
 
 describe("MarginLong", async function () {
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
+
     let depositTokens: Token[];
     let collateralTokens: Token[];
     let borrowTokens: Token[];
@@ -24,9 +28,9 @@ describe("MarginLong", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        depositTokens = await getPoolTokens("fork", hre);
-        collateralTokens = await getMarginLongCollateralTokens("fork", hre);
-        borrowTokens = await getMarginLongBorrowTokens("fork", hre);
+        depositTokens = await getPoolTokens(configType, hre);
+        collateralTokens = await getMarginLongCollateralTokens(configType, hre);
+        borrowTokens = await getMarginLongBorrowTokens(configType, hre);
 
         depositAmounts = await getTokenAmount(
             hre,
@@ -45,13 +49,13 @@ describe("MarginLong", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
-        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token))
-            await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
-
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
     this.beforeEach(async () => {
+        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token))
+            await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
+
         provideLiquidity(
             pool,
             depositTokens.map((token) => token.token),
@@ -60,10 +64,16 @@ describe("MarginLong", async function () {
     });
 
     this.afterEach(async () => {
-        redeemLiquidity("fork", hre, pool);
+        redeemLiquidity(configType, hre, pool);
     });
 
+    // **** Add a test here to test the same deposit at the same time
+
     it("deposit and undeposit collateral into the account", async () => {
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
+
         const initialBalance = await collateralToken.balanceOf(signerAddress);
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
@@ -83,23 +93,35 @@ describe("MarginLong", async function () {
     });
 
     it("should not allow bad deposits", async () => {
-        shouldFail(async () => await marginLong.addCollateral(lpToken.address, 0));
-        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
 
-        shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, ethers.BigNumber.from(2).pow(255)));
+        shouldFail(async () => await marginLong.addCollateral(hre.ethers.constants.AddressZero, 0));
+
+        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, 0));
+
+        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, BIG_NUM));
+        shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, BIG_NUM));
     });
 
     it("should prevent bad leverage positions", async () => {
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
+        const borrowToken = borrowTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
+        const borrowAmount = borrowAmounts[index];
+
+        await shouldFail(async () => await marginLong.borrow(borrowToken.address, hre.ethers.BigNumber.from(2).pow(255)));
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, ethers.BigNumber.from(2).pow(255)));
+        await shouldFail(async () => await marginLong.borrow(borrowToken.address, hre.ethers.BigNumber.from(2).pow(255)));
 
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000))).wait();
-        await shouldFail(async () => await marginLong.borrow(borrowedToken.address, depositAmount));
+        await shouldFail(async () => await marginLong.borrow(borrowToken.address, BIG_NUM));
+        await setPrice(oracle, borrowToken, hre.ethers.BigNumber.from(BIG_NUM));
+        await shouldFail(async () => await marginLong.borrow(borrowToken.address, borrowAmount));
 
-        await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
+        await removeCollateral("fork", hre, marginLong);
     });
 
     it("should open and repay a leveraged position", async () => {

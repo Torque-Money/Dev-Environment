@@ -18,3 +18,5 @@ export async function approxEqual(a: BigNumber, b: BigNumber, decimals: number) 
     const DISCRIMINATOR = 10 ** decimals;
     expect(a.sub(b).abs().lt(DISCRIMINATOR)).to.equal(true);
 }
+
+export const BIG_NUM = BigNumber.from(10).pow(255);
