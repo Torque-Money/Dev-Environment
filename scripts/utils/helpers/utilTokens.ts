@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType} from "../utilConfig";
 
-import {ERC20} from "../../../typechain-types";
+import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
 
 interface Token {
     token: ERC20;
@@ -17,6 +17,18 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
     }
 
     return tokens;
+}
+
+export async function getLPTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment, pool: LPool) {
+    const tokens = await getPoolTokens(configType, hre);
+
+    const lpTokens: LPoolToken[] = [];
+    for (const {token} of tokens) {
+        const lpAddress = await pool.LPFromPT(token.address);
+        lpTokens.push(await hre.ethers.getContractAt("LPoolToken", lpAddress));
+    }
+
+    return lpTokens;
 }
 
 export async function getMarginLongCollateralTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
@@ -61,4 +73,10 @@ export async function getOracleTokens(configType: ConfigType, hre: HardhatRuntim
     }
 
     return tokens;
+}
+
+export async function getTokenAmounts(hre: HardhatRuntimeEnvironment, token: ERC20) {
+    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
+    const allocatedBalance = (await token.balanceOf(signerAddress)).div(3 + 1);
+    return allocatedBalance;
 }
