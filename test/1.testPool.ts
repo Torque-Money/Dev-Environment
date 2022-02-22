@@ -4,20 +4,21 @@ import hre from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
-import {ERC20, LPool, LPoolToken} from "../typechain-types";
+import {LPool, LPoolToken} from "../typechain-types";
 
 describe("Pool", async function () {
     let poolTokens: Token[];
     let lpTokens: LPoolToken[];
-    let depositAmounts: BigNumber[];
+
+    let provideAmounts: BigNumber[];
 
     let pool: LPool;
 
     let signerAddress: string;
 
-    beforeEach(async () => {
+    this.beforeAll(async () => {
         poolTokens = await getPoolTokens("fork", hre);
-        depositAmounts = await getTokenAmount(
+        provideAmounts = await getTokenAmount(
             hre,
             poolTokens.map((token) => token.token)
         );
@@ -33,21 +34,21 @@ describe("Pool", async function () {
         const index = 0;
         const poolToken = poolTokens[index].token;
         const lpToken = lpTokens[index];
-        const depositAmount = depositAmounts[index];
+        const provideAmount = provideAmounts[index];
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
 
-        const providedValue = await pool.provideLiquidityOutLPTokens(poolToken.address, depositAmount);
-        await (await pool.provideLiquidity(poolToken.address, depositAmount)).wait();
+        const providedValue = await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount);
+        await (await pool.provideLiquidity(poolToken.address, provideAmount)).wait();
 
-        expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(depositAmount));
-        expect(await lpToken.balanceOf(signerAddress)).to.equal(depositAmount);
+        expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(provideAmount));
+        expect(await lpToken.balanceOf(signerAddress)).to.equal(provideAmount);
 
-        expect(await poolToken.balanceOf(pool.address)).to.equal(depositAmount);
-        expect(await pool.liquidity(poolToken.address)).to.equal(depositAmount);
-        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(depositAmount);
+        expect(await poolToken.balanceOf(pool.address)).to.equal(provideAmount);
+        expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount);
+        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount);
 
-        expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(depositAmount);
+        expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(provideAmount);
         await (await pool.redeemLiquidity(lpToken.address, providedValue)).wait();
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);

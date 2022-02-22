@@ -3,7 +3,7 @@ import hre from "hardhat";
 import config from "../config.fork.json";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getLPTokens, getOracleTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getLPTokens, getOracleTokens, Token} from "../scripts/utils/helpers/utilTokens";
 import {IOracle, LPool, LPoolToken} from "../typechain-types";
 
 describe("Oracle", async function () {
@@ -15,13 +15,14 @@ describe("Oracle", async function () {
 
     let bigNum = hre.ethers.BigNumber.from(10).pow(255);
 
-    beforeEach(async () => {
+    this.beforeAll(async () => {
         const oracleTokens = await getOracleTokens("fork", hre);
 
-        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
         for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, hre.ethers.BigNumber.from(30));
+        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+
         lpTokens = await getLPTokens("fork", hre, pool);
     });
 

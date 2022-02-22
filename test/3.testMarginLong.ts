@@ -3,28 +3,23 @@ import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
+import {Token} from "../scripts/utils/helpers/utilTokens";
+import {IOracle, LPool, LPoolToken, MarginLong} from "../typechain-types";
 
 describe("MarginLong", async function () {
-    let collateralApproved: any;
-    let collateralToken: ERC20;
+    let collateralTokens: Token[];
+    let borrowedTokens: Token[];
+    let lpTokens: LPoolToken[];
 
-    let borrowedApproved: any;
-    let borrowedToken: ERC20;
+    let depositAmount: BigNumber[];
+    let collateralAmount: BigNumber[];
+    let borrowedAmount: BigNumber[];
 
-    let lpToken: ERC20;
-
-    let oracle: OracleTest;
+    let oracle: IOracle;
     let marginLong: MarginLong;
     let pool: LPool;
 
-    let priceDecimals: BigNumber;
-
     let signerAddress: string;
-
-    let depositAmount: BigNumber;
-    let collateralAmount: BigNumber;
-    let borrowedAmount: BigNumber;
 
     beforeEach(async () => {
         collateralApproved = config.approved[0];
