@@ -8,6 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     if (configType === "main") {
         const constructorArgs = {
+            pool: config.contracts.leveragePoolAddress,
             thresholdNumerator: 1,
             thresholdDenominator: 200,
             priceDecimals: 18,
