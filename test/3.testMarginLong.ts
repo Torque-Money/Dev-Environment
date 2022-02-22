@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
-import {removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
@@ -66,8 +66,6 @@ describe("MarginLong", async function () {
     this.afterEach(async () => {
         redeemLiquidity(configType, hre, pool);
     });
-
-    // **** Add a test here to test the same deposit at the same time
 
     it("deposit and undeposit collateral into the account", async () => {
         const index = 0;
@@ -159,24 +157,35 @@ describe("MarginLong", async function () {
     });
 
     it("should open and repay all leveraged positions", async () => {
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+        await addCollateral(
+            marginLong,
+            collateralTokens.map((token) => token.token),
+            collateralAmounts
+        );
 
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await borrow(
+            marginLong,
+            borrowTokens.map((token) => token.token),
+            borrowAmounts
+        );
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.not.equal(0);
+        expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
 
         await (await marginLong["repayAccount()"]()).wait();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        const collateralValue = await marginLong.collateral(collateralToken.address, signerAddress);
-        await (await marginLong.removeCollateral(collateralToken.address, collateralValue)).wait();
+        await removeCollateral(configType, hre, marginLong);
 
-        expect((await pool.liquidity(borrowedToken.address)).gte(depositAmount)).to.equal(true);
-        expect((await pool.tvl(borrowedToken.address)).gte(depositAmount)).to.equal(true);
-        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
-        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
-        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
+        for (let i = 0; i < depositTokens.length; i++) {
+            expect((await pool.liquidity(depositTokens[i].token.address)).gte(depositAmounts[i])).to.equal(true);
+            expect((await pool.totalAmountLocked(depositTokens[i].token.address)).gte(depositAmounts[i])).to.equal(true);
+        }
+
+        for (const token of borrowTokens) {
+            expect(await marginLong.totalBorrowed(token.token.address)).to.equal(0);
+            expect(await marginLong.borrowed(token.token.address, signerAddress)).to.equal(0);
+        }
     });
 
     it("should borrow against equity", async () => {
