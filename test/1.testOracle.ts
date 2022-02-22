@@ -1,28 +1,28 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
+import hre from "hardhat";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {ERC20, OracleTest} from "../typechain-types";
+import {getOracleTokens, getTokenAmounts} from "../scripts/utils/helpers/utilTokens";
+import {ERC20, IOracle} from "../typechain-types";
 
 describe("Oracle", async function () {
-    let tokenApproved: any;
-    let token: ERC20;
-
-    let oracle: OracleTest;
-
+    let tokenApproved: any[];
+    let token: ERC20[];
+    let tokenAmount: BigNumber;
     let lpToken: ERC20;
 
-    let tokenAmount: BigNumber;
+    let oracle: IOracle;
+
     let tokenPrice: BigNumber;
 
+    // **** I also need to test it with the pool
+
     beforeEach(async () => {
-        tokenApproved = config.approved[1];
-        token = await ethers.getContractAt("ERC20", tokenApproved.address);
+        const token = await getOracleTokens("fork", hre);
+        const tokenAmounts = await getTokenAmounts(hre, token);
 
-        tokenAmount = ethers.BigNumber.from(10).pow(tokenApproved.decimals).mul(10);
-
-        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
+        oracle = await hre.ethers.getContractAt("IOracle", config.oracleAddress);
 
         const priceDecimals = await oracle.priceDecimals();
         tokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);

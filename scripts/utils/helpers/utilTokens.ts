@@ -2,6 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {chooseConfig, ConfigType} from "../utilConfig";
 
 import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
+import {ethers} from "ethers";
 
 interface Token {
     token: ERC20;
@@ -75,8 +76,11 @@ export async function getOracleTokens(configType: ConfigType, hre: HardhatRuntim
     return tokens;
 }
 
-export async function getTokenAmounts(hre: HardhatRuntimeEnvironment, token: ERC20) {
+export async function getTokenAmount(hre: HardhatRuntimeEnvironment, tokens: ERC20[]) {
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
-    const allocatedBalance = (await token.balanceOf(signerAddress)).div(3 + 1);
-    return allocatedBalance;
+
+    const amounts: ethers.BigNumber[] = [];
+    for (const token of tokens) amounts.push((await token.balanceOf(signerAddress)).div(3 + 1));
+
+    return amounts;
 }
