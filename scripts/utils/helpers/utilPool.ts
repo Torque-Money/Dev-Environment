@@ -1,6 +1,13 @@
+import {ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {LPool} from "../../../typechain-types";
+import {ERC20, LPool} from "../../../typechain-types";
 import {chooseConfig, ConfigType} from "../utilConfig";
+
+export async function provideLiquidity(pool: LPool, tokens: ERC20[], amounts: ethers.BigNumber[]) {
+    console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
+
+    for (let i = 0; i < tokens.length; i++) await (await pool.provideLiquidity(tokens[i].address, amounts[i])).wait();
+}
 
 export async function redeemLiquidity(configType: ConfigType, hre: HardhatRuntimeEnvironment, pool: LPool) {
     const config = chooseConfig(configType);

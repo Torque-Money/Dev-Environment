@@ -3,6 +3,7 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 import config from "../config.fork.json";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {IOracle, LPool, LPoolToken, MarginLong} from "../typechain-types";
@@ -44,35 +45,22 @@ describe("MarginLong", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
-        await setPrice(oracle);
+        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token))
+            await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
+
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
     this.beforeEach(async () => {
-        collateralApproved = config.approved[0];
-        collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
-
-        borrowedApproved = config.approved[1];
-        borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
-
-        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
-
-        priceDecimals = await oracle.priceDecimals();
-        await (await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals))).wait();
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30))).wait();
-
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(100);
-        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
-
-        await (await pool.addLiquidity(borrowedToken.address, depositAmount)).wait();
+        provideLiquidity(
+            pool,
+            depositTokens.map((token) => token.token),
+            depositAmounts
+        );
     });
 
     this.afterEach(async () => {
-        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
+        redeemLiquidity("fork", hre, pool);
     });
 
     it("deposit and undeposit collateral into the account", async () => {

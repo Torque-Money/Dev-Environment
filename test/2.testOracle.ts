@@ -18,7 +18,7 @@ describe("Oracle", async function () {
     this.beforeAll(async () => {
         const oracleTokens = await getOracleTokens("fork", hre);
 
-        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, hre.ethers.BigNumber.from(30));
+        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
