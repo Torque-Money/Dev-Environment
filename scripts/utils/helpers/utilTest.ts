@@ -16,6 +16,5 @@ export async function wait(seconds: BigNumber) {
 
 export async function approxEqual(a: BigNumber, b: BigNumber, decimals: number) {
     const DISCRIMINATOR = 10 ** decimals;
-    // expect(a.sub(b).mul(ROUND_CONSTANT).div(b).toNumber() / ROUND_CONSTANT).to.equal(0);
     expect(a.sub(b).abs().lt(DISCRIMINATOR)).to.equal(true);
 }
