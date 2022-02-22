@@ -68,6 +68,8 @@ describe("MarginLong", async function () {
     });
 
     it("deposit and undeposit collateral into the account", async () => {
+        // **** Do this with multiple types of collateral OR multiple deposits to check if the multiple depositing works
+
         const index = 0;
         const collateralToken = collateralTokens[index].token;
         const collateralAmount = collateralAmounts[index];
@@ -189,38 +191,43 @@ describe("MarginLong", async function () {
     });
 
     it("should borrow against equity", async () => {
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
+        const borrowToken = borrowTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
+        const borrowAmount = borrowAmounts[index];
+
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await (await marginLong.borrow(borrowToken.address, borrowAmount)).wait();
 
         const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
 
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(3000))).wait();
+        await setPrice(oracle, borrowToken, hre.ethers.BigNumber.from(3000));
 
         const [currentMarginLevelNumerator, currentMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
 
         expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
 
-        await (await marginLong["repayAccount()"]()).wait();
-        const potentialCollateralTokens = [collateralToken, borrowedToken];
-        for (const token of potentialCollateralTokens) {
-            const amount = await marginLong.collateral(token.address, signerAddress);
-            if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
-        }
+        await (await marginLong["repayAccount(address)"](borrowToken.address)).wait();
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should fail to redeem LP tokens when they are being used", async () => {
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
+        const borrowToken = borrowTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
+        const borrowAmount = borrowAmounts[index];
+
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await (await marginLong.borrow(borrowToken.address, borrowAmount)).wait();
 
-        await shouldFail(async () => await pool.removeLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
+        const lpToken = await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(borrowToken.address));
+        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
 
-        await (await marginLong["repayAccount()"]()).wait();
-        const potentialCollateralTokens = [collateralToken, borrowedToken];
-        for (const token of potentialCollateralTokens) {
-            const amount = await marginLong.collateral(token.address, signerAddress);
-            if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
-        }
+        await (await marginLong["repayAccount(address)"](borrowToken.address)).wait();
+        await removeCollateral(configType, hre, marginLong);
     });
 });
