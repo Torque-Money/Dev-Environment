@@ -1,5 +1,4 @@
 import {expect} from "chai";
-import {BigNumber} from "ethers";
 import hre from "hardhat";
 import config from "../config.fork.json";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
@@ -26,7 +25,7 @@ describe("Oracle", async function () {
         lpTokens = await getLPTokens("fork", hre, pool);
     });
 
-    it("should get the prices for the accepted tokens", async () => {
+    it("should get the prices for accepted tokens", async () => {
         for (const oracleToken of oracleTokens) {
             expect(await oracle.priceMin(oracleToken.token.address, bigNum)).to.not.equal(0);
             expect(await oracle.priceMax(oracleToken.token.address, bigNum)).to.not.equal(0);
@@ -47,7 +46,7 @@ describe("Oracle", async function () {
             expect(await oracle.amountMin(lpToken.address, bigNum)).to.not.equal(0);
             expect(await oracle.amountMax(lpToken.address, bigNum)).to.not.equal(0);
 
-            await (await pool.)
+            await (await pool.redeemLiquidity(lpToken.address, 1)).wait();
         }
     });
 
