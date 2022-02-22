@@ -58,6 +58,10 @@ describe("Pool", async function () {
         expect(await pool.totalAmountLocked(poolToken.address)).to.equal(0);
     });
 
+    it("should stake and redeem multiple tokens at the same time", async () => {
+        // **** THIS ONE IS A TODO
+    });
+
     it("should fail to stake incorrect tokens and invalid amounts", async () => {
         await shouldFail(async () => await pool.provideLiquidity(hre.ethers.constants.AddressZero, 1));
         await shouldFail(async () => await pool.redeemLiquidity(hre.ethers.constants.AddressZero, 1));
