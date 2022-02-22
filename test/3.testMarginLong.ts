@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
 import config from "../config.fork.json";
-import {shouldFail} from "../scripts/utils/utilsTest";
+import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("MarginLong", async function () {

@@ -1,8 +1,8 @@
 import {BigNumber} from "ethers";
 import {ethers, upgrades} from "hardhat";
 import config from "../config.fork.json";
-import {shouldFail} from "../scripts/utils/utilsTest";
-import {wait} from "../scripts/utils/utilsTest";
+import {shouldFail} from "../scripts/utils/helpers/utilTest";
+import {wait} from "../scripts/utils/helpers/utilTest";
 import {Timelock} from "../typechain-types";
 
 describe("Timelock", async function () {
