@@ -18,6 +18,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
             await router.swapExactETHForTokens(0, [weth.address, approved.address], signerAddress, Date.now(), {value: swapBalance.div(config.tokens.approved.length)})
         ).wait();
 
+    // **** Slight problem, one of our tokens is the approved which it cannot exchange like this - we will have to use our converter and wrap it for ease
+
     const wethAmount = initialBalance.mul(Math.floor((100 - 60) / 2)).div(100);
     await (await weth.deposit({value: wethAmount})).wait();
 }
