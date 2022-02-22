@@ -1,19 +1,20 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
+import hre from "hardhat";
 import config from "../config.fork.json";
+import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {Token} from "../scripts/utils/helpers/utilTokens";
+import {getLPTokens, getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {IOracle, LPool, LPoolToken, MarginLong} from "../typechain-types";
 
 describe("MarginLong", async function () {
+    let depositTokens: Token[];
     let collateralTokens: Token[];
-    let borrowedTokens: Token[];
-    let lpTokens: LPoolToken[];
+    let borrowTokens: Token[];
 
-    let depositAmount: BigNumber[];
-    let collateralAmount: BigNumber[];
-    let borrowedAmount: BigNumber[];
+    let depositAmounts: BigNumber[];
+    let collateralAmounts: BigNumber[];
+    let borrowAmounts: BigNumber[];
 
     let oracle: IOracle;
     let marginLong: MarginLong;
@@ -21,16 +22,37 @@ describe("MarginLong", async function () {
 
     let signerAddress: string;
 
-    beforeEach(async () => {
+    this.beforeAll(async () => {
+        depositTokens = await getPoolTokens("fork", hre);
+        collateralTokens = await getMarginLongCollateralTokens("fork", hre);
+        borrowTokens = await getMarginLongBorrowTokens("fork", hre);
+
+        depositAmounts = await getTokenAmount(
+            hre,
+            depositTokens.map((token) => token.token)
+        );
+        collateralAmounts = await getTokenAmount(
+            hre,
+            depositTokens.map((token) => token.token)
+        );
+        borrowAmounts = await getTokenAmount(
+            hre,
+            borrowTokens.map((token) => token.token)
+        );
+
+        marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
+        pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
+
+        await setPrice(oracle);
+    });
+
+    this.beforeEach(async () => {
         collateralApproved = config.approved[0];
         collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
 
         borrowedApproved = config.approved[1];
         borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
-
-        marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
 
         lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
 
@@ -48,7 +70,7 @@ describe("MarginLong", async function () {
         await (await pool.addLiquidity(borrowedToken.address, depositAmount)).wait();
     });
 
-    afterEach(async () => {
+    this.afterEach(async () => {
         const LPTokenAmount = await lpToken.balanceOf(signerAddress);
         if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
     });
