@@ -121,34 +121,41 @@ describe("MarginLong", async function () {
         await setPrice(oracle, borrowToken, hre.ethers.BigNumber.from(BIG_NUM));
         await shouldFail(async () => await marginLong.borrow(borrowToken.address, borrowAmount));
 
-        await removeCollateral("fork", hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should open and repay a leveraged position", async () => {
+        const index = 0;
+        const collateralToken = collateralTokens[index].token;
+        const borrowToken = borrowTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
+        const borrowAmount = borrowAmounts[index];
+
+        const initialLiquidity = await pool.liquidity(borrowToken.address);
+        const initialTotalAmountLocked = await pool.totalAmountLocked(borrowToken.address);
+
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await (await marginLong.borrow(borrowToken.address, borrowAmount)).wait();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.not.equal(0);
 
-        expect(await pool.liquidity(borrowedToken.address)).to.equal(depositAmount.sub(borrowedAmount));
-        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(borrowedAmount);
-        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(borrowedAmount);
-        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(borrowedAmount);
+        expect(await pool.liquidity(borrowToken.address)).to.equal(initialLiquidity.sub(borrowAmount));
+        expect(await marginLong.totalBorrowed(borrowToken.address)).to.equal(borrowAmount);
+        expect(await marginLong.borrowed(borrowToken.address, signerAddress)).to.equal(borrowAmount);
 
         await shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, collateralValue));
 
-        await (await marginLong["repayAccount(address)"](borrowedToken.address)).wait();
+        await (await marginLong["repayAccount(address)"](borrowToken.address)).wait();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
         const collateralValue = await marginLong.collateral(collateralToken.address, signerAddress);
         await (await marginLong.removeCollateral(collateralToken.address, collateralValue)).wait();
 
-        expect((await pool.liquidity(borrowedToken.address)).gte(depositAmount)).to.equal(true);
-        expect((await pool.tvl(borrowedToken.address)).gte(depositAmount)).to.equal(true);
-        expect(await marginLong.totalBorrowed(borrowedToken.address)).to.equal(0);
-        expect(await marginLong.borrowed(borrowedToken.address, signerAddress)).to.equal(0);
-        expect(await pool.claimed(borrowedToken.address, marginLong.address)).to.equal(0);
+        expect((await pool.liquidity(borrowToken.address)).gte(initialLiquidity)).to.equal(true);
+        expect((await pool.totalAmountLocked(borrowToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
+        expect(await marginLong.totalBorrowed(borrowToken.address)).to.equal(0);
+        expect(await marginLong.borrowed(borrowToken.address, signerAddress)).to.equal(0);
     });
 
     it("should open and repay all leveraged positions", async () => {
