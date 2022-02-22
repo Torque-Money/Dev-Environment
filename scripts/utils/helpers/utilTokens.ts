@@ -4,7 +4,7 @@ import {chooseConfig, ConfigType} from "../utilConfig";
 import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
 import {ethers} from "ethers";
 
-interface Token {
+export interface Token {
     token: ERC20;
     raw: any;
 }
