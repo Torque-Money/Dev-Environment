@@ -10,9 +10,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     if (configType === "main") {
         const constructorArgs = {
             pool: config.contracts.leveragePoolAddress,
+            priceDecimals: 18,
             thresholdNumerator: 1,
             thresholdDenominator: 200,
-            priceDecimals: 18,
         };
 
         const Oracle = await hre.ethers.getContractFactory("Oracle");
@@ -27,9 +27,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     } else {
         const constructorArgs = {
             pool: config.contracts.leveragePoolAddress,
+            priceDecimals: 18,
             thresholdNumerator: 1,
             thresholdDenominator: 200,
-            priceDecimals: 18,
         };
 
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
