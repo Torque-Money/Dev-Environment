@@ -31,6 +31,10 @@ export async function getCollateralTokens(configType: ConfigType, hre: HardhatRu
     return tokens;
 }
 
+export async function LPFromPT(hre: HardhatRuntimeEnvironment, pool: LPool, token: ERC20) {
+    return await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(token.address));
+}
+
 export async function getFlashLenderTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 

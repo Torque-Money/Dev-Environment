@@ -5,7 +5,7 @@ import hre from "hardhat";
 import {LPool, LPoolToken} from "../typechain-types";
 import {provideLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getLPTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getPoolTokens, getTokenAmount, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
@@ -13,7 +13,6 @@ describe("Pool", async function () {
     const config = chooseConfig(configType);
 
     let poolTokens: Token[];
-    let lpTokens: LPoolToken[];
 
     let provideAmounts: BigNumber[];
 
@@ -30,15 +29,13 @@ describe("Pool", async function () {
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        lpTokens = await getLPTokens(configType, hre, pool);
-
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const index = 0;
         const poolToken = poolTokens[index].token;
-        const lpToken = lpTokens[index];
+        const lpToken = await LPFromPT(hre, pool, poolToken);
         const provideAmount = provideAmounts[index];
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
@@ -82,7 +79,7 @@ describe("Pool", async function () {
 
         const index = 0;
         const poolToken = poolTokens[index].token;
-        const lpToken = lpTokens[index];
+        const lpToken = await LPFromPT(hre, pool, poolToken);
 
         await shouldFail(async () => await pool.provideLiquidity(poolToken.address, 0));
         await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, 0));
