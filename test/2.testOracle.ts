@@ -3,8 +3,8 @@ import hre from "hardhat";
 
 import {IOracle, LPool, LPoolToken} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
-import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getLPTokens, getOracleTokens, Token} from "../scripts/utils/helpers/utilTokens";
+import {BIG_NUM, BORROW_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {getOracleTokens, getPoolTokens, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("Oracle", async function () {
@@ -12,22 +12,19 @@ describe("Oracle", async function () {
     const config = chooseConfig(configType);
 
     let oracleTokens: Token[];
-    let lpTokens: LPoolToken[];
+    let poolTokens: Token[];
 
     let oracle: IOracle;
     let pool: LPool;
 
-    const initialTokenPrice = hre.ethers.BigNumber.from(10);
-
     this.beforeAll(async () => {
-        const oracleTokens = await getOracleTokens(configType, hre);
+        oracleTokens = await getOracleTokens(configType, hre);
+        poolTokens = await getPoolTokens(configType, hre);
 
-        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, initialTokenPrice);
+        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, BORROW_PRICE);
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
-
-        lpTokens = await getLPTokens(configType, hre, pool);
     });
 
     it("should get the prices for accepted tokens", async () => {
@@ -41,7 +38,9 @@ describe("Oracle", async function () {
     });
 
     it("should get the prices for LP tokens", async () => {
-        for (const lpToken of lpTokens) {
+        for (const token of poolTokens) {
+            const lpToken = await LPFromPT(hre, pool, token.token);
+
             const poolToken = await pool.PTFromLP(lpToken.address);
             await (await pool.provideLiquidity(poolToken, 1)).wait();
 
