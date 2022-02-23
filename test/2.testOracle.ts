@@ -38,39 +38,39 @@ describe("Oracle", async function () {
 
     it("should get the prices for accepted tokens", async () => {
         for (const oracleToken of oracleTokens) {
-            expect(await oracle.priceMin(oracleToken.token.address, BIG_NUM)).to.not.equal(0); // **** It seems to be a problem with the subtraction of the fractions inside of the price max? (must be a problem with the threshold)
+            expect(await oracle.priceMin(oracleToken.token.address, BIG_NUM)).to.not.equal(0);
             expect(await oracle.priceMax(oracleToken.token.address, BIG_NUM)).to.not.equal(0);
 
             expect(await oracle.amountMin(oracleToken.token.address, BIG_NUM)).to.not.equal(0);
-            // expect(await oracle.amountMax(oracleToken.token.address, BIG_NUM)).to.not.equal(0); // **** This uses the bad function above
+            expect(await oracle.amountMax(oracleToken.token.address, BIG_NUM)).to.not.equal(0);
         }
     });
 
-    // it("should get the prices for LP tokens", async () => {
-    //     await provideLiquidity(
-    //         pool,
-    //         poolTokens.map((token) => token.token),
-    //         provideAmounts
-    //     );
+    it("should get the prices for LP tokens", async () => {
+        await provideLiquidity(
+            pool,
+            poolTokens.map((token) => token.token),
+            provideAmounts
+        );
 
-    //     for (const token of poolTokens) {
-    //         const lpToken = await LPFromPT(hre, pool, token.token);
+        for (const token of poolTokens) {
+            const lpToken = await LPFromPT(hre, pool, token.token);
 
-    //         expect(await oracle.priceMin(lpToken.address, BIG_NUM)).to.not.equal(0);
-    //         expect(await oracle.priceMax(lpToken.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.priceMin(lpToken.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.priceMax(lpToken.address, BIG_NUM)).to.not.equal(0);
 
-    //         expect(await oracle.amountMin(lpToken.address, BIG_NUM)).to.not.equal(0);
-    //         expect(await oracle.amountMax(lpToken.address, BIG_NUM)).to.not.equal(0);
-    //     }
+            expect(await oracle.amountMin(lpToken.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.amountMax(lpToken.address, BIG_NUM)).to.not.equal(0);
+        }
 
-    //     await redeemLiquidity(configType, hre, pool);
-    // });
+        await redeemLiquidity(configType, hre, pool);
+    });
 
-    // it("should not work for non accepted tokens", async () => {
-    //     await shouldFail(async () => await oracle.priceMin(hre.ethers.constants.AddressZero, 0));
-    //     await shouldFail(async () => await oracle.priceMax(hre.ethers.constants.AddressZero, 0));
+    it("should not work for non accepted tokens", async () => {
+        await shouldFail(async () => await oracle.priceMin(hre.ethers.constants.AddressZero, 0));
+        await shouldFail(async () => await oracle.priceMax(hre.ethers.constants.AddressZero, 0));
 
-    //     await shouldFail(async () => await oracle.amountMin(hre.ethers.constants.AddressZero, 0));
-    //     await shouldFail(async () => await oracle.amountMax(hre.ethers.constants.AddressZero, 0));
-    // });
+        await shouldFail(async () => await oracle.amountMin(hre.ethers.constants.AddressZero, 0));
+        await shouldFail(async () => await oracle.amountMax(hre.ethers.constants.AddressZero, 0));
+    });
 });
