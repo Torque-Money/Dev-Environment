@@ -68,7 +68,7 @@ describe("MarginLong", async function () {
     });
 
     this.afterEach(async () => {
-        redeemLiquidity(configType, hre, pool);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("deposit and undeposit collateral into the account", async () => {

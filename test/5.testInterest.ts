@@ -1,67 +1,82 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
+import hre from "hardhat";
 
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
-import config from "../config.fork.json";
+import {IOracle, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
+import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {setPrice} from "../scripts/utils/helpers/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
+import {addCollateral, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 
 describe("Interest", async function () {
-    let collateralApproved: any;
-    let collateralToken: ERC20;
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
 
-    let borrowedApproved: any;
-    let borrowedToken: ERC20;
+    let poolTokens: Token[];
+    let collateralTokens: Token[];
+    let borrowTokens: Token[];
 
-    let lpToken: ERC20;
+    let provideAmounts: BigNumber[];
+    let collateralAmounts: BigNumber[];
+    let borrowAmounts: BigNumber[];
 
-    let oracle: OracleTest;
+    let oracle: IOracle;
     let marginLong: MarginLong;
     let pool: LPool;
 
     let signerAddress: string;
 
-    let depositAmount: BigNumber;
-    let borrowedAmount: BigNumber;
+    const initialPoolTokenPrice = hre.ethers.BigNumber.from(1);
+    const initialCollateralTokenPrice = hre.ethers.BigNumber.from(30);
 
-    beforeEach(async () => {
-        collateralApproved = config.approved[0];
-        collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
+    this.beforeAll(async () => {
+        poolTokens = await getPoolTokens(configType, hre);
+        collateralTokens = await getMarginLongCollateralTokens(configType, hre);
+        borrowTokens = await getMarginLongBorrowTokens(configType, hre);
 
-        borrowedApproved = config.approved[1];
-        borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+        provideAmounts = await getTokenAmount(
+            hre,
+            poolTokens.map((token) => token.token)
+        );
+        collateralAmounts = await getTokenAmount(
+            hre,
+            collateralTokens.map((token) => token.token)
+        );
+        borrowAmounts = await getTokenAmount(
+            hre,
+            borrowTokens.map((token) => token.token)
+        );
 
-        marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
+        marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
+        pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
-        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-        const priceDecimals = await oracle.priceDecimals();
-        await (await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals))).wait();
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(30))).wait();
-
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
-        const collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
-
-        await (await pool.addLiquidity(borrowedToken.address, depositAmount)).wait();
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+        for (const token of poolTokens.map((token) => token.token)) await setPrice(oracle, token, initialPoolTokenPrice);
+        for (const token of collateralTokens.map((token) => token.token)) await setPrice(oracle, token, initialCollateralTokenPrice);
     });
 
-    afterEach(async () => {
-        const potentialCollateralTokens = [collateralToken, borrowedToken];
-        for (const token of potentialCollateralTokens) {
-            const amount = await marginLong.collateral(token.address, signerAddress);
-            if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
-        }
+    this.beforeEach(async () => {
+        await provideLiquidity(
+            pool,
+            poolTokens.map((token) => token.token),
+            provideAmounts
+        );
 
-        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
+        await addCollateral(
+            marginLong,
+            collateralTokens.map((token) => token.token),
+            collateralAmounts
+        );
+    });
+
+    this.afterEach(async () => {
+        await removeCollateral(configType, hre, marginLong);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should borrow below the max utilization", async () => {

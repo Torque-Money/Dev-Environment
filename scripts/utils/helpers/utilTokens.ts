@@ -20,6 +20,8 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
     return tokens;
 }
 
+// **** In here we need to manually select the tokens we wish to choose
+
 export async function getLPTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment, pool: LPool) {
     const tokens = await getPoolTokens(configType, hre);
 
