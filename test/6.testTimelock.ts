@@ -1,5 +1,6 @@
 import hre from "hardhat";
-import {BigNumber} from "ethers";
+import {BigNumber, Contract} from "ethers";
+import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
@@ -13,9 +14,11 @@ describe("Timelock", async function () {
     let timelock: Timelock;
     let minDelay: BigNumber;
 
+    let proxyAdmin: Contract;
+
     const executeAdminOnly = async ({address, value, calldata, description}: {address: string; value: number; calldata: string; description?: string}) => {
         const parsedPredecessor = hre.ethers.constants.HashZero;
-        const parsedDescription = hre.ethers.utils.keccak256(ethers.utils.toUtf8Bytes(description || Date.now().toString()));
+        const parsedDescription = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes(description || Date.now().toString()));
 
         await (await timelock.schedule(address, value, calldata, parsedPredecessor, parsedDescription, minDelay)).wait();
 
@@ -31,6 +34,8 @@ describe("Timelock", async function () {
         timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
 
         minDelay = await timelock.getMinDelay();
+
+        proxyAdmin = await hre.upgrades.admin.getInstance();
     });
 
     it("should execute an admin only request to the converter and attempt to upgrade it", async () => {
@@ -102,10 +107,11 @@ describe("Timelock", async function () {
         });
     });
 
-    it("should attempt to upgrade the margin and pool and attempt to upgrade it", async () => {
-        const proxyAdmin = await hre.upgrades.admin.getInstance();
+    it("should execute an admin only request to an LP token and attempt to upgrade it", async () => {
+        // **** This one is a little different as it is a beacon proxy
+    });
 
-        // **** Get implementation manually
+    it("should attempt to upgrade the margin and pool and attempt to upgrade it", async () => {
         await shouldFail(async () => proxyAdmin.upgrade(config.contracts.leveragePoolAddress, config.contracts.leveragePoolLogicAddress));
         await executeAdminOnly({
             address: proxyAdmin.address,
