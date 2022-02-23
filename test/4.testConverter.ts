@@ -1,43 +1,48 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
+import hre from "hardhat";
 
-import {Converter, ERC20} from "../typechain-types";
-import config from "../config.fork.json";
+import {Converter} from "../typechain-types";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
+import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("Converter", async function () {
-    let poolTokens: ERC20;
-    let collateralTokens: ERC20;
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
 
-    let weth: ERC20;
+    let poolTokens: Token[];
+    let collateralTokens: Token[];
+
+    let provideAmounts: BigNumber[];
+    let collateralAmounts: BigNumber[];
 
     let converter: Converter;
 
     let signerAddress: string;
 
-    let swapAmount: BigNumber;
-    let wethSwapAmount: BigNumber;
-
     // **** There needs to be a nice seemless way of doing this that does not affect the ownership of the tokens or the distribution of the tokens
     // **** This means we will need to swap to and then we will need to swap right back (this is because this cannot be state modifying)
 
-    beforeEach(async () => {
-        inApproved = config.approved[0];
-        inToken = await ethers.getContractAt("ERC20", inApproved.address);
+    this.beforeAll(async () => {
+        poolTokens = await getPoolTokens(configType, hre);
+        collateralTokens = await getCollateralTokens(configType, hre);
 
-        outApproved = config.approved[1];
-        outToken = await ethers.getContractAt("ERC20", outApproved.address);
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-        converter = await ethers.getContractAt("Converter", config.converterAddress);
+        converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
+    });
 
-        weth = await ethers.getContractAt("ERC20", await (await ethers.getContractAt("UniswapV2Router02", config.routerAddress)).WETH());
-        wethSwapAmount = ethers.BigNumber.from(10).pow(18).mul(1);
+    this.beforeEach(async () => {
+        provideAmounts = await getTokenAmount(
+            hre,
+            poolTokens.map((token) => token.token)
+        );
 
-        swapAmount = ethers.BigNumber.from(10).pow(inApproved.decimals).mul(1);
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
+        collateralAmounts = await getTokenAmount(
+            hre,
+            collateralTokens.map((token) => token.token)
+        );
     });
 
     it("should convert one token into another", async () => {
