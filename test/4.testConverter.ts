@@ -20,6 +20,7 @@ describe("Converter", async function () {
     let wethSwapAmount: BigNumber;
 
     // **** There needs to be a nice seemless way of doing this that does not affect the ownership of the tokens or the distribution of the tokens
+    // **** This means we will need to swap to and then we will need to swap right back (this is because this cannot be state modifying)
 
     beforeEach(async () => {
         inApproved = config.approved[0];
