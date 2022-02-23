@@ -47,6 +47,14 @@ describe("Timelock", async function () {
             value: 0,
             calldata: converter.interface.encodeFunctionData("setRouter", [config.setup.routerAddress]),
         });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.converterAddress);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.converterAddress, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.converterAddress, implementation]),
+        });
     });
 
     it("should execute an admin only request to the leveraging pool and attempt to upgrade it", async () => {
@@ -57,6 +65,14 @@ describe("Timelock", async function () {
             address: pool.address,
             value: 0,
             calldata: pool.interface.encodeFunctionData("setConverter", [config.contracts.converterAddress]),
+        });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.leveragePoolAddress);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.leveragePoolAddress, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.leveragePoolAddress, implementation]),
         });
     });
 
@@ -69,6 +85,14 @@ describe("Timelock", async function () {
             value: 0,
             calldata: marginLong.interface.encodeFunctionData("setOracle", [config.contracts.oracleAddress]),
         });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.marginLongAddress);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.marginLongAddress, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.marginLongAddress, implementation]),
+        });
     });
 
     it("should execute an admin only request to the oracle and attempt to upgrade it", async () => {
@@ -80,6 +104,14 @@ describe("Timelock", async function () {
             address: oracle.address,
             value: 0,
             calldata: oracle.interface.encodeFunctionData("setPriceFeed", [[token.address], [token.priceFeed], [token.decimals], [true]]),
+        });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.oracleAddress);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.oracleAddress, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.oracleAddress, implementation]),
         });
     });
 
@@ -94,6 +126,14 @@ describe("Timelock", async function () {
             value: 0,
             calldata: resolver.interface.encodeFunctionData("setConverter", [config.contracts.converterAddress]),
         });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.resolverAddress);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.resolverAddress, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.resolverAddress, implementation]),
+        });
     });
 
     it("should execute an admin only request to the flash lender and attempt to upgrade it", async () => {
@@ -105,25 +145,19 @@ describe("Timelock", async function () {
             value: 0,
             calldata: flashLender.interface.encodeFunctionData("setFeePercent", [1, 1000000]),
         });
+
+        const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.flashLender);
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.flashLender, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.flashLender, implementation]),
+        });
     });
 
     it("should execute an admin only request to an LP token and attempt to upgrade it", async () => {
         // **** This one is a little different as it is a beacon proxy
-    });
-
-    it("should attempt to upgrade the margin and pool and attempt to upgrade it", async () => {
-        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.leveragePoolAddress, config.contracts.leveragePoolLogicAddress));
-        await executeAdminOnly({
-            address: proxyAdmin.address,
-            value: 0,
-            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.leveragePoolAddress, config.leveragePoolLogicAddress]),
-        });
-
-        await shouldFail(async () => proxyAdmin.upgrade(config.marginLongAddress, config.marginLongLogicAddress));
-        await executeAdminOnly({
-            address: proxyAdmin.address,
-            value: 0,
-            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.marginLongAddress, config.marginLongLogicAddress]),
-        });
+        // **** We have to manually go and get the implementation
+        // **** I could just attempt to go and pause all of the different functions to test the admin functions
     });
 });
