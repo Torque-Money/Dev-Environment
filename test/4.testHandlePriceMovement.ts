@@ -65,7 +65,7 @@ describe("Handle price movement", async function () {
         signerAddress = await ethers.provider.getSigner().getAddress();
     });
 
-    beforeEach(async () => {
+    this.beforeEach(async () => {
         await provideLiquidity(
             pool,
             poolTokens.map((token) => token.token),
@@ -85,7 +85,7 @@ describe("Handle price movement", async function () {
         );
     });
 
-    afterEach(async () => {
+    this.afterEach(async () => {
         try {
             await (await marginLong["repayAccount()"]()).wait();
         } catch {}
@@ -127,7 +127,9 @@ describe("Handle price movement", async function () {
         expect((await pool.tvl(borrowedToken.address)).gt(depositAmount)).to.equal(true);
     });
 
-    it("should test the timelock tax", async () => {
+    it("should update timelock balance with tax", async () => {
+        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
+
         const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
         const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
         const [priceChangeNumerator, priceChangeDenominator] = [
@@ -136,20 +138,9 @@ describe("Handle price movement", async function () {
         ];
         (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator))).wait();
 
-        const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
-
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await (await marginLong.liquidateAccount(signerAddress)).wait();
-        expect(await marginLong["isBorrowing(address)"](signerAddress)).to.equal(false);
 
         expect((await borrowedToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
-
-        const initialBalance = await borrowedToken.balanceOf(signerAddress);
-        const claimAvailable = await timelock.taxClaimAvailable(borrowedToken.address);
-        expect(claimAvailable.gt(0)).to.equal(true);
-        await (await timelock.claimTax(borrowedToken.address)).wait();
-        await shouldFail(async () => await timelock.claimTax(borrowedToken.address));
-        expect((await borrowedToken.balanceOf(signerAddress)).sub(initialBalance)).to.equal(claimAvailable);
     });
 
     it("should liquidate an account with the resolver", async () => {
