@@ -13,6 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         await (await token.approve(config.contracts.leveragePoolAddress, approvedAmount)).wait();
         await (await token.approve(config.contracts.marginLongAddress, approvedAmount)).wait();
         await (await token.approve(config.contracts.flashBorrowerTest, approvedAmount)).wait();
+        await (await token.approve(config.contracts.converterAddress, approvedAmount)).wait();
 
         console.log(`Approve: Approved contracts to spend tokens with address ${approved.address}`);
     }
@@ -22,6 +23,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await weth.approve(config.contracts.leveragePoolAddress, approvedAmount)).wait();
     await (await weth.approve(config.contracts.marginLongAddress, approvedAmount)).wait();
     await (await weth.approve(config.contracts.flashBorrowerTest, approvedAmount)).wait();
+    await (await weth.approve(config.contracts.converterAddress, approvedAmount)).wait();
 
     console.log(`Approve: Approved contracts to spend tokens with address ${weth.address}`);
 }

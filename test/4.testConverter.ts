@@ -46,12 +46,23 @@ describe("Converter", async function () {
     });
 
     it("should convert one token into another", async () => {
-        await shouldFail(async () => await converter.swapMaxTokenOut(inToken.address, swapAmount, inToken.address));
+        const index = 0;
+        const poolToken = poolTokens[index].token;
+        const provideAmount = provideAmounts[index];
+        const collateralToken = collateralTokens[index].token;
+        const collateralAmount = collateralAmounts[index];
 
-        await (await inToken.approve(converter.address, swapAmount)).wait();
+        // **** At the end of this we need to convert them all back
+
+        // **** We can estimate how much of the other token it will swap into and then we can unswap it
+        // **** How do we determine what token it should indeed be swapped into though and that it will not overlap ?
+
+        await shouldFail(async () => await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address));
 
         const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await outToken.balanceOf(signerAddress);
+
+        // **** First I need to track how much comes out of the coverter, then I need to unswap that at the end for the original token
 
         await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
 
