@@ -13,7 +13,6 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
     const config = chooseConfig(configType);
 
     let tokens: Token[] = [];
-    // **** Get the tokens that are not in the collateral tokens list
     for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool && !approved.marginLongCollateral)) {
         tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
     }
@@ -25,7 +24,6 @@ export async function getCollateralTokens(configType: ConfigType, hre: HardhatRu
     const config = chooseConfig(configType);
 
     let tokens: Token[] = [];
-    // **** Get the tokens that are not in the pool tokens list
     for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral && !approved.leveragePool)) {
         tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
     }
