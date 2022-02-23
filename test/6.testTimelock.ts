@@ -157,7 +157,6 @@ describe("Timelock", async function () {
 
     it("should execute an admin only request to an LP token and attempt to upgrade it", async () => {
         const poolToken = await hre.ethers.getContractAt("LPoolToken", config.tokens.lpTokens.tokens[0]);
-        const beacon = config.tokens.lpTokens.beaconAddress;
 
         await shouldFail(async () => await poolToken.pause());
         await executeAdminOnly({
@@ -171,20 +170,12 @@ describe("Timelock", async function () {
             calldata: poolToken.interface.encodeFunctionData("unpause", []),
         });
 
-        // **** How do you get a beacon from this exactly ?
-        const implementation = await beacon.implementation();
-        // await shouldFail(async () => proxyAdmin.upgrade(config.contracts.flashLender, implementation));
-        // await executeAdminOnly({
-        //     address: proxyAdmin.address,
-        //     value: 0,
-        //     calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.contracts.flashLender, implementation]),
-        // });
-
-        // **** Now we need to attempt to upgrade the beacon proxy
-
-        // **** This one is a little different as it is a beacon proxy
-        // **** We have to manually go and get the implementation
-        // **** I could just attempt to go and pause all of the different functions to test the admin functions
-        // **** Test the pause on this one
+        const implementation = await hre.upgrades.beacon.getImplementationAddress(poolToken.address); // **** This could require the beacon instead
+        await shouldFail(async () => proxyAdmin.upgrade(config.contracts.flashLender, implementation));
+        await executeAdminOnly({
+            address: proxyAdmin.address,
+            value: 0,
+            calldata: proxyAdmin.interface.encodeFunctionData("upgrade", [config.tokens.lpTokens.beaconAddress, implementation]),
+        });
     });
 });

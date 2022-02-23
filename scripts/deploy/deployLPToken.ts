@@ -11,7 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await beacon.deployed();
 
     config.tokens.lpTokens.beaconAddress = beacon.address;
-    const implementation = await beacon.implementation();
+    const implementation = await hre.upgrades.beacon.getImplementationAddress(config.tokens.lpTokens.beaconAddress);
     console.log(`Deployed: Beacon, implementation | ${beacon.address}, ${implementation}`);
 
     const tokens = [];
