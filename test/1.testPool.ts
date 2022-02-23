@@ -40,33 +40,21 @@ describe("Pool", async function () {
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
 
-        console.log("Made it here 1");
-
         const outTokens = await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount);
         await (await pool.provideLiquidity(poolToken.address, provideAmount)).wait();
 
-        console.log("Made it here 2");
-
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(provideAmount));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(provideAmount);
-
-        console.log("Made it here 3");
 
         expect(await poolToken.balanceOf(pool.address)).to.equal(provideAmount);
         expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount);
         expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount);
 
-        console.log("Made it here 4");
-
         expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, outTokens)).to.equal(provideAmount);
         await (await pool.redeemLiquidity(lpToken.address, outTokens)).wait();
 
-        console.log("Made it here 5");
-
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance);
-
-        console.log("Made it here 6");
 
         expect(await poolToken.balanceOf(pool.address)).to.equal(0);
         expect(await pool.liquidity(poolToken.address)).to.equal(0);
