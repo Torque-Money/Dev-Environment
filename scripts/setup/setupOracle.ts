@@ -11,7 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const priceFeeds = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
     const correctDecimals = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
     const isApproved = Array(oracleApproved.length).fill(true);
-    await (await oracle.approvePriceFeed(oracleApproved, priceFeeds, correctDecimals, isApproved)).wait();
+    await (await oracle.setPriceFeed(oracleApproved, priceFeeds, correctDecimals, isApproved)).wait();
 
     console.log("Setup: Oracle");
 }
