@@ -19,7 +19,7 @@ export async function approxEqual(a: BigNumber, b: BigNumber, decimals: number) 
     expect(a.sub(b).abs().lt(DISCRIMINATOR)).to.equal(true);
 }
 
-export const BIG_NUM = BigNumber.from(10).pow(128);
+export const BIG_NUM = BigNumber.from(2).pow(96);
 
 export const COLLATERAL_PRICE = BigNumber.from(1);
 export const BORROW_PRICE = BigNumber.from(100);
