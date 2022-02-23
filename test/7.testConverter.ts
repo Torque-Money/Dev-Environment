@@ -7,11 +7,8 @@ import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
 
 describe("Converter", async function () {
-    let inApproved: any;
-    let inToken: ERC20;
-
-    let outApproved: any;
-    let outToken: ERC20;
+    let poolTokens: ERC20;
+    let collateralTokens: ERC20;
 
     let weth: ERC20;
 
@@ -21,6 +18,8 @@ describe("Converter", async function () {
 
     let swapAmount: BigNumber;
     let wethSwapAmount: BigNumber;
+
+    // **** There needs to be a nice seemless way of doing this that does not affect the ownership of the tokens or the distribution of the tokens
 
     beforeEach(async () => {
         inApproved = config.approved[0];
