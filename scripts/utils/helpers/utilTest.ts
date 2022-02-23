@@ -22,4 +22,4 @@ export async function approxEqual(a: BigNumber, b: BigNumber, decimals: number) 
 export const BIG_NUM = BigNumber.from(10).pow(255);
 
 export const COLLATERAL_PRICE = BigNumber.from(1);
-export const BORROW_PRICE = BigNumber.from(10);
+export const BORROW_PRICE = BigNumber.from(100);

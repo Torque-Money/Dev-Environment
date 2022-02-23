@@ -2,8 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {LPool, LPoolToken} from "../typechain-types";
-import {provideLiquidity} from "../scripts/utils/helpers/utilPool";
+import {LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getPoolTokens, getTokenAmount, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
@@ -62,15 +61,42 @@ describe("Pool", async function () {
     });
 
     it("should stake and redeem multiple tokens at the same time", async () => {
-        // **** THIS ONE IS A TODO
-        // **** This shouldnt be too difficult, we just need to make sure that what we deposit matches the correct amount at all times and then we go and remove it at the same time and it should remove the problems
+        const initialBalances: BigNumber[] = [];
+        for (const {token} of poolTokens) initialBalances.push(await token.balanceOf(signerAddress));
 
-        // **** How do we even properly test this ? storing the initial values in an array and tracking it that way
-        await provideLiquidity(
-            pool,
-            poolTokens.map((token) => token.token),
-            provideAmounts
-        );
+        const outTokens: BigNumber[] = [];
+        for (let i = 0; i < poolTokens.length; i++) {
+            const poolToken = poolTokens[i].token;
+            const provideAmount = provideAmounts[i];
+            const lpToken = await LPFromPT(hre, pool, poolToken);
+
+            outTokens.push(await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount));
+            await (await pool.provideLiquidity(poolToken.address, provideAmount)).wait();
+
+            expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalances[i].sub(provideAmount));
+            expect(await lpToken.balanceOf(signerAddress)).to.equal(outTokens[i]);
+
+            expect(await poolToken.balanceOf(pool.address)).to.equal(provideAmount);
+            expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount);
+            expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount);
+        }
+
+        const redeemAmounts: BigNumber[] = [];
+        for (let i = 0; i < poolTokens.length; i++) {
+            const poolToken = poolTokens[i].token;
+            const provideAmount = provideAmounts[i];
+            const lpToken = await LPFromPT(hre, pool, poolToken);
+
+            expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, outTokens[i])).to.equal(provideAmount);
+            await (await pool.redeemLiquidity(lpToken.address, outTokens[i])).wait();
+
+            expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
+            expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalances[i]);
+
+            expect(await poolToken.balanceOf(pool.address)).to.equal(0);
+            expect(await pool.liquidity(poolToken.address)).to.equal(0);
+            expect(await pool.totalAmountLocked(poolToken.address)).to.equal(0);
+        }
     });
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {
