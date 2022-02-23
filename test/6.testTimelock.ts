@@ -170,7 +170,7 @@ describe("Timelock", async function () {
             calldata: poolToken.interface.encodeFunctionData("unpause", []),
         });
 
-        const implementation = await hre.upgrades.beacon.getImplementationAddress(poolToken.address); // **** This could require the beacon instead
+        const implementation = await hre.upgrades.beacon.getImplementationAddress(poolToken.address);
         await shouldFail(async () => proxyAdmin.upgrade(config.contracts.flashLender, implementation));
         await executeAdminOnly({
             address: proxyAdmin.address,
