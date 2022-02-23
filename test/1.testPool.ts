@@ -1,6 +1,7 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
+import {provideLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
@@ -41,7 +42,7 @@ describe("Pool", async function () {
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
 
-        const providedValue = await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount);
+        const outTokens = await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount);
         await (await pool.provideLiquidity(poolToken.address, provideAmount)).wait();
 
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(provideAmount));
@@ -51,8 +52,8 @@ describe("Pool", async function () {
         expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount);
         expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount);
 
-        expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, providedValue)).to.equal(provideAmount);
-        await (await pool.redeemLiquidity(lpToken.address, providedValue)).wait();
+        expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, outTokens)).to.equal(provideAmount);
+        await (await pool.redeemLiquidity(lpToken.address, outTokens)).wait();
 
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance);
@@ -64,6 +65,14 @@ describe("Pool", async function () {
 
     it("should stake and redeem multiple tokens at the same time", async () => {
         // **** THIS ONE IS A TODO
+        // **** This shouldnt be too difficult, we just need to make sure that what we deposit matches the correct amount at all times and then we go and remove it at the same time and it should remove the problems
+
+        // **** How do we even properly test this ? storing the initial values in an array and tracking it that way
+        await provideLiquidity(
+            pool,
+            poolTokens.map((token) => token.token),
+            provideAmounts
+        );
     });
 
     it("should fail to stake incorrect tokens and invalid amounts", async () => {

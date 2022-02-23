@@ -74,4 +74,6 @@ describe("FlashLend", async function () {
     it("should require a minimum of zero", async () => {
         await shouldFail(async () => await flashBorrower.callFlashLoan(token.address, 0));
     });
+
+    // **** Test the flashlend of an invalid token
 });
