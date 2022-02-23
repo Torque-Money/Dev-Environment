@@ -1,13 +1,14 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
+
+import {IOracle, LPool, MarginLong} from "../typechain-types";
 import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
-import {IOracle, LPool, MarginLong} from "../typechain-types";
 
 describe("MarginLong", async function () {
     const configType: ConfigType = "fork";

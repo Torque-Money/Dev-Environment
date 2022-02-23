@@ -1,6 +1,6 @@
-import ERC20Abi from "@openzeppelin/contracts/build/contracts/ERC20.json";
-import {chooseConfig, ConfigType} from "./utilConfig";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+
+import {chooseConfig, ConfigType} from "./utilConfig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);

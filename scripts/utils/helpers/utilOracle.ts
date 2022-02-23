@@ -1,4 +1,5 @@
 import {Contract, ethers} from "ethers";
+
 import {ERC20} from "../../../typechain-types";
 
 export async function setPrice(oracle: Contract, token: ERC20, rawPrice: ethers.BigNumber) {

@@ -1,10 +1,11 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
+
+import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 import config from "../config.fork.json";
 import {approxEqual} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 
 describe("Interest", async function () {
     let collateralApproved: any;

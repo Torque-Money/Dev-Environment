@@ -1,5 +1,5 @@
-import fs from "fs";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+import fs from "fs";
 
 const TEMP_CONSTRUCTOR_NAME = "temp.constructor.json";
 

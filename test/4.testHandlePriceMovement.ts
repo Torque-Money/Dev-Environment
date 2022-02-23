@@ -1,9 +1,9 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
 import hre from "hardhat";
-import {shouldFail} from "../scripts/utils/helpers/utilTest";
+
 import {ITaskTreasury, LPool, MarginLong, IOracle, Resolver, Timelock} from "../typechain-types";
+import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
@@ -52,12 +52,12 @@ describe("Handle price movement", async function () {
             borrowTokens.map((token) => token.token)
         );
 
-        pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-        oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
-        marginLong = await ethers.getContractAt("MarginLong", config.marginLongAddress);
-        timelock = await ethers.getContractAt("Timelock", config.timelockAddress);
-        resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
-        taskTreasury = await ethers.getContractAt("ITaskTreasury", config.taskTreasury);
+        pool = await ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+        oracle = await ethers.getContractAt("IOracle", config.contracts.oracleAddress);
+        marginLong = await ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
+        timelock = await ethers.getContractAt("Timelock", config.contracts.timelockAddress);
+        resolver = await ethers.getContractAt("Resolver", config.contracts.resolverAddress);
+        taskTreasury = await ethers.getContractAt("ITaskTreasury", config.setup.taskTreasury);
 
         for (const token of poolTokens) await setPrice(oracle, token.token, initialPoolTokenPrice);
         for (const token of collateralTokens) await setPrice(oracle, token.token, initialCollateralTokenPrice);

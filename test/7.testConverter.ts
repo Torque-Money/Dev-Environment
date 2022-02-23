@@ -1,9 +1,10 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
+
+import {Converter, ERC20} from "../typechain-types";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {Converter, ERC20} from "../typechain-types";
 
 describe("Converter", async function () {
     let inApproved: any;

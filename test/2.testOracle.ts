@@ -1,10 +1,11 @@
 import {expect} from "chai";
 import hre from "hardhat";
+
+import {IOracle, LPool, LPoolToken} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getOracleTokens, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
-import {IOracle, LPool, LPoolToken} from "../typechain-types";
 
 describe("Oracle", async function () {
     const configType: ConfigType = "fork";

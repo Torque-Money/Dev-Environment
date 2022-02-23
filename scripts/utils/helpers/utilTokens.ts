@@ -1,8 +1,8 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chooseConfig, ConfigType} from "../utilConfig";
-
-import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
 import {ethers} from "ethers";
+
+import {chooseConfig, ConfigType} from "../utilConfig";
+import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
 
 export interface Token {
     token: ERC20;

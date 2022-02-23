@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
-import {getBeaconAddress} from "@openzeppelin/upgrades-core";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);

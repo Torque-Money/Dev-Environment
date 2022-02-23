@@ -1,11 +1,12 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
+
+import {LPool, LPoolToken} from "../typechain-types";
 import {provideLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
-import {LPool, LPoolToken} from "../typechain-types";
 
 describe("Pool", async function () {
     const configType: ConfigType = "fork";

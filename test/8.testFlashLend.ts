@@ -1,9 +1,10 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
+
+import {ERC20, FlashBorrower, FlashLender, LPool} from "../typechain-types";
 import config from "../config.fork.json";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {ERC20, FlashBorrower, FlashLender, LPool} from "../typechain-types";
 
 describe("FlashLend", async function () {
     let tokenApproved: any;
