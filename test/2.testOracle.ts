@@ -1,6 +1,5 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import config from "../config.fork.json";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getLPTokens, getOracleTokens, Token} from "../scripts/utils/helpers/utilTokens";
@@ -17,10 +16,12 @@ describe("Oracle", async function () {
     let oracle: IOracle;
     let pool: LPool;
 
+    const initialTokenPrice = hre.ethers.BigNumber.from(10);
+
     this.beforeAll(async () => {
         const oracleTokens = await getOracleTokens(configType, hre);
 
-        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
+        for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, initialTokenPrice);
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);

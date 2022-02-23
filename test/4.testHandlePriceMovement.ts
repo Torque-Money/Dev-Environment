@@ -1,24 +1,26 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
-import config from "../config.fork.json";
+import hre from "hardhat";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {ERC20, ITaskTreasury, LPool, MarginLong, OracleTest, Resolver, Timelock} from "../typechain-types";
+import {ITaskTreasury, LPool, MarginLong, IOracle, Resolver, Timelock} from "../typechain-types";
+import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {setPrice} from "../scripts/utils/helpers/utilOracle";
 
 describe("Handle price movement", async function () {
-    let collateralApproved: any;
-    let collateralToken: ERC20;
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
 
-    let borrowedApproved: any;
-    let borrowedToken: ERC20;
+    let depositTokens: Token[];
+    let collateralTokens: Token[];
+    let borrowTokens: Token[];
 
-    let lpToken: ERC20;
+    let depositAmounts: BigNumber[];
+    let collateralAmounts: BigNumber[];
+    let borrowAmounts: BigNumber[];
 
-    let priceDecimals: BigNumber;
-    let initialCollateralTokenPrice: BigNumber;
-    let initialBorrowTokenPrice: BigNumber;
-
-    let oracle: OracleTest;
+    let oracle: IOracle;
     let pool: LPool;
     let marginLong: MarginLong;
     let timelock: Timelock;
@@ -27,16 +29,26 @@ describe("Handle price movement", async function () {
 
     let signerAddress: string;
 
-    let collateralAmount: BigNumber;
-    let borrowedAmount: BigNumber;
-    let depositAmount: BigNumber;
+    const initialCollateralTokenPrice = hre.ethers.BigNumber.from(1);
+    const initialBorrowTokenPrice = hre.ethers.BigNumber.from(5);
 
-    beforeEach(async () => {
-        collateralApproved = config.approved[0];
-        collateralToken = await ethers.getContractAt("ERC20", collateralApproved.address);
+    this.beforeAll(async () => {
+        depositTokens = await getPoolTokens(configType, hre);
+        collateralTokens = await getMarginLongCollateralTokens(configType, hre);
+        borrowTokens = await getMarginLongBorrowTokens(configType, hre);
 
-        borrowedApproved = config.approved[1];
-        borrowedToken = await ethers.getContractAt("ERC20", borrowedApproved.address);
+        depositAmounts = await getTokenAmount(
+            hre,
+            depositTokens.map((token) => token.token)
+        );
+        collateralAmounts = await getTokenAmount(
+            hre,
+            collateralTokens.map((token) => token.token)
+        );
+        borrowAmounts = await getTokenAmount(
+            hre,
+            borrowTokens.map((token) => token.token)
+        );
 
         pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
         oracle = await ethers.getContractAt("OracleTest", config.oracleAddress);
@@ -45,20 +57,14 @@ describe("Handle price movement", async function () {
         resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
         taskTreasury = await ethers.getContractAt("ITaskTreasury", config.taskTreasury);
 
-        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(borrowedToken.address));
+        for (const token of depositTokens) await setPrice(oracle, token.token, initialCollateralTokenPrice);
+        for (const token of collateralTokens) await setPrice(oracle, token.token, initialCollateralTokenPrice);
 
-        priceDecimals = await oracle.priceDecimals();
-        initialCollateralTokenPrice = ethers.BigNumber.from(10).pow(priceDecimals);
-        initialBorrowTokenPrice = ethers.BigNumber.from(10).pow(priceDecimals).mul(30);
-        await (await oracle.setPrice(collateralToken.address, initialCollateralTokenPrice)).wait();
-        await (await oracle.setPrice(borrowedToken.address, initialBorrowTokenPrice)).wait();
+        signerAddress = await ethers.provider.getSigner().getAddress();
+    });
 
-        depositAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(50);
-        collateralAmount = ethers.BigNumber.from(10).pow(collateralApproved.decimals).mul(200);
-        borrowedAmount = ethers.BigNumber.from(10).pow(borrowedApproved.decimals).mul(20);
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
+    beforeEach(async () => {
+        // **** Add all liquidity, add all collateral, add all borrows
 
         await (await pool.addLiquidity(borrowedToken.address, depositAmount)).wait();
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
@@ -66,6 +72,8 @@ describe("Handle price movement", async function () {
     });
 
     afterEach(async () => {
+        // **** Remove all liquidity, borrows, and then deposited tokens
+
         const potentialCollateralTokens = [collateralToken, borrowedToken];
         for (const token of potentialCollateralTokens) {
             const amount = await marginLong.collateral(token.address, signerAddress);

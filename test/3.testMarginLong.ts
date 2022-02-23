@@ -27,6 +27,8 @@ describe("MarginLong", async function () {
 
     let signerAddress: string;
 
+    const initialTokenPrice = hre.ethers.BigNumber.from(10);
+
     this.beforeAll(async () => {
         depositTokens = await getPoolTokens(configType, hre);
         collateralTokens = await getMarginLongCollateralTokens(configType, hre);
@@ -53,8 +55,7 @@ describe("MarginLong", async function () {
     });
 
     this.beforeEach(async () => {
-        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token))
-            await setPrice(oracle, token, hre.ethers.BigNumber.from(1));
+        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token)) await setPrice(oracle, token, initialTokenPrice);
 
         provideLiquidity(
             pool,
@@ -68,8 +69,6 @@ describe("MarginLong", async function () {
     });
 
     it("deposit and undeposit collateral into the account", async () => {
-        // **** Do this with multiple types of collateral OR multiple deposits to check if the multiple depositing works
-
         const index = 0;
         const collateralToken = collateralTokens[index].token;
         const collateralAmount = collateralAmounts[index];
