@@ -1,11 +1,13 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {IOracle, LPool, LPoolToken} from "../typechain-types";
+import {LPool, OracleTest} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {BIG_NUM, BORROW_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getOracleTokens, getPoolTokens, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
+import {getOracleTokens, getPoolTokens, getTokenAmount, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {BigNumber} from "ethers";
+import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 
 describe("Oracle", async function () {
     const configType: ConfigType = "fork";
@@ -14,15 +16,22 @@ describe("Oracle", async function () {
     let oracleTokens: Token[];
     let poolTokens: Token[];
 
-    let oracle: IOracle;
+    let provideAmounts: BigNumber[];
+
+    let oracle: OracleTest;
     let pool: LPool;
 
     this.beforeAll(async () => {
         oracleTokens = await getOracleTokens(configType, hre);
         poolTokens = await getPoolTokens(configType, hre);
 
+        provideAmounts = await getTokenAmount(
+            hre,
+            poolTokens.map((token) => token.token)
+        );
+
+        oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
         for (const token of oracleTokens.map((token) => token.token)) await setPrice(oracle, token, BORROW_PRICE);
-        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
     });
@@ -38,20 +47,23 @@ describe("Oracle", async function () {
     });
 
     it("should get the prices for LP tokens", async () => {
+        await provideLiquidity(
+            pool,
+            poolTokens.map((token) => token.token),
+            provideAmounts
+        );
+
         for (const token of poolTokens) {
             const lpToken = await LPFromPT(hre, pool, token.token);
-
-            const poolToken = await pool.PTFromLP(lpToken.address);
-            await (await pool.provideLiquidity(poolToken, 1)).wait();
 
             expect(await oracle.priceMin(lpToken.address, BIG_NUM)).to.not.equal(0);
             expect(await oracle.priceMax(lpToken.address, BIG_NUM)).to.not.equal(0);
 
             expect(await oracle.amountMin(lpToken.address, BIG_NUM)).to.not.equal(0);
             expect(await oracle.amountMax(lpToken.address, BIG_NUM)).to.not.equal(0);
-
-            await (await pool.redeemLiquidity(lpToken.address, 1)).wait();
         }
+
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should not work for non accepted tokens", async () => {
