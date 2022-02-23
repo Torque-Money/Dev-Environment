@@ -13,11 +13,11 @@ describe("MarginLong", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let depositTokens: Token[];
+    let poolTokens: Token[];
     let collateralTokens: Token[];
     let borrowTokens: Token[];
 
-    let depositAmounts: BigNumber[];
+    let provideAmounts: BigNumber[];
     let collateralAmounts: BigNumber[];
     let borrowAmounts: BigNumber[];
 
@@ -27,20 +27,21 @@ describe("MarginLong", async function () {
 
     let signerAddress: string;
 
-    const initialTokenPrice = hre.ethers.BigNumber.from(10);
+    const initialPoolTokenPrice = hre.ethers.BigNumber.from(1);
+    const initialCollateralTokenPrice = hre.ethers.BigNumber.from(30);
 
     this.beforeAll(async () => {
-        depositTokens = await getPoolTokens(configType, hre);
+        poolTokens = await getPoolTokens(configType, hre);
         collateralTokens = await getMarginLongCollateralTokens(configType, hre);
         borrowTokens = await getMarginLongBorrowTokens(configType, hre);
 
-        depositAmounts = await getTokenAmount(
+        provideAmounts = await getTokenAmount(
             hre,
-            depositTokens.map((token) => token.token)
+            poolTokens.map((token) => token.token)
         );
         collateralAmounts = await getTokenAmount(
             hre,
-            depositTokens.map((token) => token.token)
+            collateralTokens.map((token) => token.token)
         );
         borrowAmounts = await getTokenAmount(
             hre,
@@ -55,12 +56,13 @@ describe("MarginLong", async function () {
     });
 
     this.beforeEach(async () => {
-        for (const token of [...depositTokens, ...collateralTokens, ...borrowTokens].map((token) => token.token)) await setPrice(oracle, token, initialTokenPrice);
+        for (const token of poolTokens.map((token) => token.token)) await setPrice(oracle, token, initialPoolTokenPrice);
+        for (const token of collateralTokens.map((token) => token.token)) await setPrice(oracle, token, initialCollateralTokenPrice);
 
         provideLiquidity(
             pool,
-            depositTokens.map((token) => token.token),
-            depositAmounts
+            poolTokens.map((token) => token.token),
+            provideAmounts
         );
     });
 
@@ -178,9 +180,9 @@ describe("MarginLong", async function () {
 
         await removeCollateral(configType, hre, marginLong);
 
-        for (let i = 0; i < depositTokens.length; i++) {
-            expect((await pool.liquidity(depositTokens[i].token.address)).gte(depositAmounts[i])).to.equal(true);
-            expect((await pool.totalAmountLocked(depositTokens[i].token.address)).gte(depositAmounts[i])).to.equal(true);
+        for (let i = 0; i < poolTokens.length; i++) {
+            expect((await pool.liquidity(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
+            expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
         }
 
         for (const token of borrowTokens) {

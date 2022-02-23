@@ -7,16 +7,18 @@ import {ITaskTreasury, LPool, MarginLong, IOracle, Resolver, Timelock} from "../
 import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
+import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 
 describe("Handle price movement", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let depositTokens: Token[];
+    let poolTokens: Token[];
     let collateralTokens: Token[];
     let borrowTokens: Token[];
 
-    let depositAmounts: BigNumber[];
+    let provideAmounts: BigNumber[];
     let collateralAmounts: BigNumber[];
     let borrowAmounts: BigNumber[];
 
@@ -29,17 +31,17 @@ describe("Handle price movement", async function () {
 
     let signerAddress: string;
 
+    const initialPoolTokenPrice = hre.ethers.BigNumber.from(5);
     const initialCollateralTokenPrice = hre.ethers.BigNumber.from(1);
-    const initialBorrowTokenPrice = hre.ethers.BigNumber.from(5);
 
     this.beforeAll(async () => {
-        depositTokens = await getPoolTokens(configType, hre);
+        poolTokens = await getPoolTokens(configType, hre);
         collateralTokens = await getMarginLongCollateralTokens(configType, hre);
         borrowTokens = await getMarginLongBorrowTokens(configType, hre);
 
-        depositAmounts = await getTokenAmount(
+        provideAmounts = await getTokenAmount(
             hre,
-            depositTokens.map((token) => token.token)
+            poolTokens.map((token) => token.token)
         );
         collateralAmounts = await getTokenAmount(
             hre,
@@ -57,31 +59,39 @@ describe("Handle price movement", async function () {
         resolver = await ethers.getContractAt("Resolver", config.resolverAddress);
         taskTreasury = await ethers.getContractAt("ITaskTreasury", config.taskTreasury);
 
-        for (const token of depositTokens) await setPrice(oracle, token.token, initialCollateralTokenPrice);
+        for (const token of poolTokens) await setPrice(oracle, token.token, initialPoolTokenPrice);
         for (const token of collateralTokens) await setPrice(oracle, token.token, initialCollateralTokenPrice);
 
         signerAddress = await ethers.provider.getSigner().getAddress();
     });
 
     beforeEach(async () => {
-        // **** Add all liquidity, add all collateral, add all borrows
+        await provideLiquidity(
+            pool,
+            poolTokens.map((token) => token.token),
+            provideAmounts
+        );
 
-        await (await pool.addLiquidity(borrowedToken.address, depositAmount)).wait();
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await addCollateral(
+            marginLong,
+            collateralTokens.map((token) => token.token),
+            collateralAmounts
+        );
+
+        await borrow(
+            marginLong,
+            borrowTokens.map((token) => token.token),
+            borrowAmounts
+        );
     });
 
     afterEach(async () => {
-        // **** Remove all liquidity, borrows, and then deposited tokens
+        try {
+            await (await marginLong["repayAccount()"]()).wait();
+        } catch {}
 
-        const potentialCollateralTokens = [collateralToken, borrowedToken];
-        for (const token of potentialCollateralTokens) {
-            const amount = await marginLong.collateral(token.address, signerAddress);
-            if (amount.gt(0)) await (await marginLong.removeCollateral(token.address, amount)).wait();
-        }
-
-        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
+        await removeCollateral(configType, hre, marginLong);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should liquidate an account", async () => {
