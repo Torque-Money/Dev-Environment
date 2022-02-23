@@ -13,43 +13,20 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
     const config = chooseConfig(configType);
 
     let tokens: Token[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool)) {
+    // **** Get the tokens that are not in the collateral tokens list
+    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool && !approved.marginLongCollateral)) {
         tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
     }
 
     return tokens;
 }
 
-// **** In here we need to manually select the tokens we wish to choose
-
-export async function getLPTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment, pool: LPool) {
-    const tokens = await getPoolTokens(configType, hre);
-
-    const lpTokens: LPoolToken[] = [];
-    for (const {token} of tokens) {
-        const lpAddress = await pool.LPFromPT(token.address);
-        lpTokens.push(await hre.ethers.getContractAt("LPoolToken", lpAddress));
-    }
-
-    return lpTokens;
-}
-
-export async function getMarginLongCollateralTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+export async function getCollateralTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
     let tokens: Token[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral)) {
-        tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
-    }
-
-    return tokens;
-}
-
-export async function getMarginLongBorrowTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
-    const config = chooseConfig(configType);
-
-    let tokens: Token[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongBorrow)) {
+    // **** Get the tokens that are not in the pool tokens list
+    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral && !approved.leveragePool)) {
         tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
     }
 
