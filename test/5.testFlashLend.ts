@@ -66,32 +66,32 @@ describe("FlashLend", async function () {
         expect((await flashLendToken.balanceOf(pool.address)).gt(flashLendAmount)).to.equal(true);
     });
 
-    // it("should fail to borrow more than what is available", async () => {
-    //     const index = 0;
-    //     const flashLendToken = flashLendTokens[index].token;
+    it("should fail to borrow more than what is available", async () => {
+        const index = 0;
+        const flashLendToken = flashLendTokens[index].token;
 
-    //     const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
+        const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
 
-    //     await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, BIG_NUM, flashLender.address));
-    // });
+        await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, BIG_NUM, flashLender.address));
+    });
 
-    // it("should fail to repay the loan", async () => {
-    //     const index = 0;
-    //     const flashLendToken = flashLendTokens[index].token;
+    it("should fail to repay the loan", async () => {
+        const index = 0;
+        const flashLendToken = flashLendTokens[index].token;
 
-    //     const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
+        const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
 
-    //     await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, maxAmount, flashLender.address));
-    // });
+        await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, maxAmount, flashLender.address));
+    });
 
-    // it("should require a minimum of zero", async () => {
-    //     const index = 0;
-    //     const flashLendToken = flashLendTokens[index].token;
+    it("should require a minimum of zero", async () => {
+        const index = 0;
+        const flashLendToken = flashLendTokens[index].token;
 
-    //     await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, 0, flashLender.address));
-    // });
+        await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, 0, flashLender.address));
+    });
 
-    // it("should fail to borrow an invalid token", async () => {
-    //     await shouldFail(async () => await flashBorrowerTest.callFlashLoan(hre.ethers.constants.AddressZero, 0, flashLender.address));
-    // });
+    it("should fail to borrow an invalid token", async () => {
+        await shouldFail(async () => await flashBorrowerTest.callFlashLoan(hre.ethers.constants.AddressZero, 0, flashLender.address));
+    });
 });
