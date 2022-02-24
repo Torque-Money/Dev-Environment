@@ -46,6 +46,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await flashLender.renounceRole(FLASHLENDER_ADMIN, signerAddress)).wait();
 
     await hre.upgrades.admin.transferProxyAdminOwnership(config.contracts.timelockAddress);
+    await hre.upgrades.admin.changeProxyAdmin(config.tokens.lpTokens.beaconAddress, config.contracts.timelockAddress);
 
     console.log("Setup: Timelock");
 
