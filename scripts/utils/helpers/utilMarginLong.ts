@@ -28,7 +28,7 @@ export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: e
 }
 
 export async function minCollateralAmount(marginLong: MarginLong, oracle: Contract, token: ERC20) {
-    const minCollateralPrice = await marginLong.minCollateralPrice();
+    const minCollateralPrice = (await marginLong.minCollateralPrice()).mul(120).div(100);
     return await oracle.amountMax(token.address, minCollateralPrice);
 }
 
