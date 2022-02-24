@@ -7,6 +7,8 @@ import {chooseConfig, ConfigType} from "../utilConfig";
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
     console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
 
+    // **** Maybe this should be calculated off of the minimum amount required as stated below
+
     for (let i = 0; i < tokens.length; i++) await (await marginLong.addCollateral(tokens[i].address, amounts[i])).wait();
 }
 
@@ -23,6 +25,8 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
 
 export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
     console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
+
+    // **** Maybe change this so that it calculates the borrow amount using the allowed amounts as determined by the function below
 
     for (let i = 0; i < tokens.length; i++) await (await marginLong.borrow(tokens[i].address, amounts[i])).wait();
 }
