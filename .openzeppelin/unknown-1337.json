@@ -7,7 +7,7 @@
       "hash": "0x2c57b7ff38d35e193bd9cd05f3c918fc96301507be50235632ceae540bbee4ae",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x2e180add238df8e40b41d95a61c5e7d47e59c7beff67903c6a7d8247160c84ce",
+      "blockHash": "0x4f2257f97f4164d49dea21334a9a3693a7370a1399598ddade64a345cc88c8b5",
       "blockNumber": 28793948,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -122,17 +122,17 @@
     },
     {
       "address": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB",
-      "txHash": "0x3e86f8c60110343c8ed65ec670afb9cef8eff454f2575405192f78a71883d3f4",
+      "txHash": "0xcd5163cb9c1b3d4cd8ac6c5ee2cc916d79e72f649bbe871754d2b1066d9cd386",
       "kind": "transparent"
     },
     {
       "address": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
-      "txHash": "0x2e5e46c5697891cf3b42995fa9ec372207b37ee447d6f92adc79e8451ee77c5c",
+      "txHash": "0x116fb89366d0b62b42dd8355c57ebabcd8d7ed00ab104c6e173dd55d5b74e180",
       "kind": "transparent"
     },
     {
       "address": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
-      "txHash": "0xff2c0d7a42c902d729f58fb78767641737bd8724e21733208963544866b19044",
+      "txHash": "0x745063c7fda679a92076bfd33a9ceb2012abe97801203e93d8ee04e252368521",
       "kind": "transparent"
     }
   ],
@@ -402,13 +402,13 @@
           {
             "contract": "MarginAccount",
             "label": "_accounts",
-            "type": "t_mapping(t_address,t_struct(Account)8248_storage)",
+            "type": "t_mapping(t_address,t_struct(Account)8273_storage)",
             "src": "contracts/Margin/MarginAccount.sol:26"
           },
           {
             "contract": "MarginLevel",
             "label": "_maxLeverage",
-            "type": "t_struct(Fraction)12623_storage",
+            "type": "t_struct(Fraction)12648_storage",
             "src": "contracts/Margin/MarginLevel.sol:13"
           },
           {
@@ -426,12 +426,12 @@
           {
             "contract": "MarginLongLiquidateCore",
             "label": "_liquidationFeePercent",
-            "type": "t_struct(Fraction)12623_storage",
+            "type": "t_struct(Fraction)12648_storage",
             "src": "contracts/Margin/MarginLong/MarginLongLiquidateCore.sol:13"
           }
         ],
         "types": {
-          "t_struct(Fraction)12623_storage": {
+          "t_struct(Fraction)12648_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -478,13 +478,13 @@
           "t_mapping(t_bytes32,t_uint256)": {
             "label": "mapping(bytes32 => uint256)"
           },
-          "t_mapping(t_address,t_struct(Account)8248_storage)": {
+          "t_mapping(t_address,t_struct(Account)8273_storage)": {
             "label": "mapping(address => struct MarginAccount.Account)"
           },
           "t_address": {
             "label": "address"
           },
-          "t_struct(Account)8248_storage": {
+          "t_struct(Account)8273_storage": {
             "label": "struct MarginAccount.Account",
             "members": [
               {
@@ -555,159 +555,9 @@
         }
       }
     },
-    "6d991f33647560430b5e1280c2b945bd98362b2b4c2ae0d38f69a16232d0c57f": {
-      "address": "0x0355B7B8cb128fA5692729Ab3AAa199C1753f726",
-      "txHash": "0xde96683d3bf49841b26e00dc35649d4bb54a581a026ba5860fffdd673d0835b3",
-      "layout": {
-        "storage": [
-          {
-            "contract": "Initializable",
-            "label": "_initialized",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
-          },
-          {
-            "contract": "Initializable",
-            "label": "_initializing",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
-          },
-          {
-            "contract": "ReentrancyGuardUpgradeable",
-            "label": "_status",
-            "type": "t_uint256",
-            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
-          },
-          {
-            "contract": "ReentrancyGuardUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
-          },
-          {
-            "contract": "ContextUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
-          },
-          {
-            "contract": "ERC165Upgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)50_storage",
-            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
-          },
-          {
-            "contract": "AccessControlUpgradeable",
-            "label": "_roles",
-            "type": "t_mapping(t_bytes32,t_struct(RoleData)80_storage)",
-            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
-          },
-          {
-            "contract": "AccessControlUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:235"
-          },
-          {
-            "contract": "PausableUpgradeable",
-            "label": "_paused",
-            "type": "t_bool",
-            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
-          },
-          {
-            "contract": "PausableUpgradeable",
-            "label": "__gap",
-            "type": "t_array(t_uint256)49_storage",
-            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
-          },
-          {
-            "contract": "FlashLenderCore",
-            "label": "FLASHLENDER_ADMIN",
-            "type": "t_bytes32",
-            "src": "contracts/FlashLender/FlashLenderCore.sol:13"
-          },
-          {
-            "contract": "FlashLenderCore",
-            "label": "pool",
-            "type": "t_address",
-            "src": "contracts/FlashLender/FlashLenderCore.sol:15"
-          },
-          {
-            "contract": "FlashLenderCore",
-            "label": "_feePercent",
-            "type": "t_struct(Fraction)12623_storage",
-            "src": "contracts/FlashLender/FlashLenderCore.sol:17"
-          },
-          {
-            "contract": "FlashLenderCore",
-            "label": "CALLBACK_SUCCESS",
-            "type": "t_bytes32",
-            "src": "contracts/FlashLender/FlashLenderCore.sol:19"
-          },
-          {
-            "contract": "FlashLenderApproved",
-            "label": "_approved",
-            "type": "t_mapping(t_address,t_bool)",
-            "src": "contracts/FlashLender/FlashLenderApproved.sol:7"
-          }
-        ],
-        "types": {
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)"
-          },
-          "t_address": {
-            "label": "address"
-          },
-          "t_bool": {
-            "label": "bool"
-          },
-          "t_bytes32": {
-            "label": "bytes32"
-          },
-          "t_struct(Fraction)12623_storage": {
-            "label": "struct FractionMath.Fraction",
-            "members": [
-              {
-                "label": "numerator",
-                "type": "t_uint256"
-              },
-              {
-                "label": "denominator",
-                "type": "t_uint256"
-              }
-            ]
-          },
-          "t_uint256": {
-            "label": "uint256"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]"
-          },
-          "t_mapping(t_bytes32,t_struct(RoleData)80_storage)": {
-            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)"
-          },
-          "t_struct(RoleData)80_storage": {
-            "label": "struct AccessControlUpgradeable.RoleData",
-            "members": [
-              {
-                "label": "members",
-                "type": "t_mapping(t_address,t_bool)"
-              },
-              {
-                "label": "adminRole",
-                "type": "t_bytes32"
-              }
-            ]
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]"
-          }
-        }
-      }
-    },
     "84f9d4a07b79c962220af28c644237958fd5a0ae9b87a4538842ef245a11e53a": {
       "address": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
-      "txHash": "0x35ba0c4cadfd179d45cc6801839b0550d83c38ee25ec403e632cd2b8bd826196",
+      "txHash": "0x0ff441e7c037f572e7707daa5a821d9457492c682eae1ef6c1cc010e4504384a",
       "layout": {
         "storage": [
           {
@@ -744,7 +594,7 @@
     },
     "ea694ba0cd4cb28e24f78b778ea508dae7a625e3a6d9eebd94e85411d38dee38": {
       "address": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
-      "txHash": "0x6871b1dcc57b117b8be3841ab03ad28b0ad792bd72811e908f7361d19b5c5ced",
+      "txHash": "0xc8c7e479bf7315bf426781a2d2433ed0ca708d86552a6fcaf3a8e5060c6457b8",
       "layout": {
         "storage": [
           {
@@ -923,13 +773,13 @@
           {
             "contract": "OracleCore",
             "label": "_threshold",
-            "type": "t_struct(Fraction)12623_storage",
+            "type": "t_struct(Fraction)12648_storage",
             "src": "contracts/Oracle/OracleCore.sol:17"
           },
           {
             "contract": "OracleApproved",
             "label": "_approved",
-            "type": "t_mapping(t_address,t_struct(Approved)11547_storage)",
+            "type": "t_mapping(t_address,t_struct(Approved)11572_storage)",
             "src": "contracts/Oracle/OracleApproved.sol:13"
           },
           {
@@ -949,10 +799,10 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Approved)11547_storage)": {
+          "t_mapping(t_address,t_struct(Approved)11572_storage)": {
             "label": "mapping(address => struct OracleApproved.Approved)"
           },
-          "t_struct(Approved)11547_storage": {
+          "t_struct(Approved)11572_storage": {
             "label": "struct OracleApproved.Approved",
             "members": [
               {
@@ -975,7 +825,7 @@
           "t_bytes32": {
             "label": "bytes32"
           },
-          "t_struct(Fraction)12623_storage": {
+          "t_struct(Fraction)12648_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1233,7 +1083,7 @@
           {
             "contract": "LPoolTax",
             "label": "_taxPercent",
-            "type": "t_struct(Fraction)12623_storage",
+            "type": "t_struct(Fraction)12648_storage",
             "src": "contracts/LPool/LPoolTax.sol:19"
           },
           {
@@ -1251,19 +1101,19 @@
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMin",
-            "type": "t_mapping(t_address,t_struct(Fraction)12623_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12648_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:17"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMax",
-            "type": "t_mapping(t_address,t_struct(Fraction)12623_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12648_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:18"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxUtilization",
-            "type": "t_mapping(t_address,t_struct(Fraction)12623_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12648_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:19"
           }
         ],
@@ -1271,13 +1121,13 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Fraction)12623_storage)": {
+          "t_mapping(t_address,t_struct(Fraction)12648_storage)": {
             "label": "mapping(address => struct FractionMath.Fraction)"
           },
           "t_address": {
             "label": "address"
           },
-          "t_struct(Fraction)12623_storage": {
+          "t_struct(Fraction)12648_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1485,6 +1335,165 @@
           },
           "t_mapping(t_address,t_bool)": {
             "label": "mapping(address => bool)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "6072139a5756b6a379094aee36f2189071726cc6da62917cb285dc98bbd09188": {
+      "address": "0x0355B7B8cb128fA5692729Ab3AAa199C1753f726",
+      "txHash": "0xfe36db5e8c4cc1290487a1f99667c56257fd3ef8bb51318257e506cabbc41850",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "_status",
+            "type": "t_uint256",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "_roles",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)80_storage)",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:235"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "FLASHLENDER_ADMIN",
+            "type": "t_bytes32",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:13"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "pool",
+            "type": "t_address",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:15"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "_feePercent",
+            "type": "t_struct(Fraction)12648_storage",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:17"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "CALLBACK_SUCCESS",
+            "type": "t_bytes32",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:19"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "tmp",
+            "type": "t_string_storage",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:20"
+          },
+          {
+            "contract": "FlashLenderApproved",
+            "label": "_approved",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/FlashLender/FlashLenderApproved.sol:7"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_struct(Fraction)12648_storage": {
+            "label": "struct FractionMath.Fraction",
+            "members": [
+              {
+                "label": "numerator",
+                "type": "t_uint256"
+              },
+              {
+                "label": "denominator",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)80_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)"
+          },
+          "t_struct(RoleData)80_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32"
+              }
+            ]
           },
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
