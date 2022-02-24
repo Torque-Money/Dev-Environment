@@ -1,46 +1,52 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {ethers} from "hardhat";
+import hre from "hardhat";
 
-import {ERC20, FlashBorrower, FlashLender, LPool} from "../typechain-types";
-import config from "../config.fork.json";
+import {FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
+import {getFlashLenderTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 
 describe("FlashLend", async function () {
-    let tokenApproved: any;
-    let token: ERC20;
+    const configType: ConfigType = "fork";
+    const config = chooseConfig(configType);
 
-    let lpToken: ERC20;
+    let flashLendTokens: Token[];
+
+    let flashLendAmounts: BigNumber[];
 
     let flashLender: FlashLender;
-    let flashBorrower: FlashBorrower;
+    let flashBorrowerTest: FlashBorrowerTest;
     let pool: LPool;
 
     let signerAddress: string;
 
-    let depositAmount: BigNumber;
+    this.beforeAll(async () => {
+        flashLendTokens = await getFlashLenderTokens(configType, hre);
 
-    beforeEach(async () => {
-        tokenApproved = config.approved[1];
-        token = await ethers.getContractAt("ERC20", tokenApproved.address);
+        flashLendAmounts = await getTokenAmount(
+            hre,
+            flashLendTokens.map((token) => token.token)
+        );
 
-        flashLender = await ethers.getContractAt("FlashLender", config.flashLender);
-        flashBorrower = await ethers.getContractAt("FlashBorrower", config.flashBorrower);
+        flashLender = await hre.ethers.getContractAt("FlashLender", config.contracts.flashLender);
+        flashBorrowerTest = await hre.ethers.getContractAt("FlashBorrowerTest", config.contracts.flashBorrowerTest);
+        pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        pool = await ethers.getContractAt("LPool", config.leveragePoolAddress);
-
-        lpToken = await ethers.getContractAt("ERC20", await pool.LPFromPT(token.address));
-
-        const signer = ethers.provider.getSigner();
-        signerAddress = await signer.getAddress();
-
-        depositAmount = ethers.BigNumber.from(10).pow(tokenApproved.decimals).mul(10);
-        await (await pool.addLiquidity(token.address, depositAmount)).wait();
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
-    afterEach(async () => {
-        const LPTokenAmount = await lpToken.balanceOf(signerAddress);
-        if (LPTokenAmount.gt(0)) await (await pool.removeLiquidity(lpToken.address, LPTokenAmount)).wait();
+    this.beforeEach(async () => {
+        await provideLiquidity(
+            pool,
+            flashLendTokens.map((token) => token.token),
+            flashLendAmounts
+        );
+    });
+
+    this.afterEach(async () => {
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should execute a flash loan successfully", async () => {

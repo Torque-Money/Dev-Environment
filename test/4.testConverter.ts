@@ -1,5 +1,4 @@
 import {expect} from "chai";
-import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {Converter} from "../typechain-types";
