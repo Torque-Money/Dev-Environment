@@ -45,24 +45,30 @@ describe("Converter", async function () {
         );
     });
 
-    it("should convert one token into another", async () => {
+    it("should convert one token into another and back", async () => {
         const index = 0;
-        const poolToken = poolTokens[index].token;
+        const poolToken = poolTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
         const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index].token;
 
-        const initialInAmount = await poolToken.balanceOf(signerAddress);
-        const initialOutAmount = await collateralToken.balanceOf(signerAddress);
+        const initialInAmount1 = await poolToken.balanceOf(signerAddress);
+        const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
         await shouldFail(async () => await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address));
 
         const tokensOut = await converter.maxAmountTokenOut(poolToken.address, provideAmount, collateralToken.address);
         await (await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address)).wait();
 
-        expect((await poolToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        expect((await poolToken.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
+        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
+
+        const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
+        const initialOutAmount2 = await poolToken.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, poolToken.address)).wait();
+
+        expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
+        expect((await poolToken.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
 
     it("should convert WETH to another and back again", async () => {
