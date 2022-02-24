@@ -172,8 +172,6 @@ describe("MarginLong", async function () {
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        await removeCollateral(configType, hre, marginLong);
-
         for (let i = 0; i < poolTokens.length; i++) {
             expect((await pool.liquidity(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
             expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
@@ -183,6 +181,8 @@ describe("MarginLong", async function () {
             expect(await marginLong.totalBorrowed(token.token.address)).to.equal(0);
             expect(await marginLong.borrowed(token.token.address, signerAddress)).to.equal(0);
         }
+
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should borrow against equity", async () => {

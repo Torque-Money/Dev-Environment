@@ -5,7 +5,7 @@ import hre from "hardhat";
 import {IOracle, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
-import {getMarginLongBorrowTokens, getMarginLongCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
@@ -28,9 +28,6 @@ describe("Interest", async function () {
     let pool: LPool;
 
     let signerAddress: string;
-
-    const initialPoolTokenPrice = hre.ethers.BigNumber.from(1);
-    const initialCollateralTokenPrice = hre.ethers.BigNumber.from(30);
 
     this.beforeAll(async () => {
         poolTokens = await getPoolTokens(configType, hre);
