@@ -3,7 +3,7 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {LPool, MarginLong, OracleTest} from "../typechain-types";
-import {addCollateral, allowedBorrowAmount, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {addCollateral, allowedBorrowAmount, borrow, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
@@ -121,16 +121,12 @@ describe("MarginLong", async function () {
         const poolToken = poolTokens[index].token;
         const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index].token;
-        const collateralAmount = collateralAmounts[index];
+        const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         const initialLiquidity = await pool.liquidity(poolToken.address);
         const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-        console.log((await marginLong.collateralPrice(signerAddress)).div(hre.ethers.BigNumber.from(10).pow(18)));
-        console.log(collateralAmount);
-        // **** So apparently the price does not work for this one yet it should ?
-        // **** Why is the price of the collateral not being registered properly ????
 
         let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
