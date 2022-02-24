@@ -14,15 +14,9 @@ describe("Converter", async function () {
     let poolTokens: Token[];
     let collateralTokens: Token[];
 
-    let provideAmounts: BigNumber[];
-    let collateralAmounts: BigNumber[];
-
     let converter: Converter;
 
     let signerAddress: string;
-
-    // **** There needs to be a nice seemless way of doing this that does not affect the ownership of the tokens or the distribution of the tokens
-    // **** This means we will need to swap to and then we will need to swap right back (this is because this cannot be state modifying)
 
     this.beforeAll(async () => {
         poolTokens = await getPoolTokens(configType, hre);
@@ -33,22 +27,10 @@ describe("Converter", async function () {
         converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
     });
 
-    this.beforeEach(async () => {
-        provideAmounts = await getTokenAmount(
-            hre,
-            poolTokens.map((token) => token.token)
-        );
-
-        collateralAmounts = await getTokenAmount(
-            hre,
-            collateralTokens.map((token) => token.token)
-        );
-    });
-
     it("should convert one token into another and back", async () => {
         const index = 0;
         const poolToken = poolTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
-        const provideAmount = provideAmounts[index];
+        const provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
         const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
 
         const initialInAmount1 = await poolToken.balanceOf(signerAddress);
