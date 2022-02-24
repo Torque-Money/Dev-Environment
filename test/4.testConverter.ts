@@ -122,14 +122,23 @@ describe("Converter", async function () {
     });
 
     it("should convert WETH into ETH and back again", async () => {
-        const index = 0;
         const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
         const wethAmount = (await getTokenAmount(hre, [weth]))[0];
 
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await hre.ethers.provider.getBalance(signerAddress);
 
-        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxEthOut(weth.address, wethAmount)).wait();
+
+        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
+        expect((await hre.ethers.provider.getBalance(signerAddress)).gt(initialOutAmount1)).to.equal(true);
+
+        const initialInAmount2 = await hre.ethers.provider.getBalance(signerAddress);
+        const initialOutAmount2 = await weth.balanceOf(signerAddress);
+
         await (await converter.swapMaxEthIn(weth.address, {value: wethAmount})).wait();
+
+        expect((await hre.ethers.provider.getBalance(signerAddress)).lt(initialInAmount2)).to.equal(true);
+        expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
 });
