@@ -41,17 +41,21 @@ async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: M
     const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(signerAddress);
     const currentLeverage = currentLeverageNumerator.mul(ROUND_CONSTANT).div(currentLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
+    let price;
+
     if (currentPriceBorrowed.gt(0)) {
         const numerator = Math.floor((maxLeverage / currentLeverage - 1) * ROUND_CONSTANT);
         const denominator = ROUND_CONSTANT;
 
-        return ethers.BigNumber.from(numerator).mul(currentPriceBorrowed).div(denominator);
+        price = ethers.BigNumber.from(numerator).mul(currentPriceBorrowed).div(denominator);
     } else {
         if (!collateralPrice) throw Error("Collateral price cannot be undefined");
 
         const numerator = Math.floor(maxLeverage * ROUND_CONSTANT);
         const denominator = ROUND_CONSTANT;
 
-        return collateralPrice.mul(numerator).div(denominator);
+        price = collateralPrice.mul(numerator).div(denominator);
     }
+
+    return await oracle.amountMin(token.address, price);
 }
