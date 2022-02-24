@@ -77,34 +77,25 @@ describe("Converter", async function () {
         const wethAmount = await getTokenAmount(hre, [weth]);
         const collateralToken = collateralTokens[index].token;
 
-        const initialInAmount = await weth.balanceOf(signerAddress);
-        const initialOutAmount = await collateralToken.balanceOf(signerAddress);
+        const initialInAmount1 = await weth.balanceOf(signerAddress);
+        const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
+
+        await shouldFail(async () => await converter.swapMaxTokenOut(weth.address, wethAmount, collateralToken.address));
 
         const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
         await (await converter.swapMaxTokenOut(weth.address, wethAmount, collateralToken.address)).wait();
 
-        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
+        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
+
+        const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
+        const initialOutAmount2 = await weth.balanceOf(signerAddress);
 
         await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, weth.address)).wait();
 
-        // **** I have to run some more tests to make sure it converted back properly
+        expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
+        expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
-
-    // it("should convert another to WETH", async () => {
-    //     const index = 0;
-    //     const collateralToken = collateralTokens[index].token;
-    //     const collateralAmount = collateralAmounts[index];
-    //     const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
-
-    //     const initialInAmount = await inToken.balanceOf(signerAddress);
-    //     const initialOutAmount = await weth.balanceOf(signerAddress);
-
-    //     await (await converter.swapMaxTokenOut(inToken.address, swapAmount, weth.address)).wait();
-
-    //     expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-    //     expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
-    // });
 
     it("should convert one token into ETH", async () => {
         const initialInAmount = await inToken.balanceOf(signerAddress);
