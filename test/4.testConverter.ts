@@ -49,7 +49,7 @@ describe("Converter", async function () {
         const index = 0;
         const poolToken = poolTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
         const provideAmount = provideAmounts[index];
-        const collateralToken = collateralTokens[index].token;
+        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
 
         const initialInAmount1 = await poolToken.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
@@ -74,8 +74,8 @@ describe("Converter", async function () {
     it("should convert WETH to another and back again", async () => {
         const index = 0;
         const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
-        const wethAmount = await getTokenAmount(hre, [weth]);
-        const collateralToken = collateralTokens[index].token;
+        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
+        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
 
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
@@ -97,23 +97,39 @@ describe("Converter", async function () {
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
 
-    it("should convert one token into ETH and back again", async () => {
-        const initialInAmount = await inToken.balanceOf(signerAddress);
-        const initialOutAmount = await ethers.provider.getBalance(signerAddress);
+    it("should convert ETH to another and back again", async () => {
+        const index = 0;
+        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
+        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
+        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
 
-        await converter.swapMaxEthOut(inToken.address, swapAmount);
+        const initialInAmount1 = await hre.ethers.provider.getBalance(signerAddress);
+        const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
-        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxEthIn(weth.address, {value: wethAmount})).wait();
+
+        expect((await hre.ethers.provider.getBalance(signerAddress)).lt(initialInAmount1)).to.equal(true);
+        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
+
+        const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
+        const initialOutAmount2 = await hre.ethers.provider.getBalance(signerAddress);
+
+        await (await converter.swapMaxEthOut(collateralToken.address, tokensOut)).wait();
+
+        expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
+        expect((await hre.ethers.provider.getBalance(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
 
     it("should convert WETH into ETH and back again", async () => {
-        const initialInAmount = await weth.balanceOf(signerAddress);
-        const initialOutAmount = await ethers.provider.getBalance(signerAddress);
+        const index = 0;
+        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
+        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
 
-        await converter.swapMaxEthOut(weth.address, wethSwapAmount);
+        const initialInAmount1 = await weth.balanceOf(signerAddress);
+        const initialOutAmount1 = await hre.ethers.provider.getBalance(signerAddress);
 
-        expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxEthIn(weth.address, {value: wethAmount})).wait();
     });
 });
