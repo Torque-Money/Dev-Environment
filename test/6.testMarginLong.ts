@@ -130,6 +130,10 @@ describe("MarginLong", async function () {
 
         let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
+
+        console.log(await marginLong.collateralPrice(signerAddress), collateralToken.address);
+        console.log(borrowAmount, poolToken.address);
+
         await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
