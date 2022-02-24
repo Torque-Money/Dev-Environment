@@ -36,8 +36,8 @@ describe("Converter", async function () {
         const initialInAmount1 = await poolToken.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
-        const tokensOut = await converter.maxAmountTokenOut(poolToken.address, provideAmount, collateralToken.address);
-        await (await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address)).wait();
+        const tokensOut = await converter.maxAmountTokenInTokenOut(poolToken.address, provideAmount, collateralToken.address);
+        await (await converter.swapMaxTokenInTokenOut(poolToken.address, provideAmount, collateralToken.address)).wait();
 
         expect((await poolToken.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
         expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
@@ -45,7 +45,7 @@ describe("Converter", async function () {
         const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
         const initialOutAmount2 = await poolToken.balanceOf(signerAddress);
 
-        await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, poolToken.address)).wait();
+        await (await converter.swapMaxTokenInTokenOut(collateralToken.address, tokensOut, poolToken.address)).wait();
 
         expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
         expect((await poolToken.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
@@ -60,10 +60,10 @@ describe("Converter", async function () {
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
-        await shouldFail(async () => await converter.swapMaxTokenOut(weth.address, wethAmount, collateralToken.address));
+        await shouldFail(async () => await converter.swapMaxTokenInTokenOut(weth.address, wethAmount, collateralToken.address));
 
-        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
-        await (await converter.swapMaxTokenOut(weth.address, wethAmount, collateralToken.address)).wait();
+        const tokensOut = await converter.maxAmountTokenInTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxTokenInTokenOut(weth.address, wethAmount, collateralToken.address)).wait();
 
         expect((await weth.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
         expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
@@ -71,7 +71,7 @@ describe("Converter", async function () {
         const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
         const initialOutAmount2 = await weth.balanceOf(signerAddress);
 
-        await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, weth.address)).wait();
+        await (await converter.swapMaxTokenInTokenOut(collateralToken.address, tokensOut, weth.address)).wait();
 
         expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
@@ -86,8 +86,8 @@ describe("Converter", async function () {
         const initialInAmount1 = await hre.ethers.provider.getBalance(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
-        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
-        await (await converter.swapMaxEthIn(collateralToken.address, {value: wethAmount})).wait();
+        const tokensOut = await converter.maxAmountTokenInTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxEthInTokenOut(collateralToken.address, {value: wethAmount})).wait();
 
         expect((await hre.ethers.provider.getBalance(signerAddress)).lt(initialInAmount1)).to.equal(true);
         expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount1)).to.equal(true);
@@ -95,7 +95,7 @@ describe("Converter", async function () {
         const initialInAmount2 = await collateralToken.balanceOf(signerAddress);
         const initialOutAmount2 = await hre.ethers.provider.getBalance(signerAddress);
 
-        await (await converter.swapMaxEthOut(collateralToken.address, tokensOut)).wait();
+        await (await converter.swapMaxTokenInEthOut(collateralToken.address, tokensOut)).wait();
 
         expect((await collateralToken.balanceOf(signerAddress)).lt(initialInAmount2)).to.equal(true);
         expect((await hre.ethers.provider.getBalance(signerAddress)).gt(initialOutAmount2)).to.equal(true);
@@ -108,7 +108,7 @@ describe("Converter", async function () {
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await hre.ethers.provider.getBalance(signerAddress);
 
-        await (await converter.swapMaxEthOut(weth.address, wethAmount)).wait();
+        await (await converter.swapMaxTokenInEthOut(weth.address, wethAmount)).wait();
 
         expect((await weth.balanceOf(signerAddress)).lt(initialInAmount1)).to.equal(true);
         expect((await hre.ethers.provider.getBalance(signerAddress)).gt(initialOutAmount1)).to.equal(true);
@@ -116,7 +116,7 @@ describe("Converter", async function () {
         const initialInAmount2 = await hre.ethers.provider.getBalance(signerAddress);
         const initialOutAmount2 = await weth.balanceOf(signerAddress);
 
-        await (await converter.swapMaxEthIn(weth.address, {value: wethAmount})).wait();
+        await (await converter.swapMaxEthInTokenOut(weth.address, {value: wethAmount})).wait();
 
         expect((await hre.ethers.provider.getBalance(signerAddress)).lt(initialInAmount2)).to.equal(true);
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
