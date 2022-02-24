@@ -50,41 +50,40 @@ describe("Converter", async function () {
         const poolToken = poolTokens[index].token;
         const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index].token;
-        const collateralAmount = collateralAmounts[index];
 
-        // **** At the end of this we need to convert them all back
-
-        // **** We can estimate how much of the other token it will swap into and then we can unswap it
-        // **** How do we determine what token it should indeed be swapped into though and that it will not overlap ?
+        const initialInAmount = await poolToken.balanceOf(signerAddress);
+        const initialOutAmount = await collateralToken.balanceOf(signerAddress);
 
         await shouldFail(async () => await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address));
 
-        const initialInAmount = await inToken.balanceOf(signerAddress);
-        const initialOutAmount = await outToken.balanceOf(signerAddress);
+        const tokensOut = await converter.maxAmountTokenOut(poolToken.address, provideAmount, collateralToken.address);
+        await (await converter.swapMaxTokenOut(poolToken.address, provideAmount, collateralToken.address)).wait();
 
-        // **** First I need to track how much comes out of the coverter, then I need to unswap that at the end for the original token
+        expect((await poolToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
+        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
 
-        await (await converter.swapMaxTokenOut(inToken.address, swapAmount, outToken.address)).wait();
-
-        expect((await inToken.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, poolToken.address)).wait();
     });
 
     it("should convert WETH to another", async () => {
-        await (await weth.approve(converter.address, wethSwapAmount)).wait();
+        const index = 0;
+        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
+        const wethAmount = await getTokenAmount(hre, [weth]);
+        const collateralToken = collateralTokens[index].token;
 
         const initialInAmount = await weth.balanceOf(signerAddress);
-        const initialOutAmount = await outToken.balanceOf(signerAddress);
+        const initialOutAmount = await collateralToken.balanceOf(signerAddress);
 
-        await (await converter.swapMaxTokenOut(weth.address, wethSwapAmount, outToken.address)).wait();
+        const tokensOut = await converter.maxAmountTokenOut(weth.address, wethAmount, collateralToken.address);
+        await (await converter.swapMaxTokenOut(weth.address, wethAmount, collateralToken.address)).wait();
 
         expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
+        expect((await collateralToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
+
+        await (await converter.swapMaxTokenOut(collateralToken.address, tokensOut, weth.address)).wait();
     });
 
     it("should convert another to WETH", async () => {
-        await (await inToken.approve(converter.address, swapAmount)).wait();
-
         const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await weth.balanceOf(signerAddress);
 
@@ -95,8 +94,6 @@ describe("Converter", async function () {
     });
 
     it("should convert one token into ETH", async () => {
-        await (await inToken.approve(converter.address, swapAmount)).wait();
-
         const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
@@ -107,8 +104,6 @@ describe("Converter", async function () {
     });
 
     it("should convert WETH into ETH", async () => {
-        await (await weth.approve(converter.address, wethSwapAmount)).wait();
-
         const initialInAmount = await weth.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
