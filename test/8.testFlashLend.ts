@@ -50,20 +50,24 @@ describe("FlashLend", async function () {
     });
 
     it("should execute a flash loan successfully", async () => {
-        const maxAmount = await flashLender.maxFlashLoan(token.address);
-        expect(maxAmount).to.equal(depositAmount);
+        const index = 0;
+        const flashLendToken = flashLendTokens[index].token;
+        const flashLendAmount = flashLendAmounts[index];
+
+        const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
+        expect(maxAmount).to.equal(flashLendAmount);
 
         const [feePercentNumerator, feePercentDenominator] = await flashLender.feePercent();
-        const fee = await flashLender.flashFee(token.address, maxAmount);
+        const fee = await flashLender.flashFee(flashLendToken.address, maxAmount);
         expect(fee).to.equal(maxAmount.mul(feePercentNumerator).div(feePercentDenominator));
 
-        await (await token.transfer(flashBorrower.address, fee)).wait();
+        await (await flashLendToken.transfer(flashBorrowerTest.address, fee)).wait();
 
-        await (await flashBorrower.callFlashLoan(token.address, maxAmount)).wait();
+        await (await flashBorrowerTest.callFlashLoan(flashLendToken.address, maxAmount, flashLender.address)).wait();
 
-        expect((await pool.liquidity(token.address)).gt(depositAmount)).to.equal(true);
-        expect((await pool.tvl(token.address)).gt(depositAmount)).to.equal(true);
-        expect((await token.balanceOf(pool.address)).gt(depositAmount)).to.equal(true);
+        expect((await pool.liquidity(flashLendToken.address)).gt(flashLendAmount)).to.equal(true);
+        expect((await pool.totalAmountLocked(flashLendToken.address)).gt(flashLendAmount)).to.equal(true);
+        expect((await flashLendToken.balanceOf(pool.address)).gt(flashLendAmount)).to.equal(true);
     });
 
     it("should fail to borrow more than what is available", async () => {
