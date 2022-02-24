@@ -97,7 +97,7 @@ describe("Converter", async function () {
         expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount2)).to.equal(true);
     });
 
-    it("should convert one token into ETH", async () => {
+    it("should convert one token into ETH and back again", async () => {
         const initialInAmount = await inToken.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
@@ -107,7 +107,7 @@ describe("Converter", async function () {
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 
-    it("should convert WETH into ETH", async () => {
+    it("should convert WETH into ETH and back again", async () => {
         const initialInAmount = await weth.balanceOf(signerAddress);
         const initialOutAmount = await ethers.provider.getBalance(signerAddress);
 
@@ -115,25 +115,5 @@ describe("Converter", async function () {
 
         expect((await weth.balanceOf(signerAddress)).lt(initialInAmount)).to.equal(true);
         expect((await ethers.provider.getBalance(signerAddress)).gt(initialOutAmount)).to.equal(true);
-    });
-
-    it("should swap some ETH into the given token", async () => {
-        const initialInAmount = await ethers.provider.getBalance(signerAddress);
-        const initialOutAmount = await outToken.balanceOf(signerAddress);
-
-        await (await converter.swapMaxEthIn(outToken.address, {value: 100})).wait();
-
-        expect((await ethers.provider.getBalance(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await outToken.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
-    });
-
-    it("should swap some ETH into WETH", async () => {
-        const initialInAmount = await ethers.provider.getBalance(signerAddress);
-        const initialOutAmount = await weth.balanceOf(signerAddress);
-
-        await (await converter.swapMaxEthIn(weth.address, {value: 100})).wait();
-
-        expect((await ethers.provider.getBalance(signerAddress)).lt(initialInAmount)).to.equal(true);
-        expect((await weth.balanceOf(signerAddress)).gt(initialOutAmount)).to.equal(true);
     });
 });
