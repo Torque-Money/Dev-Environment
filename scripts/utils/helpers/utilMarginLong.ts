@@ -1,7 +1,7 @@
-import {ethers} from "ethers";
+import {BigNumber, Contract, ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import {ERC20, MarginLong, Oracle} from "../../../typechain-types";
+import {ERC20, MarginLong} from "../../../typechain-types";
 import {chooseConfig, ConfigType} from "../utilConfig";
 
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
@@ -27,7 +27,7 @@ export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: e
     for (let i = 0; i < tokens.length; i++) await (await marginLong.borrow(tokens[i].address, amounts[i])).wait();
 }
 
-async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Oracle, token: ERC20) {
+export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, token: ERC20) {
     const ROUND_CONSTANT = 1e4;
 
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
@@ -57,5 +57,5 @@ async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: M
         price = collateralPrice.mul(numerator).div(denominator);
     }
 
-    return await oracle.amountMin(token.address, price);
+    return (await oracle.amountMin(token.address, price)) as BigNumber;
 }
