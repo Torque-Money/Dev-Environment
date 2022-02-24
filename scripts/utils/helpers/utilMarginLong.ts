@@ -1,7 +1,7 @@
 import {ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import {ERC20, MarginLong} from "../../../typechain-types";
+import {ERC20, MarginLong, Oracle} from "../../../typechain-types";
 import {chooseConfig, ConfigType} from "../utilConfig";
 
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
@@ -25,4 +25,8 @@ export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: e
     console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
 
     for (let i = 0; i < tokens.length; i++) await (await marginLong.borrow(tokens[i].address, amounts[i])).wait();
+}
+
+async function allowedBorrowAmount(marginLong: MarginLong, oracle: Oracle, token: ERC20) {
+    // **** Make a function used to calculate the max leverage level
 }

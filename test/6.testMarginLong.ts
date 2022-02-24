@@ -2,11 +2,11 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {IOracle, LPool, MarginLong} from "../typechain-types";
+import {LPool, MarginLong, OracleTest} from "../typechain-types";
 import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
@@ -20,14 +20,11 @@ describe("MarginLong", async function () {
     let provideAmounts: BigNumber[];
     let collateralAmounts: BigNumber[];
 
-    let oracle: IOracle;
+    let oracle: OracleTest;
     let marginLong: MarginLong;
     let pool: LPool;
 
     let signerAddress: string;
-
-    const initialPoolTokenPrice = hre.ethers.BigNumber.from(1);
-    const initialCollateralTokenPrice = hre.ethers.BigNumber.from(30);
 
     this.beforeAll(async () => {
         poolTokens = await getPoolTokens(configType, hre);
@@ -44,14 +41,14 @@ describe("MarginLong", async function () {
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
-        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
+        oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
     this.beforeEach(async () => {
-        for (const token of poolTokens.map((token) => token.token)) await setPrice(oracle, token, initialPoolTokenPrice);
-        for (const token of collateralTokens.map((token) => token.token)) await setPrice(oracle, token, initialCollateralTokenPrice);
+        for (const token of poolTokens.map((token) => token.token)) await setPrice(oracle, token, BORROW_PRICE);
+        for (const token of collateralTokens.map((token) => token.token)) await setPrice(oracle, token, COLLATERAL_PRICE);
 
         provideLiquidity(
             pool,
@@ -64,60 +61,60 @@ describe("MarginLong", async function () {
         await redeemLiquidity(configType, hre, pool);
     });
 
-    it("deposit and undeposit collateral into the account", async () => {
-        const index = 0;
-        const collateralToken = collateralTokens[index].token;
-        const collateralAmount = collateralAmounts[index];
+    // it("deposit and undeposit collateral into the account", async () => {
+    //     const index = 0;
+    //     const collateralToken = collateralTokens[index].token;
+    //     const collateralAmount = collateralAmounts[index];
 
-        const initialBalance = await collateralToken.balanceOf(signerAddress);
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+    //     const initialBalance = await collateralToken.balanceOf(signerAddress);
+    //     await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
-        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
+    //     expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
+    //     expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
 
-        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
-        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
+    //     expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
+    //     expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
 
-        await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
+    //     await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
 
-        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
-        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
+    //     expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
+    //     expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
 
-        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
-        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
-    });
+    //     expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
+    //     expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
+    // });
 
-    it("should not allow bad deposits", async () => {
-        const index = 0;
-        const collateralToken = collateralTokens[index].token;
+    // it("should not allow bad deposits", async () => {
+    //     const index = 0;
+    //     const collateralToken = collateralTokens[index].token;
 
-        shouldFail(async () => await marginLong.addCollateral(hre.ethers.constants.AddressZero, 0));
+    //     shouldFail(async () => await marginLong.addCollateral(hre.ethers.constants.AddressZero, 0));
 
-        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, 0));
+    //     shouldFail(async () => await marginLong.addCollateral(collateralToken.address, 0));
 
-        shouldFail(async () => await marginLong.addCollateral(collateralToken.address, BIG_NUM));
-        shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, BIG_NUM));
-    });
+    //     shouldFail(async () => await marginLong.addCollateral(collateralToken.address, BIG_NUM));
+    //     shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, BIG_NUM));
+    // });
 
-    it("should prevent bad leverage positions", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const collateralToken = collateralTokens[index].token;
-        const provideAmount = provideAmounts[index];
-        const collateralAmount = collateralAmounts[index];
+    // it("should prevent bad leverage positions", async () => {
+    //     const index = 0;
+    //     const poolToken = poolTokens[index].token;
+    //     const collateralToken = collateralTokens[index].token;
+    //     const provideAmount = provideAmounts[index];
+    //     const collateralAmount = collateralAmounts[index];
 
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
+    //     await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
 
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+    //     await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
+    //     await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
 
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, BIG_NUM));
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(BIG_NUM));
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, provideAmount));
+    //     await shouldFail(async () => await marginLong.borrow(poolToken.address, BIG_NUM));
+    //     await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(BIG_NUM));
+    //     await shouldFail(async () => await marginLong.borrow(poolToken.address, provideAmount));
 
-        await removeCollateral(configType, hre, marginLong);
-    });
+    //     await removeCollateral(configType, hre, marginLong);
+    // });
 
     it("should open and repay a leveraged position", async () => {
         const index = 0;
@@ -130,11 +127,12 @@ describe("MarginLong", async function () {
         const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
+        await (await marginLong.borrow(poolToken.address, provideAmount)).wait(); // **** Perhaps we need to calculate this based off of the allowed leverage level ?
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.not.equal(0);
+        expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
 
         expect(await pool.liquidity(poolToken.address)).to.equal(initialLiquidity.sub(provideAmount));
+        expect((await pool.totalAmountLocked(poolToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
         expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(provideAmount);
         expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(provideAmount);
 
@@ -153,76 +151,76 @@ describe("MarginLong", async function () {
         expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(0);
     });
 
-    it("should open and repay all leveraged positions", async () => {
-        await addCollateral(
-            marginLong,
-            collateralTokens.map((token) => token.token),
-            collateralAmounts
-        );
+    // it("should open and repay all leveraged positions", async () => {
+    //     await addCollateral(
+    //         marginLong,
+    //         collateralTokens.map((token) => token.token),
+    //         collateralAmounts
+    //     );
 
-        await borrow(
-            marginLong,
-            poolTokens.map((token) => token.token),
-            provideAmounts
-        );
+    //     await borrow(
+    //         marginLong,
+    //         poolTokens.map((token) => token.token),
+    //         provideAmounts
+    //     );
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
 
-        await (await marginLong["repayAccount()"]()).wait();
+    //     await (await marginLong["repayAccount()"]()).wait();
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        for (let i = 0; i < poolTokens.length; i++) {
-            expect((await pool.liquidity(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
-            expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
-        }
+    //     for (let i = 0; i < poolTokens.length; i++) {
+    //         expect((await pool.liquidity(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
+    //         expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
+    //     }
 
-        for (const token of poolTokens) {
-            expect(await marginLong.totalBorrowed(token.token.address)).to.equal(0);
-            expect(await marginLong.borrowed(token.token.address, signerAddress)).to.equal(0);
-        }
+    //     for (const token of poolTokens) {
+    //         expect(await marginLong.totalBorrowed(token.token.address)).to.equal(0);
+    //         expect(await marginLong.borrowed(token.token.address, signerAddress)).to.equal(0);
+    //     }
 
-        await removeCollateral(configType, hre, marginLong);
-    });
+    //     await removeCollateral(configType, hre, marginLong);
+    // });
 
-    it("should borrow against equity", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const collateralToken = collateralTokens[index].token;
-        const provideAmount = provideAmounts[index];
-        const collateralAmount = collateralAmounts[index];
+    // it("should borrow against equity", async () => {
+    //     const index = 0;
+    //     const poolToken = poolTokens[index].token;
+    //     const collateralToken = collateralTokens[index].token;
+    //     const provideAmount = provideAmounts[index];
+    //     const collateralAmount = collateralAmounts[index];
 
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+    //     await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
+    //     await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
-        const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
+    //     const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
 
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(3000));
+    //     await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(3000));
 
-        const [currentMarginLevelNumerator, currentMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
+    //     const [currentMarginLevelNumerator, currentMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
 
-        expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
+    //     expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-        await removeCollateral(configType, hre, marginLong);
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    //     await removeCollateral(configType, hre, marginLong);
+    // });
 
-    it("should fail to redeem LP tokens when they are being used", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const collateralToken = collateralTokens[index].token;
-        const provideAmount = provideAmounts[index];
-        const collateralAmount = collateralAmounts[index];
+    // it("should fail to redeem LP tokens when they are being used", async () => {
+    //     const index = 0;
+    //     const poolToken = poolTokens[index].token;
+    //     const collateralToken = collateralTokens[index].token;
+    //     const provideAmount = provideAmounts[index];
+    //     const collateralAmount = collateralAmounts[index];
 
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+    //     await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
+    //     await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
-        const lpToken = await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(poolToken.address));
-        await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
+    //     const lpToken = await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(poolToken.address));
+    //     await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-        await removeCollateral(configType, hre, marginLong);
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    //     await removeCollateral(configType, hre, marginLong);
+    // });
 });
