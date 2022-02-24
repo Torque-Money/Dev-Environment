@@ -1,3 +1,4 @@
+import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "../utils/utilConfig";
@@ -46,7 +47,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await flashLender.renounceRole(FLASHLENDER_ADMIN, signerAddress)).wait();
 
     await hre.upgrades.admin.transferProxyAdminOwnership(config.contracts.timelockAddress);
-    await hre.upgrades.admin.changeProxyAdmin(config.tokens.lpTokens.beaconAddress, config.contracts.timelockAddress);
+
+    const beacon = (await getUpgradeableBeaconFactory(hre, hre.ethers.provider.getSigner())).attach(config.tokens.lpTokens.beaconAddress);
+    await beacon.transferOwnership(config.contracts.timelockAddress);
 
     console.log("Setup: Timelock");
 
