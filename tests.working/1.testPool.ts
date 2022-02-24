@@ -35,8 +35,8 @@ describe("Pool", async function () {
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const index = 0;
         const poolToken = poolTokens[index].token;
-        const lpToken = await LPFromPT(hre, pool, poolToken);
         const provideAmount = provideAmounts[index];
+        const lpToken = await LPFromPT(hre, pool, poolToken);
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
 

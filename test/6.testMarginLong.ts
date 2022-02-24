@@ -118,39 +118,43 @@ describe("MarginLong", async function () {
 
     it("should open and repay a leveraged position", async () => {
         const index = 0;
+        const poolToken = poolTokens[index].token;
+        const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index].token;
         const collateralAmount = collateralAmounts[index];
 
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
+        const initialLiquidity = await pool.liquidity(poolToken.address);
+        const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
+
+        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+        console.log((await marginLong.collateralPrice(signerAddress)).div(hre.ethers.BigNumber.from(10).pow(18)));
+        console.log(collateralAmount);
+        // **** So apparently the price does not work for this one yet it should ?
+        // **** Why is the price of the collateral not being registered properly ????
+
         let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
+        await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
-        // const initialLiquidity = await pool.liquidity(poolToken.address);
-        // const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
+        expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
 
-        // await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-        // await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
+        expect(await pool.liquidity(poolToken.address)).to.equal(initialLiquidity.sub(borrowAmount));
+        expect((await pool.totalAmountLocked(poolToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
+        expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(borrowAmount);
+        expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(borrowAmount);
 
-        // expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
+        await shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, collateralAmount));
 
-        // expect(await pool.liquidity(poolToken.address)).to.equal(initialLiquidity.sub(borrowAmount));
-        // expect((await pool.totalAmountLocked(poolToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
-        // expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(borrowAmount);
-        // expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(borrowAmount);
+        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
 
-        // await shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, collateralAmount));
+        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        // await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+        expect((await pool.liquidity(poolToken.address)).gte(initialLiquidity)).to.equal(true);
+        expect((await pool.totalAmountLocked(poolToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
+        expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(0);
+        expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(0);
 
-        // expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
-
-        // expect((await pool.liquidity(poolToken.address)).gte(initialLiquidity)).to.equal(true);
-        // expect((await pool.totalAmountLocked(poolToken.address)).gte(initialTotalAmountLocked)).to.equal(true);
-        // expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(0);
-        // expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(0);
-
-        // await removeCollateral(configType, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     // it("should open and repay all leveraged positions", async () => {
