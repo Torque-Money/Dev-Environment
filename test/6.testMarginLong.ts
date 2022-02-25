@@ -164,7 +164,7 @@ describe("MarginLong", async function () {
             const provideAmount = provideAmounts[i];
             const {token} = poolTokens[i];
 
-            let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, token);
+            let borrowAmount = (await allowedBorrowAmount(hre, marginLong, oracle, token)).div(poolTokens.length);
             if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
         }
 
@@ -180,9 +180,9 @@ describe("MarginLong", async function () {
             expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
         }
 
-        for (const token of poolTokens) {
-            expect(await marginLong.totalBorrowed(token.token.address)).to.equal(0);
-            expect(await marginLong.borrowed(token.token.address, signerAddress)).to.equal(0);
+        for (const {token} of poolTokens) {
+            expect(await marginLong.totalBorrowed(token.address)).to.equal(0);
+            expect(await marginLong.borrowed(token.address, signerAddress)).to.equal(0);
         }
 
         await removeCollateral(configType, hre, marginLong);
