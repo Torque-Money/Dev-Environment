@@ -9,7 +9,7 @@ import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/uti
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {addCollateral, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 
 describe("Interest", async function () {
     const configType: ConfigType = "fork";
@@ -35,8 +35,6 @@ describe("Interest", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
-        // **** We will actually calculate how much (potentially in the provideLiquidity section first regarding the borrow amount ?)
-        provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
         collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
@@ -46,8 +44,10 @@ describe("Interest", async function () {
     });
 
     this.beforeEach(async () => {
-        await provideLiquidity(pool, [poolToken], [provideAmount]);
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
+
+        provideAmount = (await allowedBorrowAmount(hre, marginLong, oracle, poolToken)).div(2);
+        await provideLiquidity(pool, [poolToken], [provideAmount]);
     });
 
     this.afterEach(async () => {
