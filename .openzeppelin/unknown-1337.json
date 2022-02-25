@@ -7,7 +7,7 @@
       "hash": "0x2c57b7ff38d35e193bd9cd05f3c918fc96301507be50235632ceae540bbee4ae",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x0b729c1d66352b501508f35a252188c99d6110c4b636b1630e25dda599b1283e",
+      "blockHash": "0x4f2257f97f4164d49dea21334a9a3693a7370a1399598ddade64a345cc88c8b5",
       "blockNumber": 28793948,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -117,29 +117,29 @@
     },
     {
       "address": "0x04C89607413713Ec9775E14b954286519d836FEf",
-      "txHash": "0x18d5fa1545f8ffbbfe9e58210e549d591de8e67c20dea5239fb35fc4e0bdc098",
+      "txHash": "0xcdec396b128899d9175c1bf9d60cad19c1608322f0bbb3413f75757026e6c273",
       "kind": "transparent"
     },
     {
       "address": "0x2E2Ed0Cfd3AD2f1d34481277b3204d807Ca2F8c2",
-      "txHash": "0x703d862a83772e7fd01057205b6377d44ae168f0ba7b6ab45ea59e5803a79510",
+      "txHash": "0x35164bec82f147adece2a1c3dc8b6196b8f7a15a189af278ac6d44d38b32aebe",
       "kind": "beacon"
     },
     {
       "address": "0xD8a5a9b31c3C0232E196d518E89Fd8bF83AcAd43",
-      "txHash": "0x2ce1c3b9ed1cc05d1eca3644df56c937fd4ad5fb12ad9c6e1c29990fa5ab7cc1",
+      "txHash": "0xdfccdba3c20f2025b9aa417b21164186537896392116891f1f6f49fd98d7ec31",
       "kind": "beacon"
     },
     {
       "address": "0x51A1ceB83B83F1985a81C295d1fF28Afef186E02",
-      "txHash": "0xe858c1be4b0d08dbc3c907a0273307c0316b29a0a43c72fc3ea3b424ab1cbbe1",
+      "txHash": "0x91f5afcf13f238023b5f2e86bbc319888eb44a00ae1dd89898740d3fe13d93f3",
       "kind": "transparent"
     }
   ],
   "impls": {
     "f4f85af1720d7a2013e1e61c3f98cc986bc18ed8995e6fb3f307b693f3fc8051": {
       "address": "0x4C4a2f8c81640e47606d3fd77B353E87Ba015584",
-      "txHash": "0x30626cd4edc97ee0bbccaeac2cc32a0fc1608bd5fd448892bcb599704a694c71",
+      "txHash": "0x18b662dc0e837372e004909ca292ca5b8e61fe191c4c63face6a7e857df1fbc1",
       "layout": {
         "storage": [
           {
@@ -934,7 +934,7 @@
           {
             "contract": "LPoolTax",
             "label": "_taxPercent",
-            "type": "t_struct(Fraction)12663_storage",
+            "type": "t_struct(Fraction)12665_storage",
             "src": "contracts/LPool/LPoolTax.sol:19"
           },
           {
@@ -952,19 +952,19 @@
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMin",
-            "type": "t_mapping(t_address,t_struct(Fraction)12663_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12665_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:17"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMax",
-            "type": "t_mapping(t_address,t_struct(Fraction)12663_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12665_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:18"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxUtilization",
-            "type": "t_mapping(t_address,t_struct(Fraction)12663_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12665_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:19"
           }
         ],
@@ -972,13 +972,13 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Fraction)12663_storage)": {
+          "t_mapping(t_address,t_struct(Fraction)12665_storage)": {
             "label": "mapping(address => struct FractionMath.Fraction)"
           },
           "t_address": {
             "label": "address"
           },
-          "t_struct(Fraction)12663_storage": {
+          "t_struct(Fraction)12665_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1064,7 +1064,7 @@
     },
     "dcf4d3440bed22521e916224500cf6fd42327dc57773779ea575c2449f48089a": {
       "address": "0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD",
-      "txHash": "0xd9573faa9941e399d4ad8a0829808d5faa6bb9115b6f8908af4fdd74cf2788b6",
+      "txHash": "0x91016265b112cbd992e6d3f182a389db68d6b6f2c668246216dd37313b26425e",
       "layout": {
         "storage": [
           {
@@ -1178,7 +1178,7 @@
           {
             "contract": "MarginLevel",
             "label": "_maxLeverage",
-            "type": "t_struct(Fraction)12663_storage",
+            "type": "t_struct(Fraction)12665_storage",
             "src": "contracts/Margin/MarginLevel.sol:13"
           },
           {
@@ -1196,12 +1196,12 @@
           {
             "contract": "MarginLongLiquidateCore",
             "label": "_liquidationFeePercent",
-            "type": "t_struct(Fraction)12663_storage",
+            "type": "t_struct(Fraction)12665_storage",
             "src": "contracts/Margin/MarginLong/MarginLongLiquidateCore.sol:13"
           }
         ],
         "types": {
-          "t_struct(Fraction)12663_storage": {
+          "t_struct(Fraction)12665_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1325,9 +1325,9 @@
         }
       }
     },
-    "2bb10eefea9feef6d1fce4bcf5d0fe7ad75cb68db28bbce5a5aceba05d3e67fb": {
+    "45081b584260c9d9b23ee89521df79dba395e9434d6d1c646f4cbf45c2230b2d": {
       "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
-      "txHash": "0xf9eb03a77317f7a93e1dc174a2e60a92518c6dee858413dc9c2b7e6a293978d6",
+      "txHash": "0x133d05a210a257c5605e442ce214d64805019bcf89acd97012ae344e3e37f8dd",
       "layout": {
         "storage": [
           {
@@ -1399,7 +1399,7 @@
           {
             "contract": "OracleCore",
             "label": "_threshold",
-            "type": "t_struct(Fraction)12663_storage",
+            "type": "t_struct(Fraction)12665_storage",
             "src": "contracts/Oracle/OracleCore.sol:17"
           },
           {
@@ -1451,7 +1451,7 @@
           "t_bytes32": {
             "label": "bytes32"
           },
-          "t_struct(Fraction)12663_storage": {
+          "t_struct(Fraction)12665_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {

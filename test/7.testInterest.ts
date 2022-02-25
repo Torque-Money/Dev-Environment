@@ -126,12 +126,11 @@ describe("Interest", async function () {
     // });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
-
         const timePerInterestApplication = await pool.timePerInterestApplication();
 
-        console.log(collateralAmount);
-        console.log(await marginLong.collateralPrice(signerAddress));
+        await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
+
+        // **** Now we need to check the difference between the prices of the collateral and the amount we wish to borrow ?
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
