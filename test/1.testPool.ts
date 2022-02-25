@@ -2,16 +2,16 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {LPool} from "../typechain-types";
+import {ERC20, LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getPoolTokens, getTokenAmount, LPFromPT, Token} from "../scripts/utils/helpers/utilTokens";
+import {getPoolTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: Token[];
+    let poolTokens: ERC20[];
 
     let provideAmounts: BigNumber[];
 
@@ -22,10 +22,7 @@ describe("Pool", async function () {
     this.beforeAll(async () => {
         poolTokens = await getPoolTokens(configType, hre);
 
-        provideAmounts = await getTokenAmount(
-            hre,
-            poolTokens.map((token) => token.token)
-        );
+        provideAmounts = await getTokenAmount(hre, poolTokens);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
@@ -34,7 +31,7 @@ describe("Pool", async function () {
 
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const index = 0;
-        const poolToken = poolTokens[index].token;
+        const poolToken = poolTokens[index];
         const provideAmount = provideAmounts[index];
         const lpToken = await LPFromPT(hre, pool, poolToken);
 
@@ -63,11 +60,11 @@ describe("Pool", async function () {
 
     it("should stake and redeem multiple tokens at the same time", async () => {
         const initialBalances: BigNumber[] = [];
-        for (const {token} of poolTokens) initialBalances.push(await token.balanceOf(signerAddress));
+        for (const token of poolTokens) initialBalances.push(await token.balanceOf(signerAddress));
 
         const outTokens: BigNumber[] = [];
         for (let i = 0; i < poolTokens.length; i++) {
-            const poolToken = poolTokens[i].token;
+            const poolToken = poolTokens[i];
             const provideAmount = provideAmounts[i];
             const lpToken = await LPFromPT(hre, pool, poolToken);
 
@@ -84,7 +81,7 @@ describe("Pool", async function () {
 
         const redeemAmounts: BigNumber[] = [];
         for (let i = 0; i < poolTokens.length; i++) {
-            const poolToken = poolTokens[i].token;
+            const poolToken = poolTokens[i];
             const provideAmount = provideAmounts[i];
             const lpToken = await LPFromPT(hre, pool, poolToken);
 
@@ -105,7 +102,7 @@ describe("Pool", async function () {
         await shouldFail(async () => await pool.redeemLiquidity(hre.ethers.constants.AddressZero, 1));
 
         const index = 0;
-        const poolToken = poolTokens[index].token;
+        const poolToken = poolTokens[index];
         const lpToken = await LPFromPT(hre, pool, poolToken);
 
         await shouldFail(async () => await pool.provideLiquidity(poolToken.address, 0));
@@ -117,7 +114,7 @@ describe("Pool", async function () {
 
     it("should fail to access out of bounds operations", async () => {
         const index = 0;
-        const poolToken = poolTokens[index].token;
+        const poolToken = poolTokens[index];
 
         await shouldFail(async () => await pool.deposit(poolToken.address, 0));
         await shouldFail(async () => await pool.withdraw(poolToken.address, 0));

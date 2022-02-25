@@ -5,7 +5,7 @@ import hre from "hardhat";
 import {LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
