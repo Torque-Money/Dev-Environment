@@ -27,6 +27,8 @@ describe("Interest", async function () {
 
     let signerAddress: string;
 
+    const ROUND_DECIMALS = 10;
+
     this.beforeAll(async () => {
         poolToken = (await getPoolTokens(configType, hre))[0];
         collateralToken = (await getCollateralTokens(configType, hre))[0];
@@ -62,7 +64,7 @@ describe("Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        expect(interestNumerator.mul(maxInterestMinDenominator).mul(2)).to.equal(maxInterestMinNumerator.mul(interestDenominator));
+        await approxEqual(interestNumerator.mul(maxInterestMinDenominator).mul(2), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
@@ -74,7 +76,7 @@ describe("Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        expect(interestNumerator.mul(maxInterestMinDenominator)).to.equal(maxInterestMinNumerator.mul(interestDenominator));
+        await approxEqual(interestNumerator.mul(maxInterestMinDenominator), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
@@ -88,8 +90,10 @@ describe("Interest", async function () {
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        expect(interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2)).to.equal(
-            interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator)))
+        await approxEqual(
+            interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2),
+            interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))),
+            ROUND_DECIMALS
         );
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
@@ -100,7 +104,7 @@ describe("Interest", async function () {
 
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        expect(interestNumerator.mul(maxInterestMaxDenominator)).to.equal(maxInterestMaxNumerator.mul(interestDenominator));
+        await approxEqual(interestNumerator.mul(maxInterestMaxDenominator), maxInterestMaxNumerator.mul(interestDenominator), ROUND_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
