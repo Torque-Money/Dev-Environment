@@ -2,7 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ethers} from "ethers";
 
 import {chooseConfig, ConfigType} from "../utilConfig";
-import {ERC20, LPool, LPoolToken} from "../../../typechain-types";
+import {ERC20, LPool} from "../../../typechain-types";
 
 export interface Token {
     token: ERC20;
@@ -13,7 +13,7 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
     const config = chooseConfig(configType);
 
     let tokens: Token[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool && !approved.marginLongCollateral)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool)) {
         tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
     }
 
