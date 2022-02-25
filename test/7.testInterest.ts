@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {LPool, MarginLong, OracleTest} from "../typechain-types";
+import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
@@ -15,11 +15,11 @@ describe("Interest", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: Token[];
-    let collateralTokens: Token[];
+    let poolToken: ERC20;
+    let collateralToken: ERC20;
 
-    let provideAmounts: BigNumber[];
-    let collateralAmounts: BigNumber[];
+    let provideAmount: BigNumber;
+    let collateralAmount: BigNumber;
 
     let oracle: OracleTest;
     let marginLong: MarginLong;
@@ -28,26 +28,20 @@ describe("Interest", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens(configType, hre);
-        collateralTokens = await getCollateralTokens(configType, hre);
+        poolToken = (await getPoolTokens(configType, hre))[0];
+        collateralToken = (await getCollateralTokens(configType, hre))[0];
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
-        // **** In here this should really just be the given collateral amounts that have already been deposited (thus we will have to do this after the calculation has been made)
-        provideAmounts = await getTokenAmount(
-            hre,
-            poolTokens.map((token) => token.token)
-        );
-
-        collateralAmounts = [];
-        for (const {token} of collateralTokens) collateralAmounts.push(await minCollateralAmount(marginLong, oracle, token));
+        provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
+        collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-        for (const token of poolTokens.map((token) => token.token)) await setPrice(oracle, token, BORROW_PRICE);
-        for (const token of collateralTokens.map((token) => token.token)) await setPrice(oracle, token, COLLATERAL_PRICE);
+        await setPrice(oracle, poolToken, BORROW_PRICE);
+        await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
     });
 
     this.beforeEach(async () => {
