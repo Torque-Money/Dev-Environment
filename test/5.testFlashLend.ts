@@ -2,9 +2,9 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
+import {ERC20, FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getFlashLenderTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getFlashLenderTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 
@@ -12,21 +12,18 @@ describe("FlashLend", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let flashLendTokens: Token[];
+    let flashLendToken: ERC20;
 
-    let flashLendAmounts: BigNumber[];
+    let flashLendAmount: BigNumber;
 
     let flashLender: FlashLender;
     let flashBorrowerTest: FlashBorrowerTest;
     let pool: LPool;
 
     this.beforeAll(async () => {
-        flashLendTokens = await getFlashLenderTokens(configType, hre);
+        flashLendToken = (await getFlashLenderTokens(configType, hre))[0];
 
-        flashLendAmounts = await getTokenAmount(
-            hre,
-            flashLendTokens.map((token) => token.token)
-        );
+        flashLendAmount = (await getTokenAmount(hre, [flashLendToken]))[0];
 
         flashLender = await hre.ethers.getContractAt("FlashLender", config.contracts.flashLender);
         flashBorrowerTest = await hre.ethers.getContractAt("FlashBorrowerTest", config.contracts.flashBorrowerTest);
@@ -34,11 +31,7 @@ describe("FlashLend", async function () {
     });
 
     this.beforeEach(async () => {
-        await provideLiquidity(
-            pool,
-            flashLendTokens.map((token) => token.token),
-            flashLendAmounts
-        );
+        await provideLiquidity(pool, [flashLendToken], [flashLendAmount]);
     });
 
     this.afterEach(async () => {
@@ -46,10 +39,6 @@ describe("FlashLend", async function () {
     });
 
     it("should execute a flash loan successfully", async () => {
-        const index = 0;
-        const flashLendToken = flashLendTokens[index].token;
-        const flashLendAmount = flashLendAmounts[index];
-
         const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
         expect(maxAmount).to.equal(flashLendAmount);
 
@@ -67,27 +56,16 @@ describe("FlashLend", async function () {
     });
 
     it("should fail to borrow more than what is available", async () => {
-        const index = 0;
-        const flashLendToken = flashLendTokens[index].token;
-
-        const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
-
         await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, BIG_NUM, flashLender.address));
     });
 
     it("should fail to repay the loan", async () => {
-        const index = 0;
-        const flashLendToken = flashLendTokens[index].token;
-
         const maxAmount = await flashLender.maxFlashLoan(flashLendToken.address);
 
         await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, maxAmount, flashLender.address));
     });
 
     it("should require a minimum of zero", async () => {
-        const index = 0;
-        const flashLendToken = flashLendTokens[index].token;
-
         await shouldFail(async () => await flashBorrowerTest.callFlashLoan(flashLendToken.address, 0, flashLender.address));
     });
 
