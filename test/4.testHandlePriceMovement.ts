@@ -29,6 +29,9 @@ describe("Handle price movement", async function () {
 
     let signerAddress: string;
 
+    const DECREASE_FACTOR = hre.ethers.BigNumber.from(1000);
+    const PRICE_CHANGE_PERCENT = hre.ethers.BigNumber.from(10);
+
     this.beforeAll(async () => {
         poolToken = (await getPoolTokens(configType, hre))[0];
         collateralToken = (await getCollateralTokens(configType, hre))[0];
@@ -43,12 +46,12 @@ describe("Handle price movement", async function () {
         collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
-
-        await setPrice(oracle, poolToken, BORROW_PRICE);
-        await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
     });
 
     this.beforeEach(async () => {
+        await setPrice(oracle, poolToken, BORROW_PRICE);
+        await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
+
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
         provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
@@ -66,7 +69,7 @@ describe("Handle price movement", async function () {
         expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
         await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
 
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, poolToken, BORROW_PRICE.div(DECREASE_FACTOR));
 
         expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
         await (await marginLong.liquidateAccount(signerAddress)).wait();
@@ -81,7 +84,7 @@ describe("Handle price movement", async function () {
         expect(await marginLong.resettable(signerAddress)).to.equal(false);
         await shouldFail(async () => await marginLong.resetAccount(signerAddress));
 
-        await setPrice(oracle, collateralToken, hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, collateralToken, COLLATERAL_PRICE.div(DECREASE_FACTOR));
 
         expect(await marginLong.resettable(signerAddress)).to.equal(true);
         await (await marginLong.resetAccount(signerAddress)).wait();
@@ -94,7 +97,7 @@ describe("Handle price movement", async function () {
     it("should update timelock balance with tax after liquidation", async () => {
         const timelockInitialBalance = await poolToken.balanceOf(timelock.address);
 
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, poolToken, BORROW_PRICE.div(DECREASE_FACTOR));
 
         await (await marginLong.liquidateAccount(signerAddress)).wait();
 
@@ -109,7 +112,7 @@ describe("Handle price movement", async function () {
         const ethAddress = await resolver.ethAddress();
         const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
 
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, poolToken, BORROW_PRICE.div(DECREASE_FACTOR));
 
         const [canExecute, callData] = await resolver.checkLiquidate();
         expect(canExecute).to.equal(true);
@@ -128,7 +131,7 @@ describe("Handle price movement", async function () {
         const ethAddress = await resolver.ethAddress();
         const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
 
-        await setPrice(oracle, collateralToken, hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, collateralToken, COLLATERAL_PRICE.div(DECREASE_FACTOR));
 
         const [canExecute, callData] = await resolver.checkReset();
         expect(canExecute).to.equal(true);
@@ -140,7 +143,7 @@ describe("Handle price movement", async function () {
     });
 
     it("should repay an account with profit", async () => {
-        await setPrice(oracle, poolToken, BORROW_PRICE.mul(110).div(100));
+        await setPrice(oracle, poolToken, BORROW_PRICE.mul(PRICE_CHANGE_PERCENT.add(100)).div(100));
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
         await (await marginLong["repayAccount()"]()).wait();
@@ -150,13 +153,7 @@ describe("Handle price movement", async function () {
     });
 
     it("should repay an account with a loss", async () => {
-        const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-        const [priceChangeNumerator, priceChangeDenominator] = [
-            maxLeverageNumerator.mul(leverageDenominator).sub(leverageNumerator.mul(maxLeverageDenominator)).sub(1),
-            leverageNumerator.mul(maxLeverageNumerator),
-        ];
-        await setPrice(oracle, poolToken, BORROW_PRICE.mul(priceChangeDenominator.sub(priceChangeNumerator)).div(priceChangeDenominator));
+        await setPrice(oracle, poolToken, BORROW_PRICE.mul(hre.ethers.BigNumber.from(100).sub(PRICE_CHANGE_PERCENT)).div(100));
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
         await (await marginLong["repayAccount()"]()).wait();
