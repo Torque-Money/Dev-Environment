@@ -126,7 +126,7 @@ describe("Interest", async function () {
     // });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        const timePerInterestApplication = (await pool.timePerInterestApplication()).div(12);
+        const timePerInterestApplication = await pool.timePerInterestApplication();
 
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
