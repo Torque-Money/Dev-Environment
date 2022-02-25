@@ -128,7 +128,7 @@ describe("Interest", async function () {
     it("should accumulate the given interest first before borrowing more", async () => {
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
-        const timePerInterestApplication = (await pool.timePerInterestApplication()).div(12);
+        const timePerInterestApplication = await pool.timePerInterestApplication();
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
@@ -138,7 +138,6 @@ describe("Interest", async function () {
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
-
         const currentInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
 
         expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
