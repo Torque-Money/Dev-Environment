@@ -28,7 +28,7 @@ describe("Interest", async function () {
     let signerAddress: string;
 
     let TIME_PER_INTEREST_APPLICATION: BigNumber;
-    const TIME_FRACTION = 12;
+    const TIME_FRACTION = 360;
     const ERROR_DECIMALS = 3;
 
     this.beforeAll(async () => {
