@@ -121,7 +121,7 @@ describe("Interest", async function () {
 
         const interest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
-        const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator);
+        const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator).div(TIME_FRACTION);
         await approxEqual(interest, expectedInterest, 3);
         expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
 
