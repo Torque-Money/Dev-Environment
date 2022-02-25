@@ -137,7 +137,7 @@ describe("Interest", async function () {
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(poolToken.address);
-        await wait(timePerInterestApplication);
+        await wait(timePerInterestApplication.div(12));
 
         const currentInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
 
