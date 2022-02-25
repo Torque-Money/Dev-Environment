@@ -128,12 +128,10 @@ describe("Interest", async function () {
     it("should accumulate the given interest first before borrowing more", async () => {
         const timePerInterestApplication = await pool.timePerInterestApplication();
 
-        await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
-
-        // **** Now we need to check the difference between the prices of the collateral and the amount we wish to borrow ?
+        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
         console.log(await marginLong.collateralPrice(signerAddress));
-        console.log(await oracle.priceMin(poolToken.address, provideAmount.mul(2)));
+        console.log(await oracle.priceMin(poolToken.address, provideAmount.div(2)));
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
