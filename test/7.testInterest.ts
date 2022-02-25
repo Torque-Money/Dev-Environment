@@ -35,6 +35,7 @@ describe("Interest", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
+        // **** In here this should really just be the given collateral amounts that have already been deposited (thus we will have to do this after the calculation has been made)
         provideAmounts = await getTokenAmount(
             hre,
             poolTokens.map((token) => token.token)

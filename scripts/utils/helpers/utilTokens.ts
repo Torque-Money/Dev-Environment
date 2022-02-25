@@ -4,17 +4,12 @@ import {ethers} from "ethers";
 import {chooseConfig, ConfigType} from "../utilConfig";
 import {ERC20, LPool} from "../../../typechain-types";
 
-export interface Token {
-    token: ERC20;
-    raw: any;
-}
-
 export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    let tokens: Token[] = [];
+    let tokens: ERC20[] = [];
     for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool)) {
-        tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
+        tokens.push(await hre.ethers.getContractAt("ERC20", approved.address));
     }
 
     return tokens;
@@ -23,9 +18,9 @@ export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeE
 export async function getCollateralTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    let tokens: Token[] = [];
+    let tokens: ERC20[] = [];
     for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral && !approved.leveragePool)) {
-        tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
+        tokens.push(await hre.ethers.getContractAt("ERC20", approved.address));
     }
 
     return tokens;
@@ -38,9 +33,9 @@ export async function LPFromPT(hre: HardhatRuntimeEnvironment, pool: LPool, toke
 export async function getFlashLenderTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    let tokens: Token[] = [];
+    let tokens: ERC20[] = [];
     for (const approved of config.tokens.approved.filter((approved) => approved.flashLender)) {
-        tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
+        tokens.push(await hre.ethers.getContractAt("ERC20", approved.address));
     }
 
     return tokens;
@@ -49,9 +44,9 @@ export async function getFlashLenderTokens(configType: ConfigType, hre: HardhatR
 export async function getOracleTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
-    let tokens: Token[] = [];
+    let tokens: ERC20[] = [];
     for (const approved of config.tokens.approved.filter((approved) => approved.oracle)) {
-        tokens.push({token: await hre.ethers.getContractAt("ERC20", approved.address), raw: approved});
+        tokens.push(await hre.ethers.getContractAt("ERC20", approved.address));
     }
 
     return tokens;

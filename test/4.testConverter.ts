@@ -5,21 +5,29 @@ import {Converter} from "../typechain-types";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {BigNumber} from "ethers";
 
 describe("Converter", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: Token[];
-    let collateralTokens: Token[];
+    let poolToken: Token;
+    let collateralToken: Token;
+    let weth: Token[];
+
+    let provideAmount: BigNumber;
+    let wethAmount: BigNumber;
 
     let converter: Converter;
 
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens(configType, hre);
-        collateralTokens = await getCollateralTokens(configType, hre);
+        poolToken = (await getPoolTokens(configType, hre)).filter((token) => token.token.address != config.tokens.wrappedCoin.address)[0];
+        collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.token.address != config.tokens.wrappedCoin.address)[0];
+        weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
+
+        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
@@ -28,9 +36,7 @@ describe("Converter", async function () {
 
     it("should convert one token into another and back", async () => {
         const index = 0;
-        const poolToken = poolTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
         const provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
-        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
 
         const initialInAmount1 = await poolToken.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
