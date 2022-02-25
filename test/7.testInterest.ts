@@ -130,6 +130,9 @@ describe("Interest", async function () {
 
         const timePerInterestApplication = await pool.timePerInterestApplication();
 
+        console.log(collateralAmount);
+        console.log(await marginLong.collateralPrice(signerAddress));
+
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
         const initialInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
