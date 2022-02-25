@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {IOracle, LPool, MarginLong, OracleTest} from "../typechain-types";
+import {LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
@@ -21,7 +21,7 @@ describe("Interest", async function () {
     let provideAmounts: BigNumber[];
     let collateralAmounts: BigNumber[];
 
-    let oracle: IOracle;
+    let oracle: OracleTest;
     let marginLong: MarginLong;
     let pool: LPool;
 
@@ -33,7 +33,7 @@ describe("Interest", async function () {
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
-        oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
+        oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
         provideAmounts = await getTokenAmount(
             hre,
