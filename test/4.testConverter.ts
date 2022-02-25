@@ -1,9 +1,9 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {Converter} from "../typechain-types";
+import {Converter, ERC20} from "../typechain-types";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 
@@ -11,9 +11,9 @@ describe("Converter", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolToken: Token;
-    let collateralToken: Token;
-    let weth: Token[];
+    let poolToken: ERC20;
+    let collateralToken: ERC20;
+    let weth: ERC20;
 
     let provideAmount: BigNumber;
     let wethAmount: BigNumber;
@@ -23,11 +23,12 @@ describe("Converter", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolToken = (await getPoolTokens(configType, hre)).filter((token) => token.token.address != config.tokens.wrappedCoin.address)[0];
-        collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.token.address != config.tokens.wrappedCoin.address)[0];
+        poolToken = (await getPoolTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
 
-        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
+        provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
+        wethAmount = (await getTokenAmount(hre, [weth]))[0];
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
@@ -35,9 +36,6 @@ describe("Converter", async function () {
     });
 
     it("should convert one token into another and back", async () => {
-        const index = 0;
-        const provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
-
         const initialInAmount1 = await poolToken.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
@@ -57,11 +55,6 @@ describe("Converter", async function () {
     });
 
     it("should convert WETH to another and back again", async () => {
-        const index = 0;
-        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
-        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
-        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
-
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
@@ -83,11 +76,6 @@ describe("Converter", async function () {
     });
 
     it("should convert ETH to another and back again", async () => {
-        const index = 0;
-        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
-        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
-        const collateralToken = collateralTokens.filter((token) => token.token.address != config.tokens.wrappedCoin.address)[index].token;
-
         const initialInAmount1 = await hre.ethers.provider.getBalance(signerAddress);
         const initialOutAmount1 = await collateralToken.balanceOf(signerAddress);
 
@@ -107,9 +95,6 @@ describe("Converter", async function () {
     });
 
     it("should convert WETH into ETH and back again", async () => {
-        const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
-        const wethAmount = (await getTokenAmount(hre, [weth]))[0];
-
         const initialInAmount1 = await weth.balanceOf(signerAddress);
         const initialOutAmount1 = await hre.ethers.provider.getBalance(signerAddress);
 
