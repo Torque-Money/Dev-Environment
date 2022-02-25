@@ -7,8 +7,6 @@ import {chooseConfig, ConfigType} from "../utilConfig";
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
     console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
 
-    // **** Maybe this should be calculated off of the minimum amount required as stated below
-
     for (let i = 0; i < tokens.length; i++) await (await marginLong.addCollateral(tokens[i].address, amounts[i])).wait();
 }
 
@@ -26,43 +24,41 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
 export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
     console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
 
-    // **** Maybe change this so that it calculates the borrow amount using the allowed amounts as determined by the function below
-
     for (let i = 0; i < tokens.length; i++) await (await marginLong.borrow(tokens[i].address, amounts[i])).wait();
 }
 
-export async function minCollateralAmount(marginLong: MarginLong, oracle: Contract, token: ERC20) {
-    const minCollateralPrice = (await marginLong.minCollateralPrice()).mul(120).div(100);
-    return await oracle.amountMax(token.address, minCollateralPrice);
-}
+// export async function minCollateralAmount(marginLong: MarginLong, oracle: Contract, token: ERC20) {
+//     const minCollateralPrice = (await marginLong.minCollateralPrice()).mul(120).div(100);
+//     return await oracle.amountMax(token.address, minCollateralPrice);
+// }
 
-export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, token: ERC20) {
-    const ROUND_CONSTANT = 1e4;
+// export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, token: ERC20) {
+//     const ROUND_CONSTANT = 1e4;
 
-    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
+//     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-    const collateralPrice = await marginLong.collateralPrice(signerAddress);
-    const currentPriceBorrowed = await marginLong["initialBorrowPrice(address)"](signerAddress);
+//     const collateralPrice = await marginLong.collateralPrice(signerAddress);
+//     const currentPriceBorrowed = await marginLong["initialBorrowPrice(address)"](signerAddress);
 
-    const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
-    const maxLeverage = maxLeverageNumerator.mul(ROUND_CONSTANT).div(maxLeverageDenominator).toNumber() / ROUND_CONSTANT;
+//     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+//     const maxLeverage = maxLeverageNumerator.mul(ROUND_CONSTANT).div(maxLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
-    let price;
+//     let price;
 
-    if (currentPriceBorrowed.gt(0)) {
-        const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(signerAddress);
-        const currentLeverage = currentLeverageNumerator.mul(ROUND_CONSTANT).div(currentLeverageDenominator).toNumber() / ROUND_CONSTANT;
+//     if (currentPriceBorrowed.gt(0)) {
+//         const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(signerAddress);
+//         const currentLeverage = currentLeverageNumerator.mul(ROUND_CONSTANT).div(currentLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
-        const numerator = Math.floor((maxLeverage / currentLeverage - 1) * ROUND_CONSTANT);
-        const denominator = ROUND_CONSTANT;
+//         const numerator = Math.floor((maxLeverage / currentLeverage - 1) * ROUND_CONSTANT);
+//         const denominator = ROUND_CONSTANT;
 
-        price = ethers.BigNumber.from(numerator).mul(currentPriceBorrowed).div(denominator);
-    } else {
-        const numerator = Math.floor(maxLeverage * ROUND_CONSTANT);
-        const denominator = ROUND_CONSTANT;
+//         price = ethers.BigNumber.from(numerator).mul(currentPriceBorrowed).div(denominator);
+//     } else {
+//         const numerator = Math.floor(maxLeverage * ROUND_CONSTANT);
+//         const denominator = ROUND_CONSTANT;
 
-        price = collateralPrice.mul(numerator).div(denominator);
-    }
+//         price = collateralPrice.mul(numerator).div(denominator);
+//     }
 
-    return (await oracle.amountMin(token.address, price)) as BigNumber;
-}
+//     return (await oracle.amountMin(token.address, price)) as BigNumber;
+// }
