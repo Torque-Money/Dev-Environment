@@ -114,7 +114,7 @@ describe("Handle price movement", async function () {
         for (let i = 0; i < poolTokens.length; i++) expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gt(provideAmounts[i])).to.equal(true);
     });
 
-    it("should update timelock balance with tax", async () => {
+    it("should update timelock balance with tax after liquidation", async () => {
         const timelockInitialBalance = await borrowedToken.balanceOf(timelock.address);
 
         const [leverageNumerator, leverageDenominator] = await marginLong.currentLeverage(signerAddress);
