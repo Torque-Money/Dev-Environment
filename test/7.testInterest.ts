@@ -130,25 +130,15 @@ describe("Interest", async function () {
 
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
-        console.log("Collateral price", await marginLong.collateralPrice(signerAddress));
-
-        console.log("Initial borrow price", await marginLong["initialBorrowPrice(address)"](signerAddress));
-
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
         const initialInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
-        console.log("Initial interest rate", initialInterestRateNumerator, initialInterestRateDenominator);
-        console.log("Initial interest", initialInterest);
 
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
-
-        console.log("New borrow price", await marginLong["initialBorrowPrice(address)"](signerAddress));
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
         const currentInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
-        console.log("Current interest rate", currentInterestRateNumerator, currentInterestRateDenominator);
-        console.log("Current interest", currentInterest);
 
         expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
