@@ -27,6 +27,8 @@ describe("Interest", async function () {
 
     let signerAddress: string;
 
+    let TIME_PER_INTEREST_APPLICATION: BigNumber;
+    const TIME_FRACTION = 12;
     const ERROR_DECIMALS = 3;
 
     this.beforeAll(async () => {
@@ -43,6 +45,8 @@ describe("Interest", async function () {
 
         await setPrice(oracle, poolToken, BORROW_PRICE);
         await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
+
+        TIME_PER_INTEREST_APPLICATION = (await pool.timePerInterestApplication()).div(TIME_FRACTION);
     });
 
     this.beforeEach(async () => {
@@ -113,8 +117,7 @@ describe("Interest", async function () {
         await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        const timePerInterestApplication = await pool.timePerInterestApplication();
-        await wait(timePerInterestApplication);
+        await wait(TIME_PER_INTEREST_APPLICATION);
 
         const interest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
@@ -126,25 +129,22 @@ describe("Interest", async function () {
     });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        const timeFraction = 12;
-        const timePerInterestApplication = (await pool.timePerInterestApplication()).div(timeFraction);
-
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
-        await wait(timePerInterestApplication);
+        await wait(TIME_PER_INTEREST_APPLICATION);
         const initialInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
 
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
         const [currentInterestRateNumerator, currentInterestRateDenominator] = await pool.interestRate(poolToken.address);
-        await wait(timePerInterestApplication);
+        await wait(TIME_PER_INTEREST_APPLICATION);
         const currentInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
 
         expect(currentInterestRateNumerator.mul(initialInterestRateDenominator)).to.not.equal(initialInterestRateNumerator.mul(currentInterestRateDenominator));
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
-        const expectedCurrentInterest = initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator).div(timeFraction));
+        const expectedCurrentInterest = initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator).div(TIME_FRACTION));
         await approxEqual(currentInterest, expectedCurrentInterest, 3);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
