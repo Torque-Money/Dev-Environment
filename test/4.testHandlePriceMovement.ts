@@ -2,23 +2,23 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ITaskTreasury, LPool, MarginLong, IOracle, Resolver, Timelock} from "../typechain-types";
+import {ITaskTreasury, LPool, MarginLong, IOracle, Resolver, Timelock, ERC20} from "../typechain-types";
 import {BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, getTokenAmount, Token} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 
 describe("Handle price movement", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: Token[];
-    let collateralTokens: Token[];
+    let poolToken: ERC20;
+    let collateralToken: ERC20;
 
-    let provideAmounts: BigNumber[];
-    let collateralAmounts: BigNumber[];
+    let provideAmount: BigNumber;
+    let collateralAmount: BigNumber;
 
     let oracle: IOracle;
     let pool: LPool;
@@ -30,17 +30,10 @@ describe("Handle price movement", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens(configType, hre);
-        collateralTokens = await getCollateralTokens(configType, hre);
+        poolToken = (await getPoolTokens(configType, hre))[0];
+        collateralToken = (await getCollateralTokens(configType, hre))[0];
 
-        provideAmounts = await getTokenAmount(
-            hre,
-            poolTokens.map((token) => token.token)
-        );
-        collateralAmounts = await getTokenAmount(
-            hre,
-            collateralTokens.map((token) => token.token)
-        );
+        // provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("IOracle", config.contracts.oracleAddress);
@@ -49,24 +42,19 @@ describe("Handle price movement", async function () {
         resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
         taskTreasury = await hre.ethers.getContractAt("ITaskTreasury", config.setup.taskTreasury);
 
-        for (const token of poolTokens) await setPrice(oracle, token.token, COLLATERAL_PRICE);
-        for (const token of collateralTokens) await setPrice(oracle, token.token, BORROW_PRICE);
+        collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
+
+        await setPrice(oracle, poolToken, BORROW_PRICE);
+        await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
     });
 
     this.beforeEach(async () => {
-        await provideLiquidity(
-            pool,
-            poolTokens.map((token) => token.token),
-            provideAmounts
-        );
+        await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
-        await addCollateral(
-            marginLong,
-            collateralTokens.map((token) => token.token),
-            collateralAmounts
-        );
+        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        await provideLiquidity(pool, [poolToken], [provideAmount]);
     });
 
     this.afterEach(async () => {
@@ -75,10 +63,6 @@ describe("Handle price movement", async function () {
     });
 
     it("should liquidate an account", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         await marginLong.borrow(poolToken.address, provideAmount);
 
         expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
@@ -94,24 +78,19 @@ describe("Handle price movement", async function () {
     });
 
     it("should reset an account", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         await marginLong.borrow(poolToken.address, provideAmount);
 
         expect(await marginLong.resettable(signerAddress)).to.equal(false);
         await shouldFail(async () => await marginLong.resetAccount(signerAddress));
 
-        await setPrice(oracle, , hre.ethers.BigNumber.from(0));
+        await setPrice(oracle, collateralToken, hre.ethers.BigNumber.from(0));
 
         expect(await marginLong.resettable(signerAddress)).to.equal(true);
         await (await marginLong.resetAccount(signerAddress)).wait();
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        for (let i = 0; i < collateralTokens.length; i++)
-            expect((await marginLong.collateral(collateralTokens[i].token.address, signerAddress)).lte(collateralAmounts[i])).to.equal(true);
-        for (let i = 0; i < poolTokens.length; i++) expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gt(provideAmounts[i])).to.equal(true);
+        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
+        expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
     });
 
     it("should update timelock balance with tax after liquidation", async () => {

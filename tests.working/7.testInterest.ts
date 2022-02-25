@@ -52,7 +52,7 @@ describe("Interest", async function () {
     this.beforeEach(async () => {
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
-        provideAmount = (await allowedBorrowAmount(hre, marginLong, oracle, poolToken)).div(2);
+        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         await provideLiquidity(pool, [poolToken], [provideAmount]);
     });
 

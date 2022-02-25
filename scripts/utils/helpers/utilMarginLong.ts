@@ -28,6 +28,7 @@ export async function minCollateralAmount(marginLong: MarginLong, oracle: Contra
 
 export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, token: ERC20) {
     const ROUND_CONSTANT = 1e4;
+    const ERROR_MARGIN = 3;
 
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
@@ -54,5 +55,5 @@ export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, margin
         price = collateralPrice.mul(numerator).div(denominator);
     }
 
-    return (await oracle.amountMin(token.address, price)) as BigNumber;
+    return ((await oracle.amountMin(token.address, price)) as BigNumber).div(ERROR_MARGIN);
 }
