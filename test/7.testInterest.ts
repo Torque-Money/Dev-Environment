@@ -132,6 +132,9 @@ describe("Interest", async function () {
 
         // **** Now we need to check the difference between the prices of the collateral and the amount we wish to borrow ?
 
+        console.log(await marginLong.collateralPrice(signerAddress));
+        console.log(await oracle.priceMin(poolToken.address, provideAmount.mul(2)));
+
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
         const initialInterest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
