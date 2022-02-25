@@ -3,7 +3,7 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {LPool, MarginLong, OracleTest} from "../typechain-types";
-import {addCollateral, borrow, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {addCollateral, allowedBorrowAmount, borrow, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
@@ -121,17 +121,15 @@ describe("MarginLong", async function () {
         const poolToken = poolTokens[index].token;
         const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index].token;
-        // const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
-        const collateralAmount = collateralAmounts[index];
+        const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
         const initialLiquidity = await pool.liquidity(poolToken.address);
         const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        // let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
-        // if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
-        let borrowAmount = provideAmount;
+        let borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
 
         await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
