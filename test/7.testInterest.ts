@@ -126,12 +126,9 @@ describe("Interest", async function () {
     // });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        const timePerInterestApplication = await pool.timePerInterestApplication();
+        const timePerInterestApplication = (await pool.timePerInterestApplication()).div(12);
 
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
-
-        console.log(await marginLong.collateralPrice(signerAddress));
-        console.log(await oracle.priceMin(poolToken.address, provideAmount.div(2)));
+        await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
         const [initialInterestRateNumerator, initialInterestRateDenominator] = await pool.interestRate(poolToken.address);
         await wait(timePerInterestApplication);
