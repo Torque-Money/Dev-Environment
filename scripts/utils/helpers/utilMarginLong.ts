@@ -21,12 +21,6 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
     }
 }
 
-export async function borrow(marginLong: MarginLong, tokens: ERC20[], amounts: ethers.BigNumber[]) {
-    console.assert(tokens.length === amounts.length, "Length of tokens must equal length of amounts");
-
-    for (let i = 0; i < tokens.length; i++) await (await marginLong.borrow(tokens[i].address, amounts[i])).wait();
-}
-
 export async function minCollateralAmount(marginLong: MarginLong, oracle: Contract, token: ERC20) {
     const minCollateralPrice = (await marginLong.minCollateralPrice()).mul(120).div(100);
     return await oracle.amountMax(token.address, minCollateralPrice);
