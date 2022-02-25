@@ -27,7 +27,7 @@ describe("Interest", async function () {
 
     let signerAddress: string;
 
-    const ROUND_DECIMALS = 10;
+    const ERROR_DECIMALS = 3;
 
     this.beforeAll(async () => {
         poolToken = (await getPoolTokens(configType, hre))[0];
@@ -57,73 +57,73 @@ describe("Interest", async function () {
         await redeemLiquidity(configType, hre, pool);
     });
 
-    it("should borrow below the max utilization", async () => {
-        const maxUtilization = await pool.maxUtilization(poolToken.address);
-        const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2);
-        await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
+    // it("should borrow below the max utilization", async () => {
+    //     const maxUtilization = await pool.maxUtilization(poolToken.address);
+    //     const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2);
+    //     await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
 
-        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
-        const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMinDenominator).mul(2), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
+    //     const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
+    //     await approxEqual(interestNumerator.mul(maxInterestMinDenominator).mul(2), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    // });
 
-    it("should borrow at the max utilization", async () => {
-        const maxUtilization = await pool.maxUtilization(poolToken.address);
-        const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]);
-        await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
+    // it("should borrow at the max utilization", async () => {
+    //     const maxUtilization = await pool.maxUtilization(poolToken.address);
+    //     const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]);
+    //     await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
 
-        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
-        const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMinDenominator), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
+    //     const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
+    //     await approxEqual(interestNumerator.mul(maxInterestMinDenominator), maxInterestMinNumerator.mul(interestDenominator), ROUND_DECIMALS);
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    // });
 
-    it("should borrow below 100% utilization", async () => {
-        const maxUtilization = await pool.maxUtilization(poolToken.address);
+    // it("should borrow below 100% utilization", async () => {
+    //     const maxUtilization = await pool.maxUtilization(poolToken.address);
 
-        const tempBorrowAmount = provideAmount.mul(maxUtilization[0].add(maxUtilization[1])).div(maxUtilization[1]).div(2);
-        await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
+    //     const tempBorrowAmount = provideAmount.mul(maxUtilization[0].add(maxUtilization[1])).div(maxUtilization[1]).div(2);
+    //     await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
 
-        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
-        const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
-        const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(
-            interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2),
-            interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))),
-            ROUND_DECIMALS
-        );
+    //     const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
+    //     const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
+    //     await approxEqual(
+    //         interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2),
+    //         interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))),
+    //         ERROR_DECIMALS
+    //     );
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    // });
 
-    it("should borrow at 100% utilization", async () => {
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
+    // it("should borrow at 100% utilization", async () => {
+    //     await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
-        const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
-        const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMaxDenominator), maxInterestMaxNumerator.mul(interestDenominator), ROUND_DECIMALS);
+    //     const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
+    //     await approxEqual(interestNumerator.mul(maxInterestMaxDenominator), maxInterestMaxNumerator.mul(interestDenominator), ERROR_DECIMALS);
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    // });
 
-    it("should accumulate interest over the given year as according to the rate", async () => {
-        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
+    // it("should accumulate interest over the given year as according to the rate", async () => {
+    //     await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
-        const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        const timePerInterestApplication = await pool.timePerInterestApplication();
-        await wait(timePerInterestApplication);
+    //     const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
+    //     const timePerInterestApplication = await pool.timePerInterestApplication();
+    //     await wait(timePerInterestApplication);
 
-        const interest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
-        const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
-        const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator);
-        await approxEqual(interest, expectedInterest, 3);
-        expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
+    //     const interest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
+    //     const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
+    //     const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator);
+    //     await approxEqual(interest, expectedInterest, 3);
+    //     expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
 
-        await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-    });
+    //     await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
+    // });
 
     it("should accumulate the given interest first before borrowing more", async () => {
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
