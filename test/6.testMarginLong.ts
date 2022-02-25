@@ -166,6 +166,8 @@ describe("MarginLong", async function () {
 
             let borrowAmount = (await allowedBorrowAmount(hre, marginLong, oracle, token)).div(poolTokens.length);
             if (provideAmount.lt(borrowAmount)) borrowAmount = provideAmount;
+
+            await marginLong.borrow(token.address, borrowAmount);
         }
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
@@ -174,7 +176,6 @@ describe("MarginLong", async function () {
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        // **** What are we even doing here ?
         for (let i = 0; i < poolTokens.length; i++) {
             expect((await pool.liquidity(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
             expect((await pool.totalAmountLocked(poolTokens[i].token.address)).gte(provideAmounts[i])).to.equal(true);
