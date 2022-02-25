@@ -35,6 +35,7 @@ describe("Interest", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
+        // **** We will actually calculate how much (potentially in the provideLiquidity section first regarding the borrow amount ?)
         provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
         collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
@@ -45,17 +46,8 @@ describe("Interest", async function () {
     });
 
     this.beforeEach(async () => {
-        await provideLiquidity(
-            pool,
-            poolTokens.map((token) => token.token),
-            provideAmounts
-        );
-
-        await addCollateral(
-            marginLong,
-            collateralTokens.map((token) => token.token),
-            collateralAmounts
-        );
+        await provideLiquidity(pool, [poolToken], [provideAmount]);
+        await addCollateral(marginLong, [collateralToken], [collateralAmount]);
     });
 
     this.afterEach(async () => {
@@ -64,10 +56,6 @@ describe("Interest", async function () {
     });
 
     it("should borrow below the max utilization", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         const maxUtilization = await pool.maxUtilization(poolToken.address);
         const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]).div(2);
         await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
@@ -80,10 +68,6 @@ describe("Interest", async function () {
     });
 
     it("should borrow at the max utilization", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         const maxUtilization = await pool.maxUtilization(poolToken.address);
         const tempBorrowAmount = provideAmount.mul(maxUtilization[0]).div(maxUtilization[1]);
         await (await marginLong.borrow(poolToken.address, tempBorrowAmount)).wait();
@@ -96,10 +80,6 @@ describe("Interest", async function () {
     });
 
     it("should borrow below 100% utilization", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         const maxUtilization = await pool.maxUtilization(poolToken.address);
 
         const tempBorrowAmount = provideAmount.mul(maxUtilization[0].add(maxUtilization[1])).div(maxUtilization[1]).div(2);
@@ -116,10 +96,6 @@ describe("Interest", async function () {
     });
 
     it("should borrow at 100% utilization", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
@@ -130,10 +106,6 @@ describe("Interest", async function () {
     });
 
     it("should accumulate interest over the given year as according to the rate", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
@@ -150,10 +122,6 @@ describe("Interest", async function () {
     });
 
     it("should accumulate the given interest first before borrowing more", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index].token;
-        const provideAmount = provideAmounts[index];
-
         await (await marginLong.borrow(poolToken.address, provideAmount.div(2))).wait();
 
         const timePerInterestApplication = await pool.timePerInterestApplication();
