@@ -165,13 +165,12 @@ describe("Handle price movement", async function () {
         expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
     });
 
-    it("should liquidate an account that exceeds the leverage limit by its collateral falling in value whilst being above min collateral price", async () => {
+    it("should liquidate an account that exceeds the leverage limit by its collateral falling in value", async () => {
         await marginLong["repayAccount()"]();
-        await (await oracle.setPrice(borrowedToken.address, ethers.BigNumber.from(10).pow(priceDecimals).mul(300))).wait();
 
-        await (await marginLong.borrow(borrowedToken.address, borrowedAmount)).wait();
+        await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
 
-        await (await oracle.setPrice(collateralToken.address, ethers.BigNumber.from(10).pow(priceDecimals).div(10))).wait();
+        await (await oracle.setPrice(collateralToken.address, 1)).wait();
 
         await (await marginLong.liquidateAccount(signerAddress)).wait();
     });
