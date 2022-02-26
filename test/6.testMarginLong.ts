@@ -7,7 +7,7 @@ import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollatera
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("MarginLong", async function () {
@@ -27,7 +27,7 @@ describe("MarginLong", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens(configType, hre);
+        poolTokens = await getBorrowTokens(configType, hre);
         collateralTokens = await getCollateralTokens(configType, hre);
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);

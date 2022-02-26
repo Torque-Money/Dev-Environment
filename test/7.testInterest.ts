@@ -5,7 +5,7 @@ import hre from "hardhat";
 import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getBorrowTokens} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
@@ -32,7 +32,7 @@ describe("Interest", async function () {
     const ERROR_DECIMALS = 3;
 
     this.beforeAll(async () => {
-        poolToken = (await getPoolTokens(configType, hre))[0];
+        poolToken = (await getBorrowTokens(configType, hre))[0];
         collateralToken = (await getCollateralTokens(configType, hre))[0];
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);

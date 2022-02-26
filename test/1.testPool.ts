@@ -4,7 +4,7 @@ import hre from "hardhat";
 
 import {ERC20, LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getPoolTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
+import {getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
@@ -20,7 +20,7 @@ describe("Pool", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getPoolTokens(configType, hre);
+        poolTokens = await getBorrowTokens(configType, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);
 

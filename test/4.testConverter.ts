@@ -3,7 +3,7 @@ import hre from "hardhat";
 
 import {Converter, ERC20} from "../typechain-types";
 import {shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 
@@ -23,7 +23,7 @@ describe("Converter", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolToken = (await getPoolTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        poolToken = (await getBorrowTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
 

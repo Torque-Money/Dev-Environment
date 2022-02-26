@@ -4,11 +4,11 @@ import {ethers} from "ethers";
 import {chooseConfig, ConfigType} from "../utilConfig";
 import {ERC20, LPool} from "../../../typechain-types";
 
-export async function getPoolTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+export async function getBorrowTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
     let tokens: ERC20[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongBorrow)) {
         tokens.push(await hre.ethers.getContractAt("ERC20", approved.address));
     }
 

@@ -4,7 +4,7 @@ import hre from "hardhat";
 import {ERC20, LPool, OracleTest} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {BIG_NUM, BORROW_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getOracleTokens, getPoolTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
+import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
@@ -23,7 +23,7 @@ describe("Oracle", async function () {
 
     this.beforeAll(async () => {
         oracleTokens = await getOracleTokens(configType, hre);
-        poolTokens = await getPoolTokens(configType, hre);
+        poolTokens = await getBorrowTokens(configType, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);
 
