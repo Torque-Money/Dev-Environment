@@ -75,7 +75,7 @@ describe("Handle price movement", async function () {
         await (await marginLong.liquidateAccount(signerAddress)).wait();
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await pool.totalAmountLocked(poolToken.address)).gte(provideAmount)).to.equal(true);
+        expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
     });
 
     it("should reset an account", async () => {
