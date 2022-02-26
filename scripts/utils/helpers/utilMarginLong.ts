@@ -18,6 +18,10 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
     for (const token of config.tokens.approved.filter((approved) => approved.marginLongCollateral)) {
         const available = await marginLong.collateral(token.address, signerAddress);
         if (available.gt(0)) await marginLong.removeCollateral(token.address, available);
+
+        const tkn = await hre.ethers.getContractAt("ERC20", token.address);
+        const remainder = await tkn.balanceOf(marginLong.address);
+        console.assert(remainder.eq(0), "There was more collateral for " + tkn.address + " at " + remainder.toString());
     }
 }
 
