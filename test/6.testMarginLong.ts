@@ -54,33 +54,28 @@ describe("MarginLong", async function () {
     });
 
     it("deposit and undeposit collateral into the account", async () => {
+        // **** Let us test why this has got collateral not equal to 0 initially and try and figure out where it came from ?
+
         const index = 0;
         const collateralToken = collateralTokens[index];
         const collateralAmount = collateralAmounts[index];
 
-        console.log(collateralAmount);
-        console.log(await collateralToken.balanceOf(signerAddress));
-
-        // const initialBalance = await collateralToken.balanceOf(signerAddress);
+        const initialBalance = await collateralToken.balanceOf(signerAddress);
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        console.log(await collateralToken.balanceOf(marginLong.address));
+        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
+        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
 
-        // expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
-        // expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
-
-        // expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
-        // expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
+        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
+        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
 
         await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
 
-        console.log(await collateralToken.balanceOf(signerAddress));
+        expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
+        expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
 
-        // expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
-        // expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
-
-        // expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
-        // expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
+        expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(0);
+        expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
     });
 
     // it("should not allow bad deposits", async () => {
