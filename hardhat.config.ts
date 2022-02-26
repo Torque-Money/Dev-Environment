@@ -13,9 +13,11 @@ dotenv.config();
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 
+import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
+
 import utilFund from "./scripts/utils/utilFund";
 import utilApprove from "./scripts/utils/utilApprove";
-import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
+import utilClump from "./scripts/utils/utilClump";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
 
@@ -43,14 +45,20 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await deploy("fork", hre);
     await setup("fork", hre);
 
-    await utilFund("fork", hre);
-    await utilApprove("fork", hre);
-
     await utilUpdateFiles();
 });
 
 task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
     await verifyAll(hre);
+});
+
+task("test-wrapper", "Wrapper for tests", async (args, hre) => {
+    await utilFund("fork", hre);
+    await utilApprove("fork", hre);
+
+    await hre.run("test");
+
+    await utilClump("fork", hre);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
