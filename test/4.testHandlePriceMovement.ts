@@ -144,10 +144,16 @@ describe("Handle price movement", async function () {
     // });
 
     it("should repay an account with profit", async () => {
-        await changePrice(oracle, poolToken, (100 + MINOR_PRICE_CHANGE_PERCENT) / 100);
+        // **** Check that the amounts are actually updated ? - why is there actually LESS value than what there initially was ???? (broken param ???)
 
         const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+        console.log(initialAccountPrice);
+
+        await changePrice(oracle, poolToken, (100 + MINOR_PRICE_CHANGE_PERCENT) / 100);
+
+        console.log(await marginLong.collateralPrice(signerAddress));
         await (await marginLong["repayAccount()"]()).wait();
+        console.log(await marginLong.collateralPrice(signerAddress));
         expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
 
         expect((await pool.totalAmountLocked(poolToken.address)).lt(provideAmount)).to.equal(true);
