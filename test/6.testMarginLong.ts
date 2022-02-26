@@ -171,6 +171,10 @@ describe("MarginLong", async function () {
         }
 
         await removeCollateral(configType, hre, marginLong);
+
+        // **** Perhaps this problem is due to some sort of rounding error ????
+        // **** - Perhaps it has updated the collateral but not the token transfer ?
+        for (const token of collateralTokens) console.log(await token.balanceOf(marginLong.address));
     });
 
     // it("should borrow against equity", async () => {
