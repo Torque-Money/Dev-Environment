@@ -16,9 +16,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const balance = await token.balanceOf(signerAddress);
 
         await (await router.swapExactTokensForETH(balance, 0, [token.address, weth.address], signerAddress, Date.now())).wait();
+
+        console.log(`Clump: Clumped ${approved.address}`);
     }
 
     const wethToken = await hre.ethers.getContractAt("ERC20", weth.address);
     const wethAmount = await wethToken.balanceOf(signerAddress);
     await (await weth.withdraw(wethAmount)).wait();
+    console.log(`Clump: Clumped ${weth.address}`);
 }
