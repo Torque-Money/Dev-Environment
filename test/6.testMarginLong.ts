@@ -78,7 +78,7 @@ describe("MarginLong", async function () {
         expect(await collateralToken.balanceOf(marginLong.address)).to.equal(0);
     });
 
-    it("should not allow bad deposits", async () => {
+    it("should not allow bad method calls", async () => {
         const index = 0;
         const collateralToken = collateralTokens[index];
 
@@ -113,7 +113,6 @@ describe("MarginLong", async function () {
     it("should open and repay a leveraged position", async () => {
         const index = 0;
         const poolToken = poolTokens[index];
-        const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index];
         const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
@@ -179,7 +178,6 @@ describe("MarginLong", async function () {
     it("should borrow against equity", async () => {
         const index = 0;
         const poolToken = poolTokens[index];
-        const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index];
         const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
@@ -203,7 +201,6 @@ describe("MarginLong", async function () {
     it("should fail to redeem LP tokens when they are being used", async () => {
         const index = 0;
         const poolToken = poolTokens[index];
-        const provideAmount = provideAmounts[index];
         const collateralToken = collateralTokens[index];
         const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 
