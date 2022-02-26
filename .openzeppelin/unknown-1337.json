@@ -7,7 +7,7 @@
       "hash": "0x2c57b7ff38d35e193bd9cd05f3c918fc96301507be50235632ceae540bbee4ae",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x861e5f1a1dacd596753ef29c863fc6299ee1bff9eb4849929e6b180536467d62",
+      "blockHash": "0x5b6a82f45fb4c4981ff28c0c7778b8d2bf5af271585ec58f470fe12b2583bb8c",
       "blockNumber": 28793948,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -112,27 +112,27 @@
     },
     {
       "address": "0x51A1ceB83B83F1985a81C295d1fF28Afef186E02",
-      "txHash": "0x04443aee49e041ad96d3758a0029e54bc779492802ae6faa644c1c56f0840f70",
+      "txHash": "0x75577af1f56fd40584a07f8725b004dc738795a74a8d23a5fa4e414c3d9d99de",
       "kind": "transparent"
     },
     {
       "address": "0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7",
-      "txHash": "0x47b928a5f0f62915dc10e7ea46e6cdcaa64948d5e0b9de6e127d1738a3927e76",
+      "txHash": "0xe7fbf08f045be2f1af636ac3bed7b64a8baf067ff1d177ed0fcaa28400affeb8",
       "kind": "transparent"
     },
     {
       "address": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB",
-      "txHash": "0x52f87e2581690fb47dc48673d21187e3e92617a184e9780a8d562ba4fc47517e",
+      "txHash": "0x9b6cf52069bf437904cccd76c87b1d2405ea7aa375db34b3a1184b84e5575d4b",
       "kind": "transparent"
     },
     {
       "address": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
-      "txHash": "0x074b60ab73aa32127207f2e4ec4c5126a51fdf6cbcf6b53e5eb75118ff89f525",
+      "txHash": "0x028032457994272a4fc09faeaa6ef1657b1f198908a8ab730b533b4468597682",
       "kind": "transparent"
     },
     {
       "address": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
-      "txHash": "0xcf7aaa3fd1f5b9cca0d23f171a8b470adb8ef7871c859ee761eeb13bc56d946e",
+      "txHash": "0x19f0eb0e53bce15f8dfd195b9ee0f047b5d77541ef0140db257c5f0c96c6a390",
       "kind": "transparent"
     }
   ],
@@ -294,7 +294,7 @@
     },
     "ea694ba0cd4cb28e24f78b778ea508dae7a625e3a6d9eebd94e85411d38dee38": {
       "address": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
-      "txHash": "0x5791819e959f427558993a75bc692aa882884777c75ecda55952d4b5c49a25df",
+      "txHash": "0xb14fd93f93aa85ef79d002b7b80420e79e1186776b9fc638b9e21c24511cabaf",
       "layout": {
         "storage": [
           {
@@ -508,7 +508,7 @@
     },
     "c64366dae8148d39f56c9992b4debc7ab80cdba0d8b19c65efa2ba06176def98": {
       "address": "0x36b58F5C1969B7b6591D752ea6F5486D069010AB",
-      "txHash": "0x7b67ef5e714d94a6822f3b983d32b06a331dae0cfa6446e2aeae3a7b1dfdf3a7",
+      "txHash": "0x60cbf8845deabde95e37cfe27356af429ecb69d2325c6ce6aa3eab6a2bc56271",
       "layout": {
         "storage": [
           {
@@ -639,7 +639,7 @@
     },
     "6b37aff3d1eff908d2f27fc449bf8943f10c511a7bf8dd32d7f2341afdcbfc3c": {
       "address": "0x0355B7B8cb128fA5692729Ab3AAa199C1753f726",
-      "txHash": "0xc1641d7cf0e1e08e233bc9374efcfb7fb73c4c56c086c35631b609fc1ea855d7",
+      "txHash": "0xe96a1d8c885eae0bae64f56ad2204a956e5ca8cb7bdac6fd8faf4269af169d71",
       "layout": {
         "storage": [
           {
@@ -717,7 +717,7 @@
           {
             "contract": "FlashLenderCore",
             "label": "_feePercent",
-            "type": "t_struct(Fraction)12761_storage",
+            "type": "t_struct(Fraction)12803_storage",
             "src": "contracts/FlashLender/FlashLenderCore.sol:17"
           },
           {
@@ -746,7 +746,7 @@
           "t_bytes32": {
             "label": "bytes32"
           },
-          "t_struct(Fraction)12761_storage": {
+          "t_struct(Fraction)12803_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -789,7 +789,7 @@
     },
     "84f9d4a07b79c962220af28c644237958fd5a0ae9b87a4538842ef245a11e53a": {
       "address": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
-      "txHash": "0x201c89fed285f2c215ebd2cd03da86076594b63c642376dd8d0f92fc675cf5fe",
+      "txHash": "0xe950b6c4ad206d288ae91e5711529588f9da3db77db8183036f19eb810c147dc",
       "layout": {
         "storage": [
           {
@@ -898,13 +898,13 @@
           {
             "contract": "OracleCore",
             "label": "_threshold",
-            "type": "t_struct(Fraction)12761_storage",
+            "type": "t_struct(Fraction)12803_storage",
             "src": "contracts/Oracle/OracleCore.sol:17"
           },
           {
             "contract": "OracleApproved",
             "label": "_approved",
-            "type": "t_mapping(t_address,t_struct(Approved)11670_storage)",
+            "type": "t_mapping(t_address,t_struct(Approved)11712_storage)",
             "src": "contracts/Oracle/OracleApproved.sol:13"
           },
           {
@@ -924,10 +924,10 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Approved)11670_storage)": {
+          "t_mapping(t_address,t_struct(Approved)11712_storage)": {
             "label": "mapping(address => struct OracleApproved.Approved)"
           },
-          "t_struct(Approved)11670_storage": {
+          "t_struct(Approved)11712_storage": {
             "label": "struct OracleApproved.Approved",
             "members": [
               {
@@ -950,7 +950,7 @@
           "t_bytes32": {
             "label": "bytes32"
           },
-          "t_struct(Fraction)12761_storage": {
+          "t_struct(Fraction)12803_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1101,7 +1101,7 @@
           {
             "contract": "LPoolTax",
             "label": "_taxPercent",
-            "type": "t_struct(Fraction)12761_storage",
+            "type": "t_struct(Fraction)12803_storage",
             "src": "contracts/LPool/LPoolTax.sol:19"
           },
           {
@@ -1119,19 +1119,19 @@
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMin",
-            "type": "t_mapping(t_address,t_struct(Fraction)12761_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12803_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:17"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxInterestMax",
-            "type": "t_mapping(t_address,t_struct(Fraction)12761_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12803_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:18"
           },
           {
             "contract": "LPoolInterest",
             "label": "_maxUtilization",
-            "type": "t_mapping(t_address,t_struct(Fraction)12761_storage)",
+            "type": "t_mapping(t_address,t_struct(Fraction)12803_storage)",
             "src": "contracts/LPool/LPoolInterest.sol:19"
           }
         ],
@@ -1139,13 +1139,13 @@
           "t_uint256": {
             "label": "uint256"
           },
-          "t_mapping(t_address,t_struct(Fraction)12761_storage)": {
+          "t_mapping(t_address,t_struct(Fraction)12803_storage)": {
             "label": "mapping(address => struct FractionMath.Fraction)"
           },
           "t_address": {
             "label": "address"
           },
-          "t_struct(Fraction)12761_storage": {
+          "t_struct(Fraction)12803_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -1229,9 +1229,9 @@
         }
       }
     },
-    "bc58bcbff6506a211b8069200170f9c546b7a807d9b0ae7309991787e1345c2d": {
+    "802c39a060c0d497f1c6e5f1fcd9ea99b78d9afb3598f7a3ef7d9e7099c7093a": {
       "address": "0xDC11f7E700A4c898AE5CAddB1082cFfa76512aDD",
-      "txHash": "0x629479f02a8890e7085957f0da8bdf948e40c4f9f704739f558dc33881376c38",
+      "txHash": "0x925078e62886f8735d3026738a692c6ccde8fe7aa10b6c0d1e94d816e56bde39",
       "layout": {
         "storage": [
           {
@@ -1345,7 +1345,7 @@
           {
             "contract": "MarginLevel",
             "label": "_maxLeverage",
-            "type": "t_struct(Fraction)12761_storage",
+            "type": "t_struct(Fraction)12803_storage",
             "src": "contracts/Margin/MarginLevel.sol:13"
           },
           {
@@ -1363,12 +1363,12 @@
           {
             "contract": "MarginLongLiquidateCore",
             "label": "_liquidationFeePercent",
-            "type": "t_struct(Fraction)12761_storage",
+            "type": "t_struct(Fraction)12803_storage",
             "src": "contracts/Margin/MarginLong/MarginLongLiquidateCore.sol:13"
           }
         ],
         "types": {
-          "t_struct(Fraction)12761_storage": {
+          "t_struct(Fraction)12803_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
