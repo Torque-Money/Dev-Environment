@@ -1,0 +1,24 @@
+import {HardhatRuntimeEnvironment} from "hardhat/types";
+
+import {chooseConfig, ConfigType} from "./utilConfig";
+
+export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    const config = chooseConfig(configType);
+
+    const signer = hre.ethers.provider.getSigner();
+    const signerAddress = await signer.getAddress();
+
+    const router = await hre.ethers.getContractAt("UniswapV2Router02", config.setup.routerAddress);
+    const weth = await hre.ethers.getContractAt("WETH", config.tokens.wrappedCoin.address);
+
+    for (const approved of config.tokens.approved.filter((approved) => approved.address != weth.address)) {
+        const token = await hre.ethers.getContractAt("ERC20", approved.address);
+        const balance = await token.balanceOf(signerAddress);
+
+        await (await router.swapExactTokensForETH(balance, 0, [token.address, weth.address], signerAddress, Date.now())).wait();
+    }
+
+    const wethToken = await hre.ethers.getContractAt("ERC20", weth.address);
+    const wethAmount = await wethToken.balanceOf(signerAddress);
+    await (await weth.withdraw(wethAmount)).wait();
+}

@@ -19,6 +19,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
             await router.swapExactETHForTokens(0, [weth.address, approved.address], signerAddress, Date.now(), {value: swapBalance.div(config.tokens.approved.length)})
         ).wait();
 
-    const wethAmount = initialBalance.mul(Math.floor((100 - 60) / 2)).div(100);
+    const wethAmount = initialBalance.mul(Math.floor((100 - PERCENTAGE) / 2)).div(100);
     await (await weth.deposit({value: wethAmount})).wait();
 }
