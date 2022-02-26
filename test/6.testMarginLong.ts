@@ -58,12 +58,13 @@ describe("MarginLong", async function () {
         const collateralToken = collateralTokens[index];
         const collateralAmount = collateralAmounts[index];
 
-        console.log(await collateralToken.balanceOf(marginLong.address));
-
-        // **** Maybe we are not withdrawing all that we should be ?
+        console.log(collateralAmount);
+        console.log(await collateralToken.balanceOf(signerAddress));
 
         // const initialBalance = await collateralToken.balanceOf(signerAddress);
-        // await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+
+        console.log(await collateralToken.balanceOf(marginLong.address));
 
         // expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(collateralAmount));
         // expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(collateralAmount);
@@ -71,7 +72,9 @@ describe("MarginLong", async function () {
         // expect(await marginLong.totalCollateral(collateralToken.address)).to.equal(collateralAmount);
         // expect(await collateralToken.balanceOf(marginLong.address)).to.equal(collateralAmount);
 
-        // await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
+        await (await marginLong.removeCollateral(collateralToken.address, collateralAmount)).wait();
+
+        console.log(await collateralToken.balanceOf(signerAddress));
 
         // expect(await collateralToken.balanceOf(signerAddress)).to.equal(initialBalance);
         // expect(await marginLong.collateral(collateralToken.address, signerAddress)).to.equal(0);
