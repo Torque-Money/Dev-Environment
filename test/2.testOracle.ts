@@ -28,18 +28,19 @@ describe("Oracle", async function () {
         provideAmounts = await getTokenAmount(hre, poolTokens);
 
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
-        for (const token of oracleTokens) await setPrice(oracle, token, BORROW_PRICE);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+
+        for (const token of oracleTokens) await setPrice(oracle, token, hre.ethers.BigNumber.from(0));
     });
 
     it("should get the prices for accepted tokens", async () => {
-        for (const oracleToken of oracleTokens) {
-            expect(await oracle.priceMin(oracleToken.address, BIG_NUM)).to.not.equal(0);
-            expect(await oracle.priceMax(oracleToken.address, BIG_NUM)).to.not.equal(0);
+        for (const token of oracleTokens) {
+            expect(await oracle.priceMin(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.priceMax(token.address, BIG_NUM)).to.not.equal(0);
 
-            expect(await oracle.amountMin(oracleToken.address, BIG_NUM)).to.not.equal(0);
-            expect(await oracle.amountMax(oracleToken.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.amountMin(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.amountMax(token.address, BIG_NUM)).to.not.equal(0);
         }
     });
 
