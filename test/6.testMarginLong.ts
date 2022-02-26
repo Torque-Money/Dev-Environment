@@ -160,7 +160,6 @@ describe("MarginLong", async function () {
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        // **** What if it didnt deposit properly ?
         for (let i = 0; i < poolTokens.length; i++) {
             expect((await pool.liquidity(poolTokens[i].address)).gte(provideAmounts[i])).to.equal(true);
             expect((await pool.totalAmountLocked(poolTokens[i].address)).gte(provideAmounts[i])).to.equal(true);
