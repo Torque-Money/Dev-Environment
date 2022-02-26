@@ -145,12 +145,9 @@ describe("MarginLong", async function () {
     // });
 
     it("should open and repay all leveraged positions", async () => {
-        // **** Perhaps this is actually the one that does not work properly ? (this is the one creating such problems)
-
         await addCollateral(marginLong, collateralTokens, collateralAmounts);
 
         for (let i = 0; i < poolTokens.length; i++) {
-            const provideAmount = provideAmounts[i];
             const token = poolTokens[i];
 
             const borrowAmount = (await allowedBorrowAmount(hre, marginLong, oracle, token)).div(poolTokens.length);
@@ -163,6 +160,7 @@ describe("MarginLong", async function () {
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
+        // **** What if it didnt deposit properly ?
         for (let i = 0; i < poolTokens.length; i++) {
             expect((await pool.liquidity(poolTokens[i].address)).gte(provideAmounts[i])).to.equal(true);
             expect((await pool.totalAmountLocked(poolTokens[i].address)).gte(provideAmounts[i])).to.equal(true);
