@@ -15,6 +15,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const token = await hre.ethers.getContractAt("ERC20", approved.address);
         const balance = await token.balanceOf(signerAddress);
 
+        await token.approve(router.address, hre.ethers.BigNumber.from(2).pow(255));
         await (await router.swapExactTokensForETH(balance, 0, [token.address, weth.address], signerAddress, Date.now())).wait();
 
         console.log(`Clump: Clumped ${approved.address}`);
