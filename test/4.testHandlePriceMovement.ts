@@ -56,6 +56,8 @@ describe("Handle price movement", async function () {
 
         provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         await provideLiquidity(pool, [poolToken], [provideAmount]);
+
+        await marginLong.borrow(poolToken.address, provideAmount);
     });
 
     this.afterEach(async () => {
@@ -63,46 +65,42 @@ describe("Handle price movement", async function () {
         await redeemLiquidity(configType, hre, pool);
     });
 
-    it("should liquidate an account", async () => {
-        await marginLong.borrow(poolToken.address, provideAmount);
+    // it("should liquidate an account", async () => {
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect((await pool.totalAmountLocked(poolToken.address)).gte(provideAmount)).to.equal(true);
+    // });
 
-        expect((await pool.totalAmountLocked(poolToken.address)).gte(provideAmount)).to.equal(true);
-    });
+    // it("should reset an account", async () => {
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.resetAccount(signerAddress));
 
-    it("should reset an account", async () => {
-        await marginLong.borrow(poolToken.address, provideAmount);
+    //     await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        expect(await marginLong.resettable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.resetAccount(signerAddress));
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(true);
+    //     await (await marginLong.resetAccount(signerAddress)).wait();
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
+    //     expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
+    // });
 
-        expect(await marginLong.resettable(signerAddress)).to.equal(true);
-        await (await marginLong.resetAccount(signerAddress)).wait();
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    // it("should update timelock balance with tax after liquidation", async () => {
+    //     const timelockInitialBalance = await poolToken.balanceOf(timelock.address);
 
-        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
-        expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
-    });
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-    it("should update timelock balance with tax after liquidation", async () => {
-        const timelockInitialBalance = await poolToken.balanceOf(timelock.address);
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
-
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-
-        expect((await poolToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
-    });
+    //     expect((await poolToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+    // });
 
     it("should liquidate an account with the resolver", async () => {
         const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
