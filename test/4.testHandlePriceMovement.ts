@@ -103,6 +103,8 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account with the resolver", async () => {
+        // **** For some reason the resolver is not working at all as if the address is broken ?
+
         const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
         expect(initialCanExecute).to.equal(false);
         await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
