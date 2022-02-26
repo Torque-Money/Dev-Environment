@@ -162,9 +162,8 @@ describe("Handle price movement", async function () {
     // });
 
     it("should liquidate an account that exceeds the leverage limit by its collateral falling in value", async () => {
-        // **** This one is not returning the allocated amount that it needs to return (it PROBABLY has something to do with the liquidation percentages ?)
-        // **** It is because the collateral is being funnelled back after the liquidation and is being converted into another token - perhaps this might need to be handled in the future
-        // **** We could handle this with a distribute tokens where each token would be distributed back into its original amount based on how much it initially changed
+        // We are sometimes seeing a lack of collateral available due to the liquidations or repayments funnelling the tokens into the pool which is then converting them
+        // To solve this in the future, maybe we could have a function which would record the different changes and funnel them back into other tokens
 
         await marginLong["repayAccount()"]();
 
