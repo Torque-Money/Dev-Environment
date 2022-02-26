@@ -4,7 +4,7 @@ import hre from "hardhat";
 
 import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20, OracleTest} from "../typechain-types";
 import {BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getPoolTokens, logTokenAmounts} from "../scripts/utils/helpers/utilTokens";
+import {getCollateralTokens, getPoolTokens} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {changePrice, setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
@@ -63,8 +63,6 @@ describe("Handle price movement", async function () {
     this.afterEach(async () => {
         await removeCollateral(configType, hre, marginLong);
         await redeemLiquidity(configType, hre, pool);
-
-        await logTokenAmounts(configType, hre);
     });
 
     // it("should liquidate an account", async () => {
