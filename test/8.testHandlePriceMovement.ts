@@ -65,101 +65,101 @@ describe("Handle price movement", async function () {
         await redeemLiquidity(configType, hre, pool);
     });
 
-    it("should liquidate an account", async () => {
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
+    // it("should liquidate an account", async () => {
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.liquidateAccount(signerAddress));
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect(await marginLong.liquidatable(signerAddress)).to.equal(true);
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await pool.totalAmountLocked(poolToken.address)).gte(provideAmount)).to.equal(true);
-    });
+    //     expect((await pool.totalAmountLocked(poolToken.address)).gte(provideAmount)).to.equal(true);
+    // });
 
-    it("should reset an account", async () => {
-        expect(await marginLong.resettable(signerAddress)).to.equal(false);
-        await shouldFail(async () => await marginLong.resetAccount(signerAddress));
+    // it("should reset an account", async () => {
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(false);
+    //     await shouldFail(async () => await marginLong.resetAccount(signerAddress));
 
-        await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        expect(await marginLong.resettable(signerAddress)).to.equal(true);
-        await (await marginLong.resetAccount(signerAddress)).wait();
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect(await marginLong.resettable(signerAddress)).to.equal(true);
+    //     await (await marginLong.resetAccount(signerAddress)).wait();
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
-        expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
-    });
+    //     expect((await marginLong.collateral(collateralToken.address, signerAddress)).lt(collateralAmount)).to.equal(true);
+    //     expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
+    // });
 
-    it("should update timelock balance with tax after liquidation", async () => {
-        const timelockInitialBalance = await poolToken.balanceOf(timelock.address);
+    // it("should update timelock balance with tax after liquidation", async () => {
+    //     const timelockInitialBalance = await poolToken.balanceOf(timelock.address);
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        await (await marginLong.liquidateAccount(signerAddress)).wait();
+    //     await (await marginLong.liquidateAccount(signerAddress)).wait();
 
-        expect((await poolToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
-    });
+    //     expect((await poolToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
+    // });
 
-    it("should liquidate an account with the resolver", async () => {
-        const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
-        expect(initialCanExecute).to.equal(false);
-        await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
+    // it("should liquidate an account with the resolver", async () => {
+    //     const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
+    //     expect(initialCanExecute).to.equal(false);
+    //     await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
 
-        const ethAddress = await resolver.ethAddress();
-        const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
+    //     const ethAddress = await resolver.ethAddress();
+    //     const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        const [canExecute, callData] = await resolver.checkLiquidate();
-        expect(canExecute).to.equal(true);
-        await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
+    //     const [canExecute, callData] = await resolver.checkLiquidate();
+    //     expect(canExecute).to.equal(true);
+    //     await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
-    });
+    //     expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+    // });
 
-    it("should reset an account with the resolver", async () => {
-        const [initialCanExecute, initialCallData] = await resolver.checkReset();
-        expect(initialCanExecute).to.equal(false);
-        await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
+    // it("should reset an account with the resolver", async () => {
+    //     const [initialCanExecute, initialCallData] = await resolver.checkReset();
+    //     expect(initialCanExecute).to.equal(false);
+    //     await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
 
-        const ethAddress = await resolver.ethAddress();
-        const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
+    //     const ethAddress = await resolver.ethAddress();
+    //     const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
 
-        await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, collateralToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        const [canExecute, callData] = await resolver.checkReset();
-        expect(canExecute).to.equal(true);
-        await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
+    //     const [canExecute, callData] = await resolver.checkReset();
+    //     expect(canExecute).to.equal(true);
+    //     await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
-    });
+    //     expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+    // });
 
-    it("should repay an account with profit", async () => {
-        const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+    // it("should repay an account with profit", async () => {
+    //     const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
 
-        await changePrice(oracle, poolToken, (100 + MINOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, poolToken, (100 + MINOR_PRICE_CHANGE_PERCENT) / 100);
 
-        await (await marginLong["repayAccount()"]()).wait();
-        expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
+    //     await (await marginLong["repayAccount()"]()).wait();
+    //     expect((await marginLong.collateralPrice(signerAddress)).gt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.totalAmountLocked(poolToken.address)).lt(provideAmount)).to.equal(true);
-    });
+    //     expect((await pool.totalAmountLocked(poolToken.address)).lt(provideAmount)).to.equal(true);
+    // });
 
-    it("should repay an account with a loss", async () => {
-        await changePrice(oracle, poolToken, (100 - MINOR_PRICE_CHANGE_PERCENT) / 100);
+    // it("should repay an account with a loss", async () => {
+    //     await changePrice(oracle, poolToken, (100 - MINOR_PRICE_CHANGE_PERCENT) / 100);
 
-        const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
-        await (await marginLong["repayAccount()"]()).wait();
-        expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
+    //     const initialAccountPrice = await marginLong.collateralPrice(signerAddress);
+    //     await (await marginLong["repayAccount()"]()).wait();
+    //     expect((await marginLong.collateralPrice(signerAddress)).lt(initialAccountPrice)).to.equal(true);
 
-        expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
-    });
+    //     expect((await pool.totalAmountLocked(poolToken.address)).gt(provideAmount)).to.equal(true);
+    // });
 
     it("should liquidate an account that exceeds the leverage limit by its collateral falling in value", async () => {
         await marginLong["repayAccount()"]();
