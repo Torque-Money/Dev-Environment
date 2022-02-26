@@ -7,7 +7,7 @@
       "hash": "0x2c57b7ff38d35e193bd9cd05f3c918fc96301507be50235632ceae540bbee4ae",
       "type": 0,
       "accessList": null,
-      "blockHash": "0x05cc6647017bfe6777cdb21caae18c6c1910c0ac5740b73209782a233f04d813",
+      "blockHash": "0xdd7a0422a1cf1251a94a5a83bb2815057bc347585090f6642bb5f4f919adc64a",
       "blockNumber": 28793948,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -86,21 +86,6 @@
       "kind": "transparent"
     },
     {
-      "address": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB",
-      "txHash": "0x22f6514a10b49cb348dfb3111cae76be85099adaa0bd01bbfb298371130c6899",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
-      "txHash": "0xe4e21272953163d0786e5c7d08f15cf9090915926b9d32218c2dbdb652b96b7a",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
-      "txHash": "0x1fed5f27d8df89228696ae376f671ae6ecfaaf443eee1277edd7f0708687a759",
-      "kind": "transparent"
-    },
-    {
       "address": "0x922D6956C99E12DFeB3224DEA977D0939758A1Fe",
       "txHash": "0xa17774061b496448bbebd8520105d1cd9f7d0dc2c32a6b02e385631ec0705bc5",
       "kind": "transparent"
@@ -133,6 +118,21 @@
     {
       "address": "0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7",
       "txHash": "0x5e0421665e882fed8b6fb2374eff4076ea345b5e9948d4bc76c8fe09fc183e8c",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB",
+      "txHash": "0x529f2e85139c768c7be28ff8d09310bdab7a75f87665ea17ac4c6ce2102e3bb7",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
+      "txHash": "0xa48475a865166c0810faafca8e5bddb7700dbf335efb9a8017d4f5e54e2c2efa",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
+      "txHash": "0xa2a97bd90742c7fd4ebe27bd1ffa7d2371dc930f6315f748435391150df47703",
       "kind": "transparent"
     }
   ],
@@ -294,7 +294,7 @@
     },
     "ea694ba0cd4cb28e24f78b778ea508dae7a625e3a6d9eebd94e85411d38dee38": {
       "address": "0x4EE6eCAD1c2Dae9f525404De8555724e3c35d07B",
-      "txHash": "0xe10c7c35fd8088f6d1ac85caf4180d2fcf91af0161006ad3a182156a2ff43ab3",
+      "txHash": "0x5f29a9679fba8fad4cfd7ce92117a22d201a829560fe25c033592bbe4a7fb6c2",
       "layout": {
         "storage": [
           {
@@ -639,7 +639,7 @@
     },
     "6b37aff3d1eff908d2f27fc449bf8943f10c511a7bf8dd32d7f2341afdcbfc3c": {
       "address": "0x0355B7B8cb128fA5692729Ab3AAa199C1753f726",
-      "txHash": "0x7a651e1de8c199ce193ecebb1c88e299f4282921c5692596e24d0bc3b528b3b0",
+      "txHash": "0x2a83f8e4de5bfb23d7886bbf58c5fd1e40a032429d09145774e44978168a75d8",
       "layout": {
         "storage": [
           {
@@ -717,7 +717,7 @@
           {
             "contract": "FlashLenderCore",
             "label": "_feePercent",
-            "type": "t_struct(Fraction)12623_storage",
+            "type": "t_struct(Fraction)12668_storage",
             "src": "contracts/FlashLender/FlashLenderCore.sol:17"
           },
           {
@@ -746,7 +746,7 @@
           "t_bytes32": {
             "label": "bytes32"
           },
-          "t_struct(Fraction)12623_storage": {
+          "t_struct(Fraction)12668_storage": {
             "label": "struct FractionMath.Fraction",
             "members": [
               {
@@ -789,7 +789,7 @@
     },
     "84f9d4a07b79c962220af28c644237958fd5a0ae9b87a4538842ef245a11e53a": {
       "address": "0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
-      "txHash": "0x5f5c2ac8a9dbf241374d2e8d72c3f8c214d448460c1315e823b15c9a4084d854",
+      "txHash": "0xfc3be6f2b0a8bdf2b9b7ef3eac3f3f8fc72d3b5a57ef97d947168de3c231f245",
       "layout": {
         "storage": [
           {
