@@ -142,6 +142,8 @@ describe("MarginLong", async function () {
         // expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(0);
 
         await removeCollateral(configType, hre, marginLong);
+
+        console.log(await collateralToken.balanceOf(marginLong.address));
     });
 
     // it("should open and repay all leveraged positions", async () => {
