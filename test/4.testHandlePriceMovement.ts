@@ -102,24 +102,24 @@ describe("Handle price movement", async function () {
     //     expect((await poolToken.balanceOf(timelock.address)).gt(timelockInitialBalance)).to.equal(true);
     // });
 
-    it("should liquidate an account with the resolver", async () => {
-        const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
-        expect(initialCanExecute).to.equal(false);
-        await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
+    // it("should liquidate an account with the resolver", async () => {
+    //     const [initialCanExecute, initialCallData] = await resolver.checkLiquidate();
+    //     expect(initialCanExecute).to.equal(false);
+    //     await shouldFail(async () => await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: initialCallData}));
 
-        const ethAddress = await resolver.ethAddress();
-        const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
+    //     const ethAddress = await resolver.ethAddress();
+    //     const initialCredits = await taskTreasury.userTokenBalance(signerAddress, ethAddress);
 
-        await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
+    //     await changePrice(oracle, poolToken, (100 - MAJOR_PRICE_CHANGE_PERCENT) / 100);
 
-        const [canExecute, callData] = await resolver.checkLiquidate();
-        expect(canExecute).to.equal(true);
-        await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
+    //     const [canExecute, callData] = await resolver.checkLiquidate();
+    //     expect(canExecute).to.equal(true);
+    //     await hre.ethers.provider.getSigner().sendTransaction({to: resolver.address, data: callData});
 
-        expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
+    //     expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
-        expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
-    });
+    //     expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+    // });
 
     it("should reset an account with the resolver", async () => {
         const [initialCanExecute, initialCallData] = await resolver.checkReset();
@@ -138,6 +138,8 @@ describe("Handle price movement", async function () {
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(0);
 
         expect((await taskTreasury.userTokenBalance(signerAddress, ethAddress)).gt(initialCredits)).to.equal(true);
+
+        // **** We need to do some sort of calculation that can figure out the liquidation price OR the the reset price of the given assets
     });
 
     it("should repay an account with profit", async () => {
