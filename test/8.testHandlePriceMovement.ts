@@ -30,7 +30,7 @@ describe("Handle price movement", async function () {
     let signerAddress: string;
 
     const MINOR_PRICE_CHANGE_PERCENT = 10;
-    const MAJOR_PRICE_CHANGE_PERCENT = 99;
+    const MAJOR_PRICE_CHANGE_PERCENT = 80;
 
     this.beforeAll(async () => {
         poolToken = (await getPoolTokens(configType, hre))[0];
