@@ -62,3 +62,14 @@ export async function getTokenAmount(hre: HardhatRuntimeEnvironment, tokens: ERC
 
     return amounts;
 }
+
+export async function logTokenAmounts(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    const config = chooseConfig(configType);
+
+    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
+
+    for (const {address} of config.tokens.approved) {
+        const token = await hre.ethers.getContractAt("ERC20", address);
+        console.log(await token.balanceOf(signerAddress));
+    }
+}
