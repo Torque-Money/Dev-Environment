@@ -31,7 +31,7 @@ describe("Oracle", async function () {
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        for (const token of oracleTokens) await setPrice(oracle, token, hre.ethers.BigNumber.from(0));
+        for (const token of oracleTokens) await setPrice(oracle, token, hre.ethers.BigNumber.from(0), false);
     });
 
     it("should get the prices for accepted tokens", async () => {
