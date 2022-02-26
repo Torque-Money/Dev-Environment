@@ -53,10 +53,10 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("test-wrapper", "Wrapper for tests", async (args, hre) => {
-    // await utilFund("fork", hre);
-    // await utilApprove("fork", hre);
+    await utilFund("fork", hre);
+    await utilApprove("fork", hre);
 
-    // await hre.run("test");
+    await hre.run("test");
 
     await utilClump("fork", hre);
 });

@@ -162,9 +162,6 @@ describe("Handle price movement", async function () {
     });
 
     it("should liquidate an account that exceeds the leverage limit by its collateral falling in value", async () => {
-        // We are sometimes seeing a lack of collateral available due to the liquidations or repayments funnelling the tokens into the pool which is then converting them
-        // To solve this in the future, maybe we could have a function which would record the different changes and funnel them back into other tokens
-
         await marginLong["repayAccount()"]();
 
         await (await marginLong.borrow(poolToken.address, provideAmount)).wait();
