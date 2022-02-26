@@ -18,6 +18,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await deployLPToken(configType, hre);
     await deployMarginLong(configType, hre);
     await deployResolver(configType, hre);
-    // await deployFlashLender(configType, hre);
-    // await deployTimelock(configType, hre);
+    await deployFlashLender(configType, hre);
+    await deployTimelock(configType, hre);
 }
