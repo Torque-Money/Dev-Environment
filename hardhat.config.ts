@@ -72,8 +72,11 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
     const timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
 
     const TIMELOCK_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE"));
+    const TIMELOCK_PROPOSER = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("PROPOSER_ROLE"));
     await (await timelock.grantRole(TIMELOCK_ADMIN, multisigAddress)).wait();
-    await timelock.renounceRole(TIMELOCK_ADMIN, signer);
+    await (await timelock.grantRole(TIMELOCK_PROPOSER, multisigAddress)).wait();
+    await (await timelock.renounceRole(TIMELOCK_PROPOSER, signer)).wait();
+    await (await timelock.renounceRole(TIMELOCK_ADMIN, signer)).wait();
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
