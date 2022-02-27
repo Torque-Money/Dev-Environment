@@ -7,6 +7,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     let oracle = await hre.ethers.getContractAt("OracleApproved", config.contracts.oracleAddress);
 
+    await (await oracle.setPool(config.contracts.leveragePoolAddress)).wait();
+
     const oracleApproved = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
     const priceFeeds = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
     const correctDecimals = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);

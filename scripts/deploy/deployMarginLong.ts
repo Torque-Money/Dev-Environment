@@ -8,8 +8,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        pool: config.contracts.leveragePoolAddress,
-        oracle: config.contracts.oracleAddress,
+        pool: "",
+        oracle: "",
         minCollateralPrice: hre.ethers.BigNumber.from(10).pow(18).mul(100),
         maxLeverageNumerator: 125,
         maxLeverageDenominator: 1,

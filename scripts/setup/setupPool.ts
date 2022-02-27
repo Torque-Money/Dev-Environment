@@ -7,6 +7,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const leveragePool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
+    await (await leveragePool.setConverter(config.contracts.converterAddress)).wait();
+    await (await leveragePool.setOracle(config.contracts.oracleAddress)).wait();
+
     const leveragePoolApprovedTokens = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
     const LPTokens = config.tokens.lpTokens.tokens;
     await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();

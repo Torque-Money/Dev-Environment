@@ -8,7 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        pool: config.contracts.leveragePoolAddress,
+        pool: "",
         feePercentNumerator: 1,
         feePercentDenominator: 1000000,
     };

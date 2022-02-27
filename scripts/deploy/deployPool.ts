@@ -8,8 +8,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        converter: config.contracts.converterAddress,
-        oracle: config.contracts.oracleAddress,
+        converter: "",
+        oracle: "",
         taxPercentNumerator: 5,
         taxPercentDenominator: 100,
         timePerInterestApplication: hre.ethers.BigNumber.from(86400).mul(365),

@@ -7,6 +7,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
 
+    await (await marginLong.setPool(config.contracts.leveragePoolAddress)).wait();
+    await (await marginLong.setOracle(config.contracts.oracleAddress)).wait();
+
     const marginApprovedCollateral = config.tokens.approved.filter((approved) => approved.marginLongCollateral).map((approved) => approved.address);
     await (await marginLong.addCollateralToken(marginApprovedCollateral)).wait();
     const marginSupportedCollateral = Array(marginApprovedCollateral.length).fill(true);
