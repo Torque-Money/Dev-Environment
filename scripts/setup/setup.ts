@@ -10,11 +10,11 @@ import setupFlashLender from "./setupFlashLender";
 import setupResolver from "./setupResolver";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
-    await setupOracle(configType, hre);
-    await setupPool(configType, hre);
-    await setupMarginLong(configType, hre);
-    await setupResolver(configType, hre);
-    await setupFlashLender(configType, hre);
+    // await setupOracle(configType, hre);
+    // await setupPool(configType, hre);
+    // await setupMarginLong(configType, hre);
+    // await setupResolver(configType, hre);
+    // await setupFlashLender(configType, hre);
 
     await setupTimelock(configType, hre);
 }

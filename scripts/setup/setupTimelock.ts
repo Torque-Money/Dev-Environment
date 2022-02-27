@@ -52,6 +52,4 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await beacon.transferOwnership(config.contracts.timelockAddress);
 
     console.log("Setup: Timelock");
-
-    // **** As an extra step, we need to assign the timelock to the multisig
 }

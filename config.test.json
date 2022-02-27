@@ -6,13 +6,13 @@
     "LPPrefixSymbol": "tlp"
   },
   "contracts": {
-    "leveragePoolAddress": "0x1396Fb693D6a07D9FA87d9f116c0c82f6C3C5D1C",
-    "oracleAddress": "0xC2D9B4aaE5357a31407317e605582D515aA5e3f2",
-    "converterAddress": "0x60f3c1d1878B783F2035c5Fa1CBb3ADca2c1c0E2",
-    "marginLongAddress": "0x6b1B914f8756fd1d61Cb9b59c3D757413da2b441",
-    "resolverAddress": "0xDD4b85A2F25Caa431A38356e0237e58C66A5b361",
-    "timelockAddress": "0x98a94c4A41A1c57B74E3Da9C7d16ba5164BbB3Cd",
-    "flashLender": "0xC101992148CCA234f484A2D639c422e732301D84",
+    "leveragePoolAddress": "0x2E214d255E2a74d090718fe25ABeb05b78a21f56",
+    "oracleAddress": "0xC44E35e85EdCA478bf6510dE81D224356b446f11",
+    "converterAddress": "0xe5a02e7c436759830106Fee25d183a01393Ff5E3",
+    "marginLongAddress": "0x2B32717Ffe1EDe81092B893B0b7E88CA72266E0D",
+    "resolverAddress": "0xd7B6AC1350da4A7Bf298567ec0E322a2aBEAB735",
+    "timelockAddress": "0x2e5Cb4cc506CD8BcEF3a428cE19A2e213C03eF54",
+    "flashLender": "0x5c1e8FAe208B97B89d6410d133bffbC9e9579926",
     "flashBorrowerTest": ""
   },
   "tokens": {
@@ -59,10 +59,10 @@
       }
     },
     "lpTokens": {
-      "beaconAddress": "0x8E952a993713A9F648eC14e8c2A8149EFc1Ba05b",
+      "beaconAddress": "0x186AE8FAA0bde475cc11A206FAb848eD4A532F8c",
       "tokens": [
-        "0xED8273562Bd87afD26A7B8112EA1c0B1c2980e5C",
-        "0xFe2b128CD4777D8E574047869be2BE64f792D082"
+        "0x3eDEF9A701591aBE73840Bbeb1785875A893255C",
+        "0x63cC464102BD869B6Fe1093bad8392F47A4f0040"
       ]
     },
     "approved": [
