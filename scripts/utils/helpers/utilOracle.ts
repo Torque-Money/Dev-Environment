@@ -1,8 +1,8 @@
 import {Contract, ethers} from "ethers";
 
-import {ERC20} from "../../../typechain-types";
+import {ERC20Upgradeable} from "../../../typechain-types";
 
-export async function setPrice(oracle: Contract, token: ERC20, rawPrice: ethers.BigNumber, useDecimals: boolean = true) {
+export async function setPrice(oracle: Contract, token: ERC20Upgradeable, rawPrice: ethers.BigNumber, useDecimals: boolean = true) {
     const priceDecimals = await oracle.priceDecimals();
 
     let price;
@@ -14,7 +14,7 @@ export async function setPrice(oracle: Contract, token: ERC20, rawPrice: ethers.
     return price;
 }
 
-export async function changePrice(oracle: Contract, token: ERC20, percentChange: number) {
+export async function changePrice(oracle: Contract, token: ERC20Upgradeable, percentChange: number) {
     const ROUND_DECIMALS = 10 ** 5;
 
     const currentPrice = await oracle.priceMax(token.address, ethers.BigNumber.from(10).pow(await oracle.decimals(token.address)));

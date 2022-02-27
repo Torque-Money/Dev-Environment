@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
+import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens} from "../scripts/utils/helpers/utilTokens";
@@ -15,8 +15,8 @@ describe("Interest", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolToken: ERC20;
-    let collateralToken: ERC20;
+    let poolToken: ERC20Upgradeable;
+    let collateralToken: ERC20Upgradeable;
 
     let provideAmount: BigNumber;
     let collateralAmount: BigNumber;

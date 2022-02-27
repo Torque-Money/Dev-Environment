@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20, OracleTest} from "../typechain-types";
+import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../typechain-types";
 import {BORROW_PRICE, COLLATERAL_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
@@ -14,8 +14,8 @@ describe("Handle price movement", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolToken: ERC20;
-    let collateralToken: ERC20;
+    let poolToken: ERC20Upgradeable;
+    let collateralToken: ERC20Upgradeable;
 
     let provideAmount: BigNumber;
     let collateralAmount: BigNumber;

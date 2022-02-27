@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20, LPool} from "../typechain-types";
+import {ERC20Upgradeable, LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
@@ -11,7 +11,7 @@ describe("Pool", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: ERC20[];
+    let poolTokens: ERC20Upgradeable[];
 
     let provideAmounts: BigNumber[];
 

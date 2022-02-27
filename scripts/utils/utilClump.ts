@@ -12,7 +12,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const weth = await hre.ethers.getContractAt("WETH", config.tokens.wrappedCoin.address);
 
     for (const approved of config.tokens.approved.filter((approved) => approved.address != weth.address)) {
-        const token = await hre.ethers.getContractAt("ERC20", approved.address);
+        const token = await hre.ethers.getContractAt("ERC20Upgradeable", approved.address);
         const balance = await token.balanceOf(signerAddress);
 
         await token.approve(router.address, hre.ethers.BigNumber.from(2).pow(255));
@@ -21,7 +21,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         console.log(`Clump: Clumped ${approved.address}`);
     }
 
-    const wethToken = await hre.ethers.getContractAt("ERC20", weth.address);
+    const wethToken = await hre.ethers.getContractAt("ERC20Upgradeable", weth.address);
     const wethAmount = await wethToken.balanceOf(signerAddress);
     await (await weth.withdraw(wethAmount)).wait();
     console.log(`Clump: Clumped ${weth.address}`);

@@ -8,7 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const approvedAmount = hre.ethers.BigNumber.from(2).pow(255);
 
     for (const approved of config.tokens.approved) {
-        const token = await hre.ethers.getContractAt("ERC20", approved.address);
+        const token = await hre.ethers.getContractAt("ERC20Upgradeable", approved.address);
 
         await (await token.approve(config.contracts.leveragePoolAddress, approvedAmount)).wait();
         await (await token.approve(config.contracts.marginLongAddress, approvedAmount)).wait();
@@ -18,7 +18,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         console.log(`Approve: Approved contracts to spend tokens with address ${approved.address}`);
     }
 
-    const weth = await hre.ethers.getContractAt("ERC20", config.tokens.wrappedCoin.address);
+    const weth = await hre.ethers.getContractAt("ERC20Upgradeable", config.tokens.wrappedCoin.address);
 
     await (await weth.approve(config.contracts.leveragePoolAddress, approvedAmount)).wait();
     await (await weth.approve(config.contracts.marginLongAddress, approvedAmount)).wait();

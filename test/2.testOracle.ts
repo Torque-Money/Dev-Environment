@@ -1,9 +1,9 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {ERC20, LPool, OracleTest} from "../typechain-types";
+import {ERC20Upgradeable, LPool, OracleTest} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
-import {BIG_NUM, BORROW_PRICE, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
@@ -13,8 +13,8 @@ describe("Oracle", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let oracleTokens: ERC20[];
-    let poolTokens: ERC20[];
+    let oracleTokens: ERC20Upgradeable[];
+    let poolTokens: ERC20Upgradeable[];
 
     let provideAmounts: BigNumber[];
 

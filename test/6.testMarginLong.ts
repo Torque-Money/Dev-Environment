@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20, LPool, MarginLong, OracleTest} from "../typechain-types";
+import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../typechain-types";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
@@ -14,8 +14,8 @@ describe("MarginLong", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let poolTokens: ERC20[];
-    let collateralTokens: ERC20[];
+    let poolTokens: ERC20Upgradeable[];
+    let collateralTokens: ERC20Upgradeable[];
 
     let provideAmounts: BigNumber[];
     let collateralAmounts: BigNumber[];

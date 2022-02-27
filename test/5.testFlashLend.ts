@@ -2,7 +2,7 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20, FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
+import {ERC20Upgradeable, FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
 import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getFlashLenderTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
 import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
@@ -12,7 +12,7 @@ describe("FlashLend", async function () {
     const configType: ConfigType = "fork";
     const config = chooseConfig(configType);
 
-    let flashLendToken: ERC20;
+    let flashLendToken: ERC20Upgradeable;
 
     let flashLendAmount: BigNumber;
 
