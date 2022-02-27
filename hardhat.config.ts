@@ -67,7 +67,7 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
     const config = chooseConfig("test");
 
     const signer = await hre.ethers.provider.getSigner().getAddress();
-    const multisigAddress = "0xD7139Cb768317a7AB541Cc7fb6D1086233Ed28aE";
+    const multisigAddress = "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2";
 
     const timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
 
