@@ -26,7 +26,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         saveTempConstructor(implementation, {});
     } else {
         const constructorArgs = {
-            pool: config.contracts.leveragePoolAddress,
+            pool: hre.ethers.constants.AddressZero,
             priceDecimals: 18,
             thresholdNumerator: 1,
             thresholdDenominator: 200,
