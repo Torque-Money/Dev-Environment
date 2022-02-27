@@ -1,1 +1,134 @@
-{"setup":{"routerAddress":"0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D","taskTreasury":"0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60","LPPrefixName":"Torque Leverage Pool","LPPrefixSymbol":"tlp"},"contracts":{"leveragePoolAddress":"0x1396Fb693D6a07D9FA87d9f116c0c82f6C3C5D1C","oracleAddress":"0xC2D9B4aaE5357a31407317e605582D515aA5e3f2","converterAddress":"0x60f3c1d1878B783F2035c5Fa1CBb3ADca2c1c0E2","marginLongAddress":"0x6b1B914f8756fd1d61Cb9b59c3D757413da2b441","resolverAddress":"0xDD4b85A2F25Caa431A38356e0237e58C66A5b361","timelockAddress":"0x98a94c4A41A1c57B74E3Da9C7d16ba5164BbB3Cd","flashLender":"0xC101992148CCA234f484A2D639c422e732301D84","flashBorrowerTest":""},"tokens":{"nativeCoin":{"name":"Ethereum","symbol":"ETH","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png","address":"0xc778417e063141139fce010982780140aa0cd5ab","decimals":18,"priceFeed":"","oracle":false,"marginLongCollateral":false,"marginLongBorrow":false,"leveragePool":false,"flashLender":false,"setup":{"maxInterestMinNumerator":0,"maxInterestMinDenominator":0,"maxInterestMaxNumerator":0,"maxInterestMaxDenominator":0,"maxUtilizationNumerator":0,"maxUtilizationDenominator":0}},"wrappedCoin":{"name":"Wrapped Ethereum","symbol":"wETH","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png","address":"0xc778417e063141139fce010982780140aa0cd5ab","decimals":18,"priceFeed":"","oracle":false,"marginLongCollateral":false,"marginLongBorrow":false,"leveragePool":false,"flashLender":false,"setup":{"maxInterestMinNumerator":0,"maxInterestMinDenominator":0,"maxInterestMaxNumerator":0,"maxInterestMaxDenominator":0,"maxUtilizationNumerator":0,"maxUtilizationDenominator":0}},"lpTokens":{"beaconAddress":"0x8E952a993713A9F648eC14e8c2A8149EFc1Ba05b","tokens":["0xED8273562Bd87afD26A7B8112EA1c0B1c2980e5C","0xFe2b128CD4777D8E574047869be2BE64f792D082"]},"approved":[{"name":"Dai","symbol":"DAI","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png","address":"0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658","decimals":18,"priceFeed":"0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF","oracle":true,"marginLongCollateral":true,"marginLongBorrow":false,"leveragePool":false,"flashLender":false,"setup":{"maxInterestMinNumerator":0,"maxInterestMinDenominator":0,"maxInterestMaxNumerator":0,"maxInterestMaxDenominator":0,"maxUtilizationNumerator":0,"maxUtilizationDenominator":0}},{"name":"Wrapped Ethereum","symbol":"wETH","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png","address":"0xc778417e063141139fce010982780140aa0cd5ab","decimals":18,"priceFeed":"0x8A753747A1Fa494EC906cE90E9f37563A8AF630e","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true,"flashLender":true,"setup":{"maxInterestMinNumerator":25,"maxInterestMinDenominator":100,"maxInterestMaxNumerator":75,"maxInterestMaxDenominator":100,"maxUtilizationNumerator":80,"maxUtilizationDenominator":100}},{"name":"Chainlink","symbol":"LINK","icon":"https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png","address":"0x01be23585060835e02b77ef475b0cc51aa1e0709","decimals":18,"priceFeed":"0xd8bD0a1cB028a31AA859A21A3758685a95dE4623","oracle":true,"marginLongCollateral":true,"marginLongBorrow":true,"leveragePool":true,"flashLender":true,"setup":{"maxInterestMinNumerator":25,"maxInterestMinDenominator":100,"maxInterestMaxNumerator":75,"maxInterestMaxDenominator":100,"maxUtilizationNumerator":80,"maxUtilizationDenominator":100}}]}}
+{
+  "setup": {
+    "routerAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "taskTreasury": "0x90F609c73F7498dD031e0dAfF3B40e93c04a6C60",
+    "LPPrefixName": "Torque Leverage Pool",
+    "LPPrefixSymbol": "tlp"
+  },
+  "contracts": {
+    "leveragePoolAddress": "0x1396Fb693D6a07D9FA87d9f116c0c82f6C3C5D1C",
+    "oracleAddress": "0xC2D9B4aaE5357a31407317e605582D515aA5e3f2",
+    "converterAddress": "0x60f3c1d1878B783F2035c5Fa1CBb3ADca2c1c0E2",
+    "marginLongAddress": "0x6b1B914f8756fd1d61Cb9b59c3D757413da2b441",
+    "resolverAddress": "0xDD4b85A2F25Caa431A38356e0237e58C66A5b361",
+    "timelockAddress": "0x98a94c4A41A1c57B74E3Da9C7d16ba5164BbB3Cd",
+    "flashLender": "0xC101992148CCA234f484A2D639c422e732301D84",
+    "flashBorrowerTest": ""
+  },
+  "tokens": {
+    "nativeCoin": {
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18,
+      "priceFeed": "",
+      "oracle": false,
+      "marginLongCollateral": false,
+      "marginLongBorrow": false,
+      "leveragePool": false,
+      "flashLender": false,
+      "setup": {
+        "maxInterestMinNumerator": 0,
+        "maxInterestMinDenominator": 0,
+        "maxInterestMaxNumerator": 0,
+        "maxInterestMaxDenominator": 0,
+        "maxUtilizationNumerator": 0,
+        "maxUtilizationDenominator": 0
+      }
+    },
+    "wrappedCoin": {
+      "name": "Wrapped Ethereum",
+      "symbol": "wETH",
+      "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+      "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+      "decimals": 18,
+      "priceFeed": "",
+      "oracle": false,
+      "marginLongCollateral": false,
+      "marginLongBorrow": false,
+      "leveragePool": false,
+      "flashLender": false,
+      "setup": {
+        "maxInterestMinNumerator": 0,
+        "maxInterestMinDenominator": 0,
+        "maxInterestMaxNumerator": 0,
+        "maxInterestMaxDenominator": 0,
+        "maxUtilizationNumerator": 0,
+        "maxUtilizationDenominator": 0
+      }
+    },
+    "lpTokens": {
+      "beaconAddress": "0x8E952a993713A9F648eC14e8c2A8149EFc1Ba05b",
+      "tokens": [
+        "0xED8273562Bd87afD26A7B8112EA1c0B1c2980e5C",
+        "0xFe2b128CD4777D8E574047869be2BE64f792D082"
+      ]
+    },
+    "approved": [
+      {
+        "name": "Dai",
+        "symbol": "DAI",
+        "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+        "address": "0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658",
+        "decimals": 18,
+        "priceFeed": "0x2bA49Aaa16E6afD2a993473cfB70Fa8559B523cF",
+        "oracle": true,
+        "marginLongCollateral": true,
+        "marginLongBorrow": false,
+        "leveragePool": false,
+        "flashLender": false,
+        "setup": {
+          "maxInterestMinNumerator": 0,
+          "maxInterestMinDenominator": 0,
+          "maxInterestMaxNumerator": 0,
+          "maxInterestMaxDenominator": 0,
+          "maxUtilizationNumerator": 0,
+          "maxUtilizationDenominator": 0
+        }
+      },
+      {
+        "name": "Wrapped Ethereum",
+        "symbol": "wETH",
+        "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+        "address": "0xc778417e063141139fce010982780140aa0cd5ab",
+        "decimals": 18,
+        "priceFeed": "0x8A753747A1Fa494EC906cE90E9f37563A8AF630e",
+        "oracle": true,
+        "marginLongCollateral": true,
+        "marginLongBorrow": true,
+        "leveragePool": true,
+        "flashLender": true,
+        "setup": {
+          "maxInterestMinNumerator": 25,
+          "maxInterestMinDenominator": 100,
+          "maxInterestMaxNumerator": 75,
+          "maxInterestMaxDenominator": 100,
+          "maxUtilizationNumerator": 80,
+          "maxUtilizationDenominator": 100
+        }
+      },
+      {
+        "name": "Chainlink",
+        "symbol": "LINK",
+        "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
+        "address": "0x01be23585060835e02b77ef475b0cc51aa1e0709",
+        "decimals": 18,
+        "priceFeed": "0xd8bD0a1cB028a31AA859A21A3758685a95dE4623",
+        "oracle": true,
+        "marginLongCollateral": true,
+        "marginLongBorrow": true,
+        "leveragePool": true,
+        "flashLender": true,
+        "setup": {
+          "maxInterestMinNumerator": 25,
+          "maxInterestMinDenominator": 100,
+          "maxInterestMaxNumerator": 75,
+          "maxInterestMaxDenominator": 100,
+          "maxUtilizationNumerator": 80,
+          "maxUtilizationDenominator": 100
+        }
+      }
+    ]
+  }
+}
