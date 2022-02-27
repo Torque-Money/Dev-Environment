@@ -20,6 +20,7 @@ import utilApprove from "./scripts/utils/utilApprove";
 import utilClump from "./scripts/utils/utilClump";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
+import {chooseConfig} from "./scripts/utils/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -61,6 +62,22 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
     await utilClump("fork", hre);
 });
 
+task("sandbox", "Testing sandbox", async (args, hre) => {
+    const config = chooseConfig("test");
+
+    const accountToInpersonate = "0xa02E9e63A828a08f29eb75b1bBc0A9aFe7A97EfA";
+    await hre.network.provider.request({
+        method: "hardhat_impersonateAccount",
+        params: [accountToInpersonate],
+    });
+    const signer = await hre.ethers.getSigner(accountToInpersonate);
+
+    const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress, signer);
+
+    const tokenAddress = "0x01be23585060835e02b77ef475b0cc51aa1e0709";
+    await (await marginLong["repayAccount(address)"](tokenAddress)).wait();
+});
+
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
 
@@ -74,8 +91,9 @@ export default {
         hardhat: {
             chainId: 1337,
             forking: {
-                url: NETWORK_URL,
-                blockNumber: PINNED_BLOCK,
+                // url: NETWORK_URL,
+                url: NETWORK_URL_TEST, // **** Remove
+                // blockNumber: PINNED_BLOCK,
             },
         },
         mainnet: {
