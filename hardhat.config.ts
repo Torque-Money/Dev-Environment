@@ -20,6 +20,7 @@ import utilApprove from "./scripts/utils/utilApprove";
 import utilClump from "./scripts/utils/utilClump";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
+
 import {chooseConfig} from "./scripts/utils/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
@@ -60,6 +61,18 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
     await hre.run("test");
 
     await utilClump("fork", hre);
+});
+
+task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", async (args, hre) => {
+    const config = chooseConfig("test");
+
+    const signer = await hre.ethers.provider.getSigner().getAddress();
+    const multisigAddress = "0xD7139Cb768317a7AB541Cc7fb6D1086233Ed28aE";
+
+    const timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
+    const TIMELOCK_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE"));
+    await (await timelock.grantRole(TIMELOCK_ADMIN, multisigAddress)).wait();
+    await timelock.renounceRole(TIMELOCK_ADMIN, signer);
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
