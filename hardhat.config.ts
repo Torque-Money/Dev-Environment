@@ -62,25 +62,6 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
     await utilClump("fork", hre);
 });
 
-task("sandbox", "Testing sandbox", async (args, hre) => {
-    const config = chooseConfig("test");
-
-    const accountToInpersonate = "0xa02E9e63A828a08f29eb75b1bBc0A9aFe7A97EfA";
-    await hre.network.provider.request({
-        method: "hardhat_impersonateAccount",
-        params: [accountToInpersonate],
-    });
-    const signer = await hre.ethers.getSigner(accountToInpersonate);
-    console.log("Impersonated account");
-
-    const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress, signer);
-    const tokenAddress = "0x01be23585060835e02b77ef475b0cc51aa1e0709";
-
-    console.log("Awaiting result");
-    await (await marginLong["repayAccount(address)"](tokenAddress)).wait();
-    console.log("Finished");
-});
-
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 28793946;
 
@@ -94,9 +75,8 @@ export default {
         hardhat: {
             chainId: 1337,
             forking: {
-                // url: NETWORK_URL,
-                url: NETWORK_URL_TEST, // **** Remove
-                // blockNumber: PINNED_BLOCK,
+                url: NETWORK_URL,
+                blockNumber: PINNED_BLOCK,
             },
         },
         mainnet: {

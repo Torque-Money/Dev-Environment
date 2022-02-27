@@ -13,7 +13,7 @@ import deployLPToken from "./deployLPToken";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await deployConverter(configType, hre);
-    await deployOracle(configType, hre); // **** So now we actually need a way of being able to set the oracle directly - perhaps we need to do this in the setup script
+    await deployOracle(configType, hre);
     await deployPool(configType, hre);
     await deployLPToken(configType, hre);
     await deployMarginLong(configType, hre);
