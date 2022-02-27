@@ -8,7 +8,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
 
     await (await resolver.setMarginLong(config.contracts.marginLongAddress)).wait();
+    console.log("-- Set margin long");
     await (await resolver.setConverter(config.contracts.converterAddress)).wait();
+    console.log("-- Set converter");
 
     console.log("Setup: MarginLong");
 }

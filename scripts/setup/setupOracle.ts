@@ -8,12 +8,14 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     let oracle = await hre.ethers.getContractAt("OracleApproved", config.contracts.oracleAddress);
 
     await (await oracle.setPool(config.contracts.leveragePoolAddress)).wait();
+    console.log("-- Set pool");
 
     const oracleApproved = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.address);
     const priceFeeds = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.priceFeed);
     const correctDecimals = config.tokens.approved.filter((approved) => approved.oracle).map((approved) => approved.decimals);
     const isApproved = Array(oracleApproved.length).fill(true);
     await (await oracle.setApprovedPriceFeed(oracleApproved, priceFeeds, correctDecimals, isApproved)).wait();
+    console.log("-- Set approved price feed");
 
     console.log("Setup: Oracle");
 }
