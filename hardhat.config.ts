@@ -71,11 +71,14 @@ task("sandbox", "Testing sandbox", async (args, hre) => {
         params: [accountToInpersonate],
     });
     const signer = await hre.ethers.getSigner(accountToInpersonate);
+    console.log("Impersonated account");
 
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress, signer);
-
     const tokenAddress = "0x01be23585060835e02b77ef475b0cc51aa1e0709";
+
+    console.log("Awaiting result");
     await (await marginLong["repayAccount(address)"](tokenAddress)).wait();
+    console.log("Finished");
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
