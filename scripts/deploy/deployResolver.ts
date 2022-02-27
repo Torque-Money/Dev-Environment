@@ -14,8 +14,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         taskTreasury: config.setup.taskTreasury,
         depositReceiver: signerAddress,
         ethAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-        marginLong: "",
-        converter: "",
+        marginLong: hre.ethers.constants.AddressZero,
+        converter: hre.ethers.constants.AddressZero,
     };
     const Resolver = await hre.ethers.getContractFactory("Resolver");
     const resolver = await hre.upgrades.deployProxy(Resolver, Object.values(constructorArgs));

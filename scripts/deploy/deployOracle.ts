@@ -9,7 +9,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     if (configType === "main") {
         const constructorArgs = {
-            pool: "",
+            pool: hre.ethers.constants.AddressZero,
             priceDecimals: 18,
             thresholdNumerator: 1,
             thresholdDenominator: 200,
