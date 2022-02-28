@@ -23,7 +23,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     for (const lpToken of LPTokens) {
         const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
         await (await LPToken.grantRole(TOKEN_ADMIN, leveragePool.address)).wait();
-        break;
     }
     console.log("-- Granted token admin");
 
