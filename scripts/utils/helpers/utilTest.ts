@@ -26,7 +26,7 @@ export async function approxEqual(a: BigNumber, b: BigNumber, percentError: numb
     }
 }
 
-export const CONFIG_TYPE: ConfigType = "main";
+export const CONFIG_TYPE: ConfigType = "fork";
 
 export const BIG_NUM = BigNumber.from(2).pow(96);
 
