@@ -84,7 +84,7 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
     // await (await timelock.renounceRole(TIMELOCK_ADMIN, signer)).wait();
     // console.log("-- Renounced multisig admin");
 
-    console.log("Setup Task: Handed timelock to multisig");
+    console.log("Setup Task: Multisig");
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
