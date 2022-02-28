@@ -22,7 +22,7 @@ import utilClump from "./scripts/utils/utilClump";
 import {verifyAll} from "./scripts/utils/utilVerify";
 import {chooseConfig} from "./scripts/utils/utilConfig";
 
-import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
+import {CONFIG_TYPE} from "./scripts/utils/helpers/utilTest";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -56,12 +56,12 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("test-wrapper", "Wrapper for tests", async (args, hre) => {
-    await utilFund("fork", hre);
-    await utilApprove("fork", hre);
+    await utilFund(CONFIG_TYPE, hre);
+    await utilApprove(CONFIG_TYPE, hre);
 
     await hre.run("test");
 
-    await utilClump("fork", hre);
+    await utilClump(CONFIG_TYPE, hre);
 });
 
 task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());

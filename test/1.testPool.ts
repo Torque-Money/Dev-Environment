@@ -9,6 +9,7 @@ import {chooseConfig} from "../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
     const config = chooseConfig(CONFIG_TYPE);
+    console.log(config);
 
     let poolTokens: ERC20Upgradeable[];
 
