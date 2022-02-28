@@ -88,7 +88,7 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
-const PINNED_BLOCK = 28793946;
+const PINNED_BLOCK = 32177754;
 
 const NETWORK_URL_TEST = process.env.NETWORK_URL;
 
