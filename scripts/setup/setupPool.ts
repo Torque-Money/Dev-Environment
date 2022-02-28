@@ -7,30 +7,30 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const leveragePool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-    // await (await leveragePool.setConverter(config.contracts.converterAddress)).wait();
-    // console.log("-- Set converter");
-    // await (await leveragePool.setOracle(config.contracts.oracleAddress)).wait();
-    // console.log("-- Set oracle");
+    await (await leveragePool.setConverter(config.contracts.converterAddress)).wait();
+    console.log("-- Set converter");
+    await (await leveragePool.setOracle(config.contracts.oracleAddress)).wait();
+    console.log("-- Set oracle");
 
     const leveragePoolApprovedTokens = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.address);
-    // const LPTokens = config.tokens.lpTokens.tokens;
-    // await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();
-    // console.log("-- Add pool tokens");
-    // await (await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true))).wait();
-    // console.log("-- Set approved pool tokens");
+    const LPTokens = config.tokens.lpTokens.tokens;
+    await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();
+    console.log("-- Add pool tokens");
+    await (await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true))).wait();
+    console.log("-- Set approved pool tokens");
 
-    // const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
-    // for (const lpToken of LPTokens) {
-    //     const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
-    //     await (await LPToken.grantRole(TOKEN_ADMIN, leveragePool.address)).wait();
-    //     break;
-    // }
-    // console.log("-- Granted token admin");
+    const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
+    for (const lpToken of LPTokens) {
+        const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
+        await (await LPToken.grantRole(TOKEN_ADMIN, leveragePool.address)).wait();
+        break;
+    }
+    console.log("-- Granted token admin");
 
-    // const maxInterestMinNumerator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinNumerator);
-    // const maxInterestMinDenominator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinDenominator);
-    // await (await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator)).wait();
-    // console.log("-- Set max interest min");
+    const maxInterestMinNumerator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinNumerator);
+    const maxInterestMinDenominator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMinDenominator);
+    await (await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator)).wait();
+    console.log("-- Set max interest min");
 
     const maxInterestMaxNumerator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMaxNumerator);
     const maxInterestMaxDenominator = config.tokens.approved.filter((approved) => approved.leveragePool).map((approved) => approved.setup.maxInterestMaxDenominator);
