@@ -63,6 +63,8 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
     await utilClump("fork", hre);
 });
 
+task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
+
 task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", async (args, hre) => {
     const config = chooseConfig("main");
 

@@ -10,7 +10,7 @@
     "test:deploy": "npm run deploy:fork && npm run test",
     "verify:main": "npx hardhat verify-all --network mainnet",
     "verify:test": "npx hardhat verify-all --network testnet",
-    "update-files": "npx ts-node scripts/util/utilUpdateFiles.ts"
+    "update-files": "npx hardhat update-files --network localhost"
   },
   "prettier": {
     "overrides": [
