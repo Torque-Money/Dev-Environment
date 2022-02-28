@@ -24,7 +24,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     // console.log("-- Renounced pool admin");
 
     const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
-    for (const lpToken of config.tokens.lpTokens.tokens) {
+    for (const lpToken of config.tokens.lpTokens.tokens.slice(1)) {
         const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
         await (await LPToken.grantRole(TOKEN_ADMIN, config.contracts.timelockAddress)).wait();
         await (await LPToken.renounceRole(TOKEN_ADMIN, signerAddress)).wait();
