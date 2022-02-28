@@ -3,7 +3,8 @@
     "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
     "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
     "LPPrefixName": "Torque Leverage Pool",
-    "LPPrefixSymbol": "tlp"
+    "LPPrefixSymbol": "tlp",
+    "multisig": "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2"
   },
   "contracts": {
     "leveragePoolAddress": "0x52584d2f5cbde6b924352484e8E416d593744977",

@@ -69,15 +69,14 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
     const config = chooseConfig("main");
 
     const signer = await hre.ethers.provider.getSigner().getAddress();
-    const multisigAddress = "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2";
 
     const timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
 
     const TIMELOCK_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE"));
     const TIMELOCK_PROPOSER = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("PROPOSER_ROLE"));
-    await (await timelock.grantRole(TIMELOCK_ADMIN, multisigAddress)).wait();
+    await (await timelock.grantRole(TIMELOCK_ADMIN, config.setup.multisig)).wait();
     console.log("-- Granted multisig admin");
-    await (await timelock.grantRole(TIMELOCK_PROPOSER, multisigAddress)).wait();
+    await (await timelock.grantRole(TIMELOCK_PROPOSER, config.setup.multisig)).wait();
     console.log("-- Granted multisig proposer");
     await (await timelock.renounceRole(TIMELOCK_PROPOSER, signer)).wait();
     console.log("-- Renounced multisig proposer");
