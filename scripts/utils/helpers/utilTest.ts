@@ -1,6 +1,7 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {network} from "hardhat";
+import {ConfigType} from "../utilConfig";
 
 export async function shouldFail(fn: () => Promise<any>) {
     try {
@@ -24,6 +25,8 @@ export async function approxEqual(a: BigNumber, b: BigNumber, percentError: numb
         throw e;
     }
 }
+
+export const CONFIG_TYPE: ConfigType = "main";
 
 export const BIG_NUM = BigNumber.from(2).pow(96);
 

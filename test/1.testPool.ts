@@ -3,13 +3,12 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool} from "../typechain-types";
-import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {chooseConfig} from "../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
-    const configType: ConfigType = "fork";
-    const config = chooseConfig(configType);
+    const config = chooseConfig(CONFIG_TYPE);
 
     let poolTokens: ERC20Upgradeable[];
 
@@ -20,7 +19,7 @@ describe("Pool", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getBorrowTokens(configType, hre);
+        poolTokens = await getBorrowTokens(CONFIG_TYPE, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);
 

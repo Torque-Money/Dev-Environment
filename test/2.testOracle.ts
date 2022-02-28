@@ -3,15 +3,14 @@ import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, OracleTest} from "../typechain-types";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
-import {BIG_NUM, shouldFail} from "../scripts/utils/helpers/utilTest";
+import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {chooseConfig} from "../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 
 describe("Oracle", async function () {
-    const configType: ConfigType = "fork";
-    const config = chooseConfig(configType);
+    const config = chooseConfig(CONFIG_TYPE);
 
     let oracleTokens: ERC20Upgradeable[];
     let poolTokens: ERC20Upgradeable[];
@@ -22,8 +21,8 @@ describe("Oracle", async function () {
     let pool: LPool;
 
     this.beforeAll(async () => {
-        oracleTokens = await getOracleTokens(configType, hre);
-        poolTokens = await getBorrowTokens(configType, hre);
+        oracleTokens = await getOracleTokens(CONFIG_TYPE, hre);
+        poolTokens = await getBorrowTokens(CONFIG_TYPE, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);
 
@@ -57,7 +56,7 @@ describe("Oracle", async function () {
             expect(await oracle.amountMax(lpToken.address, BIG_NUM)).to.not.equal(0);
         }
 
-        await redeemLiquidity(configType, hre, pool);
+        await redeemLiquidity(CONFIG_TYPE, hre, pool);
     });
 
     it("should not work for non accepted tokens", async () => {

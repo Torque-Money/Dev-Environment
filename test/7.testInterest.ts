@@ -3,17 +3,16 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../typechain-types";
-import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE} from "../scripts/utils/helpers/utilTest";
+import {approxEqual, BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {chooseConfig} from "../scripts/utils/utilConfig";
 import {setPrice} from "../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
 
 describe("Interest", async function () {
-    const configType: ConfigType = "fork";
-    const config = chooseConfig(configType);
+    const config = chooseConfig(CONFIG_TYPE);
 
     let poolToken: ERC20Upgradeable;
     let collateralToken: ERC20Upgradeable;
@@ -32,8 +31,8 @@ describe("Interest", async function () {
     const ERROR_DECIMALS = 3;
 
     this.beforeAll(async () => {
-        poolToken = (await getBorrowTokens(configType, hre))[0];
-        collateralToken = (await getCollateralTokens(configType, hre))[0];
+        poolToken = (await getBorrowTokens(CONFIG_TYPE, hre))[0];
+        collateralToken = (await getCollateralTokens(CONFIG_TYPE, hre))[0];
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
@@ -57,8 +56,8 @@ describe("Interest", async function () {
     });
 
     this.afterEach(async () => {
-        await removeCollateral(configType, hre, marginLong);
-        await redeemLiquidity(configType, hre, pool);
+        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await redeemLiquidity(CONFIG_TYPE, hre, pool);
     });
 
     it("should borrow below the max utilization", async () => {

@@ -3,14 +3,13 @@ import {BigNumber, Contract} from "ethers";
 import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 
-import {shouldFail} from "../scripts/utils/helpers/utilTest";
+import {CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
 import {wait} from "../scripts/utils/helpers/utilTest";
 import {Timelock} from "../typechain-types";
-import {chooseConfig, ConfigType} from "../scripts/utils/utilConfig";
+import {chooseConfig} from "../scripts/utils/utilConfig";
 
 describe("Timelock", async function () {
-    const configType: ConfigType = "fork";
-    const config = chooseConfig(configType);
+    const config = chooseConfig(CONFIG_TYPE);
 
     let timelock: Timelock;
     let minDelay: BigNumber;
