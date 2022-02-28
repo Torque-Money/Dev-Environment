@@ -20,8 +20,9 @@ import utilApprove from "./scripts/utils/utilApprove";
 import utilClump from "./scripts/utils/utilClump";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
-
 import {chooseConfig} from "./scripts/utils/utilConfig";
+
+import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
