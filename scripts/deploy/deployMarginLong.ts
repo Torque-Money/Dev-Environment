@@ -21,8 +21,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const marginLong = await hre.upgrades.deployProxy(MarginLong, Object.values(constructorArgs));
     await marginLong.deployed();
 
-    await new Promise<void>((res) => setTimeout(res, 5000));
-
     config.contracts.marginLongAddress = marginLong.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, marginLong.address);
     console.log(`Deployed: MarginLong, implementation | ${marginLong.address}, ${implementation}`);

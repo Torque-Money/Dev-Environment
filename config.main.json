@@ -9,8 +9,8 @@
     "leveragePoolAddress": "0x52584d2f5cbde6b924352484e8E416d593744977",
     "oracleAddress": "0xD488922523A6F658004d9dD886bE45A3968847A7",
     "converterAddress": "0xE80Ac0199065D8577E995c480d4837464f518498",
-    "marginLongAddress": "0xC375829b03Fb6A6b2bd24d9EFC234d37157642C8",
-    "resolverAddress": "0x4814C82cd6f6E0354C561b2FF73eCc0245F5BdA9",
+    "marginLongAddress": "0x2575F9b3a2f0B30Fb527c786AC1C6956fE0481dA",
+    "resolverAddress": "0x71abB7Eae0FaDbC250E9E1C209D457D5ea39512e",
     "timelockAddress": "0x37359D21C9c5A55DB1dE5Cd4C12e749Ea5cE74A3",
     "flashLender": "0x268bE1d67Ac0849e0C9Cff698851Ef8233Ff1b5E",
     "flashBorrowerTest": ""
