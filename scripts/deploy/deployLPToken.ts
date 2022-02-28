@@ -1,8 +1,8 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -17,7 +17,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     console.log(`Deployed: Beacon, implementation | ${beacon.address}, ${implementation}`);
 
     const tokens = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.leveragePool).slice(3)) {
+        console.log(approved.address);
         const LPToken = await hre.upgrades.deployBeaconProxy(beacon, LPoolToken, [
             config.setup.LPPrefixName + " " + approved.name,
             config.setup.LPPrefixSymbol + approved.symbol,
