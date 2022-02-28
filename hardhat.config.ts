@@ -24,10 +24,10 @@ import {verifyAll} from "./scripts/utils/utilVerify";
 import {chooseConfig} from "./scripts/utils/utilConfig";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
-    // await hre.run("compile");
+    await hre.run("compile");
 
-    // await deploy("main", hre);
-    // await setup("main", hre);
+    await deploy("main", hre);
+    await setup("main", hre);
 
     await utilUpdateFiles();
 });
