@@ -64,7 +64,7 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
 });
 
 task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", async (args, hre) => {
-    const config = chooseConfig("test");
+    const config = chooseConfig("main");
 
     const signer = await hre.ethers.provider.getSigner().getAddress();
     const multisigAddress = "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2";
