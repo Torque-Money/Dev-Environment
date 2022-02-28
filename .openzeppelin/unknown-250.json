@@ -89,6 +89,11 @@
       "address": "0x71abB7Eae0FaDbC250E9E1C209D457D5ea39512e",
       "txHash": "0x5e19d88edbd226d240159b8d7ec8f948f4ab35ff80697b4f03e04bf011bda7b3",
       "kind": "transparent"
+    },
+    {
+      "address": "0x28da8aee1B2f3539d80CBaEBCE3653F34243798a",
+      "txHash": "0xc7f37cd189e842bf64c9cdedff8c94f0361b02f0af03419ae8224a38158d09e9",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -1125,6 +1130,156 @@
           },
           "t_mapping(t_address,t_bool)": {
             "label": "mapping(address => bool)"
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "6b37aff3d1eff908d2f27fc449bf8943f10c511a7bf8dd32d7f2341afdcbfc3c": {
+      "address": "0x17BA2e157CCe70774c85e7596f578dB4A8D60Ac7",
+      "txHash": "0x8eeb7f28d6686eb6439343f10c2b2256a968eb1a76ff435acaa5885634e6de45",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "_status",
+            "type": "t_uint256",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
+          },
+          {
+            "contract": "ReentrancyGuardUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
+          },
+          {
+            "contract": "ContextUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "contract": "ERC165Upgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "_roles",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)80_storage)",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:61"
+          },
+          {
+            "contract": "AccessControlUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:235"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
+          },
+          {
+            "contract": "PausableUpgradeable",
+            "label": "__gap",
+            "type": "t_array(t_uint256)49_storage",
+            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "FLASHLENDER_ADMIN",
+            "type": "t_bytes32",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:13"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "pool",
+            "type": "t_address",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:15"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "_feePercent",
+            "type": "t_struct(Fraction)12673_storage",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:17"
+          },
+          {
+            "contract": "FlashLenderCore",
+            "label": "CALLBACK_SUCCESS",
+            "type": "t_bytes32",
+            "src": "contracts/FlashLender/FlashLenderCore.sol:19"
+          },
+          {
+            "contract": "FlashLenderApproved",
+            "label": "_approved",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "contracts/FlashLender/FlashLenderApproved.sol:7"
+          }
+        ],
+        "types": {
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_address": {
+            "label": "address"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_struct(Fraction)12673_storage": {
+            "label": "struct FractionMath.Fraction",
+            "members": [
+              {
+                "label": "numerator",
+                "type": "t_uint256"
+              },
+              {
+                "label": "denominator",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_uint256)49_storage": {
+            "label": "uint256[49]"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)80_storage)": {
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)"
+          },
+          "t_struct(RoleData)80_storage": {
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "label": "members",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "label": "adminRole",
+                "type": "t_bytes32"
+              }
+            ]
           },
           "t_array(t_uint256)50_storage": {
             "label": "uint256[50]"
