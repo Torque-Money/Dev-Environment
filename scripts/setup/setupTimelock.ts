@@ -9,28 +9,29 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    const converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
-    const CONVERTER_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("CONVERTER_ADMIN_ROLE"));
-    await (await converter.grantRole(CONVERTER_ADMIN, config.contracts.timelockAddress)).wait();
-    console.log("-- Granted converter admin");
-    await (await converter.renounceRole(CONVERTER_ADMIN, signerAddress)).wait();
-    console.log("-- Renounced converter admin");
+    // const converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
+    // const CONVERTER_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("CONVERTER_ADMIN_ROLE"));
+    // await (await converter.grantRole(CONVERTER_ADMIN, config.contracts.timelockAddress)).wait();
+    // console.log("-- Granted converter admin");
+    // await (await converter.renounceRole(CONVERTER_ADMIN, signerAddress)).wait();
+    // console.log("-- Renounced converter admin");
 
-    const pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
-    const POOL_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE"));
-    await (await pool.grantRole(POOL_ADMIN, config.contracts.timelockAddress)).wait();
-    console.log("-- Granted pool admin");
-    await (await pool.renounceRole(POOL_ADMIN, signerAddress)).wait();
-    console.log("-- Renounced pool admin");
+    // const pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
+    // const POOL_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("POOL_ADMIN_ROLE"));
+    // await (await pool.grantRole(POOL_ADMIN, config.contracts.timelockAddress)).wait();
+    // console.log("-- Granted pool admin");
+    // await (await pool.renounceRole(POOL_ADMIN, signerAddress)).wait();
+    // console.log("-- Renounced pool admin");
 
-    // const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
-    // for (const lpToken of config.tokens.lpTokens.tokens) {
-    //     const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
-    //     await (await LPToken.grantRole(TOKEN_ADMIN, config.contracts.timelockAddress)).wait();
-    //     await (await LPToken.renounceRole(TOKEN_ADMIN, signerAddress)).wait();
-    // }
-    // console.log("-- Granted token admin");
-    // console.log("-- Renounced token admin");
+    const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
+    for (const lpToken of config.tokens.lpTokens.tokens) {
+        const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
+        await (await LPToken.grantRole(TOKEN_ADMIN, config.contracts.timelockAddress)).wait();
+        await (await LPToken.renounceRole(TOKEN_ADMIN, signerAddress)).wait();
+        break;
+    }
+    console.log("-- Granted token admin");
+    console.log("-- Renounced token admin");
 
     // const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
     // const MARGIN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("MARGIN_ADMIN_ROLE"));
