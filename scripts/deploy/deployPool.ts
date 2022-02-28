@@ -3,6 +3,7 @@ import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -18,6 +19,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const Pool = await hre.ethers.getContractFactory("LPool");
     const pool = await hre.upgrades.deployProxy(Pool, Object.values(constructorArgs));
     await pool.deployed();
+    await chainSleep(configType, SLEEP_SECONDS);
 
     config.contracts.leveragePoolAddress = pool.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, pool.address);

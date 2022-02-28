@@ -3,6 +3,7 @@ import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
+import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -14,6 +15,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const Converter = await hre.ethers.getContractFactory("Converter");
     const converter = await hre.upgrades.deployProxy(Converter, Object.values(constructorArgs));
     await converter.deployed();
+    await chainSleep(configType, SLEEP_SECONDS);
 
     config.contracts.converterAddress = converter.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, converter.address);
