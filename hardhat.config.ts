@@ -79,10 +79,10 @@ task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", 
     console.log("-- Granted multisig admin");
     await (await timelock.grantRole(TIMELOCK_PROPOSER, multisigAddress)).wait();
     console.log("-- Granted multisig proposer");
-    // await (await timelock.renounceRole(TIMELOCK_PROPOSER, signer)).wait();
-    // console.log("-- Renounced multisig proposer");
-    // await (await timelock.renounceRole(TIMELOCK_ADMIN, signer)).wait();
-    // console.log("-- Renounced multisig admin");
+    await (await timelock.renounceRole(TIMELOCK_PROPOSER, signer)).wait();
+    console.log("-- Renounced multisig proposer");
+    await (await timelock.renounceRole(TIMELOCK_ADMIN, signer)).wait();
+    console.log("-- Renounced multisig admin");
 
     console.log("Setup Task: Multisig");
 });
