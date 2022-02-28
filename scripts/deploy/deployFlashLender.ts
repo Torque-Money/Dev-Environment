@@ -3,7 +3,6 @@ import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
-import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -17,7 +16,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const FlashLender = await hre.ethers.getContractFactory("FlashLender");
     const flashLender = await hre.upgrades.deployProxy(FlashLender, Object.values(constructorArgs));
     await flashLender.deployed();
-    await chainSleep(configType, SLEEP_SECONDS);
 
     config.contracts.flashLender = flashLender.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, flashLender.address);
@@ -27,7 +25,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const FlashBorrowerTest = await hre.ethers.getContractFactory("FlashBorrowerTest");
         const flashBorrowerTest = await hre.upgrades.deployProxy(FlashBorrowerTest);
         await flashBorrowerTest.deployed();
-        await chainSleep(configType, SLEEP_SECONDS);
 
         config.contracts.flashBorrowerTest = flashBorrowerTest.address;
         const implementation = await getImplementationAddress(hre.ethers.provider, flashBorrowerTest.address);

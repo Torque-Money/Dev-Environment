@@ -3,7 +3,6 @@ import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
-import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -19,7 +18,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const Oracle = await hre.ethers.getContractFactory("Oracle");
         const oracle = await hre.upgrades.deployProxy(Oracle, Object.values(constructorArgs));
         await oracle.deployed();
-        await chainSleep(configType, SLEEP_SECONDS);
 
         config.contracts.oracleAddress = oracle.address;
         const implementation = await getImplementationAddress(hre.ethers.provider, oracle.address);
@@ -37,7 +35,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
         const OracleTest = await hre.ethers.getContractFactory("OracleTest");
         const oracleTest = await hre.upgrades.deployProxy(OracleTest, Object.values(constructorArgs));
         await oracleTest.deployed();
-        await chainSleep(configType, SLEEP_SECONDS);
 
         config.contracts.oracleAddress = oracleTest.address;
         const implementation = await getImplementationAddress(hre.ethers.provider, oracleTest.address);

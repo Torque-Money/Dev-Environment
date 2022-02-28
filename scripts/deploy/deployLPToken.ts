@@ -2,7 +2,6 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
 import {saveTempConstructor} from "../utils/utilVerify";
-import {chainSleep, SLEEP_SECONDS} from "../utils/chainTypeSleep";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -10,7 +9,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const LPoolToken = await hre.ethers.getContractFactory("LPoolToken");
     const beacon = await hre.upgrades.deployBeacon(LPoolToken);
     await beacon.deployed();
-    await chainSleep(configType, SLEEP_SECONDS);
 
     config.tokens.lpTokens.beaconAddress = beacon.address;
     const implementation = await hre.upgrades.beacon.getImplementationAddress(config.tokens.lpTokens.beaconAddress);
@@ -24,7 +22,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
             config.setup.LPPrefixSymbol + approved.symbol,
         ]);
         await LPToken.deployed();
-        await chainSleep(configType, SLEEP_SECONDS);
 
         tokens.push(LPToken.address);
 
