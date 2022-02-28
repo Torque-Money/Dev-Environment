@@ -14,7 +14,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     // await setupPool(configType, hre);
     // await setupMarginLong(configType, hre);
     // await setupResolver(configType, hre);
-    await setupFlashLender(configType, hre);
+    // await setupFlashLender(configType, hre);
 
-    // await setupTimelock(configType, hre);
+    await setupTimelock(configType, hre);
 }
