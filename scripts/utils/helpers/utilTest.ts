@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
-import {network} from "hardhat";
+import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ConfigType} from "../utilConfig";
 
 export async function shouldFail(fn: () => Promise<any>) {
@@ -10,9 +10,9 @@ export async function shouldFail(fn: () => Promise<any>) {
     } catch {}
 }
 
-export async function wait(seconds: BigNumber) {
-    await network.provider.send("evm_increaseTime", [seconds.toNumber()]);
-    await network.provider.send("evm_mine");
+export async function wait(hre: HardhatRuntimeEnvironment, seconds: BigNumber) {
+    await hre.network.provider.send("evm_increaseTime", [seconds.toNumber()]);
+    await hre.network.provider.send("evm_mine");
 }
 
 export async function approxEqual(a: BigNumber, b: BigNumber, percentError: number) {

@@ -25,7 +25,7 @@ describe("Timelock", async function () {
         const execute = async () => await (await timelock.execute(address, value, calldata, parsedPredecessor, parsedDescription)).wait();
         await shouldFail(execute);
 
-        await wait(minDelay);
+        await wait(hre, minDelay);
 
         await execute();
     };
