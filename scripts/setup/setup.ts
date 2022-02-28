@@ -13,8 +13,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     // await setupOracle(configType, hre);
     // await setupPool(configType, hre);
     // await setupMarginLong(configType, hre);
-    await setupResolver(configType, hre);
-    // await setupFlashLender(configType, hre);
+    // await setupResolver(configType, hre);
+    await setupFlashLender(configType, hre);
 
     // await setupTimelock(configType, hre);
 }
