@@ -9,8 +9,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const constructorArgs = {
         pool: hre.ethers.constants.AddressZero,
-        feePercentNumerator: 1,
-        feePercentDenominator: 1000000,
+        feePercentNumerator: config.setup.flashLender.feePercentNumerator,
+        feePercentDenominator: config.setup.flashLender.feePercentDenominator,
     };
 
     const FlashLender = await hre.ethers.getContractFactory("FlashLender");

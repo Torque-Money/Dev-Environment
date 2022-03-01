@@ -10,9 +10,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     if (configType === "main") {
         const constructorArgs = {
             pool: hre.ethers.constants.AddressZero,
-            priceDecimals: 18,
-            thresholdNumerator: 1,
-            thresholdDenominator: 200,
+            priceDecimals: config.setup.oracle.priceDecimals,
+            thresholdNumerator: config.setup.oracle.thresholdNumerator,
+            thresholdDenominator: config.setup.oracle.thresholdDenominator,
         };
 
         const Oracle = await hre.ethers.getContractFactory("Oracle");

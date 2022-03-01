@@ -10,9 +10,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const constructorArgs = {
         converter: hre.ethers.constants.AddressZero,
         oracle: hre.ethers.constants.AddressZero,
-        taxPercentNumerator: 5,
-        taxPercentDenominator: 100,
-        timePerInterestApplication: hre.ethers.BigNumber.from(86400).mul(365),
+        taxPercentNumerator: config.setup.pool.taxPercentNumerator,
+        taxPercentDenominator: config.setup.pool.taxPercentDenominator,
+        timePerInterestApplication: config.setup.pool.timePerInterestApplication,
     };
 
     const Pool = await hre.ethers.getContractFactory("LPool");

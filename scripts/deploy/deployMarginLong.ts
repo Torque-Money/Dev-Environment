@@ -10,11 +10,11 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const constructorArgs = {
         pool: hre.ethers.constants.AddressZero,
         oracle: hre.ethers.constants.AddressZero,
-        minCollateralPrice: hre.ethers.BigNumber.from(10).pow(18).mul(100),
-        maxLeverageNumerator: 125,
-        maxLeverageDenominator: 1,
-        liquidationFeePercentNumerator: 5,
-        liquidationFeePercentDenominator: 100,
+        minCollateralPrice: config.setup.marginLong.minCollateralPrice,
+        maxLeverageNumerator: config.setup.marginLong.maxLeverageNumerator,
+        maxLeverageDenominator: config.setup.marginLong.maxLeverageDenominator,
+        liquidationFeePercentNumerator: config.setup.marginLong.liquidationFeePercentNumerator,
+        liquidationFeePercentDenominator: config.setup.marginLong.liquidationFeePercentDenominator,
     };
 
     const MarginLong = await hre.ethers.getContractFactory("MarginLong");

@@ -11,7 +11,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const constructorArgs = {
-        minDelay: configType === "test" ? hre.ethers.BigNumber.from(3) : hre.ethers.BigNumber.from(64800),
+        minDelay: config.setup.timelock.minDelay,
         proposers: [signerAddress],
         executors: [hre.ethers.constants.AddressZero],
     };

@@ -11,9 +11,9 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signerAddress = await signer.getAddress();
 
     const constructorArgs = {
-        taskTreasury: config.setup.taskTreasury,
+        taskTreasury: config.setup.resolver.taskTreasury,
         depositReceiver: signerAddress,
-        ethAddress: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        ethAddress: config.setup.resolver.ethAddress,
         marginLong: hre.ethers.constants.AddressZero,
         converter: hre.ethers.constants.AddressZero,
     };
