@@ -1,9 +1,40 @@
 {
   "setup": {
-    "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29",
-    "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
-    "LPPrefixName": "Torque Leverage Pool",
-    "LPPrefixSymbol": "tlp",
+    "converter": {
+      "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29"
+    },
+    "oracle": {
+      "priceDecimals": 18,
+      "thresholdNumerator": 1,
+      "thresholdDenominator": 200
+    },
+    "pool": {
+      "taxPercentNumerator": 5,
+      "taxPercentDenominator": 100,
+      "timePerInterestApplication": "31536000"
+    },
+    "lpToken": {
+      "LPPrefixName": "Torque Leverage Pool",
+      "LPPrefixSymbol": "tlp"
+    },
+    "marginLong": {
+      "minCollateralPrice": "100000000000000000000",
+      "maxLeverageNumerator": 125,
+      "maxLeverageDenominator": 1,
+      "liquidationFeePercentNumerator": 5,
+      "liquidationFeePercentDenominator": 100
+    },
+    "resolver": {
+      "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
+      "ethAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
+    },
+    "flashLender": {
+      "feePercentNumerator": 1,
+      "feePercentDenominator": "1000000"
+    },
+    "timelock": {
+      "minDelay": "64800"
+    },
     "multisig": "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2"
   },
   "contracts": {
