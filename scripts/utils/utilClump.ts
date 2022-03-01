@@ -8,7 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
-    const router = await hre.ethers.getContractAt("UniswapV2Router02", config.setup.routerAddress);
+    const router = await hre.ethers.getContractAt("UniswapV2Router02", config.setup.converter.routerAddress);
     const weth = await hre.ethers.getContractAt("WETH", config.tokens.wrappedCoin.address);
 
     for (const approved of config.tokens.approved.filter((approved) => approved.address != weth.address)) {

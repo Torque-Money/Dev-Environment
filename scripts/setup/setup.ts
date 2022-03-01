@@ -8,6 +8,7 @@ import setupMarginLong from "./setupMarginLong";
 import setupTimelock from "./setupTimelock";
 import setupFlashLender from "./setupFlashLender";
 import setupResolver from "./setupResolver";
+import setupMultisig from "./setupMultisig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await setupOracle(configType, hre);
@@ -17,4 +18,5 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await setupFlashLender(configType, hre);
 
     await setupTimelock(configType, hre);
+    await setupMultisig(configType, hre);
 }

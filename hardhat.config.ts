@@ -10,17 +10,11 @@ import {task} from "hardhat/config";
 import dotenv from "dotenv";
 dotenv.config();
 
+import {chooseConfig} from "./scripts/utils/utilConfig";
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
-
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
-
-import utilFund from "./scripts/utils/utilFund";
-import utilApprove from "./scripts/utils/utilApprove";
-import utilClump from "./scripts/utils/utilClump";
-
 import {verifyAll} from "./scripts/utils/utilVerify";
-import {chooseConfig} from "./scripts/utils/utilConfig";
 
 import {CONFIG_TYPE} from "./scripts/utils/helpers/utilTest";
 
@@ -55,6 +49,7 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
+// **** This is going to be replaced with our new testing methods where we can choose between functionality or verification
 task("test-wrapper", "Wrapper for tests", async (args, hre) => {
     await utilFund(CONFIG_TYPE, hre);
     await utilApprove(CONFIG_TYPE, hre);
@@ -65,27 +60,6 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
 });
 
 task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
-
-task("timelock-to-multisig", "Transfer ownership of timelock over to multisig", async (args, hre) => {
-    const config = chooseConfig("main");
-
-    const signer = await hre.ethers.provider.getSigner().getAddress();
-
-    const timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
-
-    const TIMELOCK_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TIMELOCK_ADMIN_ROLE"));
-    const TIMELOCK_PROPOSER = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("PROPOSER_ROLE"));
-    await (await timelock.grantRole(TIMELOCK_ADMIN, config.setup.multisig)).wait();
-    console.log("-- Granted multisig admin");
-    await (await timelock.grantRole(TIMELOCK_PROPOSER, config.setup.multisig)).wait();
-    console.log("-- Granted multisig proposer");
-    await (await timelock.renounceRole(TIMELOCK_PROPOSER, signer)).wait();
-    console.log("-- Renounced multisig proposer");
-    await (await timelock.renounceRole(TIMELOCK_ADMIN, signer)).wait();
-    console.log("-- Renounced multisig admin");
-
-    console.log("Setup Task: Multisig");
-});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
