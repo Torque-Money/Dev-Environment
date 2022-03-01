@@ -2,10 +2,10 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20Upgradeable, LPool} from "../typechain-types";
-import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
+import {ERC20Upgradeable, LPool} from "../../typechain-types";
+import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
 
 describe("Pool", async function () {
     const config = chooseConfig(CONFIG_TYPE);
