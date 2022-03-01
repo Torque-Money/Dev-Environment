@@ -10,13 +10,10 @@ import {task} from "hardhat/config";
 import dotenv from "dotenv";
 dotenv.config();
 
-import {chooseConfig} from "./scripts/utils/utilConfig";
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 import {verifyAll} from "./scripts/utils/utilVerify";
-
-import {CONFIG_TYPE} from "./scripts/utils/helpers/utilTest";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -45,6 +42,8 @@ task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) =>
     await utilUpdateFiles();
 });
 
+task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
+
 task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
     await verifyAll(hre);
 });
@@ -58,8 +57,6 @@ task("test-wrapper", "Wrapper for tests", async (args, hre) => {
 
     await utilClump(CONFIG_TYPE, hre);
 });
-
-task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
