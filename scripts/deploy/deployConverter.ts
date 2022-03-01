@@ -8,7 +8,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const config = chooseConfig(configType);
 
     const constructorArgs = {
-        router: config.setup.routerAddress,
+        router: config.setup.converter.routerAddress,
     };
 
     const Converter = await hre.ethers.getContractFactory("Converter");
