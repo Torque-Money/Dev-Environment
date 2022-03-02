@@ -3,14 +3,17 @@ import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
 import {setPrice} from "../../scripts/utils/helpers/utilOracle";
-import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {BIG_NUM} from "../../scripts/utils/helpers/utilConstants";
 
 describe("Oracle", async function () {
-    const config = chooseConfig(CONFIG_TYPE);
+    const configType = await getConfigType(hre);
+    const config = chooseConfig(configType);
 
     let oracleTokens: ERC20Upgradeable[];
     let poolTokens: ERC20Upgradeable[];
@@ -21,8 +24,8 @@ describe("Oracle", async function () {
     let pool: LPool;
 
     this.beforeAll(async () => {
-        oracleTokens = await getOracleTokens(CONFIG_TYPE, hre);
-        poolTokens = await getBorrowTokens(CONFIG_TYPE, hre);
+        oracleTokens = await getOracleTokens(configType, hre);
+        poolTokens = await getBorrowTokens(configType, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);
 
@@ -35,11 +38,11 @@ describe("Oracle", async function () {
 
     it("should get the prices for accepted tokens", async () => {
         for (const token of oracleTokens) {
-            expect(await oracle.priceMin(token.address, BIG_NUM)).to.not.equal(0);
-            expect(await oracle.priceMax(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.priceMin(token.address, configType)).to.not.equal(0);
+            expect(await oracle.priceMax(token.address, configType)).to.not.equal(0);
 
-            expect(await oracle.amountMin(token.address, BIG_NUM)).to.not.equal(0);
-            expect(await oracle.amountMax(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.amountMin(token.address, configType)).to.not.equal(0);
+            expect(await oracle.amountMax(token.address, configType)).to.not.equal(0);
         }
     });
 
@@ -56,7 +59,7 @@ describe("Oracle", async function () {
             expect(await oracle.amountMax(lpToken.address, BIG_NUM)).to.not.equal(0);
         }
 
-        await redeemLiquidity(CONFIG_TYPE, hre, pool);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should not work for non accepted tokens", async () => {

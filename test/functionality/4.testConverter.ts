@@ -2,13 +2,15 @@ import {expect} from "chai";
 import hre from "hardhat";
 
 import {Converter, ERC20Upgradeable} from "../../typechain-types";
-import {CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
+import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 
 describe("Converter", async function () {
-    const config = chooseConfig(CONFIG_TYPE);
+    const configType = await getConfigType(hre);
+    const config = chooseConfig(configType);
 
     let poolToken: ERC20Upgradeable;
     let collateralToken: ERC20Upgradeable;
@@ -22,8 +24,8 @@ describe("Converter", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolToken = (await getBorrowTokens(CONFIG_TYPE, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
-        collateralToken = (await getCollateralTokens(CONFIG_TYPE, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        poolToken = (await getBorrowTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         weth = await hre.ethers.getContractAt("ERC20Upgradeable", config.tokens.wrappedCoin.address);
 
         provideAmount = (await getTokenAmount(hre, [poolToken]))[0];

@@ -6,12 +6,15 @@ import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../../typechain-t
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
 import {setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
-import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
+import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/helpers/utilConstants";
 
 describe("MarginLong", async function () {
-    const config = chooseConfig(CONFIG_TYPE);
+    const configType = await getConfigType(hre);
+    const config = chooseConfig(configType);
 
     let poolTokens: ERC20Upgradeable[];
     let collateralTokens: ERC20Upgradeable[];
@@ -26,8 +29,8 @@ describe("MarginLong", async function () {
     let signerAddress: string;
 
     this.beforeAll(async () => {
-        poolTokens = await getBorrowTokens(CONFIG_TYPE, hre);
-        collateralTokens = await getCollateralTokens(CONFIG_TYPE, hre);
+        poolTokens = await getBorrowTokens(configType, hre);
+        collateralTokens = await getCollateralTokens(configType, hre);
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
@@ -49,7 +52,7 @@ describe("MarginLong", async function () {
     });
 
     this.afterEach(async () => {
-        await redeemLiquidity(CONFIG_TYPE, hre, pool);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("deposit and undeposit collateral into the account", async () => {
@@ -105,7 +108,7 @@ describe("MarginLong", async function () {
         await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(BIG_NUM));
         await shouldFail(async () => await marginLong.borrow(poolToken.address, provideAmount));
 
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should open and repay a leveraged position", async () => {
@@ -140,7 +143,7 @@ describe("MarginLong", async function () {
         expect(await marginLong.totalBorrowed(poolToken.address)).to.equal(0);
         expect(await marginLong.borrowed(poolToken.address, signerAddress)).to.equal(0);
 
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should open and repay all leveraged positions", async () => {
@@ -169,7 +172,7 @@ describe("MarginLong", async function () {
             expect(await marginLong.borrowed(token.address, signerAddress)).to.equal(0);
         }
 
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should borrow against equity", async () => {
@@ -192,7 +195,7 @@ describe("MarginLong", async function () {
         expect(currentMarginLevelNumerator.mul(initialMarginLevelDenominator).gt(initialMarginLevelNumerator.mul(currentMarginLevelDenominator))).to.equal(true);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should fail to redeem LP tokens when they are being used", async () => {
@@ -210,6 +213,6 @@ describe("MarginLong", async function () {
         await shouldFail(async () => await pool.redeemLiquidity(lpToken.address, await lpToken.balanceOf(signerAddress)));
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
+        await removeCollateral(configType, hre, marginLong);
     });
 });

@@ -3,13 +3,16 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, FlashBorrowerTest, FlashLender, LPool} from "../../typechain-types";
-import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {BIG_NUM} from "../../scripts/utils/helpers/utilConstants";
 
 describe("FlashLend", async function () {
-    const config = chooseConfig(CONFIG_TYPE);
+    const configType = await getConfigType(hre);
+    const config = chooseConfig(configType);
 
     let flashLendToken: ERC20Upgradeable;
 
@@ -20,7 +23,7 @@ describe("FlashLend", async function () {
     let pool: LPool;
 
     this.beforeAll(async () => {
-        flashLendToken = (await getFlashLenderTokens(CONFIG_TYPE, hre))[0];
+        flashLendToken = (await getFlashLenderTokens(configType, hre))[0];
 
         flashLendAmount = (await getTokenAmount(hre, [flashLendToken]))[0];
 
@@ -34,7 +37,7 @@ describe("FlashLend", async function () {
     });
 
     this.afterEach(async () => {
-        await redeemLiquidity(CONFIG_TYPE, hre, pool);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should execute a flash loan successfully", async () => {

@@ -3,15 +3,18 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../../typechain-types";
-import {BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {changePrice, setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
+import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/helpers/utilConstants";
 
 describe("Handle price movement", async function () {
-    const config = chooseConfig(CONFIG_TYPE);
+    const configType = await getConfigType(hre);
+    const config = chooseConfig(configType);
 
     let poolToken: ERC20Upgradeable;
     let collateralToken: ERC20Upgradeable;
@@ -32,8 +35,8 @@ describe("Handle price movement", async function () {
     const MAJOR_PRICE_CHANGE_PERCENT = 80;
 
     this.beforeAll(async () => {
-        poolToken = (await getBorrowTokens(CONFIG_TYPE, hre))[0];
-        collateralToken = (await getCollateralTokens(CONFIG_TYPE, hre))[0];
+        poolToken = (await getBorrowTokens(configType, hre))[0];
+        collateralToken = (await getCollateralTokens(configType, hre))[0];
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
@@ -60,8 +63,8 @@ describe("Handle price movement", async function () {
     });
 
     this.afterEach(async () => {
-        await removeCollateral(CONFIG_TYPE, hre, marginLong);
-        await redeemLiquidity(CONFIG_TYPE, hre, pool);
+        await removeCollateral(configType, hre, marginLong);
+        await redeemLiquidity(configType, hre, pool);
     });
 
     it("should liquidate an account", async () => {
