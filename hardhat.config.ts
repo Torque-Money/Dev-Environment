@@ -48,7 +48,7 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
-task("test-verification", "Run verification tests"); // This will be similar to the functionality tests ^
+task("test-verification", "Run verification tests"); // This will be similar to the functionality tests ^ except will be used to verify the deployment was successful
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
