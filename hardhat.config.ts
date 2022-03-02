@@ -50,6 +50,8 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
 
 task("test-verification", "Run verification tests"); // This will be similar to the functionality tests ^ except will be used to verify the deployment was successful
 
+// **** But now I have a problem where I need to override the normal selected network config with the config I wish to use (mostly just applies to functionality - potential override here ?)
+
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
 
