@@ -50,14 +50,14 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("test-functionality", "Wrapper for tests", async (args, hre) => {
-    const basePath = "./test/functionality/";
+    const basePath = process.cwd() + "/test/functionality/";
 
     const files = [
         "1.testPool.ts",
         "2.testOracle.ts",
         "3.testTimelock.ts",
         "4.testConverter.ts",
-        "5.testFlashlend.ts",
+        "5.testFlashLend.ts",
         "6.testMarginLong.ts",
         "7.testInterest.ts",
         "8.testHandlePriceMovement.ts",
