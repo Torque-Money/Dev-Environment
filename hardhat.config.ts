@@ -49,7 +49,7 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-task("test-functionality", "Wrapper for tests", async (args, hre) => {
+task("test-functionality", "Run functionality tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/functionality/";
 
     const files = [
@@ -65,6 +65,8 @@ task("test-functionality", "Wrapper for tests", async (args, hre) => {
 
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
+
+task("test-verification", "Run verification tests");
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;

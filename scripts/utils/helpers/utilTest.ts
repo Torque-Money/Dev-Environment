@@ -1,11 +1,11 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
-import {ConfigType} from "../utilConfig";
 
 import utilFund from "../../utils/utilFund";
 import utilApprove from "../../utils/utilApprove";
 import utilClump from "../../utils/utilClump";
+import getConfigType from "../utilConfigTypeSelector";
 
 export async function shouldFail(fn: () => Promise<any>) {
     try {
@@ -31,15 +31,15 @@ export async function approxEqual(a: BigNumber, b: BigNumber, percentError: numb
 }
 
 export async function testWrapper(hre: HardhatRuntimeEnvironment, callback: () => Promise<any>) {
-    await utilFund(CONFIG_TYPE, hre);
-    await utilApprove(CONFIG_TYPE, hre);
+    const configType = await getConfigType(hre);
+
+    await utilFund(configType, hre);
+    await utilApprove(configType, hre);
 
     await callback();
 
-    await utilClump(CONFIG_TYPE, hre);
+    await utilClump(configType, hre);
 }
-
-export const CONFIG_TYPE: ConfigType = "fork";
 
 export const BIG_NUM = BigNumber.from(2).pow(96);
 
