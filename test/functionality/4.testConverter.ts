@@ -1,10 +1,10 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {Converter, ERC20Upgradeable} from "../typechain-types";
-import {CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
+import {Converter, ERC20Upgradeable} from "../../typechain-types";
+import {CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 
 describe("Converter", async function () {

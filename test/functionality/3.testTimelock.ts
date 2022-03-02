@@ -3,10 +3,10 @@ import {BigNumber, Contract} from "ethers";
 import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 
-import {CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {wait} from "../scripts/utils/helpers/utilTest";
-import {Timelock} from "../typechain-types";
-import {chooseConfig} from "../scripts/utils/utilConfig";
+import {CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {wait} from "../../scripts/utils/helpers/utilTest";
+import {Timelock} from "../../typechain-types";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
 
 describe("Timelock", async function () {
     const config = chooseConfig(CONFIG_TYPE);
@@ -40,12 +40,12 @@ describe("Timelock", async function () {
 
     it("should execute an admin only request to the converter and attempt to upgrade it", async () => {
         const converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
-        await shouldFail(async () => await converter.setRouter(config.setup.routerAddress));
+        await shouldFail(async () => await converter.setRouter(config.setup.converter.routerAddress));
 
         await executeAdminOnly({
             address: converter.address,
             value: 0,
-            calldata: converter.interface.encodeFunctionData("setRouter", [config.setup.routerAddress]),
+            calldata: converter.interface.encodeFunctionData("setRouter", [config.setup.converter.routerAddress]),
         });
 
         const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.converterAddress);

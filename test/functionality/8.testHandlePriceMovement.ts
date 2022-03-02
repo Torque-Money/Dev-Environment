@@ -2,13 +2,13 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../typechain-types";
-import {BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getBorrowTokens} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
-import {changePrice, setPrice} from "../scripts/utils/helpers/utilOracle";
-import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
+import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../../typechain-types";
+import {BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getCollateralTokens, getBorrowTokens} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
+import {changePrice, setPrice} from "../../scripts/utils/helpers/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
 
 describe("Handle price movement", async function () {
     const config = chooseConfig(CONFIG_TYPE);
@@ -40,7 +40,7 @@ describe("Handle price movement", async function () {
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
         resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
-        taskTreasury = await hre.ethers.getContractAt("ITaskTreasury", config.setup.taskTreasury);
+        taskTreasury = await hre.ethers.getContractAt("ITaskTreasury", config.setup.resolver.taskTreasury);
 
         collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
 

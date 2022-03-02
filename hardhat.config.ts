@@ -14,6 +14,7 @@ import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 import {verifyAll} from "./scripts/utils/utilVerify";
+import {testWrapper} from "./scripts/utils/helpers/utilTest";
 
 task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
     await hre.run("compile");
@@ -48,14 +49,12 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
     await verifyAll(hre);
 });
 
-// **** This is going to be replaced with our new testing methods where we can choose between functionality or verification
-task("test-wrapper", "Wrapper for tests", async (args, hre) => {
-    await utilFund(CONFIG_TYPE, hre);
-    await utilApprove(CONFIG_TYPE, hre);
+task("test-functionality", "Wrapper for tests", async (args, hre) => {
+    await hre.run("test", "scripts/functionality");
 
-    await hre.run("test");
-
-    await utilClump(CONFIG_TYPE, hre);
+    // await testWrapper(hre, async () => {
+    //     await hre.run("test", "scripts/functionality");
+    // });
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";

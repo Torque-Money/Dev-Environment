@@ -2,13 +2,13 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../typechain-types";
-import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../scripts/utils/helpers/utilMarginLong";
-import {setPrice} from "../scripts/utils/helpers/utilOracle";
-import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
-import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
+import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../../typechain-types";
+import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
+import {setPrice} from "../../scripts/utils/helpers/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
 
 describe("MarginLong", async function () {
     const config = chooseConfig(CONFIG_TYPE);

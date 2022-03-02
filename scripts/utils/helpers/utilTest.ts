@@ -30,11 +30,11 @@ export async function approxEqual(a: BigNumber, b: BigNumber, percentError: numb
     }
 }
 
-export async function testWrapper(hre: HardhatRuntimeEnvironment) {
+export async function testWrapper(hre: HardhatRuntimeEnvironment, callback: () => Promise<any>) {
     await utilFund(CONFIG_TYPE, hre);
     await utilApprove(CONFIG_TYPE, hre);
 
-    await hre.run("test");
+    await callback();
 
     await utilClump(CONFIG_TYPE, hre);
 }

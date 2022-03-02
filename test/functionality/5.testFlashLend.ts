@@ -2,11 +2,11 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
 
-import {ERC20Upgradeable, FlashBorrowerTest, FlashLender, LPool} from "../typechain-types";
-import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getFlashLenderTokens, getTokenAmount} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
-import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
+import {ERC20Upgradeable, FlashBorrowerTest, FlashLender, LPool} from "../../typechain-types";
+import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 
 describe("FlashLend", async function () {
     const config = chooseConfig(CONFIG_TYPE);

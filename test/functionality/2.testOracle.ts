@@ -1,13 +1,13 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {ERC20Upgradeable, LPool, OracleTest} from "../typechain-types";
-import {setPrice} from "../scripts/utils/helpers/utilOracle";
-import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../scripts/utils/helpers/utilTest";
-import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../scripts/utils/utilConfig";
+import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
+import {setPrice} from "../../scripts/utils/helpers/utilOracle";
+import {BIG_NUM, CONFIG_TYPE, shouldFail} from "../../scripts/utils/helpers/utilTest";
+import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
-import {provideLiquidity, redeemLiquidity} from "../scripts/utils/helpers/utilPool";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 
 describe("Oracle", async function () {
     const config = chooseConfig(CONFIG_TYPE);
