@@ -50,11 +50,20 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 });
 
 task("test-functionality", "Wrapper for tests", async (args, hre) => {
-    await hre.run("test", "scripts/functionality");
+    const basePath = "./test/functionality/";
 
-    // await testWrapper(hre, async () => {
-    //     await hre.run("test", "scripts/functionality");
-    // });
+    const files = [
+        "1.testPool.ts",
+        "2.testOracle.ts",
+        "3.testTimelock.ts",
+        "4.testConverter.ts",
+        "5.testFlashlend.ts",
+        "6.testMarginLong.ts",
+        "7.testInterest.ts",
+        "8.testHandlePriceMovement.ts",
+    ].map((file) => basePath + file);
+
+    await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
