@@ -15,39 +15,21 @@ import setup from "./scripts/setup/setup";
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 import {verifyAll} from "./scripts/utils/utilVerify";
 import {testWrapper} from "./scripts/utils/helpers/utilTest";
+import getConfigType from "./scripts/utils/utilConfigTypeSelector";
 
-task("deploy-main", "Deploy contracts onto mainnet", async (args, hre) => {
+task("deploy", "Deploy contracts onto network", async (args, hre) => {
     await hre.run("compile");
+    const configType = await getConfigType(hre);
 
-    await deploy("main", hre);
-    await setup("main", hre);
-
-    await utilUpdateFiles();
-});
-
-task("deploy-test", "Deploy contracts onto testnet", async (args, hre) => {
-    await hre.run("compile");
-
-    await deploy("test", hre);
-    await setup("test", hre);
-
-    await utilUpdateFiles();
-});
-
-task("deploy-fork", "Deploy contracts onto forked network", async (args, hre) => {
-    await hre.run("compile");
-
-    await deploy("fork", hre);
-    await setup("fork", hre);
+    await deploy(configType, hre);
+    await setup(configType, hre);
 
     await utilUpdateFiles();
 });
 
 task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
 
-task("verify-all", "Verify all contracts on block explorer", async (args, hre) => {
-    await verifyAll(hre);
-});
+task("verify-all", "Verify all contracts on block explorer", async (args, hre) => await verifyAll(hre));
 
 task("test-functionality", "Run functionality tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/functionality/";
@@ -66,7 +48,7 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
-task("test-verification", "Run verification tests");
+task("test-verification", "Run verification tests"); // This will be similar to the functionality tests ^
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
