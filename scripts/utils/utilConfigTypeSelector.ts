@@ -1,4 +1,5 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+
 import {ConfigType} from "./utilConfig";
 
 export default async function getConfigType(hre: HardhatRuntimeEnvironment) {
