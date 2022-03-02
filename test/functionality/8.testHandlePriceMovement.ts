@@ -10,7 +10,7 @@ import {changePrice, setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/helpers/utilConstants";
+import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
 describe("Handle price movement", async function () {
     const configType = await getConfigType(hre);

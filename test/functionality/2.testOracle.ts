@@ -9,7 +9,7 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/helpers/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
 describe("Oracle", async function () {
     const configType = await getConfigType(hre);

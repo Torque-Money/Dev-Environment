@@ -7,7 +7,7 @@ import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/helpers/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
 describe("Pool", async function () {
     const configType = await getConfigType(hre);

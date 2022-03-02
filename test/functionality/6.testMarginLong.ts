@@ -10,7 +10,7 @@ import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/helpers/utilConstants";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
 describe("MarginLong", async function () {
     const configType = await getConfigType(hre);

@@ -8,7 +8,7 @@ import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/helpers/
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/helpers/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
 describe("FlashLend", async function () {
     const configType = await getConfigType(hre);
