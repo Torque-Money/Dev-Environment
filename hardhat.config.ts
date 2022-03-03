@@ -48,9 +48,13 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
-task("test-verification", "Run verification tests"); // This will be similar to the functionality tests ^ except will be used to verify the deployment was successful
+task("test-verification", "Run verification tests", async (args, hre) => {
+    const basePath = process.cwd() + "/test/verification/";
 
-// **** But now I have a problem where I need to override the normal selected network config with the config I wish to use (mostly just applies to functionality - potential override here ?)
+    const files = ["1.verifyPool.ts"].map((file) => basePath + file);
+
+    await hre.run("test", {testFiles: files});
+});
 
 const NETWORK_URL = "https://rpc.ftm.tools/";
 const PINNED_BLOCK = 32177754;
