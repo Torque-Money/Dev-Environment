@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getBorrowTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {getApprovedToken, getBorrowTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
@@ -47,8 +47,9 @@ describe("Pool", async function () {
         for (const token of poolTokens) {
             const lpToken = await LPFromPT(hre, pool, token);
 
-            expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + (await token.name()));
-            expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + (await token.symbol()));
+            const approvedTokenData = getApprovedToken(configType, token.address);
+            expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + approvedTokenData.name);
+            expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + approvedTokenData.symbol);
         }
     });
 });

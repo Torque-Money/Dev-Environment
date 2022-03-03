@@ -62,3 +62,12 @@ export async function getTokenAmount(hre: HardhatRuntimeEnvironment, tokens: ERC
 
     return amounts;
 }
+
+export function getApprovedToken(configType: ConfigType, address: string) {
+    const config = chooseConfig(configType);
+
+    const approved = config.tokens.approved.filter((token) => token.address.toLowerCase() === address.toLowerCase());
+    if (approved.length === 0) throw Error("No approved token with this address");
+
+    return approved[0];
+}
