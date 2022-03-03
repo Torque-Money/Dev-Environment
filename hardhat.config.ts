@@ -49,6 +49,9 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
 });
 
 task("test-verification", "Run verification tests", async (args, hre) => {
+    // **** So the test worked for the above, but not for this one ???
+    // **** It was able to run the wrapper tasks but NOT the tasks themselves ???
+
     const basePath = process.cwd() + "/test/verification/";
 
     const files = ["1.verifyPool.ts"].map((file) => basePath + file);

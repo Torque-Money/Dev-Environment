@@ -11,7 +11,7 @@ export default async function getConfigType(hre: HardhatRuntimeEnvironment) {
 }
 
 function mapChainIdToConfigType(hre: HardhatRuntimeEnvironment, chainId: number): ConfigType {
-    if (chainId === hre.network.config.chainId) return "fork";
+    if (chainId === 1337) return "fork";
     else if (chainId === 4) return "test";
     else if (chainId === 250) return "main";
     else throw Error("Chain Id not supported");
