@@ -20,6 +20,8 @@ describe("Pool", async function () {
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
+        console.log("Executed");
+
         lpTokens = [];
         for (const token of poolTokens) lpTokens.push(await LPFromPT(hre, pool, token));
     });
