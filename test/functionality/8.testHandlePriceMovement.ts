@@ -34,7 +34,7 @@ describe("Handle price movement", async function () {
     const MINOR_PRICE_CHANGE_PERCENT = 10;
     const MAJOR_PRICE_CHANGE_PERCENT = 80;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolToken = (await getBorrowTokens(configType, hre))[0];
         collateralToken = (await getCollateralTokens(configType, hre))[0];
 
@@ -50,7 +50,7 @@ describe("Handle price movement", async function () {
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
-    this.beforeEach(async () => {
+    beforeEach(async () => {
         await setPrice(oracle, poolToken, BORROW_PRICE);
         await setPrice(oracle, collateralToken, COLLATERAL_PRICE);
 
@@ -62,7 +62,7 @@ describe("Handle price movement", async function () {
         await marginLong.borrow(poolToken.address, provideAmount);
     });
 
-    this.afterEach(async () => {
+    afterEach(async () => {
         await removeCollateral(configType, hre, marginLong);
         await redeemLiquidity(configType, hre, pool);
     });

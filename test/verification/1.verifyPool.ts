@@ -15,7 +15,7 @@ describe("Pool", async function () {
 
     let pool: LPool;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolTokens = await getBorrowTokens(configType, hre);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);

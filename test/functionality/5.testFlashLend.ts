@@ -22,7 +22,7 @@ describe("FlashLend", async function () {
     let flashBorrowerTest: FlashBorrowerTest;
     let pool: LPool;
 
-    this.beforeAll(async () => {
+    before(async () => {
         flashLendToken = (await getFlashLenderTokens(configType, hre))[0];
 
         flashLendAmount = (await getTokenAmount(hre, [flashLendToken]))[0];
@@ -32,11 +32,11 @@ describe("FlashLend", async function () {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
     });
 
-    this.beforeEach(async () => {
+    beforeEach(async () => {
         await provideLiquidity(pool, [flashLendToken], [flashLendAmount]);
     });
 
-    this.afterEach(async () => {
+    afterEach(async () => {
         await redeemLiquidity(configType, hre, pool);
     });
 

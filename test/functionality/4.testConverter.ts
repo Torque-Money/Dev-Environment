@@ -23,7 +23,7 @@ describe("Converter", async function () {
 
     let signerAddress: string;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolToken = (await getBorrowTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         weth = await hre.ethers.getContractAt("ERC20Upgradeable", config.tokens.wrappedCoin.address);

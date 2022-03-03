@@ -23,7 +23,7 @@ describe("Oracle", async function () {
     let oracle: OracleTest;
     let pool: LPool;
 
-    this.beforeAll(async () => {
+    before(async () => {
         oracleTokens = await getOracleTokens(configType, hre);
         poolTokens = await getBorrowTokens(configType, hre);
 

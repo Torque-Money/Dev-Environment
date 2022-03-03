@@ -21,7 +21,7 @@ describe("Pool", async function () {
 
     let signerAddress: string;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolTokens = await getBorrowTokens(configType, hre);
 
         provideAmounts = await getTokenAmount(hre, poolTokens);

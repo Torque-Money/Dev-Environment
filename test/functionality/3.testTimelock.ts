@@ -32,7 +32,7 @@ describe("Timelock", async function () {
         await execute();
     };
 
-    this.beforeAll(async () => {
+    before(async () => {
         timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress);
 
         minDelay = await timelock.getMinDelay();

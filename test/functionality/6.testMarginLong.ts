@@ -28,7 +28,7 @@ describe("MarginLong", async function () {
 
     let signerAddress: string;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolTokens = await getBorrowTokens(configType, hre);
         collateralTokens = await getCollateralTokens(configType, hre);
 
@@ -44,14 +44,14 @@ describe("MarginLong", async function () {
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
-    this.beforeEach(async () => {
+    beforeEach(async () => {
         for (const token of poolTokens) await setPrice(oracle, token, BORROW_PRICE);
         for (const token of collateralTokens) await setPrice(oracle, token, COLLATERAL_PRICE);
 
         provideLiquidity(pool, poolTokens, provideAmounts);
     });
 
-    this.afterEach(async () => {
+    afterEach(async () => {
         await redeemLiquidity(configType, hre, pool);
     });
 

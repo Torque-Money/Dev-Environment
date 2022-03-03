@@ -33,7 +33,7 @@ describe("Interest", async function () {
     const TIME_FRACTION = 360;
     const ERROR_DECIMALS = 3;
 
-    this.beforeAll(async () => {
+    before(async () => {
         poolToken = (await getBorrowTokens(configType, hre))[0];
         collateralToken = (await getCollateralTokens(configType, hre))[0];
 
@@ -51,14 +51,14 @@ describe("Interest", async function () {
         TIME_PER_INTEREST_APPLICATION = (await pool.timePerInterestApplication()).div(TIME_FRACTION);
     });
 
-    this.beforeEach(async () => {
+    beforeEach(async () => {
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
         provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
         await provideLiquidity(pool, [poolToken], [provideAmount]);
     });
 
-    this.afterEach(async () => {
+    afterEach(async () => {
         await removeCollateral(configType, hre, marginLong);
         await redeemLiquidity(configType, hre, pool);
     });
