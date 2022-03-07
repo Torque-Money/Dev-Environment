@@ -23,6 +23,6 @@ describe("Verify: FlashLend", async function () {
     it("should verify the pool", async () => expect(await flashLender.pool()).to.equal(config.contracts.leveragePoolAddress));
 
     it("should check all approved tokens", async () => {
-        // **** Here
+        for (const token of flashLendToken) expect(await flashLender.isApproved(token.address)).to.equal(true);
     });
 });

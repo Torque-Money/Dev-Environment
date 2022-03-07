@@ -30,14 +30,17 @@ describe("Verify: Pool", async function () {
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
 
-    it("should verify LP tokens", async () => {
+    it("should verify pool tokens", async () => {
         for (const token of poolTokens) {
-            const lpToken = await LPFromPT(hre, pool, token);
-
             expect(await pool.isPT(token.address)).to.equal(true);
             expect(await pool.isApprovedPT(token.address)).to.equal(true);
-            expect(await pool.isLP(lpToken.address)).to.equal(true);
-            expect(await pool.isApprovedLP(lpToken.address)).to.equal(true);
+        }
+    });
+
+    it("should verify LP tokens", async () => {
+        for (const token of lpTokens) {
+            expect(await pool.isLP(token.address)).to.equal(true);
+            expect(await pool.isApprovedLP(token.address)).to.equal(true);
         }
     });
 

@@ -20,6 +20,8 @@ describe("Verify: Oracle", async function () {
         oracleTokens = await getOracleTokens(configType, hre);
     });
 
+    // **** This and pool I need to verify the other deployed contracts
+
     it("should verify the price decimals", async () => expect(await oracle.priceDecimals()).to.equal(config.setup.oracle.priceDecimals));
 
     it("should check the configuration of each oracle token", async () => {
