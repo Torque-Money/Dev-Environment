@@ -9,7 +9,7 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
-describe("Pool", async function () {
+describe("Functionality: Pool", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 

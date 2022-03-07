@@ -11,7 +11,7 @@ import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/uti
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
-describe("Oracle", async function () {
+describe("Functionality: Oracle", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 

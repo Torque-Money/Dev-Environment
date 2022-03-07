@@ -9,7 +9,7 @@ import {Timelock} from "../../typechain-types";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 
-describe("Timelock", async function () {
+describe("Functionality: Timelock", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 

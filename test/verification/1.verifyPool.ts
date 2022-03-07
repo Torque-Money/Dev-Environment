@@ -1,12 +1,12 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getApprovedToken, getBorrowTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {getApprovedToken, getBorrowTokens, getLPTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../typechain-types";
 
-describe("Pool", async function () {
+describe("Verify: Pool", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 
@@ -16,12 +16,10 @@ describe("Pool", async function () {
     let pool: LPool;
 
     before(async () => {
-        poolTokens = await getBorrowTokens(configType, hre);
-
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        lpTokens = [];
-        for (const token of poolTokens) lpTokens.push(await LPFromPT(hre, pool, token));
+        poolTokens = await getBorrowTokens(configType, hre);
+        lpTokens = await getLPTokens(configType, hre);
     });
 
     it("should verify pool setup state data", async () => {
@@ -47,9 +45,9 @@ describe("Pool", async function () {
         for (const token of poolTokens) {
             const lpToken = await LPFromPT(hre, pool, token);
 
-            const approvedTokenData = getApprovedToken(configType, token.address);
-            expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + approvedTokenData.name);
-            expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + approvedTokenData.symbol);
+            const approved = getApprovedToken(configType, token.address);
+            expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + approved.name);
+            expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + approved.symbol);
         }
     });
 });

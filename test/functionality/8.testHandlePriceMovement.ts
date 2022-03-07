@@ -12,7 +12,7 @@ import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollatera
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
-describe("Handle price movement", async function () {
+describe("Functionality: Handle price movement", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 

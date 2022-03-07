@@ -8,7 +8,7 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 
-describe("Converter", async function () {
+describe("Functionality: Converter", async function () {
     const configType = await getConfigType(hre);
     const config = chooseConfig(configType);
 

@@ -2,7 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ethers} from "ethers";
 
 import {chooseConfig, ConfigType} from "../utilConfig";
-import {ERC20Upgradeable, LPool} from "../../../typechain-types";
+import {ERC20Upgradeable, LPool, LPoolToken} from "../../../typechain-types";
 
 export async function getBorrowTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -21,6 +21,17 @@ export async function getCollateralTokens(configType: ConfigType, hre: HardhatRu
     let tokens: ERC20Upgradeable[] = [];
     for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral && !approved.leveragePool)) {
         tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", approved.address));
+    }
+
+    return tokens;
+}
+
+export async function getLPTokens(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    const config = chooseConfig(configType);
+
+    let tokens: LPoolToken[] = [];
+    for (const approved of config.tokens.lpTokens.tokens) {
+        tokens.push(await hre.ethers.getContractAt("LPoolToken", approved));
     }
 
     return tokens;
