@@ -1,10 +1,9 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getApprovedToken, getOracleTokens} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {ERC20Upgradeable, OracleLP, Timelock} from "../../typechain-types";
+import {Timelock} from "../../typechain-types";
 
 describe("Verify: Timelock", async function () {
     const configType = await getConfigType(hre);

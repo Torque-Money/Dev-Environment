@@ -15,7 +15,7 @@ describe("Verify: Oracle", async function () {
     let oracle: OracleLP;
 
     before(async () => {
-        oracle = await hre.ethers.getContractAt("OracleLP", config.contracts.leveragePoolAddress);
+        oracle = await hre.ethers.getContractAt("OracleLP", config.contracts.oracleAddress);
 
         oracleTokens = await getOracleTokens(configType, hre);
     });
