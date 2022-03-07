@@ -1,6 +1,5 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getFlashLenderTokens} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
