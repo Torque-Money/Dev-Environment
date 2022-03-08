@@ -26,7 +26,7 @@ export function approxEqual(a: BigNumber, b: BigNumber, percentError: number) {
 }
 
 // **** Replace all comparisons with this one and check if it fixes the issue
-export function addressEqual(address1: string, address2: string) {
+export function expectAddressEqual(address1: string, address2: string) {
     expect(address1.toLowerCase()).to.equal(address2);
 }
 

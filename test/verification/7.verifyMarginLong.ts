@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import hre from "hardhat";
+import {expectAddressEqual} from "../../scripts/utils/helpers/utilTest";
 import {getBorrowTokens, getCollateralTokens} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
@@ -22,9 +23,9 @@ describe("Verify: MarginLong", async function () {
         borrowTokens = await getBorrowTokens(configType, hre);
     });
 
-    it("should verify the oracle", async () => expect(await marginLong.oracle()).to.equal(config.contracts.oracleAddress));
+    it("should verify the oracle", async () => expectAddressEqual(await marginLong.oracle(), config.contracts.oracleAddress));
 
-    it("should verify the pool", async () => expect(await marginLong.pool()).to.equal(config.contracts.leveragePoolAddress));
+    it("should verify the pool", async () => expectAddressEqual(await marginLong.pool(), config.contracts.leveragePoolAddress));
 
     it("should verify the margin long setup data", async () => {
         expect(await marginLong.minCollateralPrice()).to.equal(config.setup.marginLong.minCollateralPrice);

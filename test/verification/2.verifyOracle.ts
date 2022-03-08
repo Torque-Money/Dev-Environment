@@ -1,5 +1,6 @@
 import {expect} from "chai";
 import hre from "hardhat";
+import {expectAddressEqual} from "../../scripts/utils/helpers/utilTest";
 import {getApprovedToken, getOracleTokens} from "../../scripts/utils/helpers/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
@@ -26,11 +27,9 @@ describe("Verify: Oracle", async function () {
         for (const token of oracleTokens) {
             const approved = getApprovedToken(configType, token.address);
 
-            // **** Problem in here
-
             expect(await oracle.isSupported(token.address)).to.equal(true);
             expect(await oracle.decimals(token.address)).to.equal(approved.decimals);
-            expect(await oracle.priceFeed(token.address)).to.equal(approved.priceFeed);
+            expectAddressEqual(await oracle.priceFeed(token.address), approved.priceFeed);
         }
     });
 });

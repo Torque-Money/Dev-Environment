@@ -1,5 +1,5 @@
-import {expect} from "chai";
 import hre from "hardhat";
+import {expectAddressEqual} from "../../scripts/utils/helpers/utilTest";
 
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
@@ -15,17 +15,13 @@ describe("Verify: Resolver", async function () {
         resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
     });
 
-    it("should verify the task treasury", async () => expect(await resolver.taskTreasury()).to.equal(config.setup.resolver.taskTreasury));
+    it("should verify the task treasury", async () => expectAddressEqual(await resolver.taskTreasury(), config.setup.resolver.taskTreasury));
 
-    // **** Problem here
+    it("should verify the deposit receiver", async () => expectAddressEqual(await resolver.depositReceiver(), resolver.deployTransaction.from)); // **** Problem here
 
-    it("should verify the deposit receiver", async () => expect(await resolver.depositReceiver()).to.equal(resolver.deployTransaction.from));
+    it("should verify the eth address", async () => expectAddressEqual(await resolver.ethAddress(), config.setup.resolver.ethAddress));
 
-    it("should verify the eth address", async () => expect(await resolver.ethAddress()).to.equal(config.setup.resolver.ethAddress));
+    it("should verify the converter address", async () => expectAddressEqual(await resolver.converter(), config.contracts.converterAddress));
 
-    it("should verify the converter address", async () => expect(await resolver.converter()).to.equal(config.contracts.converterAddress));
-
-    // **** Problem here too
-
-    it("should verify the margin long address", async () => expect(await resolver.ethAddress()).to.equal(config.contracts.marginLongAddress));
+    it("should verify the margin long address", async () => expectAddressEqual(await resolver.marginLong(), config.contracts.marginLongAddress));
 });
