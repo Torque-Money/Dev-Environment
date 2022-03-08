@@ -70,7 +70,7 @@ describe("Functionality: Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMinDenominator).mul(2), maxInterestMinNumerator.mul(interestDenominator), ERROR_DECIMALS);
+        approxEqual(interestNumerator.mul(maxInterestMinDenominator).mul(2), maxInterestMinNumerator.mul(interestDenominator), ERROR_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
@@ -82,7 +82,7 @@ describe("Functionality: Interest", async function () {
 
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMinDenominator), maxInterestMinNumerator.mul(interestDenominator), ERROR_DECIMALS);
+        approxEqual(interestNumerator.mul(maxInterestMinDenominator), maxInterestMinNumerator.mul(interestDenominator), ERROR_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
@@ -96,7 +96,7 @@ describe("Functionality: Interest", async function () {
         const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(poolToken.address);
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(
+        approxEqual(
             interestNumerator.mul(maxInterestMinDenominator).mul(maxInterestMaxDenominator).mul(2),
             interestDenominator.mul(maxInterestMaxNumerator.mul(maxInterestMinDenominator).add(maxInterestMinNumerator.mul(maxInterestMaxDenominator))),
             ERROR_DECIMALS
@@ -110,7 +110,7 @@ describe("Functionality: Interest", async function () {
 
         const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(poolToken.address);
         const [interestNumerator, interestDenominator] = await pool.interestRate(poolToken.address);
-        await approxEqual(interestNumerator.mul(maxInterestMaxDenominator), maxInterestMaxNumerator.mul(interestDenominator), ERROR_DECIMALS);
+        approxEqual(interestNumerator.mul(maxInterestMaxDenominator), maxInterestMaxNumerator.mul(interestDenominator), ERROR_DECIMALS);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });
@@ -124,7 +124,7 @@ describe("Functionality: Interest", async function () {
         const interest = await marginLong["interest(address,address)"](poolToken.address, signerAddress);
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
         const expectedInterest = initialBorrowPrice.mul(interestNumerator).div(interestDenominator).div(TIME_FRACTION);
-        await approxEqual(interest, expectedInterest, 3);
+        approxEqual(interest, expectedInterest, 3);
         expect(await marginLong.accountPrice(signerAddress)).to.equal((await marginLong.collateralPrice(signerAddress)).sub(interest));
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
@@ -147,7 +147,7 @@ describe("Functionality: Interest", async function () {
 
         const initialBorrowPrice = await marginLong["initialBorrowPrice(address,address)"](poolToken.address, signerAddress);
         const expectedCurrentInterest = initialInterest.add(initialBorrowPrice.mul(currentInterestRateNumerator).div(currentInterestRateDenominator).div(TIME_FRACTION));
-        await approxEqual(currentInterest, expectedCurrentInterest, 3);
+        approxEqual(currentInterest, expectedCurrentInterest, 3);
 
         await (await marginLong["repayAccount(address)"](poolToken.address)).wait();
     });

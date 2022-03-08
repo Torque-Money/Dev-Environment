@@ -19,15 +19,15 @@ export async function wait(hre: HardhatRuntimeEnvironment, seconds: BigNumber) {
     await hre.network.provider.send("evm_mine");
 }
 
-export async function approxEqual(a: BigNumber, b: BigNumber, percentError: number) {
+export function approxEqual(a: BigNumber, b: BigNumber, percentError: number) {
     const DISCRIMINATOR = 10 ** percentError;
 
-    try {
-        expect(a.sub(b).abs().mul(DISCRIMINATOR).lt(b)).to.equal(true);
-    } catch (e) {
-        console.log(`a: ${a.toString()} | b: ${b.toString()} | percent error: ${percentError}`);
-        throw e;
-    }
+    expect(a.sub(b).abs().mul(DISCRIMINATOR).lt(b)).to.equal(true);
+}
+
+// **** Replace all comparisons with this one and check if it fixes the issue
+export function addressEqual(address1: string, address2: string) {
+    expect(address1.toLowerCase()).to.equal(address2);
 }
 
 export async function testWrapper(hre: HardhatRuntimeEnvironment, callback: () => Promise<any>) {
