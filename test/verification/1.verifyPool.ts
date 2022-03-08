@@ -22,7 +22,11 @@ describe("Verify: Pool", async function () {
         lpTokens = await getLPTokens(configType, hre);
     });
 
-    it("should verify pool setup state data", async () => {
+    it("should verify the converter", async () => expect(await pool.converter()).to.equal(config.contracts.converterAddress));
+
+    it("should verify the oracle", async () => expect(await pool.oracle()).to.equal(config.contracts.oracleAddress));
+
+    it("should verify the pool setup data", async () => {
         const [taxPercentNumerator, taxPercentDenominator] = await pool.taxPercentage();
         expect(taxPercentNumerator).to.equal(config.setup.pool.taxPercentNumerator);
         expect(taxPercentDenominator).to.equal(config.setup.pool.taxPercentDenominator);
@@ -30,21 +34,21 @@ describe("Verify: Pool", async function () {
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
 
-    it("should verify pool tokens", async () => {
+    it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
             expect(await pool.isPT(token.address)).to.equal(true);
             expect(await pool.isApprovedPT(token.address)).to.equal(true);
         }
     });
 
-    it("should verify LP tokens", async () => {
+    it("should verify the LP tokens", async () => {
         for (const token of lpTokens) {
             expect(await pool.isLP(token.address)).to.equal(true);
             expect(await pool.isApprovedLP(token.address)).to.equal(true);
         }
     });
 
-    it("should verify state of LP tokens", async () => {
+    it("should verify the metadata of LP tokens", async () => {
         for (const token of poolTokens) {
             const lpToken = await LPFromPT(hre, pool, token);
 

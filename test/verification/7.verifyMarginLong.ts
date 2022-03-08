@@ -22,19 +22,33 @@ describe("Verify: MarginLong", async function () {
         borrowTokens = await getBorrowTokens(configType, hre);
     });
 
-    // **** First we will attempt to verify the other contracts it points to
+    it("should verify the oracle", async () => expect(await marginLong.oracle()).to.equal(config.contracts.oracleAddress));
 
-    it("should verify the task treasury", async () => expect(await resolver.taskTreasury()).to.equal(config.setup.resolver.taskTreasury));
+    it("should verify the pool", async () => expect(await marginLong.pool()).to.equal(config.contracts.leveragePoolAddress));
 
-    it("should verify the deposit receiver", async () => expect(await resolver.depositReceiver()).to.equal(resolver.deployTransaction.from));
+    it("should verify the margin long setup data", async () => {
+        expect(await marginLong.minCollateralPrice()).to.equal(config.setup.marginLong.minCollateralPrice);
 
-    it("should verify the eth address", async () => expect(await resolver.ethAddress()).to.equal(config.setup.resolver.ethAddress));
+        const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
+        expect(maxLeverageNumerator).to.equal(config.setup.marginLong.maxLeverageNumerator);
+        expect(maxLeverageDenominator).to.equal(config.setup.marginLong.maxLeverageDenominator);
 
-    // **** Next we will verify the tokens it uses
+        const [liquidationFeePercentNumerator, liquidationFeePercentDenominator] = await marginLong.liquidationFeePercent();
+        expect(liquidationFeePercentNumerator).to.equal(config.setup.marginLong.liquidationFeePercentNumerator);
+        expect(liquidationFeePercentDenominator).to.equal(config.setup.marginLong.liquidationFeePercentDenominator);
+    });
 
-    // **** NOTE: Make sure to go and clean up the rest of the contracts too
+    it("should verify the collateral tokens", async () => {
+        for (const token of collateralTokens) {
+            expect(await marginLong.isCollateralToken(token.address)).to.equal(true);
+            expect(await marginLong.isApprovedCollateralToken(token.address)).to.equal(true);
+        }
+    });
 
-    it("should verify the converter address", async () => expect(await resolver.converter()).to.equal(config.contracts.converterAddress));
-
-    it("should verify the margin long address", async () => expect(await resolver.ethAddress()).to.equal(config.contracts.marginLongAddress));
+    it("should verify the borrow tokens", async () => {
+        for (const token of borrowTokens) {
+            expect(await marginLong.isBorrowToken(token.address)).to.equal(true);
+            expect(await marginLong.isApprovedBorrowToken(token.address)).to.equal(true);
+        }
+    });
 });
