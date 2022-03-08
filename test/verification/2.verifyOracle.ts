@@ -20,13 +20,13 @@ describe("Verify: Oracle", async function () {
         oracleTokens = await getOracleTokens(configType, hre);
     });
 
-    // **** This and pool I need to verify the other deployed contracts
-
     it("should verify the price decimals", async () => expect(await oracle.priceDecimals()).to.equal(config.setup.oracle.priceDecimals));
 
     it("should check the configuration of each oracle token", async () => {
         for (const token of oracleTokens) {
             const approved = getApprovedToken(configType, token.address);
+
+            // **** Problem in here
 
             expect(await oracle.isSupported(token.address)).to.equal(true);
             expect(await oracle.decimals(token.address)).to.equal(approved.decimals);

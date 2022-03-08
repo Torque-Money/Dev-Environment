@@ -17,11 +17,15 @@ describe("Verify: Resolver", async function () {
 
     it("should verify the task treasury", async () => expect(await resolver.taskTreasury()).to.equal(config.setup.resolver.taskTreasury));
 
+    // **** Problem here
+
     it("should verify the deposit receiver", async () => expect(await resolver.depositReceiver()).to.equal(resolver.deployTransaction.from));
 
     it("should verify the eth address", async () => expect(await resolver.ethAddress()).to.equal(config.setup.resolver.ethAddress));
 
     it("should verify the converter address", async () => expect(await resolver.converter()).to.equal(config.contracts.converterAddress));
+
+    // **** Problem here too
 
     it("should verify the margin long address", async () => expect(await resolver.ethAddress()).to.equal(config.contracts.marginLongAddress));
 });
