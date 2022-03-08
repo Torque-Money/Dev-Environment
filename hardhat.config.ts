@@ -51,7 +51,15 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
 task("test-verification", "Run verification tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/verification/";
 
-    const files = ["1.verifyPool.ts"].map((file) => basePath + file);
+    const files = [
+        "1.verifyPool.ts",
+        "2.verifyOracle.ts",
+        "3.verifyTimelock.ts",
+        "4.verifyConverter.ts",
+        "5.verifyFlashLend.ts",
+        "6.verifyResolver.ts",
+        "7.verifyMarginLong.ts",
+    ].map((file) => basePath + file);
 
     await hre.run("test", {testFiles: files});
 });
