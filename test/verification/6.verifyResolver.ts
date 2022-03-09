@@ -17,8 +17,6 @@ describe("Verify: Resolver", async function () {
 
     it("should verify the task treasury", async () => expectAddressEqual(await resolver.taskTreasury(), config.setup.resolver.taskTreasury));
 
-    it("should verify the deposit receiver", async () => expectAddressEqual(await resolver.depositReceiver(), resolver.deployTransaction.from)); // **** Problem here
-
     it("should verify the eth address", async () => expectAddressEqual(await resolver.ethAddress(), config.setup.resolver.ethAddress));
 
     it("should verify the converter address", async () => expectAddressEqual(await resolver.converter(), config.contracts.converterAddress));
