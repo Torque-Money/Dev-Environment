@@ -6,8 +6,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {ERC20Upgradeable, FlashLender} from "../../typechain-types";
 
-describe("Verify: FlashLend", async function () {
-    const configType = await getConfigType(hre);
+describe("Verify: FlashLend", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let flashLendToken: ERC20Upgradeable[];

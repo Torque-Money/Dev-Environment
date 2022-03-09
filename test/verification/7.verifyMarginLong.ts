@@ -7,8 +7,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {ERC20Upgradeable, MarginLong} from "../../typechain-types";
 
-describe("Verify: MarginLong", async function () {
-    const configType = await getConfigType(hre);
+describe("Verify: MarginLong", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let collateralTokens: ERC20Upgradeable[];

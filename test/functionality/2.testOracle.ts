@@ -11,8 +11,8 @@ import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/uti
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
-describe("Functionality: Oracle", async function () {
-    const configType = await getConfigType(hre);
+describe("Functionality: Oracle", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let oracleTokens: ERC20Upgradeable[];

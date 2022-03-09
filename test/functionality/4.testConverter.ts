@@ -8,8 +8,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import {BigNumber} from "ethers";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 
-describe("Functionality: Converter", async function () {
-    const configType = await getConfigType(hre);
+describe("Functionality: Converter", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let poolToken: ERC20Upgradeable;

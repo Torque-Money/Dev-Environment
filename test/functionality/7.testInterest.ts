@@ -13,8 +13,8 @@ import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollatera
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
-describe("Functionality: Interest", async function () {
-    const configType = await getConfigType(hre);
+describe("Functionality: Interest", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let poolToken: ERC20Upgradeable;

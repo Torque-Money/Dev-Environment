@@ -12,8 +12,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
-describe("Functionality: MarginLong", async function () {
-    const configType = await getConfigType(hre);
+describe("Functionality: MarginLong", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let poolTokens: ERC20Upgradeable[];

@@ -5,8 +5,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {Resolver} from "../../typechain-types";
 
-describe("Verify: Resolver", async function () {
-    const configType = await getConfigType(hre);
+describe("Verify: Resolver", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let resolver: Resolver;

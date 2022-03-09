@@ -6,8 +6,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../typechain-types";
 
-describe("Verify: Pool", async function () {
-    const configType = await getConfigType(hre);
+describe("Verify: Pool", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let poolTokens: ERC20Upgradeable[];

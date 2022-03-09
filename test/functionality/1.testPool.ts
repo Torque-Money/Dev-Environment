@@ -9,8 +9,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
-describe("Functionality: Pool", async function () {
-    const configType = await getConfigType(hre);
+describe("Functionality: Pool", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let poolTokens: ERC20Upgradeable[];

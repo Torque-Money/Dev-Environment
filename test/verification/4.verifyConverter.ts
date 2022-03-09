@@ -5,8 +5,8 @@ import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {Converter} from "../../typechain-types";
 
-describe("Verify: Converter", async function () {
-    const configType = await getConfigType(hre);
+describe("Verify: Converter", () => {
+    const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
     let converter: Converter;

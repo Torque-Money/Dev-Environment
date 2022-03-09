@@ -3,7 +3,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ConfigType} from "./utilConfig";
 import {OVERRIDE_CONFIG_TYPE} from "./utilConstants";
 
-export default async function getConfigType(hre: HardhatRuntimeEnvironment) {
+export default function getConfigType(hre: HardhatRuntimeEnvironment) {
     const networkName = hre.network.name;
     const configType = mapNetworkToConfig(networkName);
 
