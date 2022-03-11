@@ -99,13 +99,13 @@ describe("Functionality: Timelock", () => {
 
     it("should execute an admin only request to the oracle and attempt to upgrade it", async () => {
         const oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
-        const token = config.tokens.approved.filter((approved) => approved.oracle)[0];
-        await shouldFail(async () => await oracle.setApprovedPriceFeed([token.address], [token.priceFeed], [token.decimals], [true]));
+        const token = config.tokens.approved.filter((approved) => approved.setup.oracle)[0];
+        await shouldFail(async () => await oracle.setApprovedPriceFeed([token.address], [token.setup.priceFeed], [token.decimals], [true]));
 
         await executeAdminOnly({
             address: oracle.address,
             value: 0,
-            calldata: oracle.interface.encodeFunctionData("setApprovedPriceFeed", [[token.address], [token.priceFeed], [token.decimals], [true]]),
+            calldata: oracle.interface.encodeFunctionData("setApprovedPriceFeed", [[token.address], [token.setup.priceFeed], [token.decimals], [true]]),
         });
 
         const implementation = await getImplementationAddress(hre.ethers.provider, config.contracts.oracleAddress);
