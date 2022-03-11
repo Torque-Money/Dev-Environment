@@ -15,7 +15,7 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
 
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-    for (const token of config.tokens.approved.filter((approved) => approved.marginLongCollateral)) {
+    for (const token of config.tokens.approved.filter((approved) => approved.setup.marginLongCollateral)) {
         const available = await marginLong.collateral(token.address, signerAddress);
         if (available.gt(0)) await marginLong.removeCollateral(token.address, available);
     }

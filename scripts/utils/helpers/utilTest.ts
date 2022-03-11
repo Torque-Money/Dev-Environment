@@ -31,7 +31,7 @@ export function expectAddressEqual(address1: string, address2: string) {
 }
 
 export async function testWrapper(hre: HardhatRuntimeEnvironment, callback: () => Promise<any>) {
-    const configType = await getConfigType(hre);
+    const configType = getConfigType(hre);
 
     await utilFund(configType, hre);
     await utilApprove(configType, hre);

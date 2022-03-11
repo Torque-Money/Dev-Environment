@@ -8,7 +8,7 @@ export async function getBorrowTokens(configType: ConfigType, hre: HardhatRuntim
     const config = chooseConfig(configType);
 
     let tokens: ERC20Upgradeable[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongBorrow)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.setup.marginLongBorrow)) {
         tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", approved.address));
     }
 
@@ -19,7 +19,7 @@ export async function getCollateralTokens(configType: ConfigType, hre: HardhatRu
     const config = chooseConfig(configType);
 
     let tokens: ERC20Upgradeable[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.marginLongCollateral && !approved.leveragePool)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.setup.marginLongCollateral && !approved.setup.leveragePool)) {
         tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", approved.address));
     }
 
@@ -45,7 +45,7 @@ export async function getFlashLenderTokens(configType: ConfigType, hre: HardhatR
     const config = chooseConfig(configType);
 
     let tokens: ERC20Upgradeable[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.flashLender)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.setup.flashLender)) {
         tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", approved.address));
     }
 
@@ -56,7 +56,7 @@ export async function getOracleTokens(configType: ConfigType, hre: HardhatRuntim
     const config = chooseConfig(configType);
 
     let tokens: ERC20Upgradeable[] = [];
-    for (const approved of config.tokens.approved.filter((approved) => approved.oracle)) {
+    for (const approved of config.tokens.approved.filter((approved) => approved.setup.oracle)) {
         tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", approved.address));
     }
 
