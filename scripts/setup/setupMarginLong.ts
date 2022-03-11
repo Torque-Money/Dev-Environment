@@ -12,14 +12,14 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await marginLong.setOracle(config.contracts.oracleAddress)).wait();
     console.log("-- Set oracle");
 
-    const marginApprovedCollateral = config.tokens.approved.filter((approved) => approved.marginLongCollateral).map((approved) => approved.address);
+    const marginApprovedCollateral = config.tokens.approved.filter((approved) => approved.setup.marginLongCollateral).map((approved) => approved.address);
     await (await marginLong.addCollateralToken(marginApprovedCollateral)).wait();
     console.log("-- Add collateral tokens");
     const marginSupportedCollateral = Array(marginApprovedCollateral.length).fill(true);
     await (await marginLong.setApprovedCollateralToken(marginApprovedCollateral, marginSupportedCollateral)).wait();
     console.log("-- Set approved collateral tokens");
 
-    const marginApprovedBorrow = config.tokens.approved.filter((approved) => approved.marginLongBorrow).map((approved) => approved.address);
+    const marginApprovedBorrow = config.tokens.approved.filter((approved) => approved.setup.marginLongBorrow).map((approved) => approved.address);
     await (await marginLong.addBorrowToken(marginApprovedBorrow)).wait();
     console.log("-- Add borrow tokens");
     const marginSupportedBorrow = Array(marginApprovedBorrow.length).fill(true);

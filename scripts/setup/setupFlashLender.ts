@@ -10,7 +10,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await flashLender.setPool(config.contracts.leveragePoolAddress)).wait();
     console.log("-- Set pool");
 
-    const flashLenderApprovedTokens = config.tokens.approved.filter((approved) => approved.flashLender).map((approved) => approved.address);
+    const flashLenderApprovedTokens = config.tokens.approved.filter((approved) => approved.setup.flashLender).map((approved) => approved.address);
     const isApproved = Array(flashLenderApprovedTokens.length).fill(true);
     await (await flashLender.setApproved(flashLenderApprovedTokens, isApproved)).wait();
     console.log("-- Set approved flash lend tokens");
