@@ -35,14 +35,14 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/functionality/";
 
     const files = [
-        "1.testPool.ts",
-        "2.testOracle.ts",
-        "3.testTimelock.ts",
-        "4.testConverter.ts",
-        "5.testFlashLend.ts",
-        "6.testMarginLong.ts",
-        "7.testInterest.ts",
-        "8.testHandlePriceMovement.ts",
+        "1.functionPool.ts",
+        "2.functionOracle.ts",
+        "3.functionTimelock.ts",
+        "4.functionConverter.ts",
+        "5.functionFlashLend.ts",
+        "6.functionMarginLong.ts",
+        "7.functionInterest.ts",
+        "8.functionHandlePriceMovement.ts",
     ].map((file) => basePath + file);
 
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
