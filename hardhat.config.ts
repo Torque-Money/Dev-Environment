@@ -48,6 +48,14 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
+task("test-interactions", "Run interaction tests", async (args, hre) => {
+    const basePath = process.cwd() + "/test/interactions/";
+
+    const files = ["1.interactPool.ts", "2.interactOracle.ts", "3.interactConverter.ts", "4.interactMarginLong.ts"].map((file) => basePath + file);
+
+    await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
+});
+
 task("test-verification", "Run verification tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/verification/";
 
