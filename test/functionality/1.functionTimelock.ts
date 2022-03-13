@@ -117,7 +117,7 @@ describe("Functionality: Timelock", () => {
         });
     });
 
-    // **** Test the LP tokens with the timelock out too
+    // **** Test the LP tokens with the timelock too
 
     it("should execute an admin only request to the resolver and attempt to upgrade it", async () => {
         const resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
