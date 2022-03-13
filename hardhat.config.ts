@@ -65,10 +65,10 @@ task("test-verification", "Run verification tests", async (args, hre) => {
     await hre.run("test", {testFiles: files});
 });
 
-const NETWORK_URL = "https://rpc.ftm.tools/";
+const NETWORK_URL = process.env.NETWORK_URL;
 const PINNED_BLOCK = 32177754;
 
-const NETWORK_URL_TEST = process.env.NETWORK_URL;
+const NETWORK_URL_TEST = process.env.NETWORK_URL_TEST;
 
 export default {
     solidity: {
