@@ -10,7 +10,7 @@ import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
 import {chooseConfig} from "../../scripts/utils/utilConfig";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
+import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/utilConstants";
 
 describe("Interaction: MarginLong", () => {
     const configType = getConfigType(hre);
@@ -45,10 +45,6 @@ describe("Interaction: MarginLong", () => {
     });
 
     beforeEach(async () => {
-        // **** This is going to be annoying because we can't properly borrow against it due to the collateralization (unless we do some form of calculation to check how much we can in future)
-        for (const token of poolTokens) await setPrice(oracle, token, BORROW_PRICE);
-        for (const token of collateralTokens) await setPrice(oracle, token, COLLATERAL_PRICE);
-
         provideLiquidity(pool, poolTokens, provideAmounts);
     });
 
@@ -123,7 +119,7 @@ describe("Interaction: MarginLong", () => {
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
         await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
         expect((await marginLong.getBorrowingAccounts()).length).to.equal(1);
@@ -153,7 +149,7 @@ describe("Interaction: MarginLong", () => {
         for (let i = 0; i < poolTokens.length; i++) {
             const token = poolTokens[i];
 
-            const borrowAmount = (await allowedBorrowAmount(hre, marginLong, oracle, token)).div(poolTokens.length);
+            const borrowAmount = (await allowedBorrowAmount(hre, marginLong, oracle, pool, token)).div(poolTokens.length);
             await marginLong.borrow(token.address, borrowAmount);
         }
 
@@ -184,7 +180,7 @@ describe("Interaction: MarginLong", () => {
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
         await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
         const [initialMarginLevelNumerator, initialMarginLevelDenominator] = await marginLong.marginLevel(signerAddress);
@@ -207,7 +203,7 @@ describe("Interaction: MarginLong", () => {
 
         await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
 
-        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
         await (await marginLong.borrow(poolToken.address, borrowAmount)).wait();
 
         const lpToken = await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(poolToken.address));

@@ -42,7 +42,14 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
 task("test-interactions", "Run interaction tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/interactions/";
 
-    const files = ["1.interactPool.ts", "2.interactOracle.ts", "3.interactConverter.ts", "4.interactMarginLong.ts"].map((file) => basePath + file);
+    // **** I am going to seperate the margin long into functionality and the interactions
+
+    const files = [
+        // "1.interactPool.ts",
+        // "2.interactOracle.ts",
+        // "3.interactConverter.ts",
+        "4.interactMarginLong.ts",
+    ].map((file) => basePath + file);
 
     // await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
     await hre.run("test", {testFiles: files});

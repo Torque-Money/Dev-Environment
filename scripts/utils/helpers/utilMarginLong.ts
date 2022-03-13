@@ -1,7 +1,7 @@
 import {BigNumber, Contract, ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import {ERC20Upgradeable, MarginLong} from "../../../typechain-types";
+import {ERC20Upgradeable, LPool, MarginLong} from "../../../typechain-types";
 import {chooseConfig, ConfigType} from "../utilConfig";
 
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgradeable[], amounts: ethers.BigNumber[]) {
@@ -26,9 +26,9 @@ export async function minCollateralAmount(marginLong: MarginLong, oracle: Contra
     return await oracle.amountMax(token.address, minCollateralPrice);
 }
 
-export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, token: ERC20Upgradeable) {
+export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Contract, pool: LPool, token: ERC20Upgradeable) {
     const ROUND_CONSTANT = 1e4;
-    const ERROR_MARGIN = 3;
+    const SAFETY_REDUCTION = 2;
 
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
@@ -55,5 +55,12 @@ export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, margin
         price = collateralPrice.mul(numerator).div(denominator);
     }
 
-    return ((await oracle.amountMin(token.address, price)) as BigNumber).div(ERROR_MARGIN);
+    const liquidity = await pool.liquidity(token.address);
+    const maxAllowed: BigNumber = await oracle.amountMin(token.address, price);
+
+    let allowed;
+    if (liquidity.gt(maxAllowed)) allowed = liquidity;
+    else allowed = maxAllowed;
+
+    return allowed.div(SAFETY_REDUCTION);
 }
