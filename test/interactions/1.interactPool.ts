@@ -38,6 +38,8 @@ describe("Interaction: Pool", () => {
         const lpToken = await LPFromPT(hre, pool, poolToken);
 
         const initialBalance = await poolToken.balanceOf(signerAddress);
+        const initialLiquidity = await pool.liquidity(poolToken.address);
+        const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);
 
         const outTokens = await pool.provideLiquidityOutLPTokens(poolToken.address, provideAmount);
         await (await pool.provideLiquidity(poolToken.address, provideAmount)).wait();
@@ -45,9 +47,9 @@ describe("Interaction: Pool", () => {
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance.sub(provideAmount));
         expect(await lpToken.balanceOf(signerAddress)).to.equal(provideAmount);
 
-        expect(await poolToken.balanceOf(pool.address)).to.equal(provideAmount);
-        expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount);
-        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount);
+        expect(await poolToken.balanceOf(pool.address)).to.equal(provideAmount.add(initialBalance));
+        expect(await pool.liquidity(poolToken.address)).to.equal(provideAmount.add(initialLiquidity));
+        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(provideAmount.add(initialTotalAmountLocked));
 
         expect(await pool.redeemLiquidityOutPoolTokens(lpToken.address, outTokens)).to.equal(provideAmount);
         await (await pool.redeemLiquidity(lpToken.address, outTokens)).wait();
@@ -55,9 +57,9 @@ describe("Interaction: Pool", () => {
         expect(await lpToken.balanceOf(signerAddress)).to.equal(0);
         expect(await poolToken.balanceOf(signerAddress)).to.equal(initialBalance);
 
-        expect(await poolToken.balanceOf(pool.address)).to.equal(0);
-        expect(await pool.liquidity(poolToken.address)).to.equal(0);
-        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(0);
+        expect(await poolToken.balanceOf(pool.address)).to.equal(initialBalance);
+        expect(await pool.liquidity(poolToken.address)).to.equal(initialLiquidity);
+        expect(await pool.totalAmountLocked(poolToken.address)).to.equal(initialTotalAmountLocked);
     });
 
     it("should stake and redeem multiple tokens at the same time", async () => {
