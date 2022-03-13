@@ -10,7 +10,7 @@ import {changePrice, setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
 
 describe("Functionality: Handle price movement", () => {
     const configType = getConfigType(hre);
@@ -56,7 +56,7 @@ describe("Functionality: Handle price movement", () => {
 
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
-        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
         await provideLiquidity(pool, [poolToken], [provideAmount]);
 
         await marginLong.borrow(poolToken.address, provideAmount);
@@ -65,6 +65,21 @@ describe("Functionality: Handle price movement", () => {
     afterEach(async () => {
         await removeCollateral(configType, hre, marginLong);
         await redeemLiquidity(configType, hre, pool);
+    });
+
+    it("should prevent bad leverage positions", async () => {
+        // **** This test isnt going to work with what we are trying to do - we need to split tests further for this to work
+        await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
+
+        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
+
+        await shouldFail(async () => await marginLong.borrow(poolToken.address, BIG_NUM));
+
+        const borrowAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
+        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(BIG_NUM));
+        await shouldFail(async () => await marginLong.borrow(poolToken.address, borrowAmount));
+
+        await removeCollateral(configType, hre, marginLong);
     });
 
     it("should liquidate an account", async () => {

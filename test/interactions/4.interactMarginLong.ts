@@ -88,26 +88,6 @@ describe("Interaction: MarginLong", () => {
         shouldFail(async () => await marginLong.removeCollateral(collateralToken.address, BIG_NUM));
     });
 
-    it("should prevent bad leverage positions", async () => {
-        const index = 0;
-        const poolToken = poolTokens[index];
-        const collateralToken = collateralTokens[index];
-        const provideAmount = provideAmounts[index];
-        const collateralAmount = collateralAmounts[index];
-
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
-
-        await (await marginLong.addCollateral(collateralToken.address, collateralAmount)).wait();
-
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, hre.ethers.BigNumber.from(2).pow(255)));
-
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, BIG_NUM));
-        await setPrice(oracle, poolToken, hre.ethers.BigNumber.from(BIG_NUM));
-        await shouldFail(async () => await marginLong.borrow(poolToken.address, provideAmount));
-
-        await removeCollateral(configType, hre, marginLong);
-    });
-
     it("should open and repay a leveraged position", async () => {
         const index = 0;
         const poolToken = poolTokens[index];
