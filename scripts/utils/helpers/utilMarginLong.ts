@@ -39,7 +39,6 @@ export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, margin
     const maxLeverage = maxLeverageNumerator.mul(ROUND_CONSTANT).div(maxLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
     let price;
-
     if (currentPriceBorrowed.gt(0)) {
         const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(signerAddress);
         const currentLeverage = currentLeverageNumerator.mul(ROUND_CONSTANT).div(currentLeverageDenominator).toNumber() / ROUND_CONSTANT;
