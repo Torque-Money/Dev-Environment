@@ -10,7 +10,7 @@ import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/uti
 import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/utilConstants";
 
-describe("Functionality: FlashLend", () => {
+describe("Interaction: FlashLend", () => {
     const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
