@@ -35,11 +35,11 @@ describe("Interaction: Oracle", () => {
 
     it("should get the prices for accepted tokens", async () => {
         for (const token of oracleTokens) {
-            expect(await oracle.priceMin(token.address, configType)).to.not.equal(0);
-            expect(await oracle.priceMax(token.address, configType)).to.not.equal(0);
+            expect(await oracle.priceMin(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.priceMax(token.address, BIG_NUM)).to.not.equal(0);
 
-            expect(await oracle.amountMin(token.address, configType)).to.not.equal(0);
-            expect(await oracle.amountMax(token.address, configType)).to.not.equal(0);
+            expect(await oracle.amountMin(token.address, BIG_NUM)).to.not.equal(0);
+            expect(await oracle.amountMax(token.address, BIG_NUM)).to.not.equal(0);
         }
     });
 
