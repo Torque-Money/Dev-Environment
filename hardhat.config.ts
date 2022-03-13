@@ -34,16 +34,7 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 task("test-functionality", "Run functionality tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/functionality/";
 
-    const files = [
-        "1.functionPool.ts",
-        "2.functionOracle.ts",
-        "3.functionTimelock.ts",
-        "4.functionConverter.ts",
-        "5.functionFlashLend.ts",
-        "6.functionMarginLong.ts",
-        "7.functionInterest.ts",
-        "8.functionHandlePriceMovement.ts",
-    ].map((file) => basePath + file);
+    const files = ["1.functionTimelock.ts", "2.functionInterest.ts", "3.functionHandlePriceMovement.ts"].map((file) => basePath + file);
 
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
