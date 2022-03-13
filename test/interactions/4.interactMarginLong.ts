@@ -45,6 +45,7 @@ describe("Interaction: MarginLong", () => {
     });
 
     beforeEach(async () => {
+        // **** This is going to be annoying because we can't properly borrow against it due to the collateralization (unless we do some form of calculation to check how much we can in future)
         for (const token of poolTokens) await setPrice(oracle, token, BORROW_PRICE);
         for (const token of collateralTokens) await setPrice(oracle, token, COLLATERAL_PRICE);
 

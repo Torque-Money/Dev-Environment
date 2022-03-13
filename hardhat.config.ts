@@ -34,7 +34,7 @@ task("verify-all", "Verify all contracts on block explorer", async (args, hre) =
 task("test-functionality", "Run functionality tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/functionality/";
 
-    const files = ["1.functionTimelock.ts", "2.functionInterest.ts", "3.functionHandlePriceMovement.ts"].map((file) => basePath + file);
+    const files = ["1.functionTimelock.ts", "2.functionInterest.ts", "3.functionHandlePriceMovement.ts", "4.functionalFlashLend.ts"].map((file) => basePath + file);
 
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
@@ -42,13 +42,7 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
 task("test-interactions", "Run interaction tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/interactions/";
 
-    const files = [
-        // "1.interactPool.ts",
-        // "2.interactOracle.ts",
-        // "3.interactConverter.ts",
-        "4.interactMarginLong.ts",
-        // "5.interactFlashLend.ts"
-    ].map((file) => basePath + file);
+    const files = ["1.interactPool.ts", "2.interactOracle.ts", "3.interactConverter.ts", "4.interactMarginLong.ts"].map((file) => basePath + file);
 
     // await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
     await hre.run("test", {testFiles: files});
