@@ -44,9 +44,9 @@ task("test-interactions", "Run interaction tests", async (args, hre) => {
 
     const files = [
         // "1.interactPool.ts",
-        "2.interactOracle.ts",
+        // "2.interactOracle.ts",
         // "3.interactConverter.ts",
-        // "4.interactMarginLong.ts",
+        "4.interactMarginLong.ts",
         // "5.interactFlashLend.ts"
     ].map((file) => basePath + file);
 
