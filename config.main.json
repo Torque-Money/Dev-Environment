@@ -34,8 +34,7 @@
     },
     "timelock": {
       "minDelay": "64800"
-    },
-    "multisig": "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2"
+    }
   },
   "contracts": {
     "leveragePoolAddress": "0x52584d2f5cbde6b924352484e8E416d593744977",
@@ -45,7 +44,8 @@
     "resolverAddress": "0x71abB7Eae0FaDbC250E9E1C209D457D5ea39512e",
     "timelockAddress": "0xdBc007584ca297408b3bCFE4DfB5DE1eC632872C",
     "flashLender": "0x28da8aee1B2f3539d80CBaEBCE3653F34243798a",
-    "flashBorrowerTest": ""
+    "flashBorrowerTest": "",
+    "multisig": "0xF6eD8eBa14bCFE1C10a089eA25b6706D1Fa750D2"
   },
   "tokens": {
     "nativeCoin": {
