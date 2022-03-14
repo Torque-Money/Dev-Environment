@@ -4,13 +4,13 @@
       "routerAddress": "0xf491e7b69e4244ad4002bc14e878a34207e38c29"
     },
     "oracle": {
-      "priceDecimals": 18,
-      "thresholdNumerator": 1,
-      "thresholdDenominator": 200
+      "priceDecimals": "18",
+      "thresholdNumerator": "1",
+      "thresholdDenominator": "200"
     },
     "pool": {
-      "taxPercentNumerator": 5,
-      "taxPercentDenominator": 100,
+      "taxPercentNumerator": "5",
+      "taxPercentDenominator": "100",
       "timePerInterestApplication": "31536000"
     },
     "lpToken": {
@@ -19,17 +19,17 @@
     },
     "marginLong": {
       "minCollateralPrice": "100000000000000000000",
-      "maxLeverageNumerator": 125,
-      "maxLeverageDenominator": 1,
-      "liquidationFeePercentNumerator": 5,
-      "liquidationFeePercentDenominator": 100
+      "maxLeverageNumerator": "125",
+      "maxLeverageDenominator": "1",
+      "liquidationFeePercentNumerator": "5",
+      "liquidationFeePercentDenominator": "100"
     },
     "resolver": {
       "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
       "ethAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "flashLender": {
-      "feePercentNumerator": 1,
+      "feePercentNumerator": "1",
       "feePercentDenominator": "1000000"
     },
     "timelock": {
@@ -53,7 +53,7 @@
       "symbol": "FTM",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
       "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
-      "decimals": 18,
+      "decimals": "18",
       "setup": {
         "priceFeed": "",
         "oracle": false,
@@ -61,12 +61,12 @@
         "marginLongBorrow": false,
         "leveragePool": false,
         "flashLender": false,
-        "maxInterestMinNumerator": 0,
-        "maxInterestMinDenominator": 0,
-        "maxInterestMaxNumerator": 0,
-        "maxInterestMaxDenominator": 0,
-        "maxUtilizationNumerator": 0,
-        "maxUtilizationDenominator": 0
+        "maxInterestMinNumerator": "0",
+        "maxInterestMinDenominator": "0",
+        "maxInterestMaxNumerator": "0",
+        "maxInterestMaxDenominator": "0",
+        "maxUtilizationNumerator": "0",
+        "maxUtilizationDenominator": "0"
       }
     },
     "wrappedCoin": {
@@ -74,7 +74,7 @@
       "symbol": "wFTM",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
       "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
-      "decimals": 18,
+      "decimals": "18",
       "setup": {
         "priceFeed": "",
         "oracle": false,
@@ -82,12 +82,12 @@
         "marginLongBorrow": false,
         "leveragePool": false,
         "flashLender": false,
-        "maxInterestMinNumerator": 0,
-        "maxInterestMinDenominator": 0,
-        "maxInterestMaxNumerator": 0,
-        "maxInterestMaxDenominator": 0,
-        "maxUtilizationNumerator": 0,
-        "maxUtilizationDenominator": 0
+        "maxInterestMinNumerator": "0",
+        "maxInterestMinDenominator": "0",
+        "maxInterestMaxNumerator": "0",
+        "maxInterestMaxDenominator": "0",
+        "maxUtilizationNumerator": "0",
+        "maxUtilizationDenominator": "0"
       }
     },
     "lpTokens": {
@@ -105,7 +105,7 @@
         "symbol": "DAI",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
         "address": "0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e",
-        "decimals": 18,
+        "decimals": "18",
         "setup": {
           "priceFeed": "0x91d5DEFAFfE2854C7D02F50c80FA1fdc8A721e52",
           "oracle": true,
@@ -113,12 +113,12 @@
           "marginLongBorrow": false,
           "leveragePool": false,
           "flashLender": false,
-          "maxInterestMinNumerator": 0,
-          "maxInterestMinDenominator": 0,
-          "maxInterestMaxNumerator": 0,
-          "maxInterestMaxDenominator": 0,
-          "maxUtilizationNumerator": 0,
-          "maxUtilizationDenominator": 0
+          "maxInterestMinNumerator": "0",
+          "maxInterestMinDenominator": "0",
+          "maxInterestMaxNumerator": "0",
+          "maxInterestMaxDenominator": "0",
+          "maxUtilizationNumerator": "0",
+          "maxUtilizationDenominator": "0"
         }
       },
       {
@@ -126,7 +126,7 @@
         "symbol": "wFTM",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3513.png",
         "address": "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
-        "decimals": 18,
+        "decimals": "18",
         "setup": {
           "priceFeed": "0xf4766552D15AE4d256Ad41B6cf2933482B0680dc",
           "oracle": true,
@@ -134,12 +134,12 @@
           "marginLongBorrow": true,
           "leveragePool": true,
           "flashLender": true,
-          "maxInterestMinNumerator": 25,
-          "maxInterestMinDenominator": 100,
-          "maxInterestMaxNumerator": 75,
-          "maxInterestMaxDenominator": 100,
-          "maxUtilizationNumerator": 80,
-          "maxUtilizationDenominator": 100
+          "maxInterestMinNumerator": "25",
+          "maxInterestMinDenominator": "100",
+          "maxInterestMaxNumerator": "75",
+          "maxInterestMaxDenominator": "100",
+          "maxUtilizationNumerator": "80",
+          "maxUtilizationDenominator": "100"
         }
       },
       {
@@ -147,7 +147,7 @@
         "symbol": "wBTC",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1.png",
         "address": "0x321162Cd933E2Be498Cd2267a90534A804051b11",
-        "decimals": 8,
+        "decimals": "8",
         "setup": {
           "priceFeed": "0x8e94c22142f4a64b99022ccdd994f4e9ec86e4b4",
           "oracle": true,
@@ -155,12 +155,12 @@
           "marginLongBorrow": true,
           "leveragePool": true,
           "flashLender": true,
-          "maxInterestMinNumerator": 25,
-          "maxInterestMinDenominator": 100,
-          "maxInterestMaxNumerator": 75,
-          "maxInterestMaxDenominator": 100,
-          "maxUtilizationNumerator": 80,
-          "maxUtilizationDenominator": 100
+          "maxInterestMinNumerator": "25",
+          "maxInterestMinDenominator": "100",
+          "maxInterestMaxNumerator": "75",
+          "maxInterestMaxDenominator": "100",
+          "maxUtilizationNumerator": "80",
+          "maxUtilizationDenominator": "100"
         }
       },
       {
@@ -168,7 +168,7 @@
         "symbol": "wETH",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
         "address": "0x74b23882a30290451A17c44f4F05243b6b58C76d",
-        "decimals": 18,
+        "decimals": "18",
         "setup": {
           "priceFeed": "0x11ddd3d147e5b83d01cee7070027092397d63658",
           "oracle": true,
@@ -176,12 +176,12 @@
           "marginLongBorrow": true,
           "leveragePool": true,
           "flashLender": true,
-          "maxInterestMinNumerator": 25,
-          "maxInterestMinDenominator": 100,
-          "maxInterestMaxNumerator": 75,
-          "maxInterestMaxDenominator": 100,
-          "maxUtilizationNumerator": 80,
-          "maxUtilizationDenominator": 100
+          "maxInterestMinNumerator": "25",
+          "maxInterestMinDenominator": "100",
+          "maxInterestMaxNumerator": "75",
+          "maxInterestMaxDenominator": "100",
+          "maxUtilizationNumerator": "80",
+          "maxUtilizationDenominator": "100"
         }
       },
       {
@@ -189,7 +189,7 @@
         "symbol": "USDC",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
         "address": "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75",
-        "decimals": 6,
+        "decimals": "6",
         "setup": {
           "priceFeed": "0x2553f4eeb82d5a26427b8d1106c51499cba5d99c",
           "oracle": true,
@@ -197,12 +197,12 @@
           "marginLongBorrow": false,
           "leveragePool": false,
           "flashLender": false,
-          "maxInterestMinNumerator": 0,
-          "maxInterestMinDenominator": 0,
-          "maxInterestMaxNumerator": 0,
-          "maxInterestMaxDenominator": 0,
-          "maxUtilizationNumerator": 0,
-          "maxUtilizationDenominator": 0
+          "maxInterestMinNumerator": "0",
+          "maxInterestMinDenominator": "0",
+          "maxInterestMaxNumerator": "0",
+          "maxInterestMaxDenominator": "0",
+          "maxUtilizationNumerator": "0",
+          "maxUtilizationDenominator": "0"
         }
       },
       {
@@ -210,7 +210,7 @@
         "symbol": "USDT",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
         "address": "0x049d68029688eabf473097a2fc38ef61633a3c7a",
-        "decimals": 6,
+        "decimals": "6",
         "setup": {
           "priceFeed": "0xf64b636c5dfe1d3555a847341cdc449f612307d0",
           "oracle": true,
@@ -218,12 +218,12 @@
           "marginLongBorrow": false,
           "leveragePool": false,
           "flashLender": false,
-          "maxInterestMinNumerator": 0,
-          "maxInterestMinDenominator": 0,
-          "maxInterestMaxNumerator": 0,
-          "maxInterestMaxDenominator": 0,
-          "maxUtilizationNumerator": 0,
-          "maxUtilizationDenominator": 0
+          "maxInterestMinNumerator": "0",
+          "maxInterestMinDenominator": "0",
+          "maxInterestMaxNumerator": "0",
+          "maxInterestMaxDenominator": "0",
+          "maxUtilizationNumerator": "0",
+          "maxUtilizationDenominator": "0"
         }
       },
       {
@@ -231,7 +231,7 @@
         "symbol": "LINK",
         "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
         "address": "0xb3654dc3D10Ea7645f8319668E8F54d2574FBdC8",
-        "decimals": 18,
+        "decimals": "18",
         "setup": {
           "priceFeed": "0x221c773d8647bc3034e91a0c47062e26d20d97b4",
           "oracle": true,
@@ -239,12 +239,12 @@
           "marginLongBorrow": true,
           "leveragePool": true,
           "flashLender": true,
-          "maxInterestMinNumerator": 25,
-          "maxInterestMinDenominator": 100,
-          "maxInterestMaxNumerator": 75,
-          "maxInterestMaxDenominator": 100,
-          "maxUtilizationNumerator": 80,
-          "maxUtilizationDenominator": 100
+          "maxInterestMinNumerator": "25",
+          "maxInterestMinDenominator": "100",
+          "maxInterestMaxNumerator": "75",
+          "maxInterestMaxDenominator": "100",
+          "maxUtilizationNumerator": "80",
+          "maxUtilizationDenominator": "100"
         }
       }
     ]
