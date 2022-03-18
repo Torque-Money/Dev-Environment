@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ethers} from "ethers";
 
-import {chooseConfig, ConfigType} from "../utilConfig";
+import {chooseConfig, ConfigType} from "../config/utilConfig";
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../../typechain-types";
 
 // Get a list of borrow tokens

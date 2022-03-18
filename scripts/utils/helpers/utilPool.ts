@@ -2,7 +2,7 @@ import {ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ERC20Upgradeable, LPool} from "../../../typechain-types";
-import {chooseConfig, ConfigType} from "../utilConfig";
+import {chooseConfig, ConfigType} from "../config/utilConfig";
 
 // Provide liquidity to the protocol
 export async function provideLiquidity(pool: LPool, tokens: ERC20Upgradeable[], amounts: ethers.BigNumber[]) {

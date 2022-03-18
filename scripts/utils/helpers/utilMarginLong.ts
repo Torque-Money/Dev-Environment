@@ -2,7 +2,7 @@ import {BigNumber, Contract, ethers} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ERC20Upgradeable, LPool, MarginLong} from "../../../typechain-types";
-import {chooseConfig, ConfigType} from "../utilConfig";
+import {chooseConfig, ConfigType} from "../config/utilConfig";
 
 // Add given tokens as collateral
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgradeable[], amounts: ethers.BigNumber[]) {
