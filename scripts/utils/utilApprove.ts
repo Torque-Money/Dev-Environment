@@ -2,6 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "./utilConfig";
 
+// Approve tokens to be used with the contracts
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 

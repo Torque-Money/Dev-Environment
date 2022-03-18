@@ -2,6 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "./utilConfig";
 
+// Clump remaining tokens into native coin
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
@@ -14,11 +15,12 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     for (const approved of config.tokens.approved.filter((approved) => approved.address != weth.address)) {
         const token = await hre.ethers.getContractAt("ERC20Upgradeable", approved.address);
         const balance = await token.balanceOf(signerAddress);
+        if (balance.gt(0)) {
+            await token.approve(router.address, hre.ethers.BigNumber.from(2).pow(255));
+            await (await router.swapExactTokensForETH(balance, 0, [token.address, weth.address], signerAddress, Date.now())).wait();
 
-        await token.approve(router.address, hre.ethers.BigNumber.from(2).pow(255));
-        await (await router.swapExactTokensForETH(balance, 0, [token.address, weth.address], signerAddress, Date.now())).wait();
-
-        console.log(`Clump: Clumped ${approved.address}`);
+            console.log(`Clump: Clumped ${approved.address}`);
+        }
     }
 
     const wethToken = await hre.ethers.getContractAt("ERC20Upgradeable", weth.address);

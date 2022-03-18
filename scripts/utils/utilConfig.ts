@@ -6,6 +6,7 @@ import forkConfig from "../../config.fork.json";
 
 export type ConfigType = "main" | "test" | "fork";
 
+// Select a config based on the type
 export function chooseConfig(configType: ConfigType) {
     let config;
     if (configType === "main") config = mainConfig;
@@ -14,6 +15,7 @@ export function chooseConfig(configType: ConfigType) {
     return config;
 }
 
+// Save the config to the specified type
 export function saveConfig(config: any, configType: ConfigType) {
     let configName;
     if (configType === "main") configName = "config.main.json";

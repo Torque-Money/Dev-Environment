@@ -2,6 +2,7 @@ import {Contract, ethers} from "ethers";
 
 import {ERC20Upgradeable} from "../../../typechain-types";
 
+// Set the price of a given token
 export async function setPrice(oracle: Contract, token: ERC20Upgradeable, rawPrice: ethers.BigNumber, useDecimals: boolean = true) {
     const priceDecimals = await oracle.priceDecimals();
 
@@ -14,6 +15,7 @@ export async function setPrice(oracle: Contract, token: ERC20Upgradeable, rawPri
     return price;
 }
 
+// Change the price of a token by a percentage
 export async function changePrice(oracle: Contract, token: ERC20Upgradeable, percentChange: number) {
     const ROUND_DECIMALS = 10 ** 5;
 
