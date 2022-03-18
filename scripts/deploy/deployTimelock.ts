@@ -13,7 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     // Deploy contract with constructor args
     const constructorArgs = {
         minDelay: config.setup.timelock.minDelay,
-        proposers: [signerAddress],
+        proposers: config.setup.timelock.proposers.length > 0 ? config.setup.timelock.proposers : [signerAddress],
         executors: [hre.ethers.constants.AddressZero],
     };
     const Timelock = await hre.ethers.getContractFactory("Timelock");

@@ -13,7 +13,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     // Deploy contract with constructor args
     const constructorArgs = {
         taskTreasury: config.setup.resolver.taskTreasury,
-        depositReceiver: signerAddress,
+        depositReceiver: config.setup.resolver.depositReceiver.length > 0 ? config.setup.resolver.depositReceiver : signerAddress,
         ethAddress: config.setup.resolver.ethAddress,
         marginLong: hre.ethers.constants.AddressZero,
         converter: hre.ethers.constants.AddressZero,

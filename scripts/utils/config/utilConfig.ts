@@ -56,6 +56,7 @@ export interface Config {
         };
         resolver: {
             taskTreasury: string;
+            depositReceiver: string;
             ethAddress: string;
         };
         flashLender: {
@@ -64,6 +65,7 @@ export interface Config {
         };
         timelock: {
             minDelay: string;
+            proposers: string[];
         };
     };
     contracts: {

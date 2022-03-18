@@ -26,6 +26,7 @@
     },
     "resolver": {
       "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
+      "depositReceiver": "0x2ef15adafa815ca7a5ef307fc915ec0006ea64c7",
       "ethAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "flashLender": {
@@ -33,7 +34,8 @@
       "feePercentDenominator": "1000000"
     },
     "timelock": {
-      "minDelay": "64800"
+      "minDelay": "64800",
+      "proposers": ["0x2ef15adafa815ca7a5ef307fc915ec0006ea64c7"]
     }
   },
   "contracts": {

@@ -26,6 +26,7 @@
     },
     "resolver": {
       "taskTreasury": "0x6c3224f9b3feE000A444681d5D45e4532D5BA531",
+      "depositReceiver": "",
       "ethAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"
     },
     "flashLender": {
