@@ -2,9 +2,9 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import utilFund from "../utilFund";
-import utilApprove from "../utilApprove";
-import utilClump from "../utilClump";
+import utilFund from "./utilFund";
+import utilApprove from "./utilApprove";
+import utilClump from "./utilClump";
 import getConfigType from "../config/utilConfigTypeSelector";
 
 // Throw an exception if the function doesnt throw an exception
