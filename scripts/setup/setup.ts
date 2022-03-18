@@ -11,6 +11,7 @@ import setupResolver from "./setupResolver";
 import setupMultisig from "./setupMultisig";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
+    // Order IS important
     await setupOracle(configType, hre);
     await setupPool(configType, hre);
     await setupMarginLong(configType, hre);
@@ -18,5 +19,6 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await setupFlashLender(configType, hre);
 
     await setupTimelock(configType, hre);
+
     await setupMultisig(configType, hre);
 }

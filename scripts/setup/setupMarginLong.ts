@@ -8,11 +8,13 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
 
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
 
+    // Setup the contracts of which the margin uses
     await (await marginLong.setPool(config.contracts.leveragePoolAddress)).wait();
     console.log("-- Set pool");
     await (await marginLong.setOracle(config.contracts.oracleAddress)).wait();
     console.log("-- Set oracle");
 
+    // Add and approve collateral tokens
     const marginApprovedCollateral = getFilteredTokenAddresses(config, "marginLongCollateral");
     await (await marginLong.addCollateralToken(marginApprovedCollateral)).wait();
     console.log("-- Add collateral tokens");
@@ -20,6 +22,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await marginLong.setApprovedCollateralToken(marginApprovedCollateral, marginSupportedCollateral)).wait();
     console.log("-- Set approved collateral tokens");
 
+    // Add and approved borrow tokens
     const marginApprovedBorrow = getFilteredTokenAddresses(config, "marginLongBorrow");
     await (await marginLong.addBorrowToken(marginApprovedBorrow)).wait();
     console.log("-- Add borrow tokens");
