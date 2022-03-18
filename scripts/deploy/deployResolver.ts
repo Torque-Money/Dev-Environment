@@ -10,6 +10,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
+    // Deploy contract with constructor args
     const constructorArgs = {
         taskTreasury: config.setup.resolver.taskTreasury,
         depositReceiver: signerAddress,
@@ -21,6 +22,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     const resolver = await hre.upgrades.deployProxy(Resolver, Object.values(constructorArgs));
     await resolver.deployed();
 
+    // Save in the config
     config.contracts.resolverAddress = resolver.address;
     const implementation = await getImplementationAddress(hre.ethers.provider, resolver.address);
     console.log(`Deployed: Resolver, implementation | ${resolver.address}, ${implementation}`);
