@@ -53,42 +53,14 @@
       "symbol": "ETH",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
-      "decimals": "18",
-      "setup": {
-        "priceFeed": "",
-        "oracle": false,
-        "marginLongCollateral": false,
-        "marginLongBorrow": false,
-        "leveragePool": false,
-        "flashLender": false,
-        "maxInterestMinNumerator": "0",
-        "maxInterestMinDenominator": "0",
-        "maxInterestMaxNumerator": "0",
-        "maxInterestMaxDenominator": "0",
-        "maxUtilizationNumerator": "0",
-        "maxUtilizationDenominator": "0"
-      }
+      "decimals": "18"
     },
     "wrappedCoin": {
       "name": "Wrapped Ethereum",
       "symbol": "wETH",
       "icon": "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
       "address": "0xc778417e063141139fce010982780140aa0cd5ab",
-      "decimals": "18",
-      "setup": {
-        "priceFeed": "",
-        "oracle": false,
-        "marginLongCollateral": false,
-        "marginLongBorrow": false,
-        "leveragePool": false,
-        "flashLender": false,
-        "maxInterestMinNumerator": "0",
-        "maxInterestMinDenominator": "0",
-        "maxInterestMaxNumerator": "0",
-        "maxInterestMaxDenominator": "0",
-        "maxUtilizationNumerator": "0",
-        "maxUtilizationDenominator": "0"
-      }
+      "decimals": "18"
     },
     "lpTokens": {
       "beaconAddress": "0x186AE8FAA0bde475cc11A206FAb848eD4A532F8c",
