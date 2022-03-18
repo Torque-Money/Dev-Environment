@@ -14,8 +14,8 @@ import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 import {verifyAll} from "./scripts/deploy/utils/utilVerify";
-import {testWrapper} from "./scripts/utils/helpers/utilTest";
-import getConfigType from "./scripts/utils/utilConfigTypeSelector";
+import {testWrapper} from "./scripts/utils/misc/utilTest";
+import getConfigType from "./scripts/utils/config/utilConfigTypeSelector";
 
 task("deploy", "Deploy contracts onto network", async (args, hre) => {
     await hre.run("compile");

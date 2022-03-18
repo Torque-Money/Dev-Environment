@@ -2,8 +2,8 @@ import {expect} from "chai";
 import hre from "hardhat";
 
 import {Converter, ERC20Upgradeable} from "../../typechain-types";
-import {shouldFail} from "../../scripts/utils/helpers/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
+import {shouldFail} from "../../scripts/utils/misc/utilTest";
+import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/misc/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {BigNumber} from "ethers";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";

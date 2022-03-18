@@ -2,11 +2,11 @@ import {expect} from "chai";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
-import {shouldFail} from "../../scripts/utils/helpers/utilTest";
-import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {shouldFail} from "../../scripts/utils/misc/utilTest";
+import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/misc/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {BigNumber} from "ethers";
-import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/misc/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 

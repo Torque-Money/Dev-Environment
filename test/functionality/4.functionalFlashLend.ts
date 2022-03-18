@@ -3,10 +3,10 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, FlashBorrowerTest, FlashLender, LPool} from "../../typechain-types";
-import {shouldFail} from "../../scripts/utils/helpers/utilTest";
-import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
+import {shouldFail} from "../../scripts/utils/misc/utilTest";
+import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/misc/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
-import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/misc/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 

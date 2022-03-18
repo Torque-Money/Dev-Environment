@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getApprovedToken, getBorrowTokens, getLPTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
+import {getApprovedToken, getBorrowTokens, getLPTokens, LPFromPT} from "../../scripts/utils/misc/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
