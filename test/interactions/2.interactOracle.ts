@@ -8,7 +8,7 @@ import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/misc/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/config/utilConfigConstants";
+import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 
 describe("Interaction: Oracle", () => {
     const configType = getConfigType(hre);

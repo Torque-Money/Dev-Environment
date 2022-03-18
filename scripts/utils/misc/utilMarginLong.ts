@@ -3,6 +3,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ERC20Upgradeable, LPool, MarginLong} from "../../../typechain-types";
 import {chooseConfig, ConfigType} from "../config/utilConfig";
+import {getFilteredTokens} from "../tokens/utilGetTokens";
 
 // Add given tokens as collateral
 export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgradeable[], amounts: ethers.BigNumber[]) {
@@ -17,7 +18,7 @@ export async function removeCollateral(configType: ConfigType, hre: HardhatRunti
 
     const signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-    for (const token of config.tokens.approved.filter((approved) => approved.setup.marginLongCollateral)) {
+    for (const token of await getFilteredTokens(configType, hre, "marginLongCollateral")) {
         const available = await marginLong.collateral(token.address, signerAddress);
         if (available.gt(0)) await marginLong.removeCollateral(token.address, available);
     }

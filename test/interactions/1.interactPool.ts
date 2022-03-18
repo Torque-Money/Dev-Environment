@@ -6,7 +6,7 @@ import {shouldFail} from "../../scripts/utils/misc/utilTest";
 import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/misc/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/config/utilConfigConstants";
+import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 import {ERC20Upgradeable, LPool} from "../../typechain-types";
 
 describe("Interaction: Pool", () => {
