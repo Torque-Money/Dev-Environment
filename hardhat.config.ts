@@ -55,8 +55,8 @@ task("test-interactions", "Run interaction tests", async (args, hre) => {
     await hre.run("test", {testFiles: files});
 });
 
-task("test-verification", "Run verification tests", async (args, hre) => {
-    const basePath = process.cwd() + "/test/verification/";
+task("test-verify-deployment", "Run verification of deployed contracts tests", async (args, hre) => {
+    const basePath = process.cwd() + "/test/verifyDeployed/";
 
     const files = [
         "1.verifyPool.ts",
