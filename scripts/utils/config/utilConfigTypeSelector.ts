@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ConfigType} from "./utilConfig";
-import {OVERRIDE_CONFIG_TYPE} from "./utilConstants";
+import {OVERRIDE_CONFIG_TYPE} from "./utilConfigConstants";
 
 // Get the config type from the name unless overriden
 export default function getConfigType(hre: HardhatRuntimeEnvironment) {

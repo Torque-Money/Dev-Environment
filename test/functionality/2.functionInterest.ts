@@ -11,7 +11,7 @@ import {setPrice} from "../../scripts/utils/misc/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/misc/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/misc/utilMarginLong";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/config/utilConstants";
+import {BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/config/utilConfigConstants";
 
 describe("Functionality: Interest", () => {
     const configType = getConfigType(hre);
