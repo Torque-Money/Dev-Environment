@@ -1,6 +1,6 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import {chooseConfig, ConfigType} from "./config/utilConfig";
+import {chooseConfig, ConfigType} from "../config/utilConfig";
 
 // Approve tokens to be used with the contracts
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
