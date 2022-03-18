@@ -34,7 +34,8 @@
       "feePercentDenominator": "1000000"
     },
     "timelock": {
-      "minDelay": "64800"
+      "minDelay": "64800",
+      "proposers": []
     }
   },
   "contracts": {

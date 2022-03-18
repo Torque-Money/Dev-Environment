@@ -96,6 +96,7 @@ export function chooseConfig(configType: ConfigType): Config {
     if (configType === "main") config = mainConfig;
     else if (configType === "test") config = testConfig;
     else config = forkConfig;
+
     return config;
 }
 
