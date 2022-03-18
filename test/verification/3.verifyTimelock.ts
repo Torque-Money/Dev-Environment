@@ -13,7 +13,7 @@ describe("Verify: Timelock", () => {
 
     before(async () => (timelock = await hre.ethers.getContractAt("Timelock", config.contracts.timelockAddress)));
 
-    it("should verify the proposer", async () => expect(await timelock.hasRole(await timelock.PROPOSER_ROLE(), config.setup.multisig)).to.equal(true));
+    it("should verify the proposer", async () => expect(await timelock.hasRole(await timelock.PROPOSER_ROLE(), config.contracts.multisig)).to.equal(true));
 
     it("should verify the executor", async () => expect(await timelock.hasRole(await timelock.EXECUTOR_ROLE(), hre.ethers.constants.AddressZero)).to.equal(true));
 

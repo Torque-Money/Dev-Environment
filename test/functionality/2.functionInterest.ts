@@ -54,7 +54,7 @@ describe("Functionality: Interest", () => {
     beforeEach(async () => {
         await addCollateral(marginLong, [collateralToken], [collateralAmount]);
 
-        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, poolToken);
+        provideAmount = await allowedBorrowAmount(hre, marginLong, oracle, pool, poolToken);
         await provideLiquidity(pool, [poolToken], [provideAmount]);
     });
 

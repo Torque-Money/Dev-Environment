@@ -29,7 +29,7 @@ describe("Verify: Oracle", () => {
 
             expect(await oracle.isSupported(token.address)).to.equal(true);
             expect(await oracle.decimals(token.address)).to.equal(approved.decimals);
-            expectAddressEqual(await oracle.priceFeed(token.address), approved.priceFeed);
+            expectAddressEqual(await oracle.priceFeed(token.address), approved.setup.priceFeed);
         }
     });
 });
