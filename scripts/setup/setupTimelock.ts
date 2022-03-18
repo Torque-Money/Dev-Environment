@@ -2,6 +2,7 @@ import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/u
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "../utils/config/utilConfig";
+import {getLPTokenAddresses} from "../utils/tokens/utilGetTokens";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -24,14 +25,13 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     console.log("-- Renounced pool admin");
 
     const TOKEN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("TOKEN_ADMIN_ROLE"));
-    for (const lpToken of config.tokens.lpTokens.tokens) {
+    for (const lpToken of getLPTokenAddresses(config)) {
         const LPToken = await hre.ethers.getContractAt("LPoolToken", lpToken);
         await (await LPToken.grantRole(TOKEN_ADMIN, config.contracts.timelockAddress)).wait();
+        console.log("-- Granted token admin (" + lpToken + ")");
         await (await LPToken.renounceRole(TOKEN_ADMIN, signerAddress)).wait();
-        break;
+        console.log("-- Renounced token admin (" + lpToken + ")");
     }
-    console.log("-- Granted token admin");
-    console.log("-- Renounced token admin");
 
     const marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
     const MARGIN_ADMIN = hre.ethers.utils.keccak256(hre.ethers.utils.toUtf8Bytes("MARGIN_ADMIN_ROLE"));

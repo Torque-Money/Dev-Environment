@@ -7,13 +7,13 @@ import {chooseConfig, Config, ConfigType} from "../config/utilConfig";
 type Filter = "leveragePool" | "marginLongBorrow" | "marginLongCollateral" | "flashLender" | "oracle";
 
 // Get filtered approved tokens
-export function getFilteredApprovedTokens(config: Config, filter: Filter) {
+export function getFilteredApproved(config: Config, filter: Filter) {
     return config.tokens.approved.filter((approved) => approved.setup && approved.setup[filter]);
 }
 
 // Get token address filted by approved configuration
 export function getFilteredTokenAddresses(config: Config, filter: Filter) {
-    return getFilteredApprovedTokens(config, filter).map((approved) => approved.address);
+    return getFilteredApproved(config, filter).map((approved) => approved.address);
 }
 
 // Get tokens filtered by their approved configuration
@@ -28,10 +28,15 @@ export async function getFilteredTokens(
     return tokens;
 }
 
+// Get LP token addressess
+export function getLPTokenAddresses(config: Config) {
+    return config.tokens.lpTokens.tokens;
+}
+
 // Get a list of LP tokens
 export async function getLPTokens(config: Config, hre: HardhatRuntimeEnvironment) {
     let tokens: LPoolToken[] = [];
-    for (const approved of config.tokens.lpTokens.tokens) tokens.push(await hre.ethers.getContractAt("LPoolToken", approved));
+    for (const approved of getLPTokenAddresses(config)) tokens.push(await hre.ethers.getContractAt("LPoolToken", approved));
 
     return tokens;
 }

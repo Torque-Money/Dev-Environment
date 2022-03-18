@@ -1,6 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "../utils/config/utilConfig";
+import {getFilteredApproved, getFilteredTokenAddresses, getLPTokenAddresses} from "../utils/tokens/utilGetTokens";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
@@ -12,8 +13,8 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await leveragePool.setOracle(config.contracts.oracleAddress)).wait();
     console.log("-- Set oracle");
 
-    const leveragePoolApprovedTokens = config.tokens.approved.filter((approved) => approved.setup.leveragePool).map((approved) => approved.address);
-    const LPTokens = config.tokens.lpTokens.tokens;
+    const leveragePoolApprovedTokens = getFilteredTokenAddresses(config, "leveragePool");
+    const LPTokens = getLPTokenAddresses(config);
     await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();
     console.log("-- Add pool tokens");
     await (await leveragePool.setApproved(leveragePoolApprovedTokens, Array(leveragePoolApprovedTokens.length).fill(true))).wait();
@@ -26,24 +27,19 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     }
     console.log("-- Granted token admin");
 
-    const maxInterestMinNumerator = config.tokens.approved.filter((approved) => approved.setup.leveragePool).map((approved) => approved.setup.maxInterestMinNumerator);
-    const maxInterestMinDenominator = config.tokens.approved
-        .filter((approved) => approved.setup.leveragePool)
-        .map((approved) => approved.setup.maxInterestMinDenominator);
+    const leveragePoolApprovedConfig = getFilteredApproved(config, "leveragePool");
+    const maxInterestMinNumerator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxInterestMinNumerator);
+    const maxInterestMinDenominator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxInterestMinDenominator);
     await (await leveragePool.setMaxInterestMin(leveragePoolApprovedTokens, maxInterestMinNumerator, maxInterestMinDenominator)).wait();
     console.log("-- Set max interest min");
 
-    const maxInterestMaxNumerator = config.tokens.approved.filter((approved) => approved.setup.leveragePool).map((approved) => approved.setup.maxInterestMaxNumerator);
-    const maxInterestMaxDenominator = config.tokens.approved
-        .filter((approved) => approved.setup.leveragePool)
-        .map((approved) => approved.setup.maxInterestMaxDenominator);
+    const maxInterestMaxNumerator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxInterestMaxNumerator);
+    const maxInterestMaxDenominator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxInterestMaxDenominator);
     await (await leveragePool.setMaxInterestMax(leveragePoolApprovedTokens, maxInterestMaxNumerator, maxInterestMaxDenominator)).wait();
     console.log("-- Set max interest max");
 
-    const maxUtilizationNumerator = config.tokens.approved.filter((approved) => approved.setup.leveragePool).map((approved) => approved.setup.maxUtilizationNumerator);
-    const maxUtilizationDenominator = config.tokens.approved
-        .filter((approved) => approved.setup.leveragePool)
-        .map((approved) => approved.setup.maxUtilizationDenominator);
+    const maxUtilizationNumerator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxUtilizationNumerator);
+    const maxUtilizationDenominator = leveragePoolApprovedConfig.map((approved) => (approved.setup as any).maxUtilizationDenominator);
     await (await leveragePool.setMaxUtilization(leveragePoolApprovedTokens, maxUtilizationNumerator, maxUtilizationDenominator)).wait();
     console.log("-- Set max utilization");
 
