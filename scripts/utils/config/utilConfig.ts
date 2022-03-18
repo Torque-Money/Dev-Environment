@@ -1,8 +1,8 @@
 import fs from "fs";
 
-import mainConfig from "../../config.main.json";
-import testConfig from "../../config.test.json";
-import forkConfig from "../../config.fork.json";
+import mainConfig from "../../../config/config.main.json";
+import testConfig from "../../../config/config.test.json";
+import forkConfig from "../../../config/config.fork.json";
 
 export type ConfigType = "main" | "test" | "fork";
 

@@ -4,9 +4,9 @@ import hre from "hardhat";
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 
 import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/utilConstants";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
+import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 import {ERC20Upgradeable, LPool} from "../../typechain-types";
 
 describe("Interaction: Pool", () => {

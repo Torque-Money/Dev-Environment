@@ -1,8 +1,8 @@
 import hre from "hardhat";
 import {expectAddressEqual} from "../../scripts/utils/helpers/utilTest";
 
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {Converter} from "../../typechain-types";
 
 describe("Verify: Converter", () => {

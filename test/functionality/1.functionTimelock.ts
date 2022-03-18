@@ -6,8 +6,8 @@ import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/u
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {wait} from "../../scripts/utils/helpers/utilTest";
 import {Timelock} from "../../typechain-types";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 
 describe("Functionality: Timelock", () => {
     const configType = getConfigType(hre);

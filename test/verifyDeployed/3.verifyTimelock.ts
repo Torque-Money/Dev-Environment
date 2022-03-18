@@ -1,8 +1,8 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {Timelock} from "../../typechain-types";
 
 describe("Verify: Timelock", () => {

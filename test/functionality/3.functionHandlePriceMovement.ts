@@ -5,12 +5,12 @@ import hre from "hardhat";
 import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../../typechain-types";
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens} from "../../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {changePrice, setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/helpers/utilMarginLong";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/utilConstants";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
+import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/config/utilConstants";
 
 describe("Functionality: Handle price movement", () => {
     const configType = getConfigType(hre);

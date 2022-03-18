@@ -1,6 +1,6 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import {ConfigType} from "../utils/utilConfig";
+import {ConfigType} from "../utils/config/utilConfig";
 
 import deployConverter from "./deployConverter";
 import deployOracle from "./deployOracle";

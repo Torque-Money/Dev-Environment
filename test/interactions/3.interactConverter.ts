@@ -4,9 +4,9 @@ import hre from "hardhat";
 import {Converter, ERC20Upgradeable} from "../../typechain-types";
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {BigNumber} from "ethers";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 
 describe("Interaction: Converter", () => {
     const configType = getConfigType(hre);

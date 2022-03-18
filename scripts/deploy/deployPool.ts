@@ -1,8 +1,8 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 
-import {chooseConfig, ConfigType, saveConfig} from "../utils/utilConfig";
-import {saveTempConstructor} from "../utils/utilVerify";
+import {chooseConfig, ConfigType, saveConfig} from "../utils/config/utilConfig";
+import {saveTempConstructor} from "./utils/utilVerify";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);

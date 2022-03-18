@@ -2,8 +2,8 @@ import {expect} from "chai";
 import hre from "hardhat";
 import {getApprovedToken, getBorrowTokens, getLPTokens, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
 
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../typechain-types";
 
 describe("Verify: Pool", () => {

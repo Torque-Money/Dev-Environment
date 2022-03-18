@@ -8,9 +8,9 @@ import {setPrice} from "../../scripts/utils/helpers/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/utilConstants";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
+import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/config/utilConstants";
 
 describe("Interaction: MarginLong", () => {
     const configType = getConfigType(hre);

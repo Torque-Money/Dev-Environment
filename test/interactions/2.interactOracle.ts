@@ -4,11 +4,11 @@ import hre from "hardhat";
 import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
 import {shouldFail} from "../../scripts/utils/helpers/utilTest";
 import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/helpers/utilTokens";
-import {chooseConfig} from "../../scripts/utils/utilConfig";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/helpers/utilPool";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/utilConstants";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
+import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 
 describe("Interaction: Oracle", () => {
     const configType = getConfigType(hre);

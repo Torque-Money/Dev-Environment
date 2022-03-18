@@ -3,8 +3,8 @@ import hre from "hardhat";
 import {expectAddressEqual} from "../../scripts/utils/helpers/utilTest";
 import {getApprovedToken, getOracleTokens} from "../../scripts/utils/helpers/utilTokens";
 
-import {chooseConfig} from "../../scripts/utils/utilConfig";
-import getConfigType from "../../scripts/utils/utilConfigTypeSelector";
+import {chooseConfig} from "../../scripts/utils/config/utilConfig";
+import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {ERC20Upgradeable, OracleLP} from "../../typechain-types";
 
 describe("Verify: Oracle", () => {
