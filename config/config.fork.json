@@ -44,8 +44,7 @@
     "resolverAddress": "0x8198f5d8F8CfFE8f9C413d98a0A55aEB8ab9FbB7",
     "timelockAddress": "0xBEc49fA140aCaA83533fB00A2BB19bDdd0290f25",
     "flashLender": "0x202CCe504e04bEd6fC0521238dDf04Bc9E8E15aB",
-    "flashBorrowerTest": "0x172076E0166D1F9Cc711C77Adf8488051744980C",
-    "multisig": ""
+    "flashBorrowerTest": "0x172076E0166D1F9Cc711C77Adf8488051744980C"
   },
   "tokens": {
     "nativeCoin": {

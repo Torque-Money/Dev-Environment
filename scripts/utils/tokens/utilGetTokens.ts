@@ -7,14 +7,14 @@ import {chooseConfig, ConfigType} from "../config/utilConfig";
 type Filter = "leveragePool" | "marginLongBorrow" | "marginLongCollateral" | "flashLender" | "oracle";
 
 // Get filtered approved tokens
-export function getFilteredApprovedTokens(configType: ConfigType, filter: Filter) {
+export function getFilteredApprovedTokens(config: any, filter: Filter) {
     const config = chooseConfig(configType);
 
     return config.tokens.approved.filter((approved) => approved.setup[filter]);
 }
 
 // Get token address filted by approved configuration
-export function getFilteredTokenAddresses(configType: ConfigType, filter: Filter) {
+export function getFilteredTokenAddresses(config: any, filter: Filter) {
     return getFilteredApprovedTokens(configType, filter).map((approved) => approved.address);
 }
 
