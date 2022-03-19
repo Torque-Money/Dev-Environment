@@ -12,6 +12,7 @@ dotenv.config();
 
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
+
 import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
 import {verifyAll} from "./scripts/utils/misc/utilVerify";
 import {testWrapper} from "./scripts/utils/misc/utilTest";

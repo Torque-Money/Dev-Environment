@@ -14,7 +14,7 @@ export default async function main(configType: ConfigType, hre: HardhatRuntimeEn
     await (await leveragePool.setOracle(config.contracts.oracleAddress)).wait();
     console.log("-- Set oracle");
 
-    // Add LP tokens to the pool (**** MAYBE we want some way of having these LP tokens correspond to their respective other tokens for no ambiguity (AND NOT OVERWRITE TOKENS))
+    // Add LP tokens to the pool
     const leveragePoolApprovedTokens = getFilteredTokenAddresses(config, "leveragePool");
     const LPTokens = getLPTokenAddresses(config);
     await (await leveragePool.addLPToken(leveragePoolApprovedTokens, LPTokens)).wait();
