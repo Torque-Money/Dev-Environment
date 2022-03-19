@@ -1,28 +1,33 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType} from "../config/utilConfig";
+import {getFilteredTokenAddresses} from "../tokens/utilGetTokens";
 
 // Fund account with tokens from the initial amount of starting native coins
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     const config = chooseConfig(configType);
 
+    const USAGE_PERCENT = 70;
+
     const signer = hre.ethers.provider.getSigner();
     const signerAddress = await signer.getAddress();
 
     const router = await hre.ethers.getContractAt("UniswapV2Router02", config.setup.converter.routerAddress);
+
     const weth = await hre.ethers.getContractAt("WETH", config.tokens.wrappedCoin.address);
 
-    const initialBalance = await hre.ethers.provider.getBalance(signerAddress);
-    const PERCENTAGE = 60;
-    const swapBalance = initialBalance.mul(PERCENTAGE).div(100);
-    for (const approved of config.tokens.approved.filter((approved) => approved.address != weth.address)) {
-        await (
-            await router.swapExactETHForTokens(0, [weth.address, approved.address], signerAddress, Date.now(), {value: swapBalance.div(config.tokens.approved.length)})
-        ).wait();
-        console.log(`Fund: Funded account with ${approved.address}`);
+    const wethAddress = weth.address;
+    const addresses = getFilteredTokenAddresses(config, null).filter((address) => address != wethAddress);
+
+    const swapPercentage = 100 * (1 / (addresses.length + 1));
+    const availableBalance = (await hre.ethers.provider.getBalance(signerAddress)).mul(USAGE_PERCENT).div(100);
+    const swapAmount = availableBalance.mul(swapPercentage).div(100);
+
+    for (const address of addresses) {
+        await (await router.swapExactETHForTokens(0, [wethAddress, address], signerAddress, Date.now(), {value: swapAmount})).wait();
+        console.log(`Fund: Funded account with ${address}`);
     }
 
-    const wethAmount = initialBalance.mul(Math.floor((100 - PERCENTAGE) / 2)).div(100);
-    await (await weth.deposit({value: wethAmount})).wait();
+    await (await weth.deposit({value: swapAmount})).wait();
     console.log(`Fund: Funded account with ${weth.address}`);
 }
