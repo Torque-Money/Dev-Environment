@@ -100,5 +100,5 @@ export async function allowedBorrowAmount(account: string, marginLong: MarginLon
     if (liquidity.gt(maxAllowed)) allowed = liquidity;
     else allowed = maxAllowed;
 
-    return allowed.mul(fosNumerator).div(fosDenominator);
+    return allowed.mul(fosDenominator).div(fosNumerator);
 }
