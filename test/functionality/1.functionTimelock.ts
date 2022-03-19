@@ -3,8 +3,8 @@ import {BigNumber, Contract} from "ethers";
 import {getImplementationAddress} from "@openzeppelin/upgrades-core";
 import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 
-import {shouldFail} from "../../scripts/utils/misc/utilTest";
-import {wait} from "../../scripts/utils/misc/utilTest";
+import {shouldFail} from "../../scripts/utils/protocol/utilTest";
+import {wait} from "../../scripts/utils/protocol/utilTest";
 import {Timelock} from "../../typechain-types";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";

@@ -13,9 +13,8 @@ dotenv.config();
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 
-import utilUpdateFiles from "./scripts/utils/utilUpdateFiles";
-import {verifyAll} from "./scripts/utils/misc/utilVerify";
-import {testWrapper} from "./scripts/utils/misc/utilTest";
+import {verifyAll} from "./scripts/utils/protocol/utilVerify";
+import {testWrapper} from "./scripts/utils/protocol/utilTest";
 import getConfigType from "./scripts/utils/config/utilConfigTypeSelector";
 
 task("deploy", "Deploy contracts onto network", async (args, hre) => {
@@ -24,11 +23,7 @@ task("deploy", "Deploy contracts onto network", async (args, hre) => {
 
     await deploy(configType, hre);
     await setup(configType, hre);
-
-    await utilUpdateFiles();
 });
-
-task("update-files", "Update config files", async (args, hre) => await utilUpdateFiles());
 
 task("verify-all", "Verify all contracts on block explorer", async (args, hre) => await verifyAll(hre));
 

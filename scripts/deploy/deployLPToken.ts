@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {chooseConfig, ConfigType, saveConfig} from "../utils/config/utilConfig";
-import {saveTempConstructor} from "../utils/misc/utilVerify";
+import {saveTempConstructor} from "../utils/protocol/utilVerify";
 import {getFilteredApproved} from "../utils/tokens/utilGetTokens";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {

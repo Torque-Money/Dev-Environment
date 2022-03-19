@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import {expectAddressEqual} from "../../scripts/utils/misc/utilTest";
+import {expectAddressEqual} from "../../scripts/utils/protocol/utilTest";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";

@@ -4,16 +4,15 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ERC20Upgradeable, LPool} from "../../../typechain-types";
 
 import {chooseConfig, ConfigType} from "../config/utilConfig";
+import {ROUND_CONSTANT} from "../config/utilConstants";
 
 // Get an allowed amount of tokens to use
-export async function getTokenAmount(hre: HardhatRuntimeEnvironment, tokens: ERC20Upgradeable[]) {
-    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
-
-    const DISTRIBUTE_NUMERATOR = 25;
-    const DISTRIBUTE_DENOMINATOR = 100;
+export async function getTokenAmounts(account: string, tokens: ERC20Upgradeable[], fos: number = 0) {
+    const fosNumerator = ROUND_CONSTANT - Math.floor(fos * ROUND_CONSTANT);
+    const fosDenominator = ROUND_CONSTANT;
 
     const amounts: ethers.BigNumber[] = [];
-    for (const token of tokens) amounts.push((await token.balanceOf(signerAddress)).mul(DISTRIBUTE_NUMERATOR).div(DISTRIBUTE_DENOMINATOR));
+    for (const token of tokens) amounts.push((await token.balanceOf(account)).mul(fosNumerator).div(fosDenominator));
 
     return amounts;
 }

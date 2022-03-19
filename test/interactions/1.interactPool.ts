@@ -1,9 +1,9 @@
 import {expect} from "chai";
 import {BigNumber} from "ethers";
 import hre from "hardhat";
-import {shouldFail} from "../../scripts/utils/misc/utilTest";
+import {shouldFail} from "../../scripts/utils/protocol/utilTest";
 
-import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/misc/utilTokens";
+import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/protocol/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/config/utilConstants";

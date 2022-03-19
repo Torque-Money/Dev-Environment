@@ -1,7 +1,7 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {expectAddressEqual} from "../../scripts/utils/misc/utilTest";
-import {getApprovedToken, getOracleTokens} from "../../scripts/utils/misc/utilTokens";
+import {expectAddressEqual} from "../../scripts/utils/protocol/utilTest";
+import {getApprovedToken, getOracleTokens} from "../../scripts/utils/protocol/utilTokens";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";

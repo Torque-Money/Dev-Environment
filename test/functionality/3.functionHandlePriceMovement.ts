@@ -3,12 +3,12 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ITaskTreasury, LPool, MarginLong, Resolver, Timelock, ERC20Upgradeable, OracleTest} from "../../typechain-types";
-import {shouldFail} from "../../scripts/utils/misc/utilTest";
-import {getCollateralTokens, getBorrowTokens} from "../../scripts/utils/misc/utilTokens";
+import {shouldFail} from "../../scripts/utils/protocol/utilTest";
+import {getCollateralTokens, getBorrowTokens} from "../../scripts/utils/protocol/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
-import {changePrice, setPrice} from "../../scripts/utils/misc/utilOracle";
-import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/misc/utilPool";
-import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/misc/utilMarginLong";
+import {changePrice, setPrice} from "../../scripts/utils/protocol/utilOracle";
+import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
+import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/protocol/utilMarginLong";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM, BORROW_PRICE, COLLATERAL_PRICE} from "../../scripts/utils/config/utilConstants";
 
