@@ -13,7 +13,7 @@ dotenv.config();
 import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 
-import {verifyAll} from "./scripts/utils/protocol/utilVerify";
+import {verifyAll} from "./scripts/utils/utilVerify";
 import {testWrapper} from "./scripts/utils/protocol/utilTest";
 import getConfigType from "./scripts/utils/config/utilConfigTypeSelector";
 

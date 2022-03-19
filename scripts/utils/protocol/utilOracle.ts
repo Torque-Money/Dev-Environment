@@ -1,4 +1,4 @@
-import {Contract, ethers} from "ethers";
+import {ethers} from "ethers";
 
 import {ERC20Upgradeable, OracleTest} from "../../../typechain-types";
 

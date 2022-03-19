@@ -2,7 +2,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ERC20Upgradeable, LPoolToken} from "../../../typechain-types";
 
-import {chooseConfig, Config, ConfigType} from "../config/utilConfig";
+import {Config} from "../config/utilConfig";
 
 type Filter = "leveragePool" | "marginLongBorrow" | "marginLongCollateral" | "flashLender" | "oracle";
 
