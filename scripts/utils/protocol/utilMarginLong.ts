@@ -16,8 +16,8 @@ export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgrade
 }
 
 // Get the minimum collateral required to satisfy collateral
-export async function minTokenAmountForPrice(account: string, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], targetPrice: ethers.BigNumber, fos: number = 0.2) {
-    const fosNumerator = ROUND_CONSTANT + Math.floor(fos * ROUND_CONSTANT);
+export async function minTokenAmountForPrice(account: string, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], targetPrice: ethers.BigNumber, fos: number = 1.2) {
+    const fosNumerator = Math.floor(fos * ROUND_CONSTANT);
     const fosDenominator = ROUND_CONSTANT;
 
     targetPrice = targetPrice.mul(fosNumerator).div(fosDenominator);
@@ -67,21 +67,19 @@ export async function removeAllCollateral(config: Config, hre: HardhatRuntimeEnv
 }
 
 // Calculate the max amount an account may borrow
-export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, marginLong: MarginLong, oracle: Oracle | OracleTest, pool: LPool, token: ERC20Upgradeable) {
-    const ROUND_CONSTANT = 1e4;
-    const SAFETY_REDUCTION = 2;
+export async function allowedBorrowAmount(account: string, marginLong: MarginLong, oracle: Oracle | OracleTest, pool: LPool, token: ERC20Upgradeable, fos: number = 2) {
+    const fosNumerator = ROUND_CONSTANT + Math.floor(fos * ROUND_CONSTANT);
+    const fosDenominator = ROUND_CONSTANT;
 
-    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
-
-    const collateralPrice = await marginLong.collateralPrice(signerAddress);
-    const currentPriceBorrowed = await marginLong["initialBorrowPrice(address)"](signerAddress);
+    const collateralPrice = await marginLong.collateralPrice(account);
+    const currentPriceBorrowed = await marginLong["initialBorrowPrice(address)"](account);
 
     const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
     const maxLeverage = maxLeverageNumerator.mul(ROUND_CONSTANT).div(maxLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
     let price;
     if (currentPriceBorrowed.gt(0)) {
-        const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(signerAddress);
+        const [currentLeverageNumerator, currentLeverageDenominator] = await marginLong.currentLeverage(account);
         const currentLeverage = currentLeverageNumerator.mul(ROUND_CONSTANT).div(currentLeverageDenominator).toNumber() / ROUND_CONSTANT;
 
         const numerator = Math.floor((maxLeverage / currentLeverage - 1) * ROUND_CONSTANT);
@@ -102,5 +100,5 @@ export async function allowedBorrowAmount(hre: HardhatRuntimeEnvironment, margin
     if (liquidity.gt(maxAllowed)) allowed = liquidity;
     else allowed = maxAllowed;
 
-    return allowed.div(SAFETY_REDUCTION);
+    return allowed.mul(fosNumerator).div(fosDenominator);
 }
