@@ -31,3 +31,11 @@ export function getApprovedToken(configType: ConfigType, address: string) {
 export async function LPFromPT(hre: HardhatRuntimeEnvironment, pool: LPool, token: ERC20Upgradeable) {
     return await hre.ethers.getContractAt("LPoolToken", await pool.LPFromPT(token.address));
 }
+
+// Get tokens from addresses
+export async function getTokensFromAddresses(hre: HardhatRuntimeEnvironment, addresses: string[]) {
+    const tokens = [];
+    for (const address of addresses) tokens.push(await hre.ethers.getContractAt("ERC20Upgradeable", address));
+
+    return tokens;
+}
