@@ -16,22 +16,31 @@ export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgrade
 }
 
 // Get the minimum collateral required to satisfy collateral
-export async function minCollateralAmount(account: string, marginLong: MarginLong, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], fos: number = 0.2) {
+export async function minTokenAmountForPrice(account: string, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], targetPrice: ethers.BigNumber, fos: number = 0.2) {
     const fosNumerator = ROUND_CONSTANT + Math.floor(fos * ROUND_CONSTANT);
     const fosDenominator = ROUND_CONSTANT;
 
-    const targetPrice = ethers.BigNumber.from(await marginLong.minCollateralPrice())
-        .mul(fosNumerator)
-        .div(fosDenominator);
+    targetPrice = targetPrice.mul(fosNumerator).div(fosDenominator);
 
     const available = await getTokenAmounts(account, tokens);
     const amounts = [];
     for (let i = 0; i < tokens.length; i++) {
         if (targetPrice.gt(0) && available[i].gt(0)) {
+            const requiredAmount = await oracle.amountMax(tokens[i].address, targetPrice);
+
+            if (requiredAmount.gt(available[i])) {
+                const availablePrice = await oracle.priceMin(tokens[i].address, available[i]);
+
+                amounts.push(available[i]);
+                targetPrice = targetPrice.sub(availablePrice);
+            } else {
+                amounts.push(requiredAmount);
+                targetPrice = ethers.BigNumber.from(0);
+            }
         } else amounts.push(ethers.BigNumber.from(0));
     }
 
-    return await oracle.amountMax(token.address, minCollateralPrice);
+    return amounts;
 }
 
 // Remove collateral
