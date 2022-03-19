@@ -66,6 +66,7 @@ export async function removeAllCollateral(config: Config, hre: HardhatRuntimeEnv
     await removeCollateral(marginLong, tokens, amounts);
 }
 
+// **** Still need to do something about this
 // Calculate the max amount an account may borrow
 export async function allowedBorrowAmount(account: string, marginLong: MarginLong, oracle: Oracle | OracleTest, pool: LPool, token: ERC20Upgradeable, fos: number = 2) {
     const fosNumerator = ROUND_CONSTANT + Math.floor(fos * ROUND_CONSTANT);
