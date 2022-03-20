@@ -39,15 +39,37 @@ describe("Verify: Pool", () => {
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication));
 
     it("should verify the max interest min", async () => {
-        // **** I have to do this for all of the tokens
-        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.taxPercentage();
-        expect(maxInterestMinNumerator).to.equal(config.setup.pool.taxPercentNumerator);
-        expect(maxInterestMinDenominator).to.equal(config.setup.pool.taxPercentDenominator);
+        for (const token of poolTokens) {
+            const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.maxInterestMin(token.address);
+
+            const approved = getApprovedToken(config, token.address);
+
+            expect(maxInterestMinNumerator).to.equal(approved.setup?.maxInterestMinNumerator);
+            expect(maxInterestMinDenominator).to.equal(approved.setup?.maxInterestMinDenominator);
+        }
     });
 
-    it("should verify the max interest max", async () => {});
+    it("should verify the max interest max", async () => {
+        for (const token of poolTokens) {
+            const [maxInterestMaxNumerator, maxInterestMaxDenominator] = await pool.maxInterestMax(token.address);
 
-    it("should verify the max utilization", async () => {});
+            const approved = getApprovedToken(config, token.address);
+
+            expect(maxInterestMaxNumerator).to.equal(approved.setup?.maxInterestMaxNumerator);
+            expect(maxInterestMaxDenominator).to.equal(approved.setup?.maxInterestMaxDenominator);
+        }
+    });
+
+    it("should verify the max utilization", async () => {
+        for (const token of poolTokens) {
+            const [maxUtilizationNumerator, maxUtilizationDenominator] = await pool.maxUtilization(token.address);
+
+            const approved = getApprovedToken(config, token.address);
+
+            expect(maxUtilizationNumerator).to.equal(approved.setup?.maxUtilizationNumerator);
+            expect(maxUtilizationDenominator).to.equal(approved.setup?.maxUtilizationDenominator);
+        }
+    });
 
     it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
