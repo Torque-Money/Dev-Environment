@@ -1,12 +1,13 @@
 import {expect} from "chai";
 import hre from "hardhat";
 
+import {ERC20Upgradeable, OracleLP} from "../../typechain-types";
+
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getApprovedToken} from "../../scripts/utils/tokens/utilTokens";
 import {expectAddressEqual} from "../../scripts/utils/utilTest";
-import {ERC20Upgradeable, OracleLP} from "../../typechain-types";
 
 describe("Verify: Oracle", () => {
     const configType = getConfigType(hre);
