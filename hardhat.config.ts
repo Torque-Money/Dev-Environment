@@ -14,7 +14,7 @@ import deploy from "./scripts/deploy/deploy";
 import setup from "./scripts/setup/setup";
 
 import {verifyAll} from "./scripts/utils/utilVerify";
-import {testWrapper} from "./scripts/utils/protocol/utilTest";
+import {testWrapper} from "./scripts/utils/test/utilTest";
 import getConfigType from "./scripts/utils/config/utilConfigTypeSelector";
 
 task("deploy", "Deploy contracts onto network", async (args, hre) => {
