@@ -1,10 +1,12 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getApprovedToken, getBorrowTokens, getLPTokens, LPFromPT} from "../../scripts/utils/protocol/utilTokens";
+
+import {ERC20Upgradeable, LPool, LPoolToken} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {ERC20Upgradeable, LPool, LPoolToken} from "../../typechain-types";
+import {getFilteredTokens, getLPTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {getApprovedToken, LPFromPT} from "../../scripts/utils/tokens/utilTokens";
 
 describe("Verify: Pool", () => {
     const configType = getConfigType(hre);
@@ -18,8 +20,8 @@ describe("Verify: Pool", () => {
     before(async () => {
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
 
-        poolTokens = await getBorrowTokens(configType, hre);
-        lpTokens = await getLPTokens(configType, hre);
+        poolTokens = await getFilteredTokens(config, hre, "leveragePool");
+        lpTokens = await getLPTokens(config, hre);
     });
 
     it("should verify the converter", async () => expect(await pool.converter()).to.equal(config.contracts.converterAddress));
@@ -52,7 +54,7 @@ describe("Verify: Pool", () => {
         for (const token of poolTokens) {
             const lpToken = await LPFromPT(hre, pool, token);
 
-            const approved = getApprovedToken(configType, token.address);
+            const approved = getApprovedToken(config, token.address);
             expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + approved.name);
             expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + approved.symbol);
         }

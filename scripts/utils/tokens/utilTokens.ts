@@ -3,7 +3,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../../typechain-types";
 
-import {chooseConfig, ConfigType} from "../config/utilConfig";
+import {Config} from "../config/utilConfig";
 import {ROUND_CONSTANT} from "../config/utilConstants";
 
 // Get the tokens owned by an account
@@ -18,9 +18,7 @@ export async function getTokenAmounts(account: string, tokens: ERC20Upgradeable[
 }
 
 // Get an approved token from its address
-export function getApprovedToken(configType: ConfigType, address: string) {
-    const config = chooseConfig(configType);
-
+export function getApprovedToken(config: Config, address: string) {
     const approved = config.tokens.approved.filter((token) => token.address.toLowerCase() === address.toLowerCase());
     if (approved.length === 0) throw Error("No approved token with this address");
 
