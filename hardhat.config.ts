@@ -35,23 +35,15 @@ task("test-functionality", "Run functionality tests", async (args, hre) => {
     await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
-task("test-interactions", "Run interaction tests", async (args, hre) => {
-    const basePath = process.cwd() + "/test/interactions/";
+task("test-usability", "Run usability tests", async (args, hre) => {
+    const basePath = process.cwd() + "/test/usability/";
 
-    // **** I am going to seperate the margin long into functionality and the interactions
+    const files = ["1.usabilityPool.ts", "2.usabilityOracle.ts", "3.usabilityConverter.ts", "4.usabilityMarginLong.ts"].map((file) => basePath + file);
 
-    const files = [
-        // "1.interactPool.ts",
-        // "2.interactOracle.ts",
-        // "3.interactConverter.ts",
-        "4.interactMarginLong.ts",
-    ].map((file) => basePath + file);
-
-    // await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
-    await hre.run("test", {testFiles: files});
+    await testWrapper(hre, async () => await hre.run("test", {testFiles: files}));
 });
 
-task("test-verify-deployment", "Run verification of deployed contracts tests", async (args, hre) => {
+task("test-verify-deployed", "Run verification of deployed contracts tests", async (args, hre) => {
     const basePath = process.cwd() + "/test/verifyDeployed/";
 
     const files = [

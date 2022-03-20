@@ -3,6 +3,7 @@ import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../../typechain-types";
+
 import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/protocol/utilMarginLong";
 import {setPrice} from "../../scripts/utils/protocol/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
@@ -12,7 +13,7 @@ import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/config/utilConstants";
 
-describe("Interaction: MarginLong", () => {
+describe("Usability: MarginLong", () => {
     const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 

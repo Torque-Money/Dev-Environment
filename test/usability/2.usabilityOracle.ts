@@ -1,16 +1,17 @@
 import {expect} from "chai";
+import {BigNumber} from "ethers";
 import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
+
 import {shouldFail} from "../../scripts/utils/protocol/utilTest";
 import {getOracleTokens, getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/protocol/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
-import {BigNumber} from "ethers";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
 
-describe("Interaction: Oracle", () => {
+describe("Usability: Oracle", () => {
     const configType = getConfigType(hre);
     const config = chooseConfig(configType);
 
