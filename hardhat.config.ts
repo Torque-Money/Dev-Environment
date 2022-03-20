@@ -68,8 +68,6 @@ task("test-verify-deployment", "Run verification of deployed contracts tests", a
 });
 
 const NETWORK_URL = process.env.NETWORK_URL;
-const PINNED_BLOCK = 32177754;
-
 const NETWORK_URL_TEST = process.env.NETWORK_URL_TEST;
 
 export default {
@@ -81,7 +79,7 @@ export default {
             chainId: 1337,
             forking: {
                 url: NETWORK_URL,
-                blockNumber: PINNED_BLOCK,
+                blockNumber: 32177754,
             },
         },
         mainnet: {
