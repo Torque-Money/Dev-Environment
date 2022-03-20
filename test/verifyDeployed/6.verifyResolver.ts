@@ -1,9 +1,10 @@
 import hre from "hardhat";
-import {expectAddressEqual} from "../../scripts/utils/protocol/utilTest";
+
+import {Resolver} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {Resolver} from "../../typechain-types";
+import {expectAddressEqual} from "../../scripts/utils/utilTest";
 
 describe("Verify: Resolver", () => {
     const configType = getConfigType(hre);
@@ -11,9 +12,7 @@ describe("Verify: Resolver", () => {
 
     let resolver: Resolver;
 
-    before(async () => {
-        resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress);
-    });
+    before(async () => (resolver = await hre.ethers.getContractAt("Resolver", config.contracts.resolverAddress)));
 
     it("should verify the task treasury", async () => expectAddressEqual(await resolver.taskTreasury(), config.setup.resolver.taskTreasury));
 

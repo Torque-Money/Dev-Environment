@@ -1,10 +1,11 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {getFlashLenderTokens} from "../../scripts/utils/protocol/utilTokens";
+
+import {ERC20Upgradeable, FlashLender} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {ERC20Upgradeable, FlashLender} from "../../typechain-types";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 
 describe("Verify: FlashLend", () => {
     const configType = getConfigType(hre);
@@ -17,7 +18,7 @@ describe("Verify: FlashLend", () => {
     before(async () => {
         flashLender = await hre.ethers.getContractAt("FlashLender", config.contracts.flashLender);
 
-        flashLendToken = await getFlashLenderTokens(configType, hre);
+        flashLendToken = await getFilteredTokens(config, hre, "flashLender");
     });
 
     it("should verify the pool", async () => expect(await flashLender.pool()).to.equal(config.contracts.leveragePoolAddress));

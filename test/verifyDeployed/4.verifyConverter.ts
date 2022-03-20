@@ -1,9 +1,10 @@
 import hre from "hardhat";
-import {expectAddressEqual} from "../../scripts/utils/protocol/utilTest";
+
+import {Converter} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {Converter} from "../../typechain-types";
+import {expectAddressEqual} from "../../scripts/utils/utilTest";
 
 describe("Verify: Converter", () => {
     const configType = getConfigType(hre);

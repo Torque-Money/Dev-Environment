@@ -1,11 +1,12 @@
 import {expect} from "chai";
 import hre from "hardhat";
-import {expectAddressEqual} from "../../scripts/utils/protocol/utilTest";
-import {getBorrowTokens, getCollateralTokens} from "../../scripts/utils/protocol/utilTokens";
+
+import {ERC20Upgradeable, MarginLong} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {ERC20Upgradeable, MarginLong} from "../../typechain-types";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {expectAddressEqual} from "../../scripts/utils/utilTest";
 
 describe("Verify: MarginLong", () => {
     const configType = getConfigType(hre);
@@ -19,21 +20,23 @@ describe("Verify: MarginLong", () => {
     before(async () => {
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
 
-        collateralTokens = await getCollateralTokens(configType, hre);
-        borrowTokens = await getBorrowTokens(configType, hre);
+        collateralTokens = await getFilteredTokens(config, hre, "marginLongCollateral");
+        borrowTokens = await getFilteredTokens(config, hre, "marginLongBorrow");
     });
 
     it("should verify the oracle", async () => expectAddressEqual(await marginLong.oracle(), config.contracts.oracleAddress));
 
     it("should verify the pool", async () => expectAddressEqual(await marginLong.pool(), config.contracts.leveragePoolAddress));
 
-    it("should verify the margin long setup data", async () => {
-        expect(await marginLong.minCollateralPrice()).to.equal(config.setup.marginLong.minCollateralPrice);
+    it("should verify the min collateral price", async () => expect(await marginLong.minCollateralPrice()).to.equal(config.setup.marginLong.minCollateralPrice));
 
+    it("should verify the max leverage", async () => {
         const [maxLeverageNumerator, maxLeverageDenominator] = await marginLong.maxLeverage();
         expect(maxLeverageNumerator).to.equal(config.setup.marginLong.maxLeverageNumerator);
         expect(maxLeverageDenominator).to.equal(config.setup.marginLong.maxLeverageDenominator);
+    });
 
+    it("should verify the liquidation fee percent", async () => {
         const [liquidationFeePercentNumerator, liquidationFeePercentDenominator] = await marginLong.liquidationFeePercent();
         expect(liquidationFeePercentNumerator).to.equal(config.setup.marginLong.liquidationFeePercentNumerator);
         expect(liquidationFeePercentDenominator).to.equal(config.setup.marginLong.liquidationFeePercentDenominator);

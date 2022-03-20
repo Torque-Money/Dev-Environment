@@ -36,9 +36,11 @@ describe("Verify: Pool", () => {
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
 
-    it("should match pool tokens with their respective LP tokens", async () => {
+    it("should verify pool tokens with their respective LP tokens", async () => {
         // **** Just as the name implies
     });
+
+    // **** I am not verifying any of the min rates or anything in here - CHANGE THIS
 
     it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
