@@ -7,6 +7,7 @@ import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {getFilteredTokens, getLPTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getApprovedToken, LPFromPT} from "../../scripts/utils/tokens/utilTokens";
+import {expectAddressEqual} from "../../scripts/utils/utilTest";
 
 describe("Verify: Pool", () => {
     const configType = getConfigType(hre);
@@ -29,18 +30,13 @@ describe("Verify: Pool", () => {
     it("should verify the oracle", async () => expect(await pool.oracle()).to.equal(config.contracts.oracleAddress));
 
     it("should verify the pool setup data", async () => {
+        // **** I am not verifying any of the min rates or anything in here - CHANGE THIS
         const [taxPercentNumerator, taxPercentDenominator] = await pool.taxPercentage();
         expect(taxPercentNumerator).to.equal(config.setup.pool.taxPercentNumerator);
         expect(taxPercentDenominator).to.equal(config.setup.pool.taxPercentDenominator);
 
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
-
-    it("should verify pool tokens with their respective LP tokens", async () => {
-        // **** Just as the name implies
-    });
-
-    // **** I am not verifying any of the min rates or anything in here - CHANGE THIS
 
     it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
@@ -63,6 +59,13 @@ describe("Verify: Pool", () => {
             const approved = getApprovedToken(config, token.address);
             expect(await lpToken.name()).to.equal(config.setup.lpToken.LPPrefixName + " " + approved.name);
             expect(await lpToken.symbol()).to.equal(config.setup.lpToken.LPPrefixSymbol + approved.symbol);
+        }
+    });
+
+    it("should verify pool tokens with their respective LP tokens", async () => {
+        for (let i = 0; i < poolTokens.length; i++) {
+            expectAddressEqual(poolTokens[i].address, await pool.PTFromLP(lpTokens[i].address));
+            expectAddressEqual(lpTokens[i].address, await pool.LPFromPT(poolTokens[i].address));
         }
     });
 });
