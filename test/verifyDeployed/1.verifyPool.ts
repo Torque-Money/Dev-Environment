@@ -29,14 +29,25 @@ describe("Verify: Pool", () => {
 
     it("should verify the oracle", async () => expect(await pool.oracle()).to.equal(config.contracts.oracleAddress));
 
-    it("should verify the pool setup data", async () => {
-        // **** I am not verifying any of the min rates or anything in here - CHANGE THIS
+    it("should verify the tax percent", async () => {
         const [taxPercentNumerator, taxPercentDenominator] = await pool.taxPercentage();
         expect(taxPercentNumerator).to.equal(config.setup.pool.taxPercentNumerator);
         expect(taxPercentDenominator).to.equal(config.setup.pool.taxPercentDenominator);
-
-        expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
+
+    it("should verify the time per interest application", async () =>
+        expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication));
+
+    it("should verify the max interest min", async () => {
+        // **** I have to do this for all of the tokens
+        const [maxInterestMinNumerator, maxInterestMinDenominator] = await pool.taxPercentage();
+        expect(maxInterestMinNumerator).to.equal(config.setup.pool.taxPercentNumerator);
+        expect(maxInterestMinDenominator).to.equal(config.setup.pool.taxPercentDenominator);
+    });
+
+    it("should verify the max interest max", async () => {});
+
+    it("should verify the max utilization", async () => {});
 
     it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
