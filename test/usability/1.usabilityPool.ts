@@ -32,6 +32,8 @@ describe("Usability: Pool", () => {
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
 
+    // **** Split up this code into different files depending on what the test is doing
+
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const index = 0;
         const poolToken = poolTokens[index];
