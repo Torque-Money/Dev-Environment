@@ -1,5 +1,5 @@
-import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
+import {getUpgradeableBeaconFactory} from "@openzeppelin/hardhat-upgrades/dist/utils";
 
 import {chooseConfig, ConfigType} from "../utils/config/utilConfig";
 import {getLPTokenAddresses} from "../utils/tokens/utilGetTokens";
