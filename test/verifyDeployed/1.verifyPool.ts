@@ -36,6 +36,10 @@ describe("Verify: Pool", () => {
         expect(await pool.timePerInterestApplication()).to.equal(config.setup.pool.timePerInterestApplication);
     });
 
+    it("should match pool tokens with their respective LP tokens", async () => {
+        // **** Just as the name implies
+    });
+
     it("should verify the pool tokens", async () => {
         for (const token of poolTokens) {
             expect(await pool.isPT(token.address)).to.equal(true);
