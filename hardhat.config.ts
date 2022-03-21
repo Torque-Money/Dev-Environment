@@ -5,12 +5,11 @@ import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 import "@openzeppelin/hardhat-defender";
 
-import {taskTestFunctionality, taskTestUsability, taskTestVerifyDeployed} from "./scripts/tasks/tasksTest";
-import {taskDeploy} from "./scripts/tasks/tasksDeploy";
-import {taskVerifyAll} from "./scripts/tasks/tasksMisc";
-
 import dotenv from "dotenv";
 dotenv.config();
+
+import tasks from "./scripts/tasks/tasks";
+tasks();
 
 const NETWORK_URL = process.env.NETWORK_URL;
 const NETWORK_URL_TEST = process.env.NETWORK_URL_TEST;
