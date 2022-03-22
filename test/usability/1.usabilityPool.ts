@@ -4,11 +4,12 @@ import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool} from "../../typechain-types";
 
-import {shouldFail} from "../../scripts/utils/protocol/utilTest";
-import {getBorrowTokens, getTokenAmount, LPFromPT} from "../../scripts/utils/protocol/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
+import {shouldFail} from "../../scripts/utils/testing/utilTest";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {getTokenAmounts, LPFromPT} from "../../scripts/utils/tokens/utilTokens";
 
 describe("Usability: Pool", () => {
     const configType = getConfigType(hre);
@@ -23,16 +24,14 @@ describe("Usability: Pool", () => {
     let signerAddress: string;
 
     before(async () => {
-        poolTokens = await getBorrowTokens(configType, hre);
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
 
-        provideAmounts = await getTokenAmount(hre, poolTokens);
+        poolTokens = await getFilteredTokens(config, hre, "leveragePool");
+
+        provideAmounts = await getTokenAmounts(signerAddress, poolTokens);
 
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
-
-        signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
-
-    // **** Split up this code into different files depending on what the test is doing
 
     it("should stake tokens for LP tokens and redeem for an equal amount", async () => {
         const index = 0;

@@ -7,12 +7,12 @@ import {Config} from "../config/utilConfig";
 import {ROUND_CONSTANT} from "../config/utilConstants";
 
 // Get the tokens owned by an account
-export async function getTokenAmounts(account: string, tokens: ERC20Upgradeable[] | LPoolToken[], fos: number = 0) {
-    const fosNumerator = ROUND_CONSTANT - Math.floor(fos * ROUND_CONSTANT);
+export async function getTokenAmounts(account: string, tokens: ERC20Upgradeable[] | LPoolToken[], fos: number = 1) {
+    const fosNumerator = Math.floor(fos * ROUND_CONSTANT);
     const fosDenominator = ROUND_CONSTANT;
 
     const amounts: ethers.BigNumber[] = [];
-    for (const token of tokens) amounts.push((await token.balanceOf(account)).mul(fosNumerator).div(fosDenominator));
+    for (const token of tokens) amounts.push((await token.balanceOf(account)).mul(fosDenominator).div(fosNumerator));
 
     return amounts;
 }

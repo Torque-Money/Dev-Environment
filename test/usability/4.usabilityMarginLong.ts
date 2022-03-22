@@ -4,14 +4,13 @@ import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../../typechain-types";
 
-import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/protocol/utilMarginLong";
 import {setPrice} from "../../scripts/utils/protocol/utilOracle";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
-import {shouldFail} from "../../scripts/utils/protocol/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/protocol/utilTokens";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/config/utilConstants";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {getTokenAmounts} from "../../scripts/utils/tokens/utilTokens";
 
 describe("Usability: MarginLong", () => {
     const configType = getConfigType(hre);
@@ -30,14 +29,14 @@ describe("Usability: MarginLong", () => {
     let signerAddress: string;
 
     before(async () => {
-        poolTokens = await getBorrowTokens(configType, hre);
-        collateralTokens = await getCollateralTokens(configType, hre);
+        poolTokens = await getFilteredTokens(config, hre, "leveragePool");
+        collateralTokens = await getFilteredTokens(config, hre, "marginLongCollateral");
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
-        provideAmounts = await getTokenAmount(hre, poolTokens);
+        provideAmounts = await getTokenAmounts(signerAddress, poolTokens);
 
         collateralAmounts = [];
         for (const token of collateralTokens) collateralAmounts.push(await minCollateralAmount(marginLong, oracle, token));

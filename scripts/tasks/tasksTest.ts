@@ -1,6 +1,6 @@
 import {task} from "hardhat/config";
 
-import {testWrapper} from "../utils/utilTest";
+import {testWrapper} from "../utils/testing/utilTest";
 
 export default function main() {
     task("test-functionality", "Run functionality tests", async (args, hre) => {

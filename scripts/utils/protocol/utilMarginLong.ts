@@ -15,8 +15,8 @@ export async function addCollateral(marginLong: MarginLong, tokens: ERC20Upgrade
     for (let i = 0; i < tokens.length; i++) if (amounts[i].gt(0)) await (await marginLong.addCollateral(tokens[i].address, amounts[i])).wait();
 }
 
-// Get the minimum collateral required to satisfy collateral
-export async function minTokenAmountForPrice(account: string, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], targetPrice: ethers.BigNumber, fos: number = 1.2) {
+// Get the minimum collateral required to satisfy target price
+async function minTokenAmountForPrice(account: string, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], targetPrice: ethers.BigNumber, fos: number = 1.2) {
     const fosNumerator = Math.floor(fos * ROUND_CONSTANT);
     const fosDenominator = ROUND_CONSTANT;
 
@@ -41,6 +41,13 @@ export async function minTokenAmountForPrice(account: string, oracle: Oracle | O
     }
 
     return amounts;
+}
+
+// Get the collateral required to satisfy collateral price
+export async function minCollateralAmount(account: string, marginLong: MarginLong, oracle: Oracle | OracleTest, tokens: ERC20Upgradeable[], fos: number = 1.2) {
+    const minCollateralPrice = await marginLong.minCollateralPrice();
+
+    return minTokenAmountForPrice(account, oracle, tokens, minCollateralPrice, fos);
 }
 
 // Remove collateral
