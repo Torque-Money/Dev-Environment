@@ -6,7 +6,7 @@ import {ERC20Upgradeable, LPool} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/testing/utilConstants";
 import {shouldFail} from "../../scripts/utils/testing/utilTest";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getTokenAmounts, LPFromPT} from "../../scripts/utils/tokens/utilTokens";

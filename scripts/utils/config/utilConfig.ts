@@ -83,7 +83,7 @@ export interface Config {
         nativeCoin: Approved;
         wrappedCoin: Approved;
         lpTokens: {
-            beaconAddress: string; // **** Perhaps make this have its corresponding token so that order does not matter as much ?
+            beaconAddress: string;
             tokens: string[];
         };
         approved: Approved[];

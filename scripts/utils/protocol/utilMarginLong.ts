@@ -4,7 +4,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ERC20Upgradeable, LPool, MarginLong, Oracle, OracleTest} from "../../../typechain-types";
 
 import {Config} from "../config/utilConfig";
-import {ROUND_CONSTANT} from "../config/utilConstants";
+import {ROUND_CONSTANT} from "../testing/utilConstants";
 import {getFilteredTokens} from "../tokens/utilGetTokens";
 import {getTokenAmounts} from "../tokens/utilTokens";
 

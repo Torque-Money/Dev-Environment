@@ -4,7 +4,7 @@ import {HardhatRuntimeEnvironment} from "hardhat/types";
 import {ERC20Upgradeable, LPool, LPoolToken} from "../../../typechain-types";
 
 import {Config} from "../config/utilConfig";
-import {ROUND_CONSTANT} from "../config/utilConstants";
+import {ROUND_CONSTANT} from "../testing/utilConstants";
 
 // Get the tokens owned by an account
 export async function getTokenAmounts(account: string, tokens: ERC20Upgradeable[] | LPoolToken[], fos: number = 1) {

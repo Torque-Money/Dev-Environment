@@ -9,6 +9,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import tasks from "./scripts/tasks/tasks";
+import {ConfigType} from "./scripts/utils/config/utilConfig";
 tasks();
 
 const NETWORK_URL = process.env.NETWORK_URL;
@@ -47,4 +48,5 @@ export default {
         apiKey: process.env.OZ_API_KEY,
         apiSecret: process.env.OZ_API_SECRET,
     },
+    configTypeOverride: undefined as ConfigType | undefined,
 };

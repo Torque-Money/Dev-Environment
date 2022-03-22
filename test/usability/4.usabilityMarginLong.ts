@@ -8,7 +8,7 @@ import {setPrice} from "../../scripts/utils/protocol/utilOracle";
 import {provideLiquidity, redeemAllLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/config/utilConstants";
+import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/testing/utilConstants";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getTokenAmounts} from "../../scripts/utils/tokens/utilTokens";
 import {minCollateralAmount} from "../../scripts/utils/protocol/utilMarginLong";

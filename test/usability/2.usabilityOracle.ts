@@ -7,7 +7,7 @@ import {ERC20Upgradeable, LPool, OracleTest} from "../../typechain-types";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {provideLiquidity, redeemAllLiquidity} from "../../scripts/utils/protocol/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/testing/utilConstants";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getTokenAmounts, LPFromPT} from "../../scripts/utils/tokens/utilTokens";
 import {shouldFail} from "../../scripts/utils/testing/utilTest";

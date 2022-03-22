@@ -1,14 +1,16 @@
+import {config} from "hardhat";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
 import {ConfigType} from "./utilConfig";
-import {OVERRIDE_CONFIG_TYPE} from "./utilConstants";
 
-// Get the config type from the name unless overriden
+// Get the config type to use
 export default function getConfigType(hre: HardhatRuntimeEnvironment) {
     const networkName = hre.network.name;
     const configType = mapNetworkToConfigType(networkName as any);
 
-    return OVERRIDE_CONFIG_TYPE !== null ? OVERRIDE_CONFIG_TYPE : configType;
+    const configTypeOverride: ConfigType | undefined = (config as any).configTypeOverride;
+
+    return configTypeOverride ? configTypeOverride : configType;
 }
 
 // Map a specific network to the given config type
