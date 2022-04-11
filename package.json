@@ -1,6 +1,8 @@
 {
     "name": "dev-environment",
-    "scripts": {},
+    "scripts": {
+        "fork": ""
+    },
     "dependencies": {},
     "devDependencies": {
         "@openzeppelin/contracts-upgradeable": "^4.5.2",
