@@ -1,7 +1,7 @@
 {
     "name": "dev-environment",
     "scripts": {
-        "fork": ""
+        "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node"
     },
     "dependencies": {},
     "devDependencies": {
