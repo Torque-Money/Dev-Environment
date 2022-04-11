@@ -10,6 +10,7 @@ import deployMarginLong from "./deployMarginLong";
 import deployResolver from "./deployResolver";
 import deployFlashLender from "./deployFlashLender";
 import deployTimelock from "./deployTimelock";
+import {config} from "hardhat";
 
 export default async function main(configType: ConfigType, hre: HardhatRuntimeEnvironment) {
     await deployConverter(configType, hre);

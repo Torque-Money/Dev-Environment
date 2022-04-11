@@ -4,14 +4,15 @@ import hre from "hardhat";
 
 import {ERC20Upgradeable, LPool, MarginLong, OracleTest} from "../../typechain-types";
 
-import {addCollateral, allowedBorrowAmount, minCollateralAmount, removeCollateral} from "../../scripts/utils/protocol/utilMarginLong";
 import {setPrice} from "../../scripts/utils/protocol/utilOracle";
-import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
-import {shouldFail} from "../../scripts/utils/protocol/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/protocol/utilTokens";
+import {provideLiquidity, redeemAllLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/config/utilConstants";
+import {BIG_NUM, BORROW_PRICE} from "../../scripts/utils/testing/utilConstants";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {getTokenAmounts} from "../../scripts/utils/tokens/utilTokens";
+import {minCollateralAmount} from "../../scripts/utils/protocol/utilMarginLong";
+import {shouldFail} from "../../scripts/utils/testing/utilTest";
 
 describe("Usability: MarginLong", () => {
     const configType = getConfigType(hre);
@@ -30,17 +31,16 @@ describe("Usability: MarginLong", () => {
     let signerAddress: string;
 
     before(async () => {
-        poolTokens = await getBorrowTokens(configType, hre);
-        collateralTokens = await getCollateralTokens(configType, hre);
+        poolTokens = await getFilteredTokens(config, hre, "leveragePool");
+        collateralTokens = await getFilteredTokens(config, hre, "marginLongCollateral");
 
         marginLong = await hre.ethers.getContractAt("MarginLong", config.contracts.marginLongAddress);
         pool = await hre.ethers.getContractAt("LPool", config.contracts.leveragePoolAddress);
         oracle = await hre.ethers.getContractAt("OracleTest", config.contracts.oracleAddress);
 
-        provideAmounts = await getTokenAmount(hre, poolTokens);
+        provideAmounts = await getTokenAmounts(signerAddress, poolTokens);
 
-        collateralAmounts = [];
-        for (const token of collateralTokens) collateralAmounts.push(await minCollateralAmount(marginLong, oracle, token));
+        collateralAmounts = await minCollateralAmount(signerAddress, marginLong, oracle, collateralTokens);
 
         signerAddress = await hre.ethers.provider.getSigner().getAddress();
     });
@@ -50,7 +50,7 @@ describe("Usability: MarginLong", () => {
     });
 
     afterEach(async () => {
-        await redeemLiquidity(configType, hre, pool);
+        await redeemAllLiquidity(config, hre, pool);
     });
 
     it("deposit and undeposit collateral into the account", async () => {
@@ -93,7 +93,7 @@ describe("Usability: MarginLong", () => {
         const index = 0;
         const poolToken = poolTokens[index];
         const collateralToken = collateralTokens[index];
-        const collateralAmount = await minCollateralAmount(marginLong, oracle, collateralToken);
+        const collateralAmount = await minCollateralAmount(signerAddress, marginLong, oracle, collateralTokens);
 
         const initialLiquidity = await pool.liquidity(poolToken.address);
         const initialTotalAmountLocked = await pool.totalAmountLocked(poolToken.address);

@@ -4,7 +4,7 @@ import {Converter} from "../../typechain-types";
 
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {expectAddressEqual} from "../../scripts/utils/utilTest";
+import {expectAddressEqual} from "../../scripts/utils/testing/utilTest";
 
 describe("Verify: Converter", () => {
     const configType = getConfigType(hre);

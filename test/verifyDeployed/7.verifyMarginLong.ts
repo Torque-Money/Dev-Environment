@@ -6,7 +6,7 @@ import {ERC20Upgradeable, MarginLong} from "../../typechain-types";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
-import {expectAddressEqual} from "../../scripts/utils/utilTest";
+import {expectAddressEqual} from "../../scripts/utils/testing/utilTest";
 
 describe("Verify: MarginLong", () => {
     const configType = getConfigType(hre);

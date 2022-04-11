@@ -2,7 +2,7 @@ import {ethers} from "ethers";
 
 import {ERC20Upgradeable, OracleTest} from "../../../typechain-types";
 
-import {ROUND_CONSTANT} from "../config/utilConstants";
+import {ROUND_CONSTANT} from "../testing/utilConstants";
 
 // Set the price of a given token
 export async function setPrice(oracle: OracleTest, tokens: ERC20Upgradeable[], rawPrices: ethers.BigNumber[], useDecimals: boolean = true) {

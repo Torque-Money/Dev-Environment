@@ -8,7 +8,7 @@ import {getFlashLenderTokens, getTokenAmount} from "../../scripts/utils/protocol
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import {provideLiquidity, redeemLiquidity} from "../../scripts/utils/protocol/utilPool";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
-import {BIG_NUM} from "../../scripts/utils/config/utilConstants";
+import {BIG_NUM} from "../../scripts/utils/testing/utilConstants";
 
 describe("Interaction: FlashLend", () => {
     const configType = getConfigType(hre);

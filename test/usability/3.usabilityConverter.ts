@@ -4,10 +4,11 @@ import hre from "hardhat";
 
 import {Converter, ERC20Upgradeable} from "../../typechain-types";
 
-import {shouldFail} from "../../scripts/utils/protocol/utilTest";
-import {getCollateralTokens, getBorrowTokens, getTokenAmount} from "../../scripts/utils/protocol/utilTokens";
+import {shouldFail} from "../../scripts/utils/testing/utilTest";
 import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
+import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
+import {getTokenAmounts} from "../../scripts/utils/tokens/utilTokens";
 
 describe("Usability: Converter", () => {
     const configType = getConfigType(hre);
@@ -25,14 +26,14 @@ describe("Usability: Converter", () => {
     let signerAddress: string;
 
     before(async () => {
-        poolToken = (await getBorrowTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
-        collateralToken = (await getCollateralTokens(configType, hre)).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        signerAddress = await hre.ethers.provider.getSigner().getAddress();
+
+        poolToken = (await getFilteredTokens(config, hre, "leveragePool")).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
+        collateralToken = (await getFilteredTokens(config, hre, "marginLongCollateral")).filter((token) => token.address != config.tokens.wrappedCoin.address)[0];
         weth = await hre.ethers.getContractAt("ERC20Upgradeable", config.tokens.wrappedCoin.address);
 
-        provideAmount = (await getTokenAmount(hre, [poolToken]))[0];
-        wethAmount = (await getTokenAmount(hre, [weth]))[0];
-
-        signerAddress = await hre.ethers.provider.getSigner().getAddress();
+        provideAmount = (await getTokenAmounts(signerAddress, [poolToken]))[0];
+        wethAmount = (await getTokenAmounts(signerAddress, [weth]))[0];
 
         converter = await hre.ethers.getContractAt("Converter", config.contracts.converterAddress);
     });

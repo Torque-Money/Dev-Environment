@@ -7,7 +7,7 @@ import {chooseConfig} from "../../scripts/utils/config/utilConfig";
 import getConfigType from "../../scripts/utils/config/utilConfigTypeSelector";
 import {getFilteredTokens} from "../../scripts/utils/tokens/utilGetTokens";
 import {getApprovedToken} from "../../scripts/utils/tokens/utilTokens";
-import {expectAddressEqual} from "../../scripts/utils/utilTest";
+import {expectAddressEqual} from "../../scripts/utils/testing/utilTest";
 
 describe("Verify: Oracle", () => {
     const configType = getConfigType(hre);

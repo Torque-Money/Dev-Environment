@@ -2,10 +2,11 @@ import {expect} from "chai";
 import {BigNumber} from "ethers";
 import {HardhatRuntimeEnvironment} from "hardhat/types";
 
-import utilFund from "./setup/utilFund";
-import utilApprove from "./setup/utilApprove";
-import utilClump from "./setup/utilClump";
-import getConfigType from "./config/utilConfigTypeSelector";
+import getConfigType from "../config/utilConfigTypeSelector";
+
+import utilFund from "./utilFund";
+import utilApprove from "./utilApprove";
+import utilClump from "./utilClump";
 
 // Throw an exception if the function doesnt throw an exception
 export async function shouldFail(fn: () => Promise<any>) {
