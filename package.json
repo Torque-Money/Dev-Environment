@@ -1,4 +1,7 @@
 {
     "name": "dev-environment",
-    "scripts": {}
+    "scripts": {},
+    "dependencies": {
+        "hardhat": "^2.9.3"
+    }
 }
