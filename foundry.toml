@@ -1,8 +1,9 @@
 [default]
-src = 'src'
-out = 'out'
-libs = ['lib']
+src = "src"
+out = "out"
+test = "test/sol"
+libs = ["lib"]
 
-remappings = ['@openzeppelin/=node_modules/@openzeppelin']
+remappings = ["@openzeppelin/=node_modules/@openzeppelin"]
 
 # See more config options https://github.com/gakonst/foundry/tree/master/config

@@ -4,6 +4,7 @@
 module.exports = {
     solidity: "0.8.10",
     paths: {
-        sources: "src",
+        sources: "src/contracts",
+        tests: "src/test/js",
     },
 };
