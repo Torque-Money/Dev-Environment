@@ -6,8 +6,8 @@ interface Proxy {
 }
 
 interface BeaconProxy {
-    beacon: string;
     proxies: string[];
+    beacon: string;
     implementations: string;
 }
 
