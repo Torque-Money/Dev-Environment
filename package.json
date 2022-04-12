@@ -3,9 +3,9 @@
     "scripts": {
         "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node"
     },
-    "dependencies": {},
     "devDependencies": {
         "@openzeppelin/contracts-upgradeable": "^4.5.2",
+        "dotenv": "^16.0.0",
         "hardhat": "^2.9.3"
     }
 }
