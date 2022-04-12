@@ -7,13 +7,25 @@ import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgrad
 
 
 contract TorqueTAU is Initializable, AccessControlEnumerableUpgradeable, ERC20Upgradeable {
-    // **** I want to create some seperate roles here for minter and burner and admin
+    bytes32 public TOKEN_ADMIN_ROLE;
+    bytes32 public TOKEN_MINTER_ROLE;
+    bytes32 public TOKEN_BURNER_ROLE;
 
-    function initialize() external initializer {
+    function initialize(uint256 initialSupply_) external initializer {
         __ERC20_init("Torque TAU", "TAU");
         __AccessControlEnumerable_init();
 
-        // **** Now I need to configure roles here for minter, burner, and token admin
+        _mint(_msgSender(), initialSupply_);
+
+        TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
+        _setRoleAdmin(TOKEN_ADMIN_ROLE, TOKEN_ADMIN_ROLE);
+        _grantRole(TOKEN_ADMIN_ROLE, _msgSender());
+
+        TOKEN_MINTER_ROLE = keccak256("TOKEN_MINTER_ROLE");
+        _setRoleAdmin(TOKEN_MINTER_ROLE, TOKEN_ADMIN_ROLE);
+
+        TOKEN_BURNER_ROLE = keccak256("TOKEN_BURNER_ROLE");
+        _setRoleAdmin(TOKEN_BURNER_ROLE, TOKEN_ADMIN_ROLE);
     }
 
 
