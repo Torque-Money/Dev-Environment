@@ -4,10 +4,12 @@ interface Data {
     TAUInitialSupply: string;
 }
 
+// Get the path of the data file
 export function getDataPath() {
     return process.cwd() + "../../../data/data.json";
 }
 
+// Save the data
 export function saveData(data: Data) {
     const dataPath = getDataPath();
     const stringified = JSON.stringify(data);
@@ -15,6 +17,7 @@ export function saveData(data: Data) {
     fs.writeFileSync(dataPath, stringified);
 }
 
+// Load the data
 export function loadData() {
     const dataPath = getDataPath();
     const stringified = fs.readFileSync(dataPath).toString();
