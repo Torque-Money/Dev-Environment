@@ -5,6 +5,12 @@ interface Proxy {
     proxy: string;
 }
 
+interface BeaconProxy {
+    implementations: string;
+    beacon: string;
+    proxies: string[];
+}
+
 interface Data {
     config: {
         TAUInitialSupply: string;
