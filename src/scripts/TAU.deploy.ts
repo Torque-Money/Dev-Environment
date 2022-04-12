@@ -1,15 +1,18 @@
 import hre from "hardhat";
 
 import config from "../../config";
+import { TorqueTAU } from "../../typechain-types";
 
 async function main() {
     await hre.run("compile");
 
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
-    const instance = await hre.upgrades.deployProxy(TAU, [config.TAUInitialSupply]);
-    await instance.deployed();
+    const tau = (await hre.upgrades.deployProxy(TAU, [config.TAUInitialSupply])) as TorqueTAU;
+    await tau.deployed();
 
-    console.log(instance.address);
+    const signerAddress = await hre.ethers.provider.getSigner().getAddress();
+
+    console.log(await tau.balanceOf(signerAddress));
 }
 
 main()
