@@ -13,7 +13,9 @@ task("renounce-timelock", "Renounce timelock admin privileges", async (args, hre
 
     const timelock = await hre.ethers.getContractAt(TimelockABI.abi, TIMELOCK_ADDRESS);
 
-    await (await timelock.renounceRole(ADMIN_ROLE, signerAddress)).wait();
+    console.log(timelock);
+
+    // await (await timelock.renounceRole(ADMIN_ROLE, signerAddress)).wait();
 });
 
 export default {
