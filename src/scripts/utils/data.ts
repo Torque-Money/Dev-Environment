@@ -1,14 +1,14 @@
 import fs from "fs";
 
 interface Proxy {
-    implementation: string;
     proxy: string;
+    implementation: string;
 }
 
 interface BeaconProxy {
-    implementations: string;
     beacon: string;
     proxies: string[];
+    implementations: string;
 }
 
 interface Data {
