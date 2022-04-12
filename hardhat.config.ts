@@ -12,8 +12,6 @@ export default {
     paths: {
         sources: "src/contracts",
         tests: "src/test/js",
-        artifacts: "artifacts/",
-        cache: "cache/",
     },
     networks: {
         opera: {
