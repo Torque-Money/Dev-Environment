@@ -27,19 +27,19 @@ contract TorqueTAUTest is DSTest {
         assertEq(tau.balanceOf(address(this)), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
     }
 
-    // Mint without role
-    function testMintNoRole() public {
-        cheats.expectRevert(abi.encodeWithSignature("mint(address,uint256)", address(this), MINT_AMOUNT));
+    // Fail to mint tokens
+    function testFailMint() public {
+        tau.mint(address(this), MINT_AMOUNT);
     }
 
-    // Burn without role
-    function testBurnNoRole() public {
-        cheats.expectRevert(abi.encodeWithSignature("burn(address,uint256)", address(this), BURN_AMOUNT));
+    // Fail to burn tokens
+    function testFailBurn() public {
+        tau.burn(address(this), BURN_AMOUNT);
     }
 
-    // Mint with role
+    // Mint tokens
     function testMint() public {}
 
-    // Burn with role
+    // Burn tokens
     function testBurn() public {}
 }
