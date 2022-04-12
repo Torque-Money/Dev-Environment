@@ -1,7 +1,14 @@
 import fs from "fs";
 
 interface Data {
-    TAUInitialSupply: string;
+    config: {
+        TAUInitialSupply: string;
+    };
+    contracts: {
+        multisig: string;
+        timelock: string;
+        TAU: string;
+    };
 }
 
 // Get the path of the data file
