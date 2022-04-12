@@ -11,11 +11,11 @@ async function main() {
     const tau = (await hre.upgrades.deployProxy(TAU, [data.config.TAUInitialSupply])) as TorqueTAU;
     await tau.deployed();
 
-    data.contracts.TAU.implementation = await hre.upgrades.erc1967.getImplementationAddress(tau.address);
     data.contracts.TAU.proxy = tau.address;
-
-    console.log("TAU implementation:", data.contracts.TAU.implementation);
     console.log("TAU proxy:", data.contracts.TAU.proxy);
+
+    data.contracts.TAU.implementation = await hre.upgrades.erc1967.getImplementationAddress(tau.address);
+    console.log("TAU implementation:", data.contracts.TAU.implementation);
 
     saveData(data);
 }
