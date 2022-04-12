@@ -14,6 +14,7 @@ async function main() {
     await tau.deployed();
 
     // **** Just do a few more tests to make sure that the token works before attempting to deploy to mainnet
+    // **** Also figure out how to deploy contracts
 
     data.contracts.TAU = tau.address;
     saveData(data);
