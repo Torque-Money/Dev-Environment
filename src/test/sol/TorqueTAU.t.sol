@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "ds-test/test.sol";
 
-import {TorqueTAU} from "@contracts/TorqueTAU/TorqueTAU.sol";
+import {TorqueTAU} from "contracts/TorqueTAU/TorqueTAU.sol";
 
 contract TorqueTAUTest is DSTest {
     TorqueTAU tau;
@@ -12,7 +12,7 @@ contract TorqueTAUTest is DSTest {
         tau = new TorqueTAU();
     }
 
-    function testExample() public {
-        assertTrue(true);
+    function testMint() public {
+        cheats.expectRevert();
     }
 }
