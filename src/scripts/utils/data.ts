@@ -29,7 +29,5 @@ export function loadData() {
     const dataPath = getDataPath();
     const stringified = fs.readFileSync(dataPath).toString();
 
-    console.log(stringified);
-
     return JSON.parse(stringified) as Data;
 }
