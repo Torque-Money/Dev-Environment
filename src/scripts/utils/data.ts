@@ -1,5 +1,10 @@
 import fs from "fs";
 
+interface Proxy {
+    implementation: string;
+    proxy: string;
+}
+
 interface Data {
     config: {
         TAUInitialSupply: string;
@@ -7,7 +12,7 @@ interface Data {
     contracts: {
         multisig: string;
         timelock: string;
-        TAU: string;
+        TAU: Proxy;
     };
 }
 
