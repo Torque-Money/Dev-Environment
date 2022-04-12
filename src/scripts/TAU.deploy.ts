@@ -8,6 +8,8 @@ async function main() {
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
     const instance = await hre.upgrades.deployProxy(TAU, [config.TAUInitialSupply]);
     await instance.deployed();
+
+    console.log(instance.address);
 }
 
 main()
