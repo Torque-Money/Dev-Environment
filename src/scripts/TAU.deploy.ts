@@ -13,9 +13,6 @@ async function main() {
     const tau = (await hre.upgrades.deployProxy(TAU, [data.config.TAUInitialSupply])) as TorqueTAU;
     await tau.deployed();
 
-    // **** Just do a few more tests to make sure that the token works before attempting to deploy to mainnet
-    // **** Also figure out how to deploy contracts on ftmscan using this method
-
     data.contracts.TAU.implementation = await hre.upgrades.erc1967.getImplementationAddress(tau.address);
     data.contracts.TAU.proxy = tau.address;
 
