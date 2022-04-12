@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-import config from "../../config";
+import data from "../../data/data.json";
 import { TorqueTAU } from "../../typechain-types";
 
 async function main() {
