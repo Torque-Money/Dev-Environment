@@ -5,8 +5,6 @@ import { TorqueTAU } from "../../typechain-types";
 import { loadData, saveData } from "./utils/data";
 
 async function main() {
-    await hre.run("compile");
-
     const data = loadData();
 
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
