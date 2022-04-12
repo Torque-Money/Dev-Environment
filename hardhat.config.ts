@@ -1,10 +1,8 @@
-/**
- * @type import('hardhat/config').HardhatUserConfig
- */
-
 import { task, HardhatUserConfig } from "hardhat/config";
 
 require("dotenv").config();
+
+task("renounce-timelock", "Renounce timelock admin privelidges", async (args, hre) => {});
 
 export default {
     paths: {
