@@ -3,8 +3,8 @@ import hre from "hardhat";
 async function main() {
     await hre.run("compile");
 
-    // const TAU = await hre.ethers.getContractAt("");
-    const greeter = await Greeter.deploy("Hello, Hardhat!");
+    const TAU = await hre.ethers.getContractFactory("TorqueTAU");
+    // const greeter = await Greeter.deploy("Hello, Hardhat!");
 
     await greeter.deployed();
 
