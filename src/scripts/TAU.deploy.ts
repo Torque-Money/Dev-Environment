@@ -3,7 +3,7 @@ import hre from "hardhat";
 async function main() {
     await hre.run("compile");
 
-    const Greeter = await hre.ethers.getContractFactory("Greeter");
+    // const TAU = await hre.ethers.getContractAt("");
     const greeter = await Greeter.deploy("Hello, Hardhat!");
 
     await greeter.deployed();
