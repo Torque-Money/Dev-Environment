@@ -1,8 +1,1 @@
-{
-    "config": { "TAUInitialSupply": "10000000000000000000000000" },
-    "contracts": {
-        "multisig": "0x3FAe01d46ebe019b14216D17E3947871daa2F58b",
-        "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
-        "TAU": { "proxy": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0", "implementation": "0x5FbDB2315678afecb367f032d93F642f64180aa3" }
-    }
-}
+{"config":{"TAUInitialSupply":"10000000000000000000000000"},"contracts":{"multisig":"0x3FAe01d46ebe019b14216D17E3947871daa2F58b","timelock":"0xF3C18b768Ca36c02564819a224a95E7a2EAc6239","TAU":{"proxy":"0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0","implementation":"0x5FbDB2315678afecb367f032d93F642f64180aa3"}}}
