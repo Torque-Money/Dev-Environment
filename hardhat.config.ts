@@ -22,4 +22,9 @@ export default {
         //     accounts: [process.env.PRIVATE_KEY_OPERA],
         // },
     },
+    etherscan: {
+        apiKey: {
+            opera: process.env.FTMSCAN_API_KEY,
+        },
+    },
 } as HardhatUserConfig;
