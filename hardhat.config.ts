@@ -1,5 +1,6 @@
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 
 import { HardhatUserConfig } from "hardhat/config";
