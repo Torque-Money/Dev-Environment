@@ -4,11 +4,8 @@ async function main() {
     await hre.run("compile");
 
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
-    // const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-    await greeter.deployed();
-
-    console.log("Greeter deployed to:", greeter.address);
+    const instance = await hre.upgrades.deployProxy(TAU, []);
+    await instance.deployed();
 }
 
 main()
