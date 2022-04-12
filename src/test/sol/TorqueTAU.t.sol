@@ -38,8 +38,12 @@ contract TorqueTAUTest is DSTest {
     }
 
     // Mint tokens
-    function testMint() public {}
+    function testMint() public {
+        tau.mint(address(this), MINT_AMOUNT);
+    }
 
     // Burn tokens
-    function testBurn() public {}
+    function testBurn() public {
+        tau.burn(address(this), BURN_AMOUNT);
+    }
 }
