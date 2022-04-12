@@ -44,7 +44,10 @@ contract TorqueTAU is
     /**
      *  Burn tokens from a user
      */
-    function burn(address account, uint256 amount) external onlyRole(TOKEN_BURNER_ROLE) {
+    function burn(address account, uint256 amount)
+        external
+        onlyRole(TOKEN_BURNER_ROLE)
+    {
         _burn(account, amount);
     }
 }
