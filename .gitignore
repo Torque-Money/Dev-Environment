@@ -1,5 +1,8 @@
 cache/
 out/
 artifacts/
+typechain-types/
+
 node_modules/
+
 .env
