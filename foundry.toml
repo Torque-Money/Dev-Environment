@@ -4,6 +4,4 @@ out = "out"
 test = "test/sol"
 libs = ["lib"]
 
-remappings = ["@openzeppelin/=node_modules/@openzeppelin", "@contracts/=src/contracts/"]
-
 # See more config options https://github.com/gakonst/foundry/tree/master/config
