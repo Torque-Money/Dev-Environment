@@ -1,3 +1,5 @@
+import "@nomiclabs/hardhat-ethers";
+
 import { task, HardhatUserConfig } from "hardhat/config";
 
 require("dotenv").config();
