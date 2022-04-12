@@ -12,6 +12,9 @@ contract TorqueTAUTest is DSTest {
 
     uint256 constant INITIAL_SUPPLY = 10000 * 1e18;
 
+    uint256 constant MINT_AMOUNT = 10 * 1e18;
+    uint256 constant BURN_AMOUNT = 10 * 1e18;
+
     function setUp() public {
         cheats = CheatCodes(HEVM_ADDRESS);
         tau = new TorqueTAU();
@@ -24,10 +27,19 @@ contract TorqueTAUTest is DSTest {
         assertEq(tau.balanceOf(address(this)), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
     }
 
-    // Mint with 
+    // Mint without role
     function testMintNoRole() public {
+        cheats.expectRevert(abi.encodeWithSignature("mint(address,uint256)", address(this), MINT_AMOUNT));
     }
 
-    // Mint with roles
-    function testBurnNoRole() public {}
+    // Burn without role
+    function testBurnNoRole() public {
+        cheats.expectRevert(abi.encodeWithSignature("burn(address,uint256)", address(this), BURN_AMOUNT));
+    }
+
+    // Mint with role
+    function testMint() public {}
+
+    // Burn with role
+    function testBurn() public {}
 }
