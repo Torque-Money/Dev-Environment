@@ -15,10 +15,10 @@ export default {
         tests: "src/test/js",
     },
     networks: {
-        opera: {
-            chainId: 250,
-            url: process.env.NETWORK_URL_OPERA,
-            accounts: [process.env.PRIVATE_KEY_OPERA],
-        },
+        // opera: {
+        //     chainId: 250,
+        //     url: process.env.NETWORK_URL_OPERA,
+        //     accounts: [process.env.PRIVATE_KEY_OPERA],
+        // },
     },
 } as HardhatUserConfig;
