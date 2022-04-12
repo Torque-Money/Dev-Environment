@@ -1,3 +1,5 @@
 {
-    "TAUInitialSupply": "10000000000000000000000000"
+    "config": {
+        "TAUInitialSupply": "10000000000000000000000000"
+    }
 }
