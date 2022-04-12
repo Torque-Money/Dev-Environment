@@ -12,7 +12,7 @@ export default {
     paths: {
         sources: "src/contracts",
         tests: "src/test/js",
-        artifacts: "out/",
+        artifacts: "artifacts/",
         cache: "cache/",
     },
     networks: {
