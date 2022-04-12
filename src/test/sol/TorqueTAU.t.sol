@@ -21,7 +21,7 @@ contract TorqueTAUTest is DSTest {
     // Check the initial supply minted
     function testInitialSupply() public {
         assertEq(tau.totalSupply(), INITIAL_SUPPLY, "Total supply does not match initially supply minted");
-        assertEq(tau.balanceOf(msg.sender), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
+        assertEq(tau.balanceOf(address(this)), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
     }
 
     // Mint with 
