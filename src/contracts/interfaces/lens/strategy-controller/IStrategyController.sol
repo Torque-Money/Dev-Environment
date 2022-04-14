@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-// Provides an interface for a contract to support the vault controller
-interface IVaultController {
+// Provides an interface for a contract to support the strategy controller
+interface IStrategyController {
     // Returns the number of tokens the vault supports
     function tokenCount() external view returns (uint256 _tokenCount);
 
