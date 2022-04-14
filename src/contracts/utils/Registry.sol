@@ -25,12 +25,12 @@ contract Registry is IRegistry {
         external
         view
         override
-        returns (bool _isEntry)
+        returns (bool entryExists)
     {
         return _set.contains(entry);
     }
 
-    function count() external view override returns (uint256 _count) {
+    function entryCount() external view override returns (uint256 count) {
         return _set.length();
     }
 
