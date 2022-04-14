@@ -27,7 +27,7 @@ interface IVaultController {
     function available() external view returns (uint256[] calldata amount);
 
     // Check if the strategy is updateable
-    function isStrategyUpdateable() external view returns (bool isUpdateable);
+    function isUpdateable() external view returns (bool _isUpdateable);
 
     // Update the strategy
     function updateStrategy() external;
