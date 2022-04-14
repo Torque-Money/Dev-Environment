@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import "../strategy/IStrategy.sol";
+import {IStrategy} from "../strategy/IStrategy.sol";
 
 // Provides an interface for a contract to support Torque vault V1.
 interface ITorqueVaultV1 is IERC20Upgradeable {

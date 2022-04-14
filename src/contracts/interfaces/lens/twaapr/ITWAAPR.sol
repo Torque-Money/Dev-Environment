@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IRegistry} from "../../utils/IRegistry.sol";
 
-import "../strategy/IStrategy.sol";
+import {IStrategy} from "../strategy/IStrategy.sol";
 
 // Provides an interface for a contract to support the TWAAPR (time weighted average APR)
 interface ITWAAPR is IRegistry {
