@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {IEmergency} from "../interfaces/IEmergency.sol";
+import {IEmergency} from "../interfaces/utils/IEmergency.sol";
 
 contract Emergency is IEmergency {
     using SafeERC20 for IERC20;

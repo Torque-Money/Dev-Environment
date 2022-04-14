@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
-import {IRegistry} from "../interfaces/IRegistry.sol";
+import {IRegistry} from "../interfaces/utils/IRegistry.sol";
 
 contract Registry is IRegistry {
     using EnumerableSet for EnumerableSet.AddressSet;
