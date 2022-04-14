@@ -2,9 +2,9 @@
 pragma solidity ^0.8.0;
 
 /**
- *  Provides a contract with the option to eject its funds in the event that they get locked within
+ *  Provides an interface for a contract to eject its funds in the event that they get locked within
  */
-interface Emergency {
+interface IEmergency {
     /**
      *  Allow a contract to eject tokens locked within
      */
