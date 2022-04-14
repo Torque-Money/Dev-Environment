@@ -10,7 +10,7 @@ contract Emergency is IEmergency {
     using SafeERC20 for IERC20;
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount)
-        external
+        public
         override
     {
         if (address(token) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)

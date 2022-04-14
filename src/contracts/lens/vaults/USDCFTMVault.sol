@@ -35,7 +35,9 @@ contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITor
         for (uint256 i = 0; i < token.length; i++) tokenSet.add(address(token[i]));
     }
 
-    function setStrategy(IStrategy strategy_) external override {}
+    function setStrategy(IStrategy strategy_) external override onlyRole(VAULT_CONTROLLER_ROLE) {
+        strategy = strategy_;
+    }
 
     function tokenCount() external view override returns (uint256 count) {
         return tokenSet.length();
@@ -55,8 +57,7 @@ contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITor
 
     function balance(IERC20 token) external override returns (uint256 amount) {}
 
-    // **** THIS NEEDS TO BE ADMIN LOCKED
-    function inCaseTokensGetStuck(IERC20 token, uint256 amount) external override {
-
+    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {
+        super.inCaseTokensGetStuck(token, amount);
     }
 }
