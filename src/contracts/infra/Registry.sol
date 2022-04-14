@@ -1,16 +1,32 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
 import {IRegistry} from "../interfaces/IRegistry.sol";
 
 contract Registry is IRegistry {
-    function add(address entry) external override {}
+    using EnumerableSet for EnumerableSet.AddressSet;
 
-    function remove(address entry) external override {}
+    EnumerableSet.AddressSet private _set;
 
-    function isEntry(address entry) external override returns (bool _isEntry) {}
+    function add(address entry) external override {
+        require(_set.add(entry), "Registry: Cannot add element to registry");
+    }
 
-    function count() external override returns (uint256 registryCount) {}
+    function remove(address entry) external override {
+        require(_set.remove(entry), "Registry: Cannot remove element from registry");
+    }
 
-    function getByIndex(uint256 index) external override returns (address registryEntry) {}
+    function isEntry(address entry) external view override returns (bool _isEntry) {
+        return _set.contains(entry);
+    }
+
+    function count() external view override returns (uint256 registryCount) {
+        return _set.length();
+    }
+
+    function getByIndex(uint256 index) external view override returns (address registryEntry) {
+        return _set.at(index);
+    }
 }
