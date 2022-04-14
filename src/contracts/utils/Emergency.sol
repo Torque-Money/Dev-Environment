@@ -9,13 +9,12 @@ import {IEmergency} from "../interfaces/utils/IEmergency.sol";
 contract Emergency is IEmergency {
     using SafeERC20 for IERC20;
 
-    // **** CHANGE TO IERC20
-    function inCaseTokensGetStuck(address token, uint256 amount)
+    function inCaseTokensGetStuck(IERC20 token, uint256 amount)
         external
         override
     {
-        if (token == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
+        if (address(token) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
             payable(msg.sender).transfer(amount);
-        else IERC20(token).safeTransfer(msg.sender, amount);
+        else token.safeTransfer(msg.sender, amount);
     }
 }
