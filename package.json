@@ -3,6 +3,21 @@
     "scripts": {
         "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node"
     },
+    "prettier": {
+        "overrides": [
+            {
+                "files": "*.{sol,ts}",
+                "options": {
+                    "printWidth": 170,
+                    "tabWidth": 4,
+                    "useTabs": false,
+                    "singleQuote": false,
+                    "bracketSpacing": false,
+                    "explicitTypes": "always"
+                }
+            }
+        ]
+    },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.5",
         "@nomiclabs/hardhat-etherscan": "^3.0.3",
