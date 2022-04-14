@@ -2,17 +2,20 @@
 pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC20Upgradeable.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
+import "../strategy/IStrategy.sol";
 
 // Provides an interface for a contract to support Torque vault V1.
 interface ITorqueVaultV1 is IERC20Upgradeable {
     // Set the strategy for the vault to use.
-    function setStrategy(address strategy) external;
+    function setStrategy(IStrategy strategy) external;
 
     // Returns the number of tokens the vault supports
     function tokenCount() external view returns (uint256 count);
 
     // Gets a token supported by the vault by its index. Must be less than token count or else will revert
-    function tokenByIndex(uint256 index) external view returns (address token);
+    function tokenByIndex(uint256 index) external view returns (IERC20 token);
 
     // Previews the amount of shares for depositing a given amount of tokens into the vault from the sender.
     function previewDeposit(uint256[] calldata amount) external view returns (uint256 shares);
@@ -29,5 +32,5 @@ interface ITorqueVaultV1 is IERC20Upgradeable {
     function redeem(uint256 shares) external returns (uint256[] calldata amount);
 
     // Get the underlying balance of the specified token owned by the vault.
-    function balance(address token) external returns (uint256 amount);
+    function balance(IERC20 token) external returns (uint256 amount);
 }
