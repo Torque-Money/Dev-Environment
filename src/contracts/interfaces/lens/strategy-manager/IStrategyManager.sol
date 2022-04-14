@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 // Provides an interface for a contract to support Torque vault V1 exportable
-interface ITorqueVaultV1Exportable {
+interface IStrategyManager {
     // Export a given amount of tokens from the vault
     function export(uint256[] calldata amount) external;
 
