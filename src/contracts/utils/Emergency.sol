@@ -9,6 +9,7 @@ import {IEmergency} from "../interfaces/utils/IEmergency.sol";
 contract Emergency is IEmergency {
     using SafeERC20 for IERC20;
 
+    // **** CHANGE TO IERC20
     function inCaseTokensGetStuck(address token, uint256 amount)
         external
         override
