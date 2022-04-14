@@ -7,16 +7,10 @@ interface IStrategy {
     // Reverts if there are not enough funds available.
     function deposit(uint256[] calldata amount) external;
 
-    // Deposit all funds into the strategy.
-    function depositAll() external;
-
     // Withdraw a given amount of funds from the strategy.
     // Reverts if there are not enough funds available.
     function withdraw(uint256[] calldata amount) external;
 
-    // Withdraw all funds from the strategy
-    function withdrawAll() external;
-
-    // Get the available amount of funds in the strategy
-    function available() external view returns (uint256[] calldata amount);
+    // Get the balance of funds for a given token in the strategy.
+    function balance(address token) external view returns (uint256 amount);
 }
