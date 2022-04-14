@@ -34,7 +34,7 @@ contract Registry is IRegistry {
         return _set.length();
     }
 
-    function getByIndex(uint256 index)
+    function entryByIndex(uint256 index)
         external
         view
         override

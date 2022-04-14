@@ -6,7 +6,7 @@ import {IRegistry} from "../../utils/IRegistry.sol";
 // Provides an interface for a contract to support the TWAAPR (time weighted average APR)
 interface ITWAAPR is IRegistry {
     // Check if the oracle can be updated
-    function isUpdateable() external view returns (bool _isUpdateable);
+    function isUpdateable() external view returns (bool updateable);
 
     // Update the oracles APR.
     // Reverts if not updateable.
