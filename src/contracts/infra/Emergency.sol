@@ -14,7 +14,6 @@ contract Emergency is IEmergency {
     {
         if (token == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
             payable(msg.sender).transfer(amount);
-        else
-            IERC20(token).safeTransfer(msg.sender, amount);
+        else IERC20(token).safeTransfer(msg.sender, amount);
     }
 }
