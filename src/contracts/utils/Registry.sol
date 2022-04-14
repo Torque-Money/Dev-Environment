@@ -15,18 +15,31 @@ contract Registry is IRegistry {
     }
 
     function remove(address entry) external override {
-        require(_set.remove(entry), "Registry: Cannot remove element from registry");
+        require(
+            _set.remove(entry),
+            "Registry: Cannot remove element from registry"
+        );
     }
 
-    function isEntry(address entry) external view override returns (bool _isEntry) {
+    function isEntry(address entry)
+        external
+        view
+        override
+        returns (bool _isEntry)
+    {
         return _set.contains(entry);
     }
 
-    function count() external view override returns (uint256 registryCount) {
+    function count() external view override returns (uint256 _count) {
         return _set.length();
     }
 
-    function getByIndex(uint256 index) external view override returns (address registryEntry) {
+    function getByIndex(uint256 index)
+        external
+        view
+        override
+        returns (address entry)
+    {
         return _set.at(index);
     }
 }
