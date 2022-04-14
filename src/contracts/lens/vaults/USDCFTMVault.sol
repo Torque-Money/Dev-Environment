@@ -9,6 +9,8 @@ import "../../interfaces/lens/vault/ITorqueVaultV1.sol";
 import "../../interfaces/lens/strategy/IStrategy.sol";
 
 contract USDCFTMVault is Initializable, ITorqueVaultV1, ERC20Upgradeable {
+    function initialize() external initializer {}
+
     function setStrategy(IStrategy strategy) external override {}
 
     function tokenCount() external view override returns (uint256 count) {}
