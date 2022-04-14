@@ -6,7 +6,7 @@ pragma solidity ^0.8.0;
  */
 interface IEmergency {
     /**
-     *  Allow a contract to eject tokens locked within
+     *  Allow a contract to eject tokens locked within. SHOULD be overriden for each smart contract to add authentication.
      */
     function inCaseTokensGetStuck(address token, uint256 amount) external;
 }
