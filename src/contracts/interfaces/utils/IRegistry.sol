@@ -10,10 +10,10 @@ interface IRegistry {
     function remove(address entry) external;
 
     // Check if an entry is a part of the registry.
-    function isEntry(address entry) external view returns (bool _isEntry);
+    function isEntry(address entry) external view returns (bool entryExists);
 
     // Returns the number of entries in the registry.
-    function count() external view returns (uint256 _count);
+    function entryCount() external view returns (uint256 count);
 
     // Gets an entry in the registry by its index. Must be less than count or else will revert.
     function entryByIndex(uint256 index) external view returns (address entry);
