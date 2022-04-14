@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-// Provides an interface for a contract to support the strategy manager core
-interface IStrategyManagerCore {
+// Provides an interface for a contract to support the strategy controller core
+interface IStrategyControllerCore {
     // Deposit given amount of assets from the vault to the strategy.
     // Reverts if there are not enough funds.
     function deposit(uint256[] calldata amount) external;
