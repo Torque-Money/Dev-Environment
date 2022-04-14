@@ -18,7 +18,8 @@ interface ITorqueVaultV1 is IERC20Upgradeable {
     function deposit(uint256[] calldata amount) external returns (uint256 shares);
 
     // Previews the amount of tokens for redeeming a given amount of shares
-    function previewRedeem(uint256 shares) external view returns (uint256[] calldata asset);
+    function previewRedeem(uint256 shares) external view returns (uint256[] calldata amount);
 
-    //
+    // Redeem shares for an underlying amount of tokens
+    function redeem(uint256 shares) external returns (uint256[] calldata amount);
 }
