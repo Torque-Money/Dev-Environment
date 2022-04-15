@@ -20,6 +20,13 @@ abstract contract SupportsToken is ISupportsToken, Initializable {
         __SupportsToken_init_unchained(token);
     }
 
+    function __SupportsToken_init(IERC20[] memory token, uint256 _tokenCount)
+        internal
+        onlyInitializing
+    {
+        __SupportsToken_init_unchained(token, _tokenCount);
+    }
+
     function __SupportsToken_init_unchained(IERC20[] memory token)
         internal
         onlyInitializing
@@ -30,6 +37,17 @@ abstract contract SupportsToken is ISupportsToken, Initializable {
         );
         for (uint256 i = 0; i < token.length; i++)
             tokenSet.add(address(token[i]));
+    }
+
+    function __SupportsToken_init_unchained(
+        IERC20[] memory token,
+        uint256 _tokenCount
+    ) internal onlyInitializing {
+        require(
+            token.length == _tokenCount,
+            "SupportsToken: Number of tokens must match given token count"
+        );
+        __SupportsToken_init_unchained(token);
     }
 
     modifier onlySupportedToken(IERC20 token) {
