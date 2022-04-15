@@ -12,6 +12,8 @@ contract Registry is IRegistry {
 
     function add(address entry) external override {
         require(_set.add(entry), "Registry: Cannot add element to registry");
+
+        emit Add(msg.sender, entry);
     }
 
     function remove(address entry) external override {
@@ -19,6 +21,8 @@ contract Registry is IRegistry {
             _set.remove(entry),
             "Registry: Cannot remove element from registry"
         );
+
+        emit Remove(msg.sender, entry);
     }
 
     function isEntry(address entry)
