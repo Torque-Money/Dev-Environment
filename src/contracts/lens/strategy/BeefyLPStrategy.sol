@@ -19,8 +19,32 @@ import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
 // It will then take the LP token and deposit it into a Beefy vault.
 
 contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
+
+    bytes32 public STRATEGY_ADMIN_ROLE;
+    bytes32 public STRATEGY_CONTROLLER_ROLE;
+
     IUniswapV2Router02 public uniRouter;
     IBeefyVaultV6 public beVault;
 
-    function initialize() external initializer {}
+    function initialize(
+        IERC20[] memory token,
+        IUniswapV2Router02 _uniRouter,
+        IBeefyVaultV6 _beVault
+    ) external initializer {
+        __AccessControl_init();
+        __SupportsToken_init(token, 2);
+
+        STRATEGY_ADMIN_ROLE = keccak256("STRATEGY_ADMIN_ROLE");
+        _setRoleAdmin(STRATEGY_ADMIN_ROLE, STRATEGY_ADMIN_ROLE);
+        _grantRole(STRATEGY_ADMIN_ROLE, _msgSender());
+
+        STRATEGY_CONTROLLER_ROLE = keccak256("STRATEGY_CONTROLLER_ROLE");
+        _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
+        _grantRole(STRATEGY_CONTROLLER_ROLE, address(this));
+
+        uniRouter = _uniRouter;
+        beVault = _beVault;
+    }
 }
