@@ -26,13 +26,13 @@ contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
         _grantRole(REGISTRY_ADMIN_ROLE, _msgSender());
     }
 
-    function add(address entry) external override {
+    function add(address entry) external override onlyRole(REGISTRY_ADMIN_ROLE) {
         require(_set.add(entry), "Registry: Cannot add element to registry");
 
         emit Add(msg.sender, entry);
     }
 
-    function remove(address entry) external override {
+    function remove(address entry) external override onlyRole(REGISTRY_ADMIN_ROLE) {
         require(_set.remove(entry), "Registry: Cannot remove element from registry");
 
         emit Remove(msg.sender, entry);
