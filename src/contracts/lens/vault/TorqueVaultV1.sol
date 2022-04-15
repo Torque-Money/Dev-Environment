@@ -22,7 +22,6 @@ contract TorqueVaultV1 is
     IVaultV1,
     Emergency
 {
-
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
