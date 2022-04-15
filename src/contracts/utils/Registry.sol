@@ -25,7 +25,7 @@ contract Registry is IRegistry {
         external
         view
         override
-        returns (bool entryExists)
+        returns (bool _entry)
     {
         return _set.contains(entry);
     }
