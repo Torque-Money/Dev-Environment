@@ -71,6 +71,7 @@ contract TorqueVaultV1 is
         override
         returns (IERC20 token)
     {
+        require(index < tokenCount(), "TorqueVaultV1: Index must be less than count");
         return IERC20(tokenSet.at(index));
     }
 
