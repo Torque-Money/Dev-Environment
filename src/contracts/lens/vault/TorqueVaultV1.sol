@@ -115,7 +115,12 @@ contract TorqueVaultV1 is
     {
         shares = previewDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++)
+            tokenByIndex(i).safeTransferFrom(
+                _msgSender(),
+                address(this),
+                amount[i]
+            );
         depositAllIntoStrategy();
 
         _mint(_msgSender(), shares);
