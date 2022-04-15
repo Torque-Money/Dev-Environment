@@ -38,9 +38,6 @@ interface IVaultV1 is IERC20Upgradeable, ISupportsToken {
         external
         returns (uint256[] calldata amount);
 
-    // Get the underlying balance of the specified token owned by the vault.
-    function balance(IERC20 token) external view returns (uint256 amount);
-
     // Deposit all funds from the vault into the strategy.
     function depositAllIntoStrategy() external;
 
