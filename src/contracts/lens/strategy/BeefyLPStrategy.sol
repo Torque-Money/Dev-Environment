@@ -18,6 +18,9 @@ import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is IStrategy, SupportsToken, Emergency {
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+    IUniswapV2Router02 public uniRouter;
+    IBeefyVaultV6 public beVault;
 
+    function initialize() external initializer {}
 }
