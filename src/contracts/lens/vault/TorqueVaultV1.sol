@@ -18,10 +18,10 @@ contract TorqueVaultV1 is
     Initializable,
     AccessControlUpgradeable,
     IVaultV1,
-    ERC20Upgradeable,
     SupportsToken,
     Emergency
 {
+    // ERC20Upgradeable,
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
