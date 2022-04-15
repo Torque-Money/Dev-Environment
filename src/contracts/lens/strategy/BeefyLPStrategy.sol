@@ -54,6 +54,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function depositAllIntoStrategy() private {
+        // Deposit assets into LP tokens
         IERC20 token0 = tokenByIndex(0);
         IERC20 token1 = tokenByIndex(1);
         uint256 amountADesired = token0.balanceOf(address(this));
@@ -63,6 +64,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         token1.safeApprove(address(uniRouter), amountBDesired);
 
         uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
+
+        // Deposit into Beefy vault
+        address pair = uniFactory.getPair(address(token0), address(token1));
+        uint256 pairBalance = IERC20(pair).balanceOf(address(this));
+
+        IERC20(pair).safeApprove(address(beVault), pairBalance);
     }
 
     function withdrawAllFromStrategy() private {
