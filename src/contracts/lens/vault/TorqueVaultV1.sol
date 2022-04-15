@@ -132,14 +132,13 @@ contract TorqueVaultV1 is
         returns (uint256[] memory amount)
     {
         uint256 _totalShares = totalSupply();
-        uint256[] memory _balance = new uint256[](tokenCount());
 
         amount = new uint256[](tokenCount());
         if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
-            uint256 bal = balance(tokenByIndex(i));
-            amount[i] = bal.mul(shares).div(_totalShares);
+            uint256 _balance = balance(tokenByIndex(i));
+            amount[i] = _balance.mul(shares).div(_totalShares);
         }
     }
 
@@ -160,7 +159,7 @@ contract TorqueVaultV1 is
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function balance(IERC20 token) public override returns (uint256 amount) {
+    function balance(IERC20 token) public view override returns (uint256 amount) {
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
