@@ -48,15 +48,26 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
-    function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) {}
+    function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
+        // **** Here we will take the given tokens, push them into LP pairs and ship it out
+    }
 
-    function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) {}
+    function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
+        // **** Here we will redeem the appropriate amount of tokens and do what must be done with them ?
+        // **** - This might have to be changed to just use the withdrawAll because it isnt going to necessarily work with this...
+    }
 
-    function APY() external returns (uint256 apy, uint256 decimals) {}
+    function APY() external view returns (uint256 apy, uint256 decimals) {
+        // **** Return the APY
+    }
 
-    function updateAPY(uint256 apy, uint256 decimals) external {}
+    function updateAPY(uint256 apy, uint256 decimals) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
+        // **** Update the APY
+    }
 
-    function balance(IERC20 token) external view onlySupportedToken(token) returns (uint256 amount) {}
+    function balance(IERC20 token) external view onlySupportedToken(token) returns (uint256 amount) {
+        // **** Needs to get the underlying LP amount and return the balance for each
+    }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
         super.inCaseTokensGetStuck(token, amount);
