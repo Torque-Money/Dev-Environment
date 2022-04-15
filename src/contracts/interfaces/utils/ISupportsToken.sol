@@ -20,6 +20,6 @@ interface ISupportsToken {
     function balance(IERC20 token) external view returns (uint256 amount);
 
     // Returns the available amount of a given asset the contract can use.
-    // Default falls back to the balance
+    // By default returns the balance.
     function available(IERC20 token) external view returns (uint256 amount);
 }
