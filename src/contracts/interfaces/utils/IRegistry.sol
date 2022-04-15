@@ -3,10 +3,12 @@ pragma solidity ^0.8.0;
 
 // Provides a contract with a registry for other addresses that can be iterated over.
 interface IRegistry {
-    // Add an entry to the registry. Cannot be a duplicate or else will revert.
+    // Add an entry to the registry.
+    // Reverts if entry is a duplicate.
     function add(address entry) external;
 
-    // Remove an entry from the registry. Must exist in registry otherwise will revert.
+    // Remove an entry from the registry.
+    // Reverts if the entry is not in the registry.
     function remove(address entry) external;
 
     // Check if an entry is a part of the registry.
