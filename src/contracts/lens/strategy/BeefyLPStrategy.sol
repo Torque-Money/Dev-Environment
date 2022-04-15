@@ -66,23 +66,26 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
 
         // Deposit into Beefy vault
-        address pair = uniFactory.getPair(address(token0), address(token1));
-        uint256 pairBalance = IERC20(pair).balanceOf(address(this));
+        IERC20 LPToken = beVault.want();
+        uint256 LPTokenBalance = LPToken.balanceOf(address(this));
 
-        IERC20(pair).safeApprove(address(beVault), pairBalance);
+        LPToken.safeApprove(address(beVault), LPTokenBalance);
+
+        beVault.deposit(LPTokenBalance);
     }
 
     function withdrawAllFromStrategy() private {
         // Withdraw from Beefy vault
+        beVault.withdrawAll();
 
         // Redeem LP tokens
         address token0 = address(tokenByIndex(0));
         address token1 = address(tokenByIndex(1));
 
-        address pair = uniFactory.getPair(token0, token1);
-        uint256 pairBalance = IERC20(pair).balanceOf(address(this));
+        IERC20 pair = IERC20(uniFactory.getPair(token0, token1));
+        uint256 pairBalance = pair.balanceOf(address(this));
 
-        IERC20(pair).safeApprove(address(uniFactory), pairBalance);
+        pair.safeApprove(address(uniFactory), pairBalance);
 
         uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
     }
