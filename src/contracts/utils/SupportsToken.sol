@@ -13,11 +13,17 @@ abstract contract SupportsToken is ISupportsToken, Initializable {
 
     EnumerableSet.AddressSet private tokenSet;
 
-    function __SupportsToken_init(IERC20[] memory token) internal onlyInitializing {
+    function __SupportsToken_init(IERC20[] memory token)
+        internal
+        onlyInitializing
+    {
         __SupportsToken_init_unchained(token);
     }
 
-    function __SupportsToken_init_unchained(IERC20[] memory token) internal onlyInitializing {
+    function __SupportsToken_init_unchained(IERC20[] memory token)
+        internal
+        onlyInitializing
+    {
         require(
             token.length > 0,
             "SupportsToken: Contract must support at least one token"
@@ -27,11 +33,26 @@ abstract contract SupportsToken is ISupportsToken, Initializable {
     }
 
     modifier onlySupportedToken(IERC20 token) {
-        require(isSupportedToken(token), "SupportsToken: Only supported tokens are allowed");
+        require(
+            isSupportedToken(token),
+            "SupportsToken: Only supported tokens are allowed"
+        );
         _;
     }
 
-    function isSupportedToken(IERC20 token) public view returns (bool supportedToken) {
+    modifier onlyTokenAmount(uint256[] memory amount) {
+        require(
+            amount.length == tokenCount(),
+            "SupportsToken: Token amount length must match support token count"
+        );
+        _;
+    }
+
+    function isSupportedToken(IERC20 token)
+        public
+        view
+        returns (bool supportedToken)
+    {
         return tokenSet.contains(address(token));
     }
 
@@ -40,7 +61,10 @@ abstract contract SupportsToken is ISupportsToken, Initializable {
     }
 
     function tokenByIndex(uint256 index) public view returns (IERC20 token) {
-        require(index < tokenCount(), "SupportsToken: Index must be less than count");
+        require(
+            index < tokenCount(),
+            "SupportsToken: Index must be less than count"
+        );
         return IERC20(tokenSet.at(index));
     }
 }

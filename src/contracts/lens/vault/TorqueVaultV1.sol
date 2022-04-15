@@ -66,6 +66,7 @@ contract TorqueVaultV1 is
         public
         view
         override
+        onlyTokenAmount(amount)
         returns (uint256 shares)
     {
         uint256 _totalShares = totalSupply();
@@ -98,6 +99,7 @@ contract TorqueVaultV1 is
     function deposit(uint256[] calldata amount)
         external
         override
+        onlyTokenAmount(amount)
         returns (uint256 shares)
     {
         shares = previewDeposit(amount);
