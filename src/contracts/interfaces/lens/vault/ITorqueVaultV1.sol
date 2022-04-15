@@ -34,4 +34,10 @@ interface ITorqueVaultV1 is IERC20Upgradeable {
 
     // Get the underlying balance of the specified token owned by the vault.
     function balance(IERC20 token) external returns (uint256 amount);
+
+    // Deposit all funds from the vault into the strategy.
+    function depositAllIntoStrategy() external;
+
+    // Withdraw all funds from the strategy into the vault.
+    function withdrawAllFromStrategy() external;
 }

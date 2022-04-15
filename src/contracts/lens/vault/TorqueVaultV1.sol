@@ -6,6 +6,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/
 import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
@@ -13,9 +14,16 @@ import {ITorqueVaultV1} from "../../interfaces/lens/vault/ITorqueVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITorqueVaultV1, ERC20Upgradeable, Emergency {
+contract TorqueVaultV1 is
+    Initializable,
+    AccessControlEnumerableUpgradeable,
+    ITorqueVaultV1,
+    ERC20Upgradeable,
+    Emergency
+{
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
+    using SafeERC20 for IERC20;
 
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
@@ -33,11 +41,17 @@ contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITor
 
         VAULT_CONTROLLER_ROLE = keccak256("VAULT_CONTROLLER_ROLE");
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
+        _grantRole(VAULT_CONTROLLER_ROLE, address(this));
 
-        for (uint256 i = 0; i < token.length; i++) tokenSet.add(address(token[i]));
+        for (uint256 i = 0; i < token.length; i++)
+            tokenSet.add(address(token[i]));
     }
 
-    function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
+    function setStrategy(IStrategy _strategy)
+        external
+        override
+        onlyRole(VAULT_CONTROLLER_ROLE)
+    {
         strategy = _strategy;
     }
 
@@ -45,36 +59,77 @@ contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITor
         return tokenSet.length();
     }
 
-    function tokenByIndex(uint256 index) public view override returns (IERC20 token) {
+    function tokenByIndex(uint256 index)
+        public
+        view
+        override
+        returns (IERC20 token)
+    {
         return IERC20(tokenSet.at(index));
     }
 
-    function previewDeposit(uint256[] calldata amount) external view override returns (uint256 shares) {
-    }
+    function previewDeposit(uint256[] calldata amount)
+        external
+        view
+        override
+        returns (uint256 shares)
+    {}
 
-    function deposit(uint256[] calldata amount) external override returns (uint256 shares) {}
+    function deposit(uint256[] calldata amount)
+        external
+        override
+        returns (uint256 shares)
+    {}
 
-    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
-        uint256 _totalSupply = totalSupply();
+    function previewRedeem(uint256 shares)
+        public
+        view
+        override
+        returns (uint256[] memory amount)
+    {
+        uint256 _totalShares = totalSupply();
         uint256[] memory _balance = new uint256[](tokenCount());
-    
+
         amount = new uint256[](tokenCount());
+        if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             uint256 _bal = balance(tokenByIndex(i));
-            amount[i] = _bal.mul(shares).div(_totalSupply);
+            amount[i] = _bal.mul(shares).div(_totalShares);
         }
     }
 
-    function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        // amount = previewRedeem(shares);
-        // _burn(_msgSender(), shares);
-        // **** We also should probably get the user their funds by withdrawing xD ****
+    function redeem(uint256 shares)
+        external
+        override
+        returns (uint256[] memory amount)
+    {
+        amount = previewRedeem(shares);
+
+        withdrawAllFromStrategy();
+        for (uint256 i = 0; i < amount.length; i++)
+            tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        depositAllIntoStrategy();
+
+        _burn(_msgSender(), shares);
     }
 
     function balance(IERC20 token) public override returns (uint256 amount) {}
 
-    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {
+    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {}
+
+    function withdrawAllFromStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
+        uint256[] memory amount = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++)
+            amount[i] = strategy.balance(tokenByIndex(i));
+        strategy.withdraw(amount);
+    }
+
+    function inCaseTokensGetStuck(IERC20 token, uint256 amount)
+        public
+        override
+        onlyRole(VAULT_ADMIN_ROLE)
+    {
         super.inCaseTokensGetStuck(token, amount);
     }
 }
