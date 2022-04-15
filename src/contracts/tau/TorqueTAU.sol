@@ -5,11 +5,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-contract TorqueTAU is
-    Initializable,
-    AccessControlUpgradeable,
-    ERC20Upgradeable
-{
+contract TorqueTAU is Initializable, AccessControlUpgradeable, ERC20Upgradeable {
     bytes32 public TOKEN_ADMIN_ROLE;
     bytes32 public TOKEN_MINTER_ROLE;
     bytes32 public TOKEN_BURNER_ROLE;
@@ -34,18 +30,12 @@ contract TorqueTAU is
     }
 
     // Mint tokens to a user
-    function mint(address account, uint256 amount)
-        external
-        onlyRole(TOKEN_MINTER_ROLE)
-    {
+    function mint(address account, uint256 amount) external onlyRole(TOKEN_MINTER_ROLE) {
         _mint(account, amount);
     }
 
     // Burn tokens from a user
-    function burn(address account, uint256 amount)
-        external
-        onlyRole(TOKEN_BURNER_ROLE)
-    {
+    function burn(address account, uint256 amount) external onlyRole(TOKEN_BURNER_ROLE) {
         _burn(account, amount);
     }
 }

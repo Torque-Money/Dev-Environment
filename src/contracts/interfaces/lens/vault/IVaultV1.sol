@@ -14,29 +14,19 @@ interface IVaultV1 is ISupportsToken, IERC20Upgradeable {
     function setStrategy(IStrategy strategy) external;
 
     // Previews the amount of shares the sender will receive for depositing the given tokens.
-    function previewDeposit(uint256[] calldata amount)
-        external
-        view
-        returns (uint256 shares);
+    function previewDeposit(uint256[] calldata amount) external view returns (uint256 shares);
 
     // Deposits senders funds in exchange for shares.
     // It is important that the tokens supported match the correct ratios or else additional funds deposited will be lost.
     // Reverts if sender does not have appropriate funds or has not allocated allowance.
-    function deposit(uint256[] calldata amount)
-        external
-        returns (uint256 shares);
+    function deposit(uint256[] calldata amount) external returns (uint256 shares);
 
     // Previews the amount of tokens a  for redeeming a given amount of shares.
-    function previewRedeem(uint256 shares)
-        external
-        view
-        returns (uint256[] calldata amount);
+    function previewRedeem(uint256 shares) external view returns (uint256[] calldata amount);
 
     // Redeem shares from the sender for an underlying amount of tokens
     // Reverts if sender does not have appropriate shares.
-    function redeem(uint256 shares)
-        external
-        returns (uint256[] calldata amount);
+    function redeem(uint256 shares) external returns (uint256[] calldata amount);
 
     // Deposit all funds from the vault into the strategy.
     function depositAllIntoStrategy() external;

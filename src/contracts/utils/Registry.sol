@@ -33,20 +33,12 @@ contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
     }
 
     function remove(address entry) external override {
-        require(
-            _set.remove(entry),
-            "Registry: Cannot remove element from registry"
-        );
+        require(_set.remove(entry), "Registry: Cannot remove element from registry");
 
         emit Remove(msg.sender, entry);
     }
 
-    function isEntry(address entry)
-        external
-        view
-        override
-        returns (bool _entry)
-    {
+    function isEntry(address entry) external view override returns (bool _entry) {
         return _set.contains(entry);
     }
 
@@ -54,12 +46,7 @@ contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
         return _set.length();
     }
 
-    function entryByIndex(uint256 index)
-        external
-        view
-        override
-        returns (address entry)
-    {
+    function entryByIndex(uint256 index) external view override returns (address entry) {
         return _set.at(index);
     }
 }
