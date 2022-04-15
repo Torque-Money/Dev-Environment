@@ -7,33 +7,33 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
+import {SupportsToken} from "../../utils/SupportsToken.sol";
 
 contract TorqueVaultV1 is
     Initializable,
     AccessControlUpgradeable,
     IVaultV1,
     ERC20Upgradeable,
+    SupportsToken,
     Emergency
 {
     using SafeMath for uint256;
-    using EnumerableSet for EnumerableSet.AddressSet;
     using SafeERC20 for IERC20;
 
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
 
     IStrategy public strategy;
-    EnumerableSet.AddressSet private tokenSet;
 
     function initialize(IERC20[] memory token) external initializer {
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
+        __SupportsToken_init(token);
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
         _setRoleAdmin(VAULT_ADMIN_ROLE, VAULT_ADMIN_ROLE);
@@ -42,13 +42,6 @@ contract TorqueVaultV1 is
         VAULT_CONTROLLER_ROLE = keccak256("VAULT_CONTROLLER_ROLE");
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
         _grantRole(VAULT_CONTROLLER_ROLE, address(this));
-
-        require(
-            token.length > 0,
-            "TorqueVaultV1: Vault requires at least 1 token"
-        );
-        for (uint256 i = 0; i < token.length; i++)
-            tokenSet.add(address(token[i]));
     }
 
     function setStrategy(IStrategy _strategy)
@@ -57,20 +50,6 @@ contract TorqueVaultV1 is
         onlyRole(VAULT_CONTROLLER_ROLE)
     {
         strategy = _strategy;
-    }
-
-    function tokenCount() public view override returns (uint256 count) {
-        return tokenSet.length();
-    }
-
-    function tokenByIndex(uint256 index)
-        public
-        view
-        override
-        returns (IERC20 token)
-    {
-        require(index < tokenCount(), "TorqueVaultV1: Index must be less than count");
-        return IERC20(tokenSet.at(index));
     }
 
     function _sharesFromAmount(

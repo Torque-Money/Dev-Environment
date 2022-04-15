@@ -6,18 +6,12 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {IStrategy} from "../strategy/IStrategy.sol";
+import {ISupportsToken} from "../../utils/ISupportsToken.sol";
 
 // A multi-token vault that tracks each users share with its own ERC20 interface. Manages deposited funds using a strategy to earn rewards.
-interface IVaultV1 is IERC20Upgradeable {
+interface IVaultV1 is IERC20Upgradeable, ISupportsToken {
     // Set the strategy for the vault to use.
     function setStrategy(IStrategy strategy) external;
-
-    // Returns the number of tokens the vault supports
-    function tokenCount() external view returns (uint256 count);
-
-    // Gets a token supported by the vault by its index.
-    // Reverts if the index is not less than the token count.
-    function tokenByIndex(uint256 index) external view returns (IERC20 token);
 
     // Previews the amount of shares the sender will receive for depositing the given tokens.
     function previewDeposit(uint256[] calldata amount)
