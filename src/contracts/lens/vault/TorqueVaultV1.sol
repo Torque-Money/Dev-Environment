@@ -98,7 +98,7 @@ contract TorqueVaultV1 is
         if (_totalShares == 0) {
             // If there are no shares minted yet, choose the smallest
             // deposit amount as the initial share count
-            
+
             shares = amount[0];
 
             for (uint256 i = 1; i < tokenCount(); i++) {
