@@ -11,8 +11,9 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
-import {Emergency} from "../../utils/Emergency.sol";
+import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
+import {Emergency} from "../../utils/Emergency.sol";
 
 contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, Emergency {
     using SafeMath for uint256;
@@ -106,7 +107,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function balance(IERC20 token) public view override onlySupportedToken(token) returns (uint256 amount) {
+    function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
