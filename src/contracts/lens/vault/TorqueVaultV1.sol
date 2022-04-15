@@ -114,14 +114,26 @@ contract TorqueVaultV1 is
         _burn(_msgSender(), shares);
     }
 
-    function balance(IERC20 token) public override returns (uint256 amount) {}
+    function balance(IERC20 token) public override returns (uint256 amount) {
+        return token.balanceOf(address(this)).add(strategy.balance(token));
+    }
 
-    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {}
+    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
+        uint256[] memory amount = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+            amount[i] = token.balanceOf(address(this));
+            token.safeApprove(address(strategy), amount[i]);
+        }
+
+        strategy.deposit(amount);
+    }
 
     function withdrawAllFromStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++)
             amount[i] = strategy.balance(tokenByIndex(i));
+
         strategy.withdraw(amount);
     }
 
