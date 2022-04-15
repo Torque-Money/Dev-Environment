@@ -109,6 +109,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         // **** Needs to get the underlying LP amount and return the balance for each
+        // **** I need to be able to calculate this based off of the current LP deposit and the current share price from the BE token ???
+        // **** beVault requires me to get the price per share (with its own non-diclosed decimal) and convert it myself???
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
