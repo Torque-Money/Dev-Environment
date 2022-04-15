@@ -10,6 +10,7 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
+import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
@@ -48,6 +49,10 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
+    function depositAllIntoStrategy() private {}
+
+    function withdrawAllFromStrategy() private {}
+
     function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         // **** Here we will take the given tokens, push them into LP pairs and ship it out
     }
@@ -65,7 +70,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         // **** Update the APY
     }
 
-    function balance(IERC20 token) external view onlySupportedToken(token) returns (uint256 amount) {
+    function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         // **** Needs to get the underlying LP amount and return the balance for each
     }
 
