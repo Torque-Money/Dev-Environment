@@ -57,11 +57,7 @@ contract TorqueVaultV1 is
         uint256 amount,
         uint256 totalShares
     ) private view returns (uint256 shares) {
-        // Helper for calculating the shares owed for a
-        // given deposited amount of assets at the correct ratio
-
         uint256 _balance = balance(token);
-
         if (_balance == 0) shares = amount;
         else shares = amount.mul(totalShares).div(_balance);
     }
@@ -72,15 +68,9 @@ contract TorqueVaultV1 is
         override
         returns (uint256 shares)
     {
-        // Get the minimum amount of shares
-        // across all deposited amounts
-
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
-            // If there are no shares minted yet, choose the smallest
-            // deposit amount as the initial share count
-
             shares = amount[0];
 
             for (uint256 i = 1; i < tokenCount(); i++) {
@@ -110,9 +100,6 @@ contract TorqueVaultV1 is
         override
         returns (uint256 shares)
     {
-        // Get the owed shares, transfer funds to the vault,
-        // deposit funds into the strategy, and mint the owed shares
-
         shares = previewDeposit(amount);
 
         for (uint256 i = 0; i < tokenCount(); i++)
@@ -134,11 +121,10 @@ contract TorqueVaultV1 is
         override
         returns (uint256[] memory amount)
     {
-        // Calculate the percentage of each asset the shares account for
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
-        if (_totalShares == 0) return amount; // Initialized with zeroes
+        if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             uint256 _balance = balance(tokenByIndex(i));
@@ -151,10 +137,6 @@ contract TorqueVaultV1 is
         override
         returns (uint256[] memory amount)
     {
-        // Calculate the owed assets, withdraw from the strategy,
-        // transfer assets to the caller, deposit assets back into the strategy,
-        // burn shares
-
         amount = previewRedeem(shares);
 
         withdrawAllFromStrategy();
@@ -171,6 +153,7 @@ contract TorqueVaultV1 is
         public
         view
         override
+        onlySupportedToken(token)
         returns (uint256 amount)
     {
         return token.balanceOf(address(this)).add(strategy.balance(token));
@@ -181,9 +164,6 @@ contract TorqueVaultV1 is
         override
         onlyRole(VAULT_CONTROLLER_ROLE)
     {
-        // Approve the strategy to use all vault assets
-        // and then deposit the full amounts into the strategy
-
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
@@ -199,9 +179,6 @@ contract TorqueVaultV1 is
         override
         onlyRole(VAULT_CONTROLLER_ROLE)
     {
-        // Get the balance of each vault asset in the
-        // strategy and withdraw them into the vault
-
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++)
             amount[i] = strategy.balance(tokenByIndex(i));
