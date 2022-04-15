@@ -8,4 +8,6 @@ interface IStrategyController {
 
     // Update the strategy.
     function update() external;
+
+    event Update(address indexed caller);
 }

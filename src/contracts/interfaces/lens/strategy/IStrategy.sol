@@ -15,4 +15,7 @@ interface IStrategy {
 
     // Get the balance of funds for a given token in the strategy.
     function balance(IERC20 token) external view returns (uint256 amount);
+
+    event Deposit(address indexed caller, uint256[] amount);
+    event Withdraw(address indexed caller, uint256[] amount);
 }

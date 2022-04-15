@@ -21,4 +21,6 @@ interface ITWAAPR is IRegistry {
     // Get the APR for a given strategy.
     // Reverts if strategy is invalid.
     function consult(IStrategy strategy) external view returns (uint256 apr);
+
+    event Update(address indexed caller);
 }

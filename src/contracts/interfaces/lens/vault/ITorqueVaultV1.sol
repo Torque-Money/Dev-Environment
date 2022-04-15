@@ -40,4 +40,7 @@ interface ITorqueVaultV1 is IERC20Upgradeable {
 
     // Withdraw all funds from the strategy into the vault.
     function withdrawAllFromStrategy() external;
+
+    event Deposit(address indexed caller, uint256[] amount, uint256 shares);
+    event Redeem(address indexed caller, uint256 shares, uint256[] amount);
 }
