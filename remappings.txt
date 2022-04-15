@@ -1,5 +1,5 @@
 ds-test/=lib/ds-test/src/
 @openzeppelin/=node_modules/@openzeppelin/
 @contracts/=src/contracts/
-@beefy/=lib/beefy-contracts/contracts/
+@beefy/=lib/beefy-contracts/
 @uniswap/=node_modules/@uniswap/
