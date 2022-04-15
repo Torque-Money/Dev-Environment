@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 contract TorqueTAU is
     Initializable,
-    AccessControlEnumerableUpgradeable,
+    AccessControlUpgradeable,
     ERC20Upgradeable
 {
     bytes32 public TOKEN_ADMIN_ROLE;
@@ -16,7 +16,7 @@ contract TorqueTAU is
 
     function initialize(uint256 initialSupply_) external initializer {
         __ERC20_init("Torque TAU", "TAU");
-        __AccessControlEnumerable_init();
+        __AccessControl_init();
 
         _mint(_msgSender(), initialSupply_);
 

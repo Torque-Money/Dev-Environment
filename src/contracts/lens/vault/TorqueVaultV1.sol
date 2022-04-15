@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
-import {AccessControlEnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -16,7 +16,7 @@ import {Emergency} from "../../utils/Emergency.sol";
 
 contract TorqueVaultV1 is
     Initializable,
-    AccessControlEnumerableUpgradeable,
+    AccessControlUpgradeable,
     IVaultV1,
     ERC20Upgradeable,
     Emergency
@@ -33,7 +33,7 @@ contract TorqueVaultV1 is
 
     function initialize(IERC20[] memory token) external initializer {
         __ERC20_init("Torque Vault V1", "TVV1");
-        __AccessControlEnumerable_init();
+        __AccessControl_init();
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
         _setRoleAdmin(VAULT_ADMIN_ROLE, VAULT_ADMIN_ROLE);
