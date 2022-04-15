@@ -91,12 +91,17 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        // **** Here we will take the given tokens, push them into LP pairs and ship it out
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+
+        depositAllIntoStrategy();
     }
 
     function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        // **** Here we will redeem the appropriate amount of tokens and do what must be done with them ?
-        // **** - This might have to be changed to just use the withdrawAll because it isnt going to necessarily work with this...
+        withdrawAllFromStrategy();
+
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+
+        depositAllIntoStrategy();
     }
 
     function APY() external view returns (uint256 apy, uint256 decimals) {
