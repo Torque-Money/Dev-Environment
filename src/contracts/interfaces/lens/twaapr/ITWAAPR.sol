@@ -5,7 +5,7 @@ import {IRegistry} from "../../utils/IRegistry.sol";
 
 import {IStrategy} from "../strategy/IStrategy.sol";
 
-// Provides an interface for a contract to support the TWAAPR (time weighted average APR)
+// Responsible for collecting and reporting the TWAAPR (time weighted average APR) for the different strategies.
 interface ITWAAPR is IRegistry {
     // Check if the oracle can be updated
     function isUpdateable() external view returns (bool updateable);

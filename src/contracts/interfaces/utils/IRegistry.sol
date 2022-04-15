@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-// Provides an interface for a contract to hold a registry for other addresses that can be iterated over.
+// Provides a contract with a registry for other addresses that can be iterated over.
 interface IRegistry {
     // Add an entry to the registry. Cannot be a duplicate or else will revert.
     function add(address entry) external;
