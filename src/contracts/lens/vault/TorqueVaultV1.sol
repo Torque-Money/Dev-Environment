@@ -14,14 +14,7 @@ import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
 
-contract TorqueVaultV1 is
-    Initializable,
-    AccessControlUpgradeable,
-    ERC20Upgradeable,
-    SupportsToken,
-    IVaultV1,
-    Emergency
-{
+contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, Emergency {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -44,11 +37,7 @@ contract TorqueVaultV1 is
         _grantRole(VAULT_CONTROLLER_ROLE, address(this));
     }
 
-    function setStrategy(IStrategy _strategy)
-        external
-        override
-        onlyRole(VAULT_CONTROLLER_ROLE)
-    {
+    function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
         strategy = _strategy;
     }
 
@@ -62,13 +51,7 @@ contract TorqueVaultV1 is
         else shares = amount.mul(totalShares).div(_balance);
     }
 
-    function previewDeposit(uint256[] calldata amount)
-        public
-        view
-        override
-        onlyTokenAmount(amount)
-        returns (uint256 shares)
-    {
+    function previewDeposit(uint256[] calldata amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
@@ -79,37 +62,19 @@ contract TorqueVaultV1 is
                 if (_amount < shares) shares = _amount;
             }
         } else {
-            shares = _sharesFromAmount(
-                tokenByIndex(0),
-                amount[0],
-                _totalShares
-            );
+            shares = _sharesFromAmount(tokenByIndex(0), amount[0], _totalShares);
 
             for (uint256 i = 1; i < tokenCount(); i++) {
-                uint256 _shares = _sharesFromAmount(
-                    tokenByIndex(i),
-                    amount[i],
-                    _totalShares
-                );
+                uint256 _shares = _sharesFromAmount(tokenByIndex(i), amount[i], _totalShares);
                 if (_shares < shares) shares = _shares;
             }
         }
     }
 
-    function deposit(uint256[] calldata amount)
-        external
-        override
-        onlyTokenAmount(amount)
-        returns (uint256 shares)
-    {
+    function deposit(uint256[] calldata amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
         shares = previewDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++)
-            tokenByIndex(i).safeTransferFrom(
-                _msgSender(),
-                address(this),
-                amount[i]
-            );
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
         depositAllIntoStrategy();
 
         _mint(_msgSender(), shares);
@@ -117,12 +82,7 @@ contract TorqueVaultV1 is
         emit Deposit(_msgSender(), amount, shares);
     }
 
-    function previewRedeem(uint256 shares)
-        public
-        view
-        override
-        returns (uint256[] memory amount)
-    {
+    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
@@ -134,16 +94,11 @@ contract TorqueVaultV1 is
         }
     }
 
-    function redeem(uint256 shares)
-        external
-        override
-        returns (uint256[] memory amount)
-    {
+    function redeem(uint256 shares) external override returns (uint256[] memory amount) {
         amount = previewRedeem(shares);
 
         withdrawAllFromStrategy();
-        for (uint256 i = 0; i < tokenCount(); i++)
-            tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
         depositAllIntoStrategy();
 
         _burn(_msgSender(), shares);
@@ -151,21 +106,11 @@ contract TorqueVaultV1 is
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function balance(IERC20 token)
-        public
-        view
-        override
-        onlySupportedToken(token)
-        returns (uint256 amount)
-    {
+    function balance(IERC20 token) public view override onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
-    function depositAllIntoStrategy()
-        public
-        override
-        onlyRole(VAULT_CONTROLLER_ROLE)
-    {
+    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
@@ -176,23 +121,14 @@ contract TorqueVaultV1 is
         strategy.deposit(amount);
     }
 
-    function withdrawAllFromStrategy()
-        public
-        override
-        onlyRole(VAULT_CONTROLLER_ROLE)
-    {
+    function withdrawAllFromStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++)
-            amount[i] = strategy.balance(tokenByIndex(i));
+        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = strategy.balance(tokenByIndex(i));
 
         strategy.withdraw(amount);
     }
 
-    function inCaseTokensGetStuck(IERC20 token, uint256 amount)
-        public
-        override
-        onlyRole(VAULT_ADMIN_ROLE)
-    {
+    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {
         super.inCaseTokensGetStuck(token, amount);
     }
 }
