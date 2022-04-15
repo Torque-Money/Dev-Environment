@@ -73,7 +73,9 @@ contract TorqueVaultV1 is
         view
         override
         returns (uint256 shares)
-    {}
+    {
+        uint256 _totalShares = totalSupply();
+    }
 
     function deposit(uint256[] calldata amount)
         external
