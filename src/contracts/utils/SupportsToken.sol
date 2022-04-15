@@ -53,4 +53,10 @@ abstract contract SupportsToken is Initializable, ISupportsToken {
         require(index < tokenCount(), "SupportsToken: Index must be less than count");
         return IERC20(tokenSet.at(index));
     }
+
+    function balance(IERC20 token) public view virtual override returns (uint256 amount);
+
+    function available(IERC20 token) external view override returns (uint256 amount) {
+        return balance(token);
+    }
 }
