@@ -15,21 +15,23 @@ interface IVaultV1 is IERC20Upgradeable {
     // Returns the number of tokens the vault supports
     function tokenCount() external view returns (uint256 count);
 
-    // Gets a token supported by the vault by its index. Must be less than token count or else will revert
+    // Gets a token supported by the vault by its index.
+    // Reverts if the index is not less than the token count.
     function tokenByIndex(uint256 index) external view returns (IERC20 token);
 
-    // Previews the amount of shares for depositing a given amount of tokens into the vault from the sender.
+    // Previews the amount of shares the sender will receive for depositing the given tokens.
     function previewDeposit(uint256[] calldata amount) external view returns (uint256 shares);
 
-    // Deposit vault supported tokens from the sender into the vault for shares.
-    // It is important that the tokens supported match the correct ratios or else additional funds deposited will be lost.
-    // Reverts if funds are not available.
+    // Deposits senders funds in exchange for shares.
+    // !! It is important that the tokens supported match the correct ratios or else additional funds deposited will be lost. !!
+    // Reverts if sender does not have appropriate funds or has not allocated allowance.
     function deposit(uint256[] calldata amount) external returns (uint256 shares);
 
-    // Previews the amount of tokens for redeeming a given amount of shares
+    // Previews the amount of tokens a  for redeeming a given amount of shares.
     function previewRedeem(uint256 shares) external view returns (uint256[] calldata amount);
 
     // Redeem shares from the sender for an underlying amount of tokens
+    // Reverts if sender does not have appropriate shares.
     function redeem(uint256 shares) external returns (uint256[] calldata amount);
 
     // Get the underlying balance of the specified token owned by the vault.
