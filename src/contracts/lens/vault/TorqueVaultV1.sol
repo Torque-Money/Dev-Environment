@@ -74,7 +74,11 @@ contract TorqueVaultV1 is
         return IERC20(tokenSet.at(index));
     }
 
-    function _sharesFromAmount(IERC20 token, uint256 amount, uint256 totalShares) private view returns (uint256 shares) {
+    function _sharesFromAmount(
+        IERC20 token,
+        uint256 amount,
+        uint256 totalShares
+    ) private view returns (uint256 shares) {
         // Helper for calculating the shares owed for a
         // given deposited amount of assets at the correct ratio
 
@@ -106,10 +110,18 @@ contract TorqueVaultV1 is
                 if (_amount < shares) shares = _amount;
             }
         } else {
-            shares = _sharesFromAmount(tokenByIndex(0), amount[0], _totalShares);
+            shares = _sharesFromAmount(
+                tokenByIndex(0),
+                amount[0],
+                _totalShares
+            );
 
             for (uint256 i = 1; i < tokenCount(); i++) {
-                uint256 _shares = _sharesFromAmount(tokenByIndex(i), amount[i], _totalShares);
+                uint256 _shares = _sharesFromAmount(
+                    tokenByIndex(i),
+                    amount[i],
+                    _totalShares
+                );
                 if (_shares < shares) shares = _shares;
             }
         }
