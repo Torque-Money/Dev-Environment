@@ -89,7 +89,9 @@ contract TorqueVaultV1 is
                 uint256 _amount = balance(tokenByIndex(i));
                 if (_amount < shares) shares = _amount;
             }
-        } else {}
+        } else {
+            // **** I need to come up with some solution for if there are no tokens in the pool at all - WHAT THEN ?
+        }
 
         // // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
         // FractionMath.Fraction memory minDeposit = FractionMath.create(
