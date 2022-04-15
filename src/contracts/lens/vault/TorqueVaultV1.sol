@@ -83,23 +83,26 @@ contract TorqueVaultV1 is
     {
         uint256 _totalShares = totalSupply();
         if (_totalShares == 0) {
+            shares = balance(tokenByIndex(0));
 
+            for (uint256 i = 1; i < tokenCount(); i++) {
+                uint256 _amount = balance(tokenByIndex(i));
+                if (_amount < shares) shares = _amount;
+            }
         } else {}
 
-        // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
-        FractionMath.Fraction memory minDeposit = FractionMath.create(
-            amount[0],
-            balance(tokenByIndex(0))
-        );
-        for (uint256 i = 1; i < tokenCount(); i++) {
-            FractionMath.Fraction memory _deposit = FractionMath.create(
-                amount[i],
-                balance(tokenByIndex(i))
-            );
-            if (_deposit.lt(minDeposit)) minDeposit = _deposit;
-        }
-
-
+        // // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
+        // FractionMath.Fraction memory minDeposit = FractionMath.create(
+        //     amount[0],
+        //     balance(tokenByIndex(0))
+        // );
+        // for (uint256 i = 1; i < tokenCount(); i++) {
+        //     FractionMath.Fraction memory _deposit = FractionMath.create(
+        //         amount[i],
+        //         balance(tokenByIndex(i))
+        //     );
+        //     if (_deposit.lt(minDeposit)) minDeposit = _deposit;
+        // }
     }
 
     function deposit(uint256[] calldata amount)
