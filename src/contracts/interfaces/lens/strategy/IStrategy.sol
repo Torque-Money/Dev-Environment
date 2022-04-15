@@ -6,6 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {ISupportsToken} from "../../utils/ISupportsToken.sol";
 
 // A strategy that integrates with a vault to earn rewards on deposited tokens.
+// Each strategy should only belong to one vault / controller at once otherwise vault funds distributed to wrong vaults.
 interface IStrategy is ISupportsToken {
     // Deposit a given amount of funds into the strategy.
     // Reverts if sender does not have appropriate funds or has not allocated allowance.
