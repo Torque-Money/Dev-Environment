@@ -15,9 +15,11 @@ interface IStrategy is ISupportsToken {
     // Reverts if there are not enough funds available in the contract.
     function withdraw(uint256[] calldata amount) external;
 
-    // Get the current APY for the strategy.
+    // Get the current APY and decimals for the strategy.
     function APY() external returns (uint256 apy, uint256 decimals);
 
     // Update the current APY for the strategy.
+    // Specifies the decimals used in the input APY.
+    // Calling APY does not necessarily mean it will be the new value submitted here.
     function updateAPY(uint256 apy, uint256 decimals) external;
 }
