@@ -10,7 +10,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import {ITorqueVaultV1} from "../../interfaces/lens/vault/ITorqueVaultV1.sol";
+import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
@@ -19,7 +19,7 @@ import {FractionMath} from "../../lib/FractionMath.sol";
 contract TorqueVaultV1 is
     Initializable,
     AccessControlEnumerableUpgradeable,
-    ITorqueVaultV1,
+    IVaultV1,
     ERC20Upgradeable,
     Emergency
 {
@@ -82,6 +82,9 @@ contract TorqueVaultV1 is
         returns (uint256 shares)
     {
         uint256 _totalShares = totalSupply();
+        if (_totalShares == 0) {
+
+        } else {}
 
         // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
         FractionMath.Fraction memory minDeposit = FractionMath.create(

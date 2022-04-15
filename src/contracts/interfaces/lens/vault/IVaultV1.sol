@@ -7,8 +7,8 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {IStrategy} from "../strategy/IStrategy.sol";
 
-// Provides an interface for a contract to support Torque vault V1.
-interface ITorqueVaultV1 is IERC20Upgradeable {
+// Provides an interface for a contract to support vault V1.
+interface IVaultV1 is IERC20Upgradeable {
     // Set the strategy for the vault to use.
     function setStrategy(IStrategy strategy) external;
 
