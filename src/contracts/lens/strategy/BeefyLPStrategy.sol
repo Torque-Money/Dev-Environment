@@ -47,4 +47,18 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uniRouter = _uniRouter;
         beVault = _beVault;
     }
+
+    function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) {}
+
+    function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) {}
+
+    function APY() external returns (uint256 apy, uint256 decimals) {}
+
+    function updateAPY(uint256 apy, uint256 decimals) external {}
+
+    function balance(IERC20 token) external view onlySupportedToken(token) returns (uint256 amount) {}
+
+    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
+        super.inCaseTokensGetStuck(token, amount);
+    }
 }
