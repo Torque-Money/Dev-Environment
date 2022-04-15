@@ -35,7 +35,6 @@ contract TorqueVaultV1 is
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
 
-        // Setup roles
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
         _setRoleAdmin(VAULT_ADMIN_ROLE, VAULT_ADMIN_ROLE);
         _grantRole(VAULT_ADMIN_ROLE, _msgSender());
@@ -44,7 +43,6 @@ contract TorqueVaultV1 is
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
         _grantRole(VAULT_CONTROLLER_ROLE, address(this));
 
-        // Set the tokens the vault will hold
         require(
             token.length > 0,
             "TorqueVaultV1: Vault requires at least 1 token"
