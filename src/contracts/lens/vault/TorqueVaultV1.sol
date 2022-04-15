@@ -75,6 +75,12 @@ contract TorqueVaultV1 is
         returns (uint256 shares)
     {
         uint256 _totalShares = totalSupply();
+
+        bool minFlagged = false;
+        uint256 minDepositIndex = 0;
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            
+        }
     }
 
     function deposit(uint256[] calldata amount)
