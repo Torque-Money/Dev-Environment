@@ -82,6 +82,9 @@ contract TorqueVaultV1 is
         returns (uint256 shares)
     {
         uint256 _totalShares = totalSupply();
+        
+        // **** I also need to check if any of the total assets have 0 in them ???
+
         if (_totalShares == 0) {
             shares = balance(tokenByIndex(0));
 
