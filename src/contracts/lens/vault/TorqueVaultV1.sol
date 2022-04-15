@@ -112,6 +112,8 @@ contract TorqueVaultV1 is
         depositAllIntoStrategy();
 
         _burn(_msgSender(), shares);
+
+        emit Redeem(_msgSender(), shares, amount);
     }
 
     function balance(IERC20 token) public override returns (uint256 amount) {
