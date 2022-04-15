@@ -6,7 +6,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 // Used for checking what tokens a contract supports and in what order.
 interface ISupportsToken {
     // Returns if a token is supported by the contract.
-    function isSupportedToken(address token) external returns (bool supportedToken);
+    function isSupportedToken(IERC20 token) external view returns (bool supportedToken);
 
     // Returns the number of tokens the contract supports.
     function tokenCount() external view returns (uint256 count);
@@ -17,5 +17,5 @@ interface ISupportsToken {
 
     // Returns the amount of the given asset owned by the contract.
     // Reverts if the token is not supported.
-    function balance(IERC20 token) external returns (uint256 amount);
+    function balance(IERC20 token) external view returns (uint256 amount);
 }

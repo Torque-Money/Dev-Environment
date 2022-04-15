@@ -21,7 +21,6 @@ contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
     }
 
     function __Registry_init_unchained() internal onlyInitializing {
-        // Setup admin role
         REGISTRY_ADMIN_ROLE = keccak256("REGISTRY_ADMIN_ROLE");
         _setRoleAdmin(REGISTRY_ADMIN_ROLE, REGISTRY_ADMIN_ROLE);
         _grantRole(REGISTRY_ADMIN_ROLE, _msgSender());
