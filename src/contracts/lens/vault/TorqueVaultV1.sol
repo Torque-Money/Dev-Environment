@@ -14,6 +14,8 @@ import {ITorqueVaultV1} from "../../interfaces/lens/vault/ITorqueVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
+import {FractionMath} from "../../lib/FractionMath.sol";
+
 contract TorqueVaultV1 is
     Initializable,
     AccessControlEnumerableUpgradeable,
@@ -24,6 +26,7 @@ contract TorqueVaultV1 is
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
     using SafeERC20 for IERC20;
+    using FractionMath for FractionMath.Fraction;
 
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
@@ -43,6 +46,10 @@ contract TorqueVaultV1 is
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
         _grantRole(VAULT_CONTROLLER_ROLE, address(this));
 
+        require(
+            token.length > 0,
+            "TorqueVaultV1: Vault requires at least 1 token"
+        );
         for (uint256 i = 0; i < token.length; i++)
             tokenSet.add(address(token[i]));
     }
@@ -76,11 +83,20 @@ contract TorqueVaultV1 is
     {
         uint256 _totalShares = totalSupply();
 
-        bool minFlagged = false;
-        uint256 minDepositIndex = 0;
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            
+        // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
+        FractionMath.Fraction memory minDeposit = FractionMath.create(
+            amount[0],
+            balance(tokenByIndex(0))
+        );
+        for (uint256 i = 1; i < tokenCount(); i++) {
+            FractionMath.Fraction memory _deposit = FractionMath.create(
+                amount[i],
+                balance(tokenByIndex(i))
+            );
+            if (_deposit.lt(minDeposit)) minDeposit = _deposit;
         }
+
+
     }
 
     function deposit(uint256[] calldata amount)
@@ -128,7 +144,11 @@ contract TorqueVaultV1 is
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
-    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
+    function depositAllIntoStrategy()
+        public
+        override
+        onlyRole(VAULT_CONTROLLER_ROLE)
+    {
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
@@ -139,7 +159,11 @@ contract TorqueVaultV1 is
         strategy.deposit(amount);
     }
 
-    function withdrawAllFromStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
+    function withdrawAllFromStrategy()
+        public
+        override
+        onlyRole(VAULT_CONTROLLER_ROLE)
+    {
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++)
             amount[i] = strategy.balance(tokenByIndex(i));
