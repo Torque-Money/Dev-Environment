@@ -74,41 +74,43 @@ contract TorqueVaultV1 is
         return IERC20(tokenSet.at(index));
     }
 
+    function _sharesFromAmount(IERC20 token, uint256 amount, uint256 totalShares) private view returns (uint256 shares) {
+        // Helper for calculating the shares owed for a
+        // given deposited amount of assets at the correct ratio
+
+        uint256 _balance = balance(token);
+
+        if (_balance == 0) shares = amount;
+        else shares = amount.mul(totalShares).div(_balance);
+    }
+
     function previewDeposit(uint256[] calldata amount)
         public
         view
         override
         returns (uint256 shares)
     {
+        // Get the minimum amount of shares
+        // across all deposited amounts
+
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
             // If there are no shares minted yet, choose the smallest
             // deposit amount as the initial share count
-            shares = balance(tokenByIndex(0));
+            
+            shares = amount[0];
 
             for (uint256 i = 1; i < tokenCount(); i++) {
-                uint256 _amount = balance(tokenByIndex(i));
-                // **** So now what happens if the amount is 0 too ? We would have to replace with the amount again - maybe these two are not seperate and need merging ???
+                uint256 _amount = amount[i];
                 if (_amount < shares) shares = _amount;
             }
         } else {
-            uint256 _balance = balance(tokenByIndex(0));
-
-            // If there is no available funds for a token then set
-            // the balance as the deposit amount, otherwise set it as the correct ratio
-            if (_balance == 0) shares = amount[0];
-            else shares = (amount[0] * _totalShares) / _balance;
+            shares = _sharesFromAmount(tokenByIndex(0), amount[0], _totalShares);
 
             for (uint256 i = 1; i < tokenCount(); i++) {
-                uint256 _amount;
-
-                _balance = balance(tokenByIndex(i));
-                if (_balance == 0) _amount = amount[i];
-                else _amount = (amount[i] * _totalShares) / _balance;
-
-                // Select the smallest share count
-                if (_amount < shares) shares = _amount;
+                uint256 _shares = _sharesFromAmount(tokenByIndex(i), amount[i], _totalShares);
+                if (_shares < shares) shares = _shares;
             }
         }
     }
