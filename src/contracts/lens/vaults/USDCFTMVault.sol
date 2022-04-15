@@ -67,8 +67,9 @@ contract USDCFTMVault is Initializable, AccessControlEnumerableUpgradeable, ITor
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        amount = previewRedeem(shares);
-        _burn(_msgSender(), shares);
+        // amount = previewRedeem(shares);
+        // _burn(_msgSender(), shares);
+        // **** We also should probably get the user their funds by withdrawing xD ****
     }
 
     function balance(IERC20 token) public override returns (uint256 amount) {}
