@@ -14,8 +14,6 @@ import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-import {FractionMath} from "../../lib/FractionMath.sol";
-
 contract TorqueVaultV1 is
     Initializable,
     AccessControlEnumerableUpgradeable,
@@ -26,7 +24,6 @@ contract TorqueVaultV1 is
     using SafeMath for uint256;
     using EnumerableSet for EnumerableSet.AddressSet;
     using SafeERC20 for IERC20;
-    using FractionMath for FractionMath.Fraction;
 
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
