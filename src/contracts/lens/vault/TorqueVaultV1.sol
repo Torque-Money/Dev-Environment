@@ -76,14 +76,12 @@ contract TorqueVaultV1 is
     }
 
     function previewDeposit(uint256[] calldata amount)
-        external
+        public
         view
         override
         returns (uint256 shares)
     {
         uint256 _totalShares = totalSupply();
-        
-        // **** I also need to check if any of the total assets have 0 in them ???
 
         if (_totalShares == 0) {
             shares = balance(tokenByIndex(0));
@@ -93,28 +91,37 @@ contract TorqueVaultV1 is
                 if (_amount < shares) shares = _amount;
             }
         } else {
-            // **** I need to come up with some solution for if there are no tokens in the pool at all - WHAT THEN ?
-        }
+            uint256 _balance = balance(tokenByIndex(0));
 
-        // // **** This does not really consider the cases where the demoniator is 0... - what will we do in this case ?
-        // FractionMath.Fraction memory minDeposit = FractionMath.create(
-        //     amount[0],
-        //     balance(tokenByIndex(0))
-        // );
-        // for (uint256 i = 1; i < tokenCount(); i++) {
-        //     FractionMath.Fraction memory _deposit = FractionMath.create(
-        //         amount[i],
-        //         balance(tokenByIndex(i))
-        //     );
-        //     if (_deposit.lt(minDeposit)) minDeposit = _deposit;
-        // }
+            if (_balance == 0) shares = amount[0];
+            else shares = (amount[0] * _totalShares) / _balance;
+
+            for (uint256 i = 1; i < tokenCount(); i++) {
+                uint256 _amount;
+
+                _balance = balance(tokenByIndex(i));
+                if (_balance == 0) _amount = amount[i];
+                else _amount = (amount[i] * _totalShares) / _balance;
+
+                if (_amount < shares) shares = _amount;
+            }
+        }
     }
 
     function deposit(uint256[] calldata amount)
         external
         override
         returns (uint256 shares)
-    {}
+    {
+        shares = previewDeposit(amount);
+
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+        depositAllIntoStrategy();
+
+        _mint(_msgSender(), shares);
+
+        emit Deposit(_msgSender(), amount, shares);
+    }
 
     function previewRedeem(uint256 shares)
         public
@@ -129,8 +136,8 @@ contract TorqueVaultV1 is
         if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
-            uint256 _bal = balance(tokenByIndex(i));
-            amount[i] = _bal.mul(shares).div(_totalShares);
+            uint256 bal = balance(tokenByIndex(i));
+            amount[i] = bal.mul(shares).div(_totalShares);
         }
     }
 
@@ -142,7 +149,7 @@ contract TorqueVaultV1 is
         amount = previewRedeem(shares);
 
         withdrawAllFromStrategy();
-        for (uint256 i = 0; i < amount.length; i++)
+        for (uint256 i = 0; i < tokenCount(); i++)
             tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
         depositAllIntoStrategy();
 
