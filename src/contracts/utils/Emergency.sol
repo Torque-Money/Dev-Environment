@@ -11,6 +11,7 @@ contract Emergency is IEmergency {
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount)
         public
+        virtual
         override
     {
         if (address(token) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)
