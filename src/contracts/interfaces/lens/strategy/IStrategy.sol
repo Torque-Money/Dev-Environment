@@ -19,5 +19,5 @@ interface IStrategy is ISupportsToken {
     function APY() external returns (uint256 apy, uint256 decimals);
 
     // Update the current APY for the strategy.
-    function updateAPY() external;
+    function updateAPY(uint256 apy, uint256 decimals) external;
 }
