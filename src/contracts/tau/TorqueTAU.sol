@@ -18,8 +18,10 @@ contract TorqueTAU is
         __ERC20_init("Torque TAU", "TAU");
         __AccessControl_init();
 
+        // Mint initial supply to initializer
         _mint(_msgSender(), initialSupply_);
 
+        // Setup roles
         TOKEN_ADMIN_ROLE = keccak256("TOKEN_ADMIN_ROLE");
         _setRoleAdmin(TOKEN_ADMIN_ROLE, TOKEN_ADMIN_ROLE);
         _grantRole(TOKEN_ADMIN_ROLE, _msgSender());
@@ -31,9 +33,7 @@ contract TorqueTAU is
         _setRoleAdmin(TOKEN_BURNER_ROLE, TOKEN_ADMIN_ROLE);
     }
 
-    /**
-     *  Mint tokens to a user
-     */
+    // Mint tokens to a user
     function mint(address account, uint256 amount)
         external
         onlyRole(TOKEN_MINTER_ROLE)
@@ -41,9 +41,7 @@ contract TorqueTAU is
         _mint(account, amount);
     }
 
-    /**
-     *  Burn tokens from a user
-     */
+    // Burn tokens from a user
     function burn(address account, uint256 amount)
         external
         onlyRole(TOKEN_BURNER_ROLE)

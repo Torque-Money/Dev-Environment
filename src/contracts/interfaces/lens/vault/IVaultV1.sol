@@ -26,7 +26,7 @@ interface IVaultV1 is IERC20Upgradeable {
         returns (uint256 shares);
 
     // Deposits senders funds in exchange for shares.
-    // !! It is important that the tokens supported match the correct ratios or else additional funds deposited will be lost. !!
+    // It is important that the tokens supported match the correct ratios or else additional funds deposited will be lost.
     // Reverts if sender does not have appropriate funds or has not allocated allowance.
     function deposit(uint256[] calldata amount)
         external
