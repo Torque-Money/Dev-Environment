@@ -8,6 +8,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
@@ -27,11 +28,13 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     bytes32 public STRATEGY_CONTROLLER_ROLE;
 
     IUniswapV2Router02 public uniRouter;
+    IUniswapV2Factory public uniFactory;
     IBeefyVaultV6 public beVault;
 
     function initialize(
         IERC20[] memory token,
         IUniswapV2Router02 _uniRouter,
+        IUniswapV2Factory _uniFactory,
         IBeefyVaultV6 _beVault
     ) external initializer {
         __AccessControl_init();
@@ -46,6 +49,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _grantRole(STRATEGY_CONTROLLER_ROLE, address(this));
 
         uniRouter = _uniRouter;
+        uniFactory = _uniFactory;
         beVault = _beVault;
     }
 
@@ -55,12 +59,26 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uint256 amountADesired = token0.balanceOf(address(this));
         uint256 amountBDesired = token1.balanceOf(address(this));
 
-        uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
+        token0.safeApprove(address(uniRouter), amountADesired);
+        token1.safeApprove(address(uniRouter), amountBDesired);
 
-        // **** Now we need to get the LP tokens and deposit them in
+        uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
     }
 
-    function withdrawAllFromStrategy() private {}
+    function withdrawAllFromStrategy() private {
+        // Withdraw from Beefy vault
+
+        // Redeem LP tokens
+        address token0 = address(tokenByIndex(0));
+        address token1 = address(tokenByIndex(1));
+
+        address pair = uniFactory.getPair(token0, token1);
+        uint256 pairBalance = IERC20(pair).balanceOf(address(this));
+
+        IERC20(pair).safeApprove(address(uniFactory), pairBalance);
+
+        uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+    }
 
     function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         // **** Here we will take the given tokens, push them into LP pairs and ship it out
