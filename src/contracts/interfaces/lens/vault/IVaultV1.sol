@@ -45,4 +45,8 @@ interface IVaultV1 is ISupportsToken, IERC20Upgradeable {
 
     event Deposit(address indexed caller, uint256[] amount, uint256 shares);
     event Redeem(address indexed caller, uint256 shares, uint256[] amount);
+    event DepositIntoStrategy(address indexed caller, uint256[] amount);
+    event WithdrawFromStrategy(address indexed caller, uint256[] amount);
+    event DepositAllIntoStrategy(address indexed caller);
+    event WithdrawAllFromStrategy(address indexed caller);
 }
