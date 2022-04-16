@@ -9,10 +9,10 @@ abstract contract SupportsFee is Initializable, ISupportsFee {
     address private _recipient;
 
     function __SupportsFee_init(address recipient) internal onlyInitializing {
-        __SupportsToken_init_unchained(recipient);
+        __SupportsFee_init_unchained(recipient);
     }
 
-    function __SupportsToken_init_unchained(address recipient) internal onlyInitializing {
+    function __SupportsFee_init_unchained(address recipient) internal onlyInitializing {
         _recipient = recipient;
     }
 
