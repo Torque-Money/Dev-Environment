@@ -33,4 +33,7 @@ interface IStrategy is ISupportsToken {
     // **** I NEED SOME EVENTS HERE - DO THE EVENTS IN THE CONTRACT TOO
     // event Deposit(address indexed caller, uint256[] amount, uint256 shares);
     // event Redeem(address indexed caller, uint256 shares, uint256[] amount);
+
+    event Deposit(address indexed caller, uint256[] amount);
+    event Withdraw(address indexed caller, uint256[] amount);
 }
