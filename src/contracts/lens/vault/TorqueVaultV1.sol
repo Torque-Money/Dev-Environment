@@ -23,7 +23,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
 
-    IStrategy public strategy; // **** This needs to be made private and gotten from a getter instead - update this in the interface
+    IStrategy private strategy;
 
     mapping(IERC20 => uint256) private deposited;
 
@@ -44,6 +44,10 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
         strategy = _strategy;
+    }
+
+    function getStrategy() external view override returns (IStrategy _strategy) {
+        return strategy;
     }
 
     function _sharesFromAmount(

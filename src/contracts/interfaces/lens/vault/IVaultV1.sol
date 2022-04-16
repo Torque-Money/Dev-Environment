@@ -13,6 +13,9 @@ interface IVaultV1 is ISupportsToken, IERC20Upgradeable {
     // Set the strategy for the vault to use.
     function setStrategy(IStrategy strategy) external;
 
+    // Get the strategy the vault used.
+    function getStrategy() external view returns (IStrategy _strategy);
+
     // Previews the amount of shares the sender will receive for depositing the given tokens.
     function previewDeposit(uint256[] calldata amount) external view returns (uint256 shares);
 
