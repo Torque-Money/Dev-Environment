@@ -146,6 +146,12 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
+    function _depositIntoStrategy(uint256[] memory amount) private {
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeApprove(address(strategy), amount[i]);
+
+        strategy.deposit(amount);
+    }
+
     function _depositAllIntoStrategy() private {
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
@@ -155,7 +161,34 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         strategy.depositAll();
     }
 
+    function _withdrawFromStrategy(uint256[] memory amount) private {
+        strategy.withdraw(amount);
+    }
+
     function _withdrawAllFromStrategy() private {
+        strategy.withdrawAll();
+    }
+
+    function depositIntoStrategy(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(VAULT_CONTROLLER_ROLE) {
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeApprove(address(strategy), amount[i]);
+
+        strategy.deposit(amount);
+    }
+
+    function depositAllIntoStrategy() external onlyRole(VAULT_CONTROLLER_ROLE) {
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+            token.safeApprove(address(strategy), token.balanceOf(address(this)));
+        }
+
+        strategy.depositAll();
+    }
+
+    function withdrawFromStrategy(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(VAULT_CONTROLLER_ROLE) {
+        strategy.withdraw(amount);
+    }
+
+    function withdrawAllFromStrategy() external onlyRole(VAULT_CONTROLLER_ROLE) {
         strategy.withdrawAll();
     }
 
