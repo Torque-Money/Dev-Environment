@@ -16,6 +16,9 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
 
     bytes32 public CONTROLLER_ADMIN_ROLE;
 
+    // **** So first of all we are going to have a cooldown on the harvester for a short time, and then if that does not fire it will mean that
+    // the oracle has to send another request - if the oracles request goes through the update will be fully completed
+
     function initialize(IVaultV1 _vault) external initializer {
         __AccessControl_init();
         __Registry_init();
