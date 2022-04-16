@@ -65,6 +65,7 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
 
         if (strategy != vault.getStrategy()) {
             // **** Now if the strategy is not equal to the current strategy, move everything over into the new selected strategy
+            vault.getStrategy().withdrawAll();
         }
 
         _isStrategyUpdateable = false;

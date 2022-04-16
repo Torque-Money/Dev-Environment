@@ -30,6 +30,8 @@ interface IStrategy is ISupportsToken {
     // Calling APY after does not necessarily need to equal the submitted APY.
     function updateAPY(uint256 apy) external;
 
+    // **** There needs to be some sort of interface for injecting and ejecting the funds from the strategy in the vault ?
+
     event Deposit(address indexed caller, uint256[] amount);
     event DepositAll(address indexed caller);
     event Withdraw(address indexed caller, uint256[] amount);
