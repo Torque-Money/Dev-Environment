@@ -51,7 +51,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         else shares = amount.mul(totalShares).div(_balance);
     }
 
-    function previewDeposit(uint256[] calldata amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
+    function previewDeposit(uint256[] memory amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
@@ -71,7 +71,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         }
     }
 
-    function deposit(uint256[] calldata amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
+    function deposit(uint256[] memory amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
         shares = previewDeposit(amount);
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
