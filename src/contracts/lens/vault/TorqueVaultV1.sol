@@ -78,15 +78,18 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     function deposit(uint256[] memory amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
         shares = previewDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+
+            token.safeTransferFrom(_msgSender(), address(this), amount[i]);
+            deposited[token] = deposited[token].add(amount[i]);
+        }
+
         _depositAllIntoStrategy();
 
         _mint(_msgSender(), shares);
 
         emit Deposit(_msgSender(), amount, shares);
-
-        // deposited[token] = deposited[token].add(amount[i]);
-        // deposited[token] = deposited[token].sub(amount[i]);
     }
 
     function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
@@ -106,7 +109,12 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
         _withdrawAllFromStrategy();
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+
+            token.safeTransfer(_msgSender(), amount[i]);
+            deposited[token] = deposited[token].sub(amount[i]);
+        }
 
         _depositAllIntoStrategy();
 
