@@ -31,8 +31,11 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     IUniswapV2Factory public uniFactory;
     IBeefyVaultV6 public beVault;
 
+    uint256 private apy;
+
     function initialize(
         IERC20[] memory token,
+        uint256 initialAPY,
         IUniswapV2Router02 _uniRouter,
         IUniswapV2Factory _uniFactory,
         IBeefyVaultV6 _beVault
@@ -47,6 +50,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         STRATEGY_CONTROLLER_ROLE = keccak256("STRATEGY_CONTROLLER_ROLE");
         _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
         _grantRole(STRATEGY_CONTROLLER_ROLE, address(this));
+
+        apy = initialAPY;
 
         uniRouter = _uniRouter;
         uniFactory = _uniFactory;
