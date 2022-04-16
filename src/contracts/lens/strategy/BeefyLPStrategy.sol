@@ -50,7 +50,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         STRATEGY_CONTROLLER_ROLE = keccak256("STRATEGY_CONTROLLER_ROLE");
         _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
-        _grantRole(STRATEGY_CONTROLLER_ROLE, address(this));
 
         twaapy = initialAPY;
 
