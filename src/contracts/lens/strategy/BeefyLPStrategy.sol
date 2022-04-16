@@ -36,6 +36,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     uint256 private twaapy;
 
+    // **** Now I need to integrate a way of storing the amount of fees possible for each user - then I will take the amount from that and use it to distribute the rest
+
     function initialize(
         IERC20[] memory token,
         uint256 initialAPY,
