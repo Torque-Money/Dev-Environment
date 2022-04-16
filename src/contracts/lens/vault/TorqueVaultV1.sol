@@ -13,9 +13,10 @@ import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
+import {SupportsFee} from "../../utils/SupportsFee.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, Emergency {
+contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, SupportsFee, Emergency {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -24,10 +25,13 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     IStrategy public strategy;
 
-    function initialize(IERC20[] memory token) external initializer {
+    mapping(IERC20 => uint256) private deposited;
+
+    function initialize(IERC20[] memory token, address _feeRecipient) external initializer {
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
         __SupportsToken_init(token);
+        __SupportsFee_init(_feeRecipient);
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
         _setRoleAdmin(VAULT_ADMIN_ROLE, VAULT_ADMIN_ROLE);
@@ -80,6 +84,9 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         _mint(_msgSender(), shares);
 
         emit Deposit(_msgSender(), amount, shares);
+
+        // deposited[token] = deposited[token].add(amount[i]);
+        // deposited[token] = deposited[token].sub(amount[i]);
     }
 
     function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
@@ -127,5 +134,13 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {
         super.inCaseTokensGetStuck(token, amount);
+    }
+
+    function feePercent() public pure override returns (uint256 percent) {
+        return 5;
+    }
+
+    function feeAmount() public pure override returns (uint256 amount) {
+        return 0;
     }
 }
