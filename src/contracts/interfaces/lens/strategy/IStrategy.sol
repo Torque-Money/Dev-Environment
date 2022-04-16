@@ -8,10 +8,8 @@ import {ISupportsToken} from "../../utils/ISupportsToken.sol";
 import {IVaultV1} from "../vault/IVaultV1.sol";
 
 // A strategy that integrates with a vault to earn rewards on deposited tokens.
+// Strategy should only ever integrate with a single vault.
 interface IStrategy is ISupportsToken {
-    // Get the vault used by the strategy.
-    function getVault() external returns (IVaultV1 vault);
-
     // Deposit a given amount of funds from the vault into the strategy.
     // Reverts if sender does not have appropriate funds or has not allocated allowance.
     function deposit(uint256[] calldata amount) external;

@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-// Controls a vault and what strategy it should implement.
-interface IStrategyController {
+// Controls a vault and the strategies it can implement.
+interface IVaultStrategyController {
     // Check if the strategy can be updated.
     function isStrategyUpdateable() external view returns (bool updateable);
 

@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-import {IStrategyController} from "../../interfaces/lens/strategy-controller/IStrategyController.sol";
+import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-controller/IVaultStrategyController.sol";
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
@@ -13,7 +13,7 @@ import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract StrategyController is Initializable, AccessControlUpgradeable, IStrategyController, Registry, Emergency, ChainlinkClient {
+contract StrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
     IVaultV1 private vault;
