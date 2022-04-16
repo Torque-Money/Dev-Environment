@@ -9,6 +9,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
@@ -136,9 +137,15 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
-        // **** Needs to get the underlying LP amount and return the balance for each
-        // **** I need to be able to calculate this based off of the current LP deposit and the current share price from the BE token ???
-        // **** beVault requires me to get the price per share (with its own non-diclosed decimal) and convert it myself???
+        // Get LP tokens owed by beVault
+        uint256 SHARE_BASE = 1e18;
+        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(beVault.want()).balanceOf(address(this))).div(SHARE_BASE);
+
+        // Get the asset that the LP tokens are entitled to
+        IUniswapV2Pair pair = IUniswapV2Pair(address(beVault.want()));
+
+        // **** Now I need to return the correct pair based off of what is currently chosen
+        pair.getReserves();
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
