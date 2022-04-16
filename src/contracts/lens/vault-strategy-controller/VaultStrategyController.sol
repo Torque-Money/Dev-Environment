@@ -20,11 +20,14 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
 
     bytes32 public CONTROLLER_ADMIN_ROLE;
 
-    uint256 private nextAPYUpdate;
-    bool private _isStrategyUpdateable;
+    uint256 public nextAPYUpdate;
+    bool public strategyUpdateable;
 
-    uint256 private APYRequestDelay;
-    uint256 private APYUpdateDelay;
+    uint256 public APYRequestDelay;
+    uint256 public APYUpdateDelay;
+
+    bytes32 public CLSpecId;
+    uint256 public CLPayment;
 
     function initialize(
         uint256 _APYRequestDelay,
@@ -53,12 +56,20 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         setChainlinkOracle(oracle);
     }
 
-    function getVault() public view returns (IVaultV1 _vault) {
+    function setCLSpecId(bytes32 specId) external onlyRole(CONTROLLER_ADMIN_ROLE) {
+        CLSpecId = specId;
+    }
+
+    function setCLPayment(uint256 payment) external onlyRole(CONTROLLER_ADMIN_ROLE) {
+        CLPayment = payment;
+    }
+
+    function getVault() external view returns (IVaultV1 _vault) {
         return vault;
     }
 
     function isStrategyUpdateable() public view override returns (bool updateable) {
-        return _isStrategyUpdateable;
+        return strategyUpdateable;
     }
 
     function updateStrategy() external override {
@@ -85,7 +96,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
             vault.depositAllIntoStrategy();
         }
 
-        _isStrategyUpdateable = false;
+        strategyUpdateable = false;
 
         emit UpdateStrategy(_msgSender());
     }
