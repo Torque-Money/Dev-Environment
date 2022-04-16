@@ -6,23 +6,23 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {ISupportsFee} from "../interfaces/utils/ISupportsFee.sol";
 
 abstract contract SupportsFee is Initializable, ISupportsFee {
-    address private _recipient;
+    address private recipient;
 
-    function __SupportsFee_init(address recipient) internal onlyInitializing {
-        __SupportsFee_init_unchained(recipient);
+    function __SupportsFee_init(address _recipient) internal onlyInitializing {
+        __SupportsFee_init_unchained(_recipient);
     }
 
-    function __SupportsFee_init_unchained(address recipient) internal onlyInitializing {
-        _recipient = recipient;
+    function __SupportsFee_init_unchained(address _recipient) internal onlyInitializing {
+        recipient = _recipient;
     }
 
     // Set the fee recipient.
-    function setFeeRecipient(address recipient) external virtual override {
-        _recipient = recipient;
+    function setFeeRecipient(address _recipient) external virtual override {
+        recipient = _recipient;
     }
 
     // Get the fee recipient.
-    function feeRecipient() public view virtual override returns (address recipient) {
-        return _recipient;
+    function feeRecipient() public view virtual override returns (address _recipient) {
+        return recipient;
     }
 }

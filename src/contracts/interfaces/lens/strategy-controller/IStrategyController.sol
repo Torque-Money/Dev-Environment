@@ -10,13 +10,13 @@ interface IStrategyController {
     // Reverts if the strategy is not upgradeable.
     function updateStrategy() external;
 
-    // Check if the oracle can be updated.
-    function isOracleUpdateable() external view returns (bool updateable);
+    // Check if the APY can be updated.
+    function isAPYUpdateable() external view returns (bool updateable);
 
-    // Update the oracle.
-    // Reverts if the oracle is not upgradeable.
-    function updateOracle() external;
+    // Update the APY.
+    // Reverts if the APY is not upgradeable.
+    function updateAPY() external;
 
     event UpdateStrategy(address indexed caller);
-    event UpdateOracle(address indexed caller);
+    event UpdateAPY(address indexed caller);
 }
