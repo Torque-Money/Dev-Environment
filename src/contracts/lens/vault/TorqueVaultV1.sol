@@ -92,7 +92,9 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Deposit(_msgSender(), amount, shares);
     }
 
-    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
+    function _previewRedeem(uint256 shares) private view returns (uint256[] memory amount, uint256[] memory fees) {
+        // **** I need to figure out how to calculate the shares from this ?????
+
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
@@ -104,8 +106,13 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         }
     }
 
+    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
+        return _previewRedeem(shares);
+    }
+
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        amount = previewRedeem(shares);
+        uint256[] memory fees;
+        (amount, fees) = _previewRedeem(shares);
 
         _withdrawAllFromStrategy();
 
