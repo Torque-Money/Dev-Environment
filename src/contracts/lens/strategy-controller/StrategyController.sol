@@ -5,13 +5,17 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 import {IStrategyController} from "../../interfaces/lens/strategy-controller/IStrategyController.sol";
+import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 
+import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract StrategyController is Initializable, AccessControlUpgradeable, IStrategyController, Registry, Emergency {
+contract StrategyController is Initializable, AccessControlUpgradeable, IStrategyController, Registry, Emergency, ChainlinkClient {
+    using Chainlink for Chainlink.Request;
+
     IVaultV1 private vault;
 
     bytes32 public CONTROLLER_ADMIN_ROLE;
