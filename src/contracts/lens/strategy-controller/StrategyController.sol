@@ -68,6 +68,8 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
         }
 
         _isStrategyUpdateable = false;
+
+        emit UpdateStrategy(_msgSender());
     }
 
     function isAPYUpdateable() external view override returns (bool updateable) {
@@ -78,5 +80,5 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
         // **** We are going to make a chainlink call, parse the data, and then update the strategy updateable
     }
 
-    // **** I need to integrate this with chainlink requests
+    // **** I need to integrate this with chainlink requests - request will need to integrate event too
 }
