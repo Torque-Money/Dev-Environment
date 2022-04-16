@@ -43,6 +43,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     ) external initializer {
         __AccessControl_init();
         __SupportsToken_init(token, 2);
+        __Emergency_init();
 
         STRATEGY_ADMIN_ROLE = keccak256("STRATEGY_ADMIN_ROLE");
         _setRoleAdmin(STRATEGY_ADMIN_ROLE, STRATEGY_ADMIN_ROLE);
@@ -167,9 +168,5 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         else reserve = reserve1;
 
         return LPAmount.mul(reserve).div(pair.totalSupply()).add(token.balanceOf(address(this)));
-    }
-
-    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
-        super.inCaseTokensGetStuck(token, amount);
     }
 }

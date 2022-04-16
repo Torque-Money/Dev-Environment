@@ -32,6 +32,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         __AccessControl_init();
         __SupportsToken_init(token);
         __SupportsFee_init(_feeRecipient);
+        __Emergency_init();
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
         _setRoleAdmin(VAULT_ADMIN_ROLE, VAULT_ADMIN_ROLE);
@@ -152,10 +153,6 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function _withdrawAllFromStrategy() private {
         strategy.withdrawAll();
-    }
-
-    function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {
-        super.inCaseTokensGetStuck(token, amount);
     }
 
     function feePercent() public pure override returns (uint256 percent) {
