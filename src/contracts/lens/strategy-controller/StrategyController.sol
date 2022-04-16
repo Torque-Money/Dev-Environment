@@ -9,5 +9,9 @@ import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 contract StrategyController is Initializable, AccessControlUpgradeable, Registry, Emergency {
-    function initialize() external initializer {}
+    function initialize() external initializer {
+        __AccessControl_init();
+        __Registry_init();
+        __Emergency_init();
+    }
 }
