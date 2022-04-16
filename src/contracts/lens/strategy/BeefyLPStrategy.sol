@@ -36,7 +36,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     uint256 private twaapy;
 
-    mapping(IERC20 => uint256) private depositedAmount;
+    mapping(IERC20 => uint256) private deposited;
 
     function initialize(
         IERC20[] memory token,
@@ -103,7 +103,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function _deposit(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+
+            token.safeTransferFrom(_msgSender(), address(this), amount[i]);
+            deposited[token] = deposited[token].add(amount[i]);
+        }
 
         _injectAllIntoStrategy();
     }
@@ -126,7 +131,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function _withdraw(uint256[] memory amount) private {
         _ejectAllFromStrategy();
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+
+            token.safeTransfer(_msgSender(), amount[i]);
+            deposited[token] = deposited[token].sub(amount[i]);
+        }
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
