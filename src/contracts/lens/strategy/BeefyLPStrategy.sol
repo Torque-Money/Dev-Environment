@@ -144,8 +144,13 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         // Get the asset that the LP tokens are entitled to
         IUniswapV2Pair pair = IUniswapV2Pair(address(beVault.want()));
 
-        // **** Now I need to return the correct pair based off of what is currently chosen
-        pair.getReserves();
+        (uint256 reserve0, uint256 reserve1, ) = pair.getReserves();
+
+        uint256 reserve;
+        if (pair.token0() == address(token)) reserve = reserve0;
+        else reserve = reserve1;
+
+        return LPAmount.mul(reserve).div(pair.totalSupply());
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
