@@ -58,7 +58,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
-    function depositAllIntoStrategy() private {
+    function _depositAllIntoStrategy() private {
         // Deposit assets into LP tokens
         IERC20 token0 = tokenByIndex(0);
         IERC20 token1 = tokenByIndex(1);
@@ -79,7 +79,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.deposit(LPTokenBalance);
     }
 
-    function withdrawAllFromStrategy() private {
+    function _withdrawAllFromStrategy() private {
         // Withdraw from Beefy vault
         beVault.withdrawAll();
 
@@ -98,22 +98,22 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
-        depositAllIntoStrategy();
+        _depositAllIntoStrategy();
     }
 
     function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        withdrawAllFromStrategy();
+        _withdrawAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
-        depositAllIntoStrategy();
+        _depositAllIntoStrategy();
     }
 
-    function APY() external view returns (uint256 apy, uint256 decimals) {
+    function APY() external view returns (uint256 _apy, uint256 decimals) {
         // **** Return the APY
     }
 
-    function updateAPY(uint256 apy, uint256 decimals) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
+    function updateAPY(uint256 _apy, uint256 decimals) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         // **** Update the APY
     }
 
