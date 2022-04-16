@@ -23,7 +23,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
 
-    IStrategy public strategy;
+    IStrategy public strategy; // **** This needs to be made private and gotten from a getter instead - update this in the interface
 
     mapping(IERC20 => uint256) private deposited;
 

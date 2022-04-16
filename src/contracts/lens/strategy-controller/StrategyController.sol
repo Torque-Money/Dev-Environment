@@ -48,7 +48,27 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
     }
 
     function updateStrategy() external override onlyRole(CONTROLLER_ADMIN_ROLE) {
+        require(_isStrategyUpdateable, "StrategyController: Strategy is not updateable");
+        require(entryCount() > 0, "StrategyController: At least one strategy is required to update");
         // **** We are going to look through the strategies in the registry and get the one with the max APY, and then fix it all up
+
+        uint256 maxAPY;
+        IStrategy strategy;
+        for (uint256 i = 0; i < entryCount(); i++) {
+            IStrategy _strategy = IStrategy(entryByIndex(i));
+            (uint256 _apy, ) = _strategy.APY();
+
+            if (_apy > maxAPY) {
+                maxAPY = _apy;
+                strategy = _strategy;
+            }
+        }
+
+        // **** Now if the strategy is not equal to the current strategy, move everything over
+
+        // if (strategy != vault)
+
+        _isStrategyUpdateable = false;
     }
 
     function isAPYUpdateable() external view override returns (bool updateable) {
