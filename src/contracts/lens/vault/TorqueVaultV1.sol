@@ -104,7 +104,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
             uint256 _balance = balance(token);
             amount[i] = _balance.mul(shares).div(_totalShares);
 
-            if (_balance > deposited[token]) fees[i] = _balance.sub(deposited[token]).mul(feePercent()).mul(amount[i]).div(100).div(_balance);
+            if (_balance > deposited[token]) fees[i] = _balance.sub(deposited[token]).mul(feePercent()).mul(amount[i]).div(_balance).div(100);
         }
     }
 
@@ -124,7 +124,9 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
 
-            token.safeTransfer(_msgSender(), amount[i]);
+            token.safeTransfer(_msgSender(), amount[i].sub(fees[i]));
+            token.safeTransfer(feeRecipient(), fees[i]);
+
             deposited[token] = deposited[token].sub(amount[i]);
         }
 
