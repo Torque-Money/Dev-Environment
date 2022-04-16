@@ -46,7 +46,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         strategy = _strategy;
     }
 
-    function getStrategy() external view override returns (IStrategy _strategy) {
+    function getStrategy() public view override returns (IStrategy _strategy) {
         return strategy;
     }
 

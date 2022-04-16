@@ -23,7 +23,14 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     uint256 private nextAPYUpdate;
     bool private _isStrategyUpdateable;
 
-    function initialize(IVaultV1 _vault) external initializer {
+    uint256 private APYRequestDelay;
+    uint256 private APYUpdateDelay;
+
+    function initialize(
+        uint256 _APYRequestDelay,
+        uint256 _APYUpdateDelay,
+        IVaultV1 _vault
+    ) external initializer {
         __AccessControl_init();
         __Registry_init();
         __Emergency_init();
@@ -33,24 +40,32 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         _grantRole(CONTROLLER_ADMIN_ROLE, _msgSender());
 
         vault = _vault;
+
+        APYRequestDelay = _APYRequestDelay;
+        APYUpdateDelay = _APYUpdateDelay;
     }
 
-    function setCLToken(address link) external {
+    function setCLToken(address link) external onlyRole(CONTROLLER_ADMIN_ROLE) {
         setChainlinkToken(link);
     }
 
-    function setCLOracle(address oracle) external {
+    function setCLOracle(address oracle) external onlyRole(CONTROLLER_ADMIN_ROLE) {
         setChainlinkOracle(oracle);
     }
 
-    function isStrategyUpdateable() external view override returns (bool updateable) {
+    function getVault() public view returns (IVaultV1 _vault) {
+        return vault;
+    }
+
+    function isStrategyUpdateable() public view override returns (bool updateable) {
         return _isStrategyUpdateable;
     }
 
-    function updateStrategy() external override onlyRole(CONTROLLER_ADMIN_ROLE) {
-        require(_isStrategyUpdateable, "StrategyController: Strategy is not updateable");
+    function updateStrategy() external override {
+        require(isStrategyUpdateable(), "StrategyController: Strategy is not updateable");
         require(entryCount() > 0, "StrategyController: At least one strategy is required to update");
 
+        // Find the highest APY strategy
         uint256 maxAPY;
         IStrategy strategy;
         for (uint256 i = 0; i < entryCount(); i++) {
@@ -63,6 +78,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
             }
         }
 
+        // Update the vaults strategy
         if (strategy != vault.getStrategy()) {
             vault.withdrawAllFromStrategy();
             vault.setStrategy(strategy);
@@ -74,11 +90,13 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         emit UpdateStrategy(_msgSender());
     }
 
-    function isAPYUpdateable() external view override returns (bool updateable) {
+    function isAPYUpdateable() public view override returns (bool updateable) {
         return block.timestamp >= nextAPYUpdate;
     }
 
-    function updateAPY() external override onlyRole(CONTROLLER_ADMIN_ROLE) {
+    function updateAPY() external override {
+        require(isAPYUpdateable(), "StrategyController: APY is not updateable");
+
         // **** We are going to make a chainlink call, parse the data, and then update the strategy updateable
     }
 
