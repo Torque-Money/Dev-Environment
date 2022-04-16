@@ -13,7 +13,7 @@ import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract StrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
+contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
     using Chainlink for Chainlink.Request;
 
     IVaultV1 private vault;
