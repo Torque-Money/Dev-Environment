@@ -33,9 +33,11 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
 
     function isStrategyUpdateable() external view override returns (bool updateable) {}
 
-    function updateStrategy() external override {}
+    function updateStrategy() external override onlyRole(CONTROLLER_ADMIN_ROLE) {}
 
     function isAPYUpdateable() external view override returns (bool updateable) {}
 
-    function updateAPY() external override {}
+    function updateAPY() external override onlyRole(CONTROLLER_ADMIN_ROLE) {}
+
+    // **** I need to integrate this with chainlink requests
 }
