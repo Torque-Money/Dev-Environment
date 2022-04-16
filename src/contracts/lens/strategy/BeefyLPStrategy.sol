@@ -133,8 +133,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function updateAPY(uint256 apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        uint256 EMA_WEIGHT_PERCENT = 80;
-        twaapy = apy.mul(EMA_WEIGHT_PERCENT).div(100).add(twaapy.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100)));
+        uint256 EMA_WEIGHT_PERCENT = 70;
+
+        uint256 temp = twaapy.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100));
+        temp = temp.add(apy.mul(EMA_WEIGHT_PERCENT).div(100));
+
+        twaapy = temp;
     }
 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
