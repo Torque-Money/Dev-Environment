@@ -141,8 +141,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uint256 SHARE_BASE = 1e18;
         uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(beVault.want()).balanceOf(address(this))).div(SHARE_BASE);
 
-        // Get the asset that the LP tokens are entitled to
-        IUniswapV2Pair pair = IUniswapV2Pair(address(beVault.want()));
+        // Get the allocation of the specified balance
+        IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));
 
         (uint256 reserve0, uint256 reserve1, ) = pair.getReserves();
 
