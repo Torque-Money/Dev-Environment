@@ -64,8 +64,9 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         }
 
         if (strategy != vault.getStrategy()) {
-            // **** Now if the strategy is not equal to the current strategy, move everything over into the new selected strategy
-            vault.getStrategy().withdrawAll();
+            vault.withdrawAllFromStrategy();
+            vault.setStrategy(strategy);
+            vault.depositAllIntoStrategy();
         }
 
         _isStrategyUpdateable = false;
