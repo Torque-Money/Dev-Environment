@@ -28,12 +28,6 @@ interface IVaultV1 is ISupportsToken, IERC20Upgradeable {
     // Reverts if sender does not have appropriate shares.
     function redeem(uint256 shares) external returns (uint256[] calldata amount);
 
-    // Deposit all funds from the vault into the strategy.
-    function depositAllIntoStrategy() external;
-
-    // Withdraw all funds from the strategy into the vault.
-    function withdrawAllFromStrategy() external;
-
     event Deposit(address indexed caller, uint256[] amount, uint256 shares);
     event Redeem(address indexed caller, uint256 shares, uint256[] amount);
 }

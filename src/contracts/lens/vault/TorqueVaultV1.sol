@@ -35,7 +35,6 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
         VAULT_CONTROLLER_ROLE = keccak256("VAULT_CONTROLLER_ROLE");
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
-        _grantRole(VAULT_CONTROLLER_ROLE, address(this));
     }
 
     function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
@@ -76,7 +75,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         shares = previewDeposit(amount);
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
-        depositAllIntoStrategy();
+        _depositAllIntoStrategy();
 
         _mint(_msgSender(), shares);
 
@@ -98,9 +97,11 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
         amount = previewRedeem(shares);
 
-        withdrawAllFromStrategy();
+        _withdrawAllFromStrategy();
+
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
-        depositAllIntoStrategy();
+
+        _depositAllIntoStrategy();
 
         _burn(_msgSender(), shares);
 
@@ -111,22 +112,17 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         return token.balanceOf(address(this)).add(strategy.balance(token));
     }
 
-    function depositAllIntoStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
-        uint256[] memory amount = new uint256[](tokenCount());
+    function _depositAllIntoStrategy() private {
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
-            amount[i] = token.balanceOf(address(this));
-            token.safeApprove(address(strategy), amount[i]);
+            token.safeApprove(address(strategy), token.balanceOf(address(this)));
         }
 
-        strategy.deposit(amount);
+        strategy.depositAll();
     }
 
-    function withdrawAllFromStrategy() public override onlyRole(VAULT_CONTROLLER_ROLE) {
-        uint256[] memory amount = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = strategy.balance(tokenByIndex(i));
-
-        strategy.withdraw(amount);
+    function _withdrawAllFromStrategy() private {
+        strategy.withdrawAll();
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(VAULT_ADMIN_ROLE) {

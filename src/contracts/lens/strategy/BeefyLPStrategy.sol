@@ -123,7 +123,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
-            token.safeTransfer(_msgSender(), token.balanceOf(_msgSender()));
+            token.safeTransfer(_msgSender(), token.balanceOf(address(this)));
         }
     }
 
