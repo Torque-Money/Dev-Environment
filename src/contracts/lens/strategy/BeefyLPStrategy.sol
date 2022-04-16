@@ -32,7 +32,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     IUniswapV2Factory public uniFactory;
     IBeefyVaultV6 public beVault;
 
-    uint256 private apy;
+    uint256 private twaapy;
 
     function initialize(
         IERC20[] memory token,
@@ -52,7 +52,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
         _grantRole(STRATEGY_CONTROLLER_ROLE, address(this));
 
-        apy = initialAPY;
+        twaapy = initialAPY;
 
         uniRouter = _uniRouter;
         uniFactory = _uniFactory;
@@ -129,11 +129,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function APY() external view returns (uint256 _apy, uint256 decimals) {
-        // **** Return the APY
+        return (twaapy, 1e4);
     }
 
-    function updateAPY(uint256 _apy, uint256 decimals) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        // **** Update the APY
+    function updateAPY(uint256 _apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
+        uint256 EMA_WEIGHT_PERCENT = 80;
+        twaapy = _apy.mul(EMA_WEIGHT_PERCENT).div(100).add(twaapy.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100)));
     }
 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
