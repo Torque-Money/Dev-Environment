@@ -6,14 +6,16 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 
 import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-controller/IVaultStrategyController.sol";
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-
+import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
+
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
+    using SafeMath for uint256;
     using Chainlink for Chainlink.Request;
 
     IVaultV1 private vault;
@@ -115,7 +117,14 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         require(isAPYUpdateable(), "StrategyController: APY is not updateable");
 
         Chainlink.Request memory req = buildChainlinkRequest(CLSpecId, address(this), this.fulfillUpdateAPY.selector);
+        req.add("get", apiURL);
+        sendOperatorRequest(req, CLPayment);
+
+        nextAPYUpdate = block.timestamp.add(APYRequestDelay);
     }
+
+    // **** I guess that I could just call the required update APY inside of the fulfill this one because it technically is necessary
+    // **** Then we could get rid of the interface and just have update instead
 
     function fulfillUpdateAPY(bytes32 requestId, bytes memory bytesData) external recordChainlinkFulfillment(requestId) {
         // **** So now we are going to take the requested bytes and parse the new APY's from this and update each strategy accordingly
@@ -123,4 +132,5 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     }
 
     // **** I need to integrate this with chainlink requests - request will need to integrate event too
+    // **** Maybe add an event for requesting the parameter
 }

@@ -10,13 +10,12 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
 
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
 import {Emergency} from "../../utils/Emergency.sol";
-
-import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
 
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
