@@ -14,6 +14,8 @@ import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pa
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
+import {ISupportsFee} from "../../interfaces/utils/ISupportsFee.sol";
+import {SupportsFee} from "../../utils/SupportsFee.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
@@ -21,7 +23,7 @@ import {IBeefyVaultV6} from "../../interfaces/lib/IBeefyVaultV6.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, SupportsFee, Emergency {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -37,12 +39,14 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function initialize(
         IERC20[] memory token,
         uint256 initialAPY,
+        address recipient,
         IUniswapV2Router02 _uniRouter,
         IUniswapV2Factory _uniFactory,
         IBeefyVaultV6 _beVault
     ) external initializer {
         __AccessControl_init();
         __SupportsToken_init(token, 2);
+        __SupportsFee_init(recipient);
 
         STRATEGY_ADMIN_ROLE = keccak256("STRATEGY_ADMIN_ROLE");
         _setRoleAdmin(STRATEGY_ADMIN_ROLE, STRATEGY_ADMIN_ROLE);
@@ -156,6 +160,14 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         else reserve = reserve1;
 
         return LPAmount.mul(reserve).div(pair.totalSupply()).add(token.balanceOf(address(this)));
+    }
+
+    function feePercent() public pure override returns (uint256 percent) {
+        return 5;
+    }
+
+    function feeAmount() public pure override returns (uint256 amount) {
+        return 0;
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
