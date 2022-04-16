@@ -102,7 +102,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _depositAllIntoStrategy();
     }
 
-    function depositAll() external {
+    function depositAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
             token.safeTransferFrom(_msgSender(), address(this), token.balanceOf(_msgSender()));
@@ -119,7 +119,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _depositAllIntoStrategy();
     }
 
-    function withdrawAll() external {
+    function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         _withdrawAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) {
