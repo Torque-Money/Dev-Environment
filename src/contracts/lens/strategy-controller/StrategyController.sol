@@ -8,4 +8,6 @@ import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
-contract StrategyController is Initializable, AccessControlUpgradeable, Registry, Emergency {}
+contract StrategyController is Initializable, AccessControlUpgradeable, Registry, Emergency {
+    function initialize() external initializer {}
+}
