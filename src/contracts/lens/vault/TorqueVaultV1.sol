@@ -109,7 +109,10 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     }
 
     function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
-        return _previewRedeem(shares);
+        uint256[] memory fees;
+        (amount, fees) = _previewRedeem(shares);
+
+        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = amount[i].sub(fees[i]);
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
