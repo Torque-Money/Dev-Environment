@@ -102,7 +102,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
     }
 
-    function _deposit(uint256[] memory amount) internal {
+    function _deposit(uint256[] memory amount) private {
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
         _injectAllIntoStrategy();
@@ -124,23 +124,25 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         emit DepositAll(_msgSender());
     }
 
-    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
+    function _withdraw(uint256[] memory amount) private {
         _ejectAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+    }
 
+    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
+        _withdraw(amount);
         _injectAllIntoStrategy();
 
         emit Withdraw(_msgSender(), amount);
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _ejectAllFromStrategy();
+        uint256[] memory amount = new uint256[](tokenCount());
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
-            token.safeTransfer(_msgSender(), token.balanceOf(address(this)));
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
+
+        _withdraw(amount);
 
         emit WithdrawAll(_msgSender());
     }
