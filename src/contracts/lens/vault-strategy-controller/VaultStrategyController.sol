@@ -29,6 +29,8 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     bytes32 public CLSpecId;
     uint256 public CLPayment;
 
+    string public apiURL;
+
     function initialize(
         uint256 _APYRequestDelay,
         uint256 _APYUpdateDelay,
@@ -62,6 +64,10 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
 
     function setCLPayment(uint256 payment) external onlyRole(CONTROLLER_ADMIN_ROLE) {
         CLPayment = payment;
+    }
+
+    function setAPIUrl(string memory _apiURL) external onlyRole(CONTROLLER_ADMIN_ROLE) {
+        apiURL = _apiURL;
     }
 
     function getVault() external view returns (IVaultV1 _vault) {
@@ -108,7 +114,12 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     function updateAPY() external override {
         require(isAPYUpdateable(), "StrategyController: APY is not updateable");
 
-        // **** We are going to make a chainlink call, parse the data, and then update the strategy updateable
+        Chainlink.Request memory req = buildChainlinkRequest(CLSpecId, address(this), this.fulfillUpdateAPY.selector);
+    }
+
+    function fulfillUpdateAPY(bytes32 requestId, bytes memory bytesData) external recordChainlinkFulfillment(requestId) {
+        // **** So now we are going to take the requested bytes and parse the new APY's from this and update each strategy accordingly
+        // **** We are also going to update the request possibility
     }
 
     // **** I need to integrate this with chainlink requests - request will need to integrate event too
