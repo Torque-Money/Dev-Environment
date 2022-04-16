@@ -16,12 +16,6 @@ abstract contract SupportsFee is Initializable, ISupportsFee {
         _recipient = recipient;
     }
 
-    // Get the fee percentage.
-    function feePercent() public view virtual override returns (uint256 percent);
-
-    // Get the fee amount.
-    function feeAmount() public view virtual override returns (uint256 amount);
-
     // Set the fee recipient.
     function setFeeRecipient(address recipient) external virtual override {
         _recipient = recipient;
