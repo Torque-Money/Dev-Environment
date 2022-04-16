@@ -139,7 +139,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
         uint256 SHARE_BASE = 1e18;
-        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(beVault.want()).balanceOf(address(this))).div(SHARE_BASE);
+        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
 
         // Get the allocation of the specified balance
         IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));
@@ -150,7 +150,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         if (pair.token0() == address(token)) reserve = reserve0;
         else reserve = reserve1;
 
-        return LPAmount.mul(reserve).div(pair.totalSupply());
+        return LPAmount.mul(reserve).div(pair.totalSupply()).add(token.balanceOf(address(this)));
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public override onlyRole(STRATEGY_ADMIN_ROLE) {
