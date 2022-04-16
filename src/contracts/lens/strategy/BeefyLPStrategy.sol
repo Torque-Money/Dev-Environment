@@ -116,7 +116,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     function depositAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
-
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
 
         _deposit(amount);
@@ -139,7 +138,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
-
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
 
         _withdraw(amount);
