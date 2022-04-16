@@ -20,8 +20,8 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
 
     bytes32 public CONTROLLER_ADMIN_ROLE;
 
-    // **** So first of all we are going to have a cooldown on the harvester for a short time, and then if that does not fire it will mean that
-    // the oracle has to send another request - if the oracles request goes through the update will be fully completed
+    uint256 private nextAPYUpdate;
+    bool private _isStrategyUpdateable;
 
     function initialize(IVaultV1 _vault) external initializer {
         __AccessControl_init();
@@ -35,13 +35,29 @@ contract StrategyController is Initializable, AccessControlUpgradeable, IStrateg
         vault = _vault;
     }
 
-    function isStrategyUpdateable() external view override returns (bool updateable) {}
+    function setCLToken(address link) external {
+        setChainlinkToken(link);
+    }
 
-    function updateStrategy() external override onlyRole(CONTROLLER_ADMIN_ROLE) {}
+    function setCLOracle(address oracle) external {
+        setChainlinkOracle(oracle);
+    }
 
-    function isAPYUpdateable() external view override returns (bool updateable) {}
+    function isStrategyUpdateable() external view override returns (bool updateable) {
+        return _isStrategyUpdateable;
+    }
 
-    function updateAPY() external override onlyRole(CONTROLLER_ADMIN_ROLE) {}
+    function updateStrategy() external override onlyRole(CONTROLLER_ADMIN_ROLE) {
+        // **** We are going to look through the strategies in the registry and get the one with the max APY, and then fix it all up
+    }
+
+    function isAPYUpdateable() external view override returns (bool updateable) {
+        return block.timestamp >= nextAPYUpdate;
+    }
+
+    function updateAPY() external override onlyRole(CONTROLLER_ADMIN_ROLE) {
+        // **** We are going to make a chainlink call, parse the data, and then update the strategy updateable
+    }
 
     // **** I need to integrate this with chainlink requests
 }
