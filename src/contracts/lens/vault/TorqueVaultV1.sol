@@ -93,16 +93,18 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     }
 
     function _previewRedeem(uint256 shares) private view returns (uint256[] memory amount, uint256[] memory fees) {
-        // **** I need to figure out how to calculate the shares from this ?????
-
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
-        if (_totalShares == 0) return amount;
+        if (_totalShares == 0) return (amount, fees);
 
         for (uint256 i = 0; i < tokenCount(); i++) {
-            uint256 _balance = balance(tokenByIndex(i));
+            IERC20 token = tokenByIndex(i);
+
+            uint256 _balance = balance(token);
             amount[i] = _balance.mul(shares).div(_totalShares);
+
+            if (_balance > deposited[token]) fees[i] = _balance.sub(deposited[token]).mul(feePercent()).mul(amount[i]).div(100).div(_balance);
         }
     }
 
