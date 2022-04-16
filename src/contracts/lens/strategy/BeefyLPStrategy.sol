@@ -106,6 +106,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
         _depositAllIntoStrategy();
+
+        emit Deposit(_msgSender(), amount);
     }
 
     function depositAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -115,6 +117,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         }
 
         _depositAllIntoStrategy();
+
+        emit DepositAll(_msgSender());
     }
 
     function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -123,6 +127,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
         _depositAllIntoStrategy();
+
+        emit Withdraw(_msgSender(), amount);
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -132,6 +138,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
             IERC20 token = tokenByIndex(i);
             token.safeTransfer(_msgSender(), token.balanceOf(address(this)));
         }
+
+        emit WithdrawAll(_msgSender());
     }
 
     function APY() external view returns (uint256 apy, uint256 decimals) {
