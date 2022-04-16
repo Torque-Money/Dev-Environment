@@ -36,7 +36,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     uint256 private twaapy;
 
-    // **** Now I need to integrate a way of storing the amount of fees possible for each user - then I will take the amount from that and use it to distribute the rest
+    mapping(IERC20 => uint256) private depositedAmount;
 
     function initialize(
         IERC20[] memory token,
@@ -65,7 +65,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
-    function _depositAllIntoStrategy() private {
+    function _injectAllIntoStrategy() private {
         // Deposit assets into LP tokens
         IERC20 token0 = tokenByIndex(0);
         IERC20 token1 = tokenByIndex(1);
@@ -86,7 +86,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.depositAll();
     }
 
-    function _withdrawAllFromStrategy() private {
+    function _ejectAllFromStrategy() private {
         // Withdraw from Beefy vault
         beVault.withdrawAll();
 
@@ -105,7 +105,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function deposit(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
-        _depositAllIntoStrategy();
+        _injectAllIntoStrategy();
 
         emit Deposit(_msgSender(), amount);
     }
@@ -116,23 +116,23 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
             token.safeTransferFrom(_msgSender(), address(this), token.balanceOf(_msgSender()));
         }
 
-        _depositAllIntoStrategy();
+        _injectAllIntoStrategy();
 
         emit DepositAll(_msgSender());
     }
 
     function withdraw(uint256[] calldata amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _withdrawAllFromStrategy();
+        _ejectAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
-        _depositAllIntoStrategy();
+        _injectAllIntoStrategy();
 
         emit Withdraw(_msgSender(), amount);
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _withdrawAllFromStrategy();
+        _ejectAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
