@@ -130,9 +130,6 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemMultipleWithInjection() public useFunds {
-        // **** I want to test this by
-        // **** What exactly am I looking for ? Maybe set the fees to be zero and check if the amount in = amount out ?
-
         TorqueVaultV1 vault = _getVault();
         Empty empty = _getEmpty();
 
