@@ -17,7 +17,6 @@
         "dotenv": "^16.0.0",
         "ethers": "^5.6.2",
         "hardhat": "^2.9.3",
-        "solidity-util": "github:willitscale/solidity-util",
         "ts-node": "^10.7.0",
         "typechain": "^8.0.0",
         "typescript": "^4.6.3"

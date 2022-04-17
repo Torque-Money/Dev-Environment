@@ -4,4 +4,3 @@ ds-test/=lib/ds-test/src/
 @contracts/=src/contracts/
 @uniswap/=node_modules/@uniswap/
 solidity-stringutils/=lib/solidity-stringutils/src/
-solidity-util/=node_modules/solidity-util/
