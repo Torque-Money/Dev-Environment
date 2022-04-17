@@ -19,9 +19,9 @@ contract VaultTest is DSTest {
         strategy.initialize(token, Config.getInitialAPY());
 
         Config.fundCaller();
-
-        emit log_uint(token[0].balanceOf(address(this)));
     }
 
-    function testLol() external {}
+    function testLol() external {
+        emit log_uint(token[0].balanceOf(address(this)));
+    }
 }
