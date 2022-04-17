@@ -18,6 +18,7 @@ contract VaultTest is DSTest {
 
     function setUp() external {
         token = Config.getTokens();
+        Config.fundCaller();
 
         empty = new Empty();
 
@@ -26,8 +27,6 @@ contract VaultTest is DSTest {
 
         strategy = new MockStrategy();
         strategy.initialize(token, Config.getInitialAPY());
-
-        Config.fundCaller();
     }
 
     function testFunded() external {
