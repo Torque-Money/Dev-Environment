@@ -28,12 +28,13 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     function initialize(
         IERC20[] memory token,
         address _feeRecipient,
-        uint256 _feePercent
+        uint256 _feePercent,
+        uint256 _feePercentDenominator
     ) external initializer {
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
         __SupportsToken_init(token);
-        __SupportsFee_init(_feeRecipient, _feePercent, 0);
+        __SupportsFee_init(_feeRecipient, _feePercent, _feePercentDenominator, 0);
         __Emergency_init();
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
@@ -81,7 +82,8 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
             }
         }
 
-        fees = shares.mul(feePercent()).div(100);
+        (uint256 percent, uint256 denominator) = feePercent();
+        fees = shares.mul(percent).div(denominator);
         shares = shares.sub(fees);
     }
 
