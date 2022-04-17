@@ -51,11 +51,11 @@ contract VaultTest is DSTest, UsesTokenBase {
         // **** Check that the amount withdrawn is now valid
     }
 
-    function testDepositRedeemZero() public {}
+    // function testDepositRedeemZero() public {}
 
-    function testDepositRedeemWithFundInjection() public {}
+    // function testDepositRedeemWithFundInjection() public {}
 
-    function testFailDepositAllIntoStrategy() public {}
+    // function testFailDepositAllIntoStrategy() public {}
 
-    function testDepositAllIntoStrategy() public {}
+    // function testDepositAllIntoStrategy() public {}
 }
