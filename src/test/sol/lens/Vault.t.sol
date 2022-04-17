@@ -17,7 +17,7 @@ contract VaultTest is DSTest, UsesTokenBase {
     MockStrategy private strategy;
 
     function setUp() public override {
-        super.setUp();
+        fundCaller();
 
         empty = new Empty();
 
@@ -29,6 +29,10 @@ contract VaultTest is DSTest, UsesTokenBase {
     }
 
     function testDepositRedeem() public {
+        uint256 expectedShares = vault.previewDeposit(Config.getTokenAmount());
+        vault.deposit(Config.getTokenAmount());
+        assertEq(vault.balanceOf(address(this)), expectedShares);
+
         // **** Check that the previewed amount matches the required amount
         // **** Deposit funds into the vault
         // **** Check that the balance of the vault has been updated

@@ -2,16 +2,15 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Config} from "./Config.sol";
 import {ICheatCodes} from "./ICheatCodes.sol";
 
 contract UsesTokenBase {
-    function setUp() public virtual {
-        _fundCaller();
-    }
+    using SafeERC20 for IERC20;
 
     // Fund a contract with the required tokens
-    function _fundCaller() private {
+    function _fundCaller() internal {
         IERC20[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
 
@@ -24,5 +23,14 @@ contract UsesTokenBase {
         cheats.startPrank(tokenWhale[1]);
         token[1].transfer(address(this), token[1].balanceOf(tokenWhale[1]));
         cheats.stopPrank();
+    }
+
+    // Approves funds for use with the given contracts
+    function _approveAll() internal {
+        uint256 MAX = 2**256 - 1;
+
+        IERC20[] memory token = Config.getToken();
+
+        for (uint256 i = 0; i < token.length; i++) token[0].safeApprove();
     }
 }
