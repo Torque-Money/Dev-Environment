@@ -27,4 +27,10 @@ contract VaultTest is DSTest, UsesTokenBase {
         strategy = new MockStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
     }
+
+    function testDepositRedeem() public {}
+
+    function testDepositRedeemZero() public {}
+
+    function testDepositRedeemNormalWithFunds() public {}
 }
