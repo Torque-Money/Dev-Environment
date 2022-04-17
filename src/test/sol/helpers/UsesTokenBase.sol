@@ -32,6 +32,6 @@ contract UsesTokenBase {
 
         uint256 MAX_INT = 2**256 - 1;
 
-        for (uint256 i = 0; i < token.length; i++) token[0].approve(spender[0], MAX_INT);
+        for (uint256 i = 0; i < token.length; i++) token[i].approve(spender[i], MAX_INT);
     }
 }
