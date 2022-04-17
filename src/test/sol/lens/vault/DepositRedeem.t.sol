@@ -120,14 +120,14 @@ contract VaultTest is VaultBase {
             _approveAll(spender);
 
             uint256 shares1 = vault.deposit(tokenAmount);
-            uint256[] memory out1 = vault.previewRedeem(shares1);
+            uint256[] memory out1 = vault.redeem(shares1);
 
             for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
-
-            vault.redeem(shares1);
         }
         cheats.stopPrank();
 
         vault.redeem(shares0);
     }
+
+    function testDepositRedeemMultipleWithInjection() public {}
 }
