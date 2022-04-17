@@ -78,7 +78,7 @@ contract VaultTest is VaultBase {
         uint256[] memory initialAmount = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-        vault.redeem(vault.previewDeposit(tokenAmount));
+        vault.redeem(vault.deposit(tokenAmount));
 
         // Check that the amount allocated out was more than the initial deposit
         for (uint256 i = 0; i < token.length; i++) assertGt(token[i].balanceOf(address(this)).sub(initialAmount[i]), tokenAmount[i]);
