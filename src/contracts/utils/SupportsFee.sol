@@ -10,45 +10,50 @@ abstract contract SupportsFee is Initializable, AccessControlUpgradeable, ISuppo
     bytes32 public FEE_ADMIN_ROLE;
 
     address private recipient;
-    uint256 private _feePercent;
-    uint256 private _feeAmount;
+    uint256 private percent;
+    uint256 private denominator;
+    uint256 private amount;
 
     function __SupportsFee_init(
         address _recipient,
-        uint256 feePercent_,
-        uint256 feeAmount_
+        uint256 _percent,
+        uint256 _denominator,
+        uint256 _amount
     ) internal onlyInitializing {
-        __SupportsFee_init_unchained(_recipient, feePercent_, feeAmount_);
+        __SupportsFee_init_unchained(_recipient, _percent, _denominator, _amount);
     }
 
     function __SupportsFee_init_unchained(
         address _recipient,
-        uint256 feePercent_,
-        uint256 feeAmount_
+        uint256 _percent,
+        uint256 _denominator,
+        uint256 _amount
     ) internal onlyInitializing {
         FEE_ADMIN_ROLE = keccak256("FEE_ADMIN_ROLE");
         _setRoleAdmin(FEE_ADMIN_ROLE, FEE_ADMIN_ROLE);
         _grantRole(FEE_ADMIN_ROLE, _msgSender());
 
         recipient = _recipient;
-        _feePercent = feePercent_;
-        _feeAmount = feeAmount_;
+        percent = _percent;
+        denominator = _denominator;
+        amount = _amount;
     }
 
-    function setFeePercent(uint256 feePercent_) external onlyRole(FEE_ADMIN_ROLE) {
-        _feePercent = feePercent_;
+    function setFeePercent(uint256 _percent, uint256 _denominator) external onlyRole(FEE_ADMIN_ROLE) {
+        percent = _percent;
+        denominator = _denominator;
     }
 
-    function feePercent() public view virtual override returns (uint256 percent) {
-        return _feePercent;
+    function feePercent() public view virtual override returns (uint256 _percent, uint256 _denominator) {
+        return (percent, denominator);
     }
 
-    function setFeeAmount(uint256 feeAmount_) external onlyRole(FEE_ADMIN_ROLE) {
-        _feeAmount = feeAmount_;
+    function setFeeAmount(uint256 _amount) external onlyRole(FEE_ADMIN_ROLE) {
+        amount = _amount;
     }
 
-    function feeAmount() public view virtual override returns (uint256 percent) {
-        return _feeAmount;
+    function feeAmount() public view virtual override returns (uint256 _amount) {
+        return amount;
     }
 
     function setFeeRecipient(address _recipient) external virtual override onlyRole(FEE_ADMIN_ROLE) {
