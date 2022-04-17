@@ -60,8 +60,4 @@ contract VaultTest is VaultBase {
     // function testDepositRedeemWithFundInjection() public {}
 
     // function testDepositRedeemMultiple() public {}
-
-    // function testFailDepositAllIntoStrategy() public {}
-
-    // function testDepositAllIntoStrategy() public {}
 }
