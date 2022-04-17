@@ -27,8 +27,6 @@ contract VaultBase is DSTest, UsesTokenBase {
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
 
-        _fundCaller();
-
         address[] memory spender = new address[](1);
         spender[0] = address(vault);
         _approveAll(spender);

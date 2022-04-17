@@ -9,6 +9,12 @@ import {ICheatCodes} from "./ICheatCodes.sol";
 contract UsesTokenBase {
     using SafeERC20 for IERC20;
 
+    modifier useFunds() {
+        _fundCaller();
+        _;
+        _defundCaller();
+    }
+
     // Fund a contract with the required tokens
     function _fundCaller() internal {
         IERC20[] memory token = Config.getToken();
@@ -23,6 +29,14 @@ contract UsesTokenBase {
         cheats.startPrank(tokenWhale[1]);
         token[1].transfer(address(this), token[1].balanceOf(tokenWhale[1]));
         cheats.stopPrank();
+    }
+
+    // Withdraw all funds from the contract back into the whales
+    function _defundCaller() internal {
+        IERC20[] memory token = Config.getToken();
+        address[] memory tokenWhale = Config.getTokenWhale();
+
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(tokenWhale[i], token[i].balanceOf(address(this)));
     }
 
     // Approves funds for use with the given contracts

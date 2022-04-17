@@ -17,7 +17,7 @@ contract VaultTest is VaultBase {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    function testDepositRedeem() public {
+    function testDepositRedeem() public useFunds {
         TorqueVaultV1 vault = _getVault();
 
         IERC20[] memory token = Config.getToken();
@@ -53,7 +53,7 @@ contract VaultTest is VaultBase {
         assertEq(vault.balanceOf(address(this)), 0);
     }
 
-    function testDepositRedeemZero() public {
+    function testDepositRedeemZero() public useFunds {
         TorqueVaultV1 vault = _getVault();
 
         IERC20[] memory token = Config.getToken();
@@ -77,7 +77,7 @@ contract VaultTest is VaultBase {
         assertGt(out[1], tokenAmount[1]);
     }
 
-    function testDepositRedeemWithTokenInjection() public {
+    function testDepositRedeemWithTokenInjection() public useFunds {
         TorqueVaultV1 vault = _getVault();
 
         IERC20[] memory token = Config.getToken();
@@ -96,7 +96,7 @@ contract VaultTest is VaultBase {
         for (uint256 i = 0; i < token.length; i++) assertGt(out[i], initialOut[i]);
     }
 
-    function testDepositRedeemMultiple() public {
+    function testDepositRedeemMultiple() public useFunds {
         TorqueVaultV1 vault = _getVault();
         Empty empty = _getEmpty();
 
@@ -129,38 +129,36 @@ contract VaultTest is VaultBase {
         vault.redeem(shares0);
     }
 
-    function testDepositRedeemMultipleWithInjection() public {
+    function testDepositRedeemMultipleWithInjection() public useFunds {
         // **** I want to test this by
-
-        TorqueVaultV1 vault = _getVault();
-        Empty empty = _getEmpty();
-
-        IERC20[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
-        // Deposit initial funds from account 0
-        uint256 shares0 = vault.deposit(tokenAmount);
-        uint256[] memory out0 = vault.previewRedeem(shares0);
-
-        ICheatCodes cheats = Config.getCheatCodes();
-
-        // Transfer funds to account 2
-        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
-
-        // Make deposit on behalf of account 2
-        cheats.startPrank(address(empty));
-        {
-            address[] memory spender = new address[](1);
-            spender[0] = address(vault);
-            _approveAll(spender);
-
-            uint256 shares1 = vault.deposit(tokenAmount);
-            uint256[] memory out1 = vault.redeem(shares1);
-
-            for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
-        }
-        cheats.stopPrank();
-
-        vault.redeem(shares0);
+        // **** What exactly am I looking for ? Maybe set the fees to be zero and check if the amount in = amount out ?
+        // TorqueVaultV1 vault = _getVault();
+        // Empty empty = _getEmpty();
+        // IERC20[] memory token = Config.getToken();
+        // uint256[] memory tokenAmount = Config.getTokenAmount();
+        // // Use 0 fees for the test
+        // uint256 amount = vault.feeAmount();
+        // vault.setFeeAmount(0);
+        // (uint256 percent, uint256 denominator) = vault.feePercent();
+        // vault.setFeePercent(0, denominator);
+        // // Deposit initial funds from account 0 and inject funds
+        // uint256 shares0 = vault.deposit(tokenAmount);
+        // for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
+        // uint256[] memory out0 = vault.previewRedeem(shares0);
+        // ICheatCodes cheats = Config.getCheatCodes();
+        // // Make deposit on behalf of account 2
+        // cheats.startPrank(address(empty));
+        // {
+        //     address[] memory spender = new address[](1);
+        //     spender[0] = address(vault);
+        //     _approveAll(spender);
+        //     uint256 shares1 = vault.deposit(tokenAmount);
+        //     uint256[] memory out1 = vault.redeem(shares1);
+        //     for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
+        // }
+        // cheats.stopPrank();
+        // vault.redeem(shares0);
+        // vault.setFeePercent(percent, denominator);
+        // vault.setFeeAmount(amount);
     }
 }
