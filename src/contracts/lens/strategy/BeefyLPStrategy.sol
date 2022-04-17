@@ -31,7 +31,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     IUniswapV2Factory public uniFactory;
     IBeefyVaultV6 public beVault;
 
-    uint256 private twaapy;
+    uint256 private twaAPY;
 
     function initialize(
         IERC20[] memory token,
@@ -51,7 +51,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         STRATEGY_CONTROLLER_ROLE = keccak256("STRATEGY_CONTROLLER_ROLE");
         _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
 
-        twaapy = initialAPY;
+        twaAPY = initialAPY;
 
         uniRouter = _uniRouter;
         uniFactory = _uniFactory;
@@ -103,8 +103,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
     function deposit(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         _deposit(amount);
-
-        emit Deposit(_msgSender(), amount);
     }
 
     function depositAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -112,8 +110,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
 
         _deposit(amount);
-
-        emit DepositAll(_msgSender());
     }
 
     function _withdraw(uint256[] memory amount) private {
@@ -125,8 +121,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         _withdraw(amount);
         _injectAllIntoStrategy();
-
-        emit Withdraw(_msgSender(), amount);
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -134,21 +128,19 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
 
         _withdraw(amount);
-
-        emit WithdrawAll(_msgSender());
     }
 
     function APY() external view returns (uint256 apy, uint256 decimals) {
-        return (twaapy, 1e4);
+        return (twaAPY, 1e4);
     }
 
     function updateAPY(uint256 apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         uint256 EMA_WEIGHT_PERCENT = 70;
 
-        uint256 temp = twaapy.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100));
+        uint256 temp = twaAPY.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100));
         temp = temp.add(apy.mul(EMA_WEIGHT_PERCENT).div(100));
 
-        twaapy = temp;
+        twaAPY = temp;
     }
 
     function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {

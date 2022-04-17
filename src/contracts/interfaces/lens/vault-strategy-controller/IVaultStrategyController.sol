@@ -14,6 +14,4 @@ interface IVaultStrategyController {
     // Update the vault and strategy.
     // Reverts if not updateable.
     function update() external;
-
-    event Update(address indexed caller);
 }

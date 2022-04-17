@@ -31,9 +31,4 @@ interface IStrategy is ISupportsToken {
     // Update the current APY for the strategy.
     // Calling APY after does not necessarily need to equal the submitted APY.
     function updateAPY(uint256 apy) external;
-
-    event Deposit(address indexed caller, uint256[] amount);
-    event DepositAll(address indexed caller);
-    event Withdraw(address indexed caller, uint256[] amount);
-    event WithdrawAll(address indexed caller);
 }

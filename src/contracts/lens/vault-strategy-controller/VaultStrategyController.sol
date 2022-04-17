@@ -22,8 +22,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
 
     bytes32 public CONTROLLER_ADMIN_ROLE;
 
-    uint256 public nextAPYUpdate;
-    bool public strategyUpdateable;
+    uint256 public nextUpdate;
 
     uint256 public APYRequestDelay;
     uint256 public APYUpdateDelay;
@@ -76,12 +75,11 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         return vault;
     }
 
-    function isStrategyUpdateable() public view override returns (bool updateable) {
-        return strategyUpdateable;
+    function isUpdateable() public view override returns (bool updateable) {
+        return block.timestamp >= nextUpdate;
     }
 
-    function updateStrategy() external override {
-        require(isStrategyUpdateable(), "StrategyController: Strategy is not updateable");
+    function _updateStrategy() private {
         require(entryCount() > 0, "StrategyController: At least one strategy is required to update");
 
         // Find the highest APY strategy
@@ -103,34 +101,28 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
             vault.setStrategy(strategy);
             vault.depositAllIntoStrategy();
         }
-
-        strategyUpdateable = false;
-
-        emit UpdateStrategy(_msgSender());
     }
 
-    function isAPYUpdateable() public view override returns (bool updateable) {
-        return block.timestamp >= nextAPYUpdate;
-    }
-
-    function updateAPY() external override {
-        require(isAPYUpdateable(), "StrategyController: APY is not updateable");
-
-        Chainlink.Request memory req = buildChainlinkRequest(CLSpecId, address(this), this.fulfillUpdateAPY.selector);
+    function _requestUpdateAPY() private {
+        Chainlink.Request memory req = buildChainlinkRequest(CLSpecId, address(this), this.fulfillUpdate.selector);
         req.add("get", apiURL);
         sendOperatorRequest(req, CLPayment);
 
-        nextAPYUpdate = block.timestamp.add(APYRequestDelay);
+        nextUpdate = block.timestamp.add(APYRequestDelay);
     }
 
-    // **** I guess that I could just call the required update APY inside of the fulfill this one because it technically is necessary
-    // **** Then we could get rid of the interface and just have update instead
+    function _updateAPY(string memory APYString) private {}
 
-    function fulfillUpdateAPY(bytes32 requestId, bytes memory bytesData) external recordChainlinkFulfillment(requestId) {
-        // **** So now we are going to take the requested bytes and parse the new APY's from this and update each strategy accordingly
-        // **** We are also going to update the request possibility
+    function update() external override {
+        require(isUpdateable(), "StrategyController: Not updateable");
+
+        _requestUpdateAPY();
     }
 
-    // **** I need to integrate this with chainlink requests - request will need to integrate event too
-    // **** Maybe add an event for requesting the parameter
+    function fulfillUpdate(bytes32 requestId, bytes memory bytesData) external recordChainlinkFulfillment(requestId) {
+        string memory APYString = string(bytesData);
+
+        _updateAPY(APYString);
+        _updateStrategy();
+    }
 }
