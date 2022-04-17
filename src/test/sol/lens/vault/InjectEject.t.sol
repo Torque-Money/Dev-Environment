@@ -44,7 +44,7 @@ contract InjectEjectTest is VaultBase {
             assertEq(vault.balance(token[i]), tokenAmount[i]);
             assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
-            assertEq(strategy.balance(token[i]), tokenAmount[i]);
+            assertEq(strategy.balance(token[i]), 0);
             assertEq(token[i].balanceOf(address(strategy)), 0);
         }
 
