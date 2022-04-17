@@ -11,12 +11,43 @@ import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract InjectEjectTest is VaultBase {
+    TorqueVaultV1 vault;
+    MockStrategy strategy;
+
     function setUp() public override {
         super.setUp();
+
+        vault = _getVault();
+        strategy = _getStrategy();
     }
 
     function testDepositAllIntoStrategy() public useFunds {
-        // **** We want to move the funds back and fourth using the withdraw and check that the balances get updated properly
-        // **** Also need to check that the funds in the strategy have been moved there correctly
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Make deposit and check the balance is updated correctly
+        uint256 shares = vault.deposit(tokenAmount);
+
+        // Check that vault has been allocated the correct amount of tokens and they have flowed into the right contracts
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(vault.balance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(vault)), 0);
+
+            assertEq(strategy.balance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(strategy)), tokenAmount[i]);
+        }
+
+        // Withdraw shares and check funds have flowed correctly
+        vault.withdrawAllFromStrategy();
+
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(vault.balance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
+
+            assertEq(strategy.balance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(strategy)), 0);
+        }
+
+        vault.redeem(shares);
     }
 }
