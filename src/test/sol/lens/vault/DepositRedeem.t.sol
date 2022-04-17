@@ -21,6 +21,8 @@ contract VaultTest is VaultBase {
     Empty empty;
 
     function setUp() public override {
+        super.setUp();
+
         vault = _getVault();
         empty = _getEmpty();
     }
