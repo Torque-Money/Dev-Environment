@@ -22,7 +22,7 @@ contract VaultTest is DSTest, UsesTokenBase {
         empty = new Empty();
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), address(empty));
+        vault.initialize(Config.getToken(), address(empty), 1, 1000);
 
         strategy = new MockStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
