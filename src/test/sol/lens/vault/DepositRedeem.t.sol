@@ -69,18 +69,12 @@ contract VaultTest is VaultBase {
         // Check that the vault has been allocated the correct amount of tokens
         for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
 
-        // Redeposit to accumulate the lost funds
+        // Check that the amount allocated out was more than the initial deposit after a proper share allocation
         tokenAmount = Config.getTokenAmount();
 
-        shares = vault.deposit(tokenAmount);
+        uint256[] memory out = vault.redeem(vault.deposit(tokenAmount));
 
-        uint256[] memory initialAmount = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
-
-        vault.redeem(shares);
-
-        // Check that the amount allocated out was more than the initial deposit
-        assertGt(token[1].balanceOf(address(this)).sub(initialAmount[1]), tokenAmount[1]);
+        assertGt(out[1], tokenAmount[1]);
     }
 
     function testDepositRedeemWithTokenInjection() public {
