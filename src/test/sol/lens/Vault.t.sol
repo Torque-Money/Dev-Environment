@@ -5,11 +5,13 @@ import {DSTest} from "ds-test/test.sol";
 
 import {MockStrategy} from "@contracts/mocks/MockStrategy.sol";
 
+import {Config} from "../Config.sol";
+
 contract VaultTest is DSTest {
     MockStrategy strategy;
 
     function setUp() public {
         strategy = new MockStrategy();
-        strategy.initialize(token, initialAPY);
+        strategy.initialize(Config.getTokens(), Config.getInitialAPY());
     }
 }
