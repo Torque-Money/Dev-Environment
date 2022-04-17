@@ -55,7 +55,18 @@ contract VaultTest is VaultBase {
         assertEq(vault.balanceOf(address(this)), 0);
     }
 
-    function testDepositRedeemZero() public {}
+    function testDepositRedeemZero() public {
+        TorqueVaultV1 vault = _getVault();
+
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Check that the previewed shares becomes zero
+        tokenAmount[0] = 0;
+        uint256 expectedShares = vault.previewDeposit(tokenAmount);
+
+        assertEq(expectedShares, 0);
+    }
 
     // function testDepositRedeemWithFundInjection() public {}
 
