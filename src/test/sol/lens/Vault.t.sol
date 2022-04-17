@@ -3,8 +3,13 @@ pragma solidity ^0.8.0;
 
 import {DSTest} from "ds-test/test.sol";
 
+import {MockStrategy} from "@contracts/mocks/MockStrategy.sol";
+
 contract VaultTest is DSTest {
+    MockStrategy strategy;
+
     function setUp() public {
-        // **** I need to declare the vault, the strategy, and the controller to be used
+        strategy = new MockStrategy();
+        strategy.initialize(token, initialAPY);
     }
 }
