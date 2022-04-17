@@ -29,6 +29,8 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
         uint256 _denominator,
         uint256 _amount
     ) internal onlyInitializing {
+        require(_denominator != 0, "SupportsFee: Denominator cannot be 0");
+
         FEE_ADMIN_ROLE = keccak256("FEE_ADMIN_ROLE");
         _setRoleAdmin(FEE_ADMIN_ROLE, FEE_ADMIN_ROLE);
         _grantRole(FEE_ADMIN_ROLE, _msgSender());
