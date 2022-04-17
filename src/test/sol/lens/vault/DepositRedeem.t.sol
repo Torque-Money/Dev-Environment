@@ -159,15 +159,22 @@ contract VaultTest is VaultBase {
             spender[0] = address(vault);
             _approveAll(spender);
 
+            // Check that after a deposit the initial user still has the same output shares (approximately)
             uint256 shares1 = vault.deposit(tokenAmount);
+
+            uint256[] memory out0New = vault.previewRedeem(shares0);
+            for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out0New[i]);
+
+            // Check that redeeming ends with the same tokens as initially deposited for the second user
             uint256[] memory out1 = vault.redeem(shares1);
 
-            for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
+            for (uint256 i = 0; i < token.length; i++) assertEq(tokenAmount[i], out1[i]);
         }
         cheats.stopPrank();
 
         vault.redeem(shares0);
 
+        // Reset the fees
         vault.setFeePercent(percent, denominator);
         vault.setFeeAmount(amount);
     }
