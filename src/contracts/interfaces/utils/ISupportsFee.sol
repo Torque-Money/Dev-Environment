@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 // Allows a contract to support a fee model to be paid to a recipient.
 interface ISupportsFee {
     // Get the fee percentage.
-    function feePercent() external view returns (uint256 amount);
+    function feePercent() external view returns (uint256 percent);
 
     // Get the fee amount.
     function feeAmount() external view returns (uint256 amount);

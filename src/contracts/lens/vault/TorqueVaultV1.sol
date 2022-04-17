@@ -27,11 +27,15 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     mapping(IERC20 => uint256) private deposited;
 
-    function initialize(IERC20[] memory token, address _feeRecipient) external initializer {
+    function initialize(
+        IERC20[] memory token,
+        address _feeRecipient,
+        uint256 _feePercent
+    ) external initializer {
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
         __SupportsToken_init(token);
-        __SupportsFee_init(_feeRecipient);
+        __SupportsFee_init(_feeRecipient, _feePercent, 0);
         __Emergency_init();
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");
@@ -190,13 +194,5 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function withdrawAllFromStrategy() external onlyRole(VAULT_CONTROLLER_ROLE) {
         strategy.withdrawAll();
-    }
-
-    function feePercent() public pure override returns (uint256 percent) {
-        return 5;
-    }
-
-    function feeAmount() public pure override returns (uint256 amount) {
-        return 0;
     }
 }
