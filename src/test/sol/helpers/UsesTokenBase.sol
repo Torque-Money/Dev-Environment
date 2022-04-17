@@ -26,11 +26,12 @@ contract UsesTokenBase {
     }
 
     // Approves funds for use with the given contracts
-    function _approveAll() internal {
+    function _approveAll(address[] memory spender) internal {
+        IERC20[] memory token = Config.getToken();
+        require(spender.length == token.length, "UsesTokenBase: Spender list length must match token length");
+
         uint256 MAX = 2**256 - 1;
 
-        IERC20[] memory token = Config.getToken();
-
-        for (uint256 i = 0; i < token.length; i++) token[0].safeApprove();
+        for (uint256 i = 0; i < token.length; i++) token[0].safeApprove(spender[0], MAX);
     }
 }

@@ -16,9 +16,7 @@ contract VaultTest is DSTest, UsesTokenBase {
     TorqueVaultV1 private vault;
     MockStrategy private strategy;
 
-    function setUp() public override {
-        fundCaller();
-
+    function setUp() public {
         empty = new Empty();
 
         strategy = new MockStrategy();
@@ -26,6 +24,13 @@ contract VaultTest is DSTest, UsesTokenBase {
 
         vault = new TorqueVaultV1();
         vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
+
+        _fundCaller();
+
+        address[] memory toApprove = new address[](2);
+        toApprove[0] = address(strategy);
+        toApprove[1] = address(vault);
+        _approveAll(toApprove);
     }
 
     function testDepositRedeem() public {
