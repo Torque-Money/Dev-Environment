@@ -81,7 +81,7 @@ contract VaultTest is VaultBase {
         vault.redeem(vault.deposit(tokenAmount));
 
         // Check that the amount allocated out was more than the initial deposit
-        for (uint256 i = 0; i < token.length; i++) assertGt(token[i].balanceOf(address(this)).sub(initialAmount[i]), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) assertGt(token[i].balanceOf(address(this)).sub(initialAmount[i]), tokenAmount[i]); // **** Isnt going to be the case for the first one that we deposited 0 into
     }
 
     // function testDepositRedeemWithFundInjection() public {}
