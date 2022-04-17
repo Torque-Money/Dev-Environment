@@ -26,6 +26,7 @@ contract VaultTest is DSTest, UsesTokenBase {
         vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
+        vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
 
         _fundCaller();
 
@@ -36,17 +37,23 @@ contract VaultTest is DSTest, UsesTokenBase {
     }
 
     function testDepositRedeem() public {
-        uint256 expectedShares = vault.previewDeposit(Config.getTokenAmount());
-        vault.deposit(Config.getTokenAmount());
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Check that the previewed shares matches the allocated shares
+        uint256 expectedShares = vault.previewDeposit(tokenAmount);
+        vault.deposit(tokenAmount);
 
         assertEq(vault.balanceOf(address(this)), expectedShares);
 
-        // **** Check that the previewed amount matches the required amount
-        // **** Deposit funds into the vault
-        // **** Check that the balance of the vault has been updated
-        // **** Check that the recipient has more funds that what they begun with
-        // **** Check that the strategy has been updated with funds
-        // **** Check that the vault balance reflects the appropriate funds
+        // Check that vault has been allocated the correct amount of tokens
+        for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
+
+        // Check that the vault balance reflects the appropriate funds
+        vault.withdrawAllFromStrategy();
+
+        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
+
         // **** Check that the redeem preview is valid
         // **** Check that the amount withdrawn is now valid
     }

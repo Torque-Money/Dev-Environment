@@ -65,7 +65,7 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, Sup
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         uint256[] memory amount = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(_msgSender());
+        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(address(this));
 
         _withdraw(amount);
     }
