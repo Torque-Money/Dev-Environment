@@ -25,8 +25,6 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     IStrategy private strategy;
 
-    mapping(IERC20 => uint256) private deposited;
-
     function initialize(
         IERC20[] memory token,
         address _feeRecipient,
@@ -87,12 +85,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     function deposit(uint256[] memory amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
         shares = previewDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
-
-            token.safeTransferFrom(_msgSender(), address(this), amount[i]);
-            deposited[token] = deposited[token].add(amount[i]);
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
         _depositAllIntoStrategy();
 
@@ -101,43 +94,30 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Deposit(_msgSender(), amount, shares);
     }
 
-    function _previewRedeem(uint256 shares) private view returns (uint256[] memory amount, uint256[] memory fees) {
+    function _previewRedeem(uint256 shares) private view returns (uint256[] memory amount) {
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
-        if (_totalShares == 0) return (amount, fees);
+        if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
 
             uint256 _balance = balance(token);
             amount[i] = _balance.mul(shares).div(_totalShares);
-
-            if (_balance > deposited[token]) fees[i] = _balance.sub(deposited[token]).mul(feePercent()).mul(amount[i]).div(_balance).div(100);
         }
     }
 
     function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
-        uint256[] memory fees;
-        (amount, fees) = _previewRedeem(shares);
-
-        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = amount[i].sub(fees[i]);
+        return _previewRedeem(shares);
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        uint256[] memory fees;
-        (amount, fees) = _previewRedeem(shares);
+        amount = _previewRedeem(shares);
 
         _withdrawAllFromStrategy();
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
-
-            token.safeTransfer(_msgSender(), amount[i].sub(fees[i]));
-            token.safeTransfer(feeRecipient(), fees[i]);
-
-            deposited[token] = deposited[token].sub(amount[i]);
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
         _depositAllIntoStrategy();
 
