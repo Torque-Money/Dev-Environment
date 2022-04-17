@@ -17,9 +17,15 @@ contract VaultTest is VaultBase {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    function testDepositRedeem() public useFunds {
-        TorqueVaultV1 vault = _getVault();
+    TorqueVaultV1 vault;
+    Empty empty;
 
+    function setUp() public override {
+        vault = _getVault();
+        empty = _getEmpty();
+    }
+
+    function testDepositRedeem() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -54,8 +60,6 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemZero() public useFunds {
-        TorqueVaultV1 vault = _getVault();
-
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -78,8 +82,6 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemWithTokenInjection() public useFunds {
-        TorqueVaultV1 vault = _getVault();
-
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -97,9 +99,6 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemMultiple() public useFunds {
-        TorqueVaultV1 vault = _getVault();
-        Empty empty = _getEmpty();
-
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -130,9 +129,6 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemMultipleWithInjection() public useFunds {
-        TorqueVaultV1 vault = _getVault();
-        Empty empty = _getEmpty();
-
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
