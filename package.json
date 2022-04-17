@@ -2,7 +2,7 @@
     "name": "dev-environment",
     "scripts": {
         "run-node": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
-        "test": "forge test --fork-url "
+        "test": "export $(cat .env | xargs) && forge test --fork-url $NETWORK_URL_OPERA"
     },
     "devDependencies": {
         "@chainlink/contracts": "^0.4.0",
