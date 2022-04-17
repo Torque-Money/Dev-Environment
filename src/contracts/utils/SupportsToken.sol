@@ -54,7 +54,9 @@ abstract contract SupportsToken is Initializable, ISupportsToken {
         return IERC20(tokenSet.at(index));
     }
 
-    function balance(IERC20 token) public view virtual override returns (uint256 amount);
+    function balance(IERC20 token) public view virtual override returns (uint256 amount) {
+        return token.balanceOf(address(this));
+    }
 
     function available(IERC20 token) public view override returns (uint256 amount) {
         return balance(token);
