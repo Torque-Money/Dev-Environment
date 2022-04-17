@@ -12,7 +12,7 @@ contract VaultTest is DSTest {
     MockStrategy private strategy;
     IERC20[] private token;
 
-    function setUp() public {
+    function setUp() external {
         token = Config.getTokens();
 
         strategy = new MockStrategy();
@@ -22,4 +22,6 @@ contract VaultTest is DSTest {
 
         emit log_uint(token[0].balanceOf(address(this)));
     }
+
+    function testLol() external {}
 }
