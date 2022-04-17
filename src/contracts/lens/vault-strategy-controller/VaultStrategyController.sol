@@ -9,6 +9,7 @@ import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
 import {strings} from "solidity-stringutils/strings.sol";
+import {Integers} from "../../lib/Integers.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
@@ -18,6 +19,7 @@ import {Emergency} from "../../utils/Emergency.sol";
 contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
     using strings for string;
     using strings for strings.slice;
+    using Integers for string;
     using SafeMath for uint256;
     using Chainlink for Chainlink.Request;
 
@@ -122,7 +124,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         assert(s.count(delim) == entryCount());
         for (uint256 i = 0; i < entryCount(); i++) {
             IStrategy strategy = IStrategy(entryByIndex(i));
-            uint256 newAPY = s.split(delim).toString();
+            uint256 newAPY = s.split(delim).toString().parseInt();
             strategy.updateAPY(newAPY);
         }
     }
