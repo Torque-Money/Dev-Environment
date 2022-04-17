@@ -142,7 +142,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     }
 
     function _depositIntoStrategy(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeApprove(address(strategy), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeIncreaseAllowance(address(strategy), amount[i]);
 
         strategy.deposit(amount);
     }
@@ -150,7 +150,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     function _depositAllIntoStrategy() private {
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
-            token.safeApprove(address(strategy), token.balanceOf(address(this)));
+            token.safeIncreaseAllowance(address(strategy), token.balanceOf(address(this)));
         }
 
         strategy.depositAll();
