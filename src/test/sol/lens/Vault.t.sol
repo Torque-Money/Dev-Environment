@@ -46,6 +46,9 @@ contract VaultTest is DSTest, UsesTokenBase {
 
         assertEq(vault.balanceOf(address(this)), expectedShares);
 
+        // Check that the recipient has shares minted
+        assertGt(vault.balanceOf(vault.feeRecipient()), 0);
+
         // Check that vault has been allocated the correct amount of tokens
         for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
 
@@ -55,8 +58,14 @@ contract VaultTest is DSTest, UsesTokenBase {
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
         // Check that the redeem preview matches the amount allocated
+        // **** How am I going to get the amount that was given out to me ?
+        uint256[] memory expectedOut = vault.previewRedeem(expectedShares);
+        vault.redeem(expectedShares);
+
+        // Check that the amount out is less than what was deposited
 
         // Check the the correct shares are burned
+        assertEq(vault.balanceOf(address(this)), 0);
     }
 
     // function testDepositRedeemZero() public {}
