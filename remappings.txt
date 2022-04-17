@@ -3,4 +3,6 @@ ds-test/=lib/ds-test/src/
 @openzeppelin/=node_modules/@openzeppelin/
 @contracts/=src/contracts/
 @uniswap/=node_modules/@uniswap/
+beefy/=lib/beefy-contracts/
 solidity-stringutils/=lib/solidity-stringutils/src/
+solidity-util/=lib/solidity-util/
