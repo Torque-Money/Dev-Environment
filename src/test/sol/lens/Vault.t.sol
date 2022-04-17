@@ -21,7 +21,8 @@ contract VaultTest is DSTest {
         Config.fundCaller();
     }
 
-    function testLol() external {
-        emit log_uint(token[0].balanceOf(address(this)));
+    function testFunded() external {
+        assertGt(token[0].balanceOf(address(this)), 0);
+        assertGt(token[1].balanceOf(address(this)), 0);
     }
 }
