@@ -13,20 +13,17 @@ contract UsesTokenBase is DSTest {
     }
 
     function _fundCaller() internal {
+        IERC20[] memory token = Config.getToken();
+        address[] memory tokenWhale = Config.getTokenWhale();
+
         ICheatCodes cheats = Config.getCheatCodes();
 
-        cheats.startPrank(whales[0]);
-        token[0].transfer(address(this), token[0].balanceOf(whales[0]));
+        cheats.startPrank(tokenWhale[0]);
+        token[0].transfer(address(this), token[0].balanceOf(tokenWhale[0]));
         cheats.stopPrank();
 
-        cheats.startPrank(whales[1]);
-        token[1].transfer(address(this), token[1].balanceOf(whales[1]));
+        cheats.startPrank(tokenWhale[1]);
+        token[1].transfer(address(this), token[1].balanceOf(tokenWhale[1]));
         cheats.stopPrank();
     }
-
-    function getToken() public pure returns (IERC20[] memory token) {
-        return Config.getToken();
-    }
-
-    function getTokenAmount() public pure returns (uint256[] memory amount) {}
 }
