@@ -26,27 +26,27 @@ contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
         _grantRole(REGISTRY_ADMIN_ROLE, _msgSender());
     }
 
-    function add(address entry) external override onlyRole(REGISTRY_ADMIN_ROLE) {
+    function add(address entry) external virtual override onlyRole(REGISTRY_ADMIN_ROLE) {
         require(_set.add(entry), "Registry: Cannot add element to registry");
 
         emit Add(msg.sender, entry);
     }
 
-    function remove(address entry) external override onlyRole(REGISTRY_ADMIN_ROLE) {
+    function remove(address entry) external virtual override onlyRole(REGISTRY_ADMIN_ROLE) {
         require(_set.remove(entry), "Registry: Cannot remove element from registry");
 
         emit Remove(msg.sender, entry);
     }
 
-    function isEntry(address entry) public view override returns (bool _entry) {
+    function isEntry(address entry) public view virtual override returns (bool _entry) {
         return _set.contains(entry);
     }
 
-    function entryCount() public view override returns (uint256 count) {
+    function entryCount() public view virtual override returns (uint256 count) {
         return _set.length();
     }
 
-    function entryByIndex(uint256 index) public view override returns (address entry) {
+    function entryByIndex(uint256 index) public view virtual override returns (address entry) {
         return _set.at(index);
     }
 }

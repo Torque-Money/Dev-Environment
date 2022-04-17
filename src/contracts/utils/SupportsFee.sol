@@ -6,7 +6,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 
 import {ISupportsFee} from "../interfaces/utils/ISupportsFee.sol";
 
-abstract contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
+contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
     bytes32 public FEE_ADMIN_ROLE;
 
     address private recipient;
@@ -39,7 +39,7 @@ abstract contract SupportsFee is Initializable, AccessControlUpgradeable, ISuppo
         amount = _amount;
     }
 
-    function setFeePercent(uint256 _percent, uint256 _denominator) external onlyRole(FEE_ADMIN_ROLE) {
+    function setFeePercent(uint256 _percent, uint256 _denominator) external virtual onlyRole(FEE_ADMIN_ROLE) {
         percent = _percent;
         denominator = _denominator;
     }
@@ -48,7 +48,7 @@ abstract contract SupportsFee is Initializable, AccessControlUpgradeable, ISuppo
         return (percent, denominator);
     }
 
-    function setFeeAmount(uint256 _amount) external onlyRole(FEE_ADMIN_ROLE) {
+    function setFeeAmount(uint256 _amount) external virtual onlyRole(FEE_ADMIN_ROLE) {
         amount = _amount;
     }
 

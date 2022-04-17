@@ -41,15 +41,15 @@ abstract contract SupportsToken is Initializable, ISupportsToken {
         _;
     }
 
-    function isSupportedToken(IERC20 token) public view returns (bool supportedToken) {
+    function isSupportedToken(IERC20 token) public view virtual override returns (bool supportedToken) {
         return tokenSet.contains(address(token));
     }
 
-    function tokenCount() public view returns (uint256 count) {
+    function tokenCount() public view virtual override returns (uint256 count) {
         return tokenSet.length();
     }
 
-    function tokenByIndex(uint256 index) public view returns (IERC20 token) {
+    function tokenByIndex(uint256 index) public view virtual override returns (IERC20 token) {
         require(index < tokenCount(), "SupportsToken: Index must be less than count");
         return IERC20(tokenSet.at(index));
     }
