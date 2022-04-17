@@ -109,6 +109,10 @@ contract VaultTest is VaultBase {
 
         ICheatCodes cheats = Config.getCheatCodes();
 
+        // Transfer funds to account 2
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
+
+        // Make deposit on behalf of account 2
         cheats.startPrank(address(empty));
 
         address[] memory spender = new address[](1);
