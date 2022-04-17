@@ -8,7 +8,8 @@ import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-con
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
-import {strings} from "@solidity-stringutils/strings.sol";
+import {strings} from "solidity-stringutils/strings.sol";
+import {Integers} from "solidity-util/lib/Integers.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
@@ -122,7 +123,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         assert(s.count(delim) == entryCount());
         for (uint256 i = 0; i < entryCount(); i++) {
             IStrategy strategy = IStrategy(entryByIndex(i));
-            uint256 newAPY = uint256(abi.encodePacked(s.split(delim).toString()));
+            uint256 newAPY = s.split(delim).toString();
             strategy.updateAPY(newAPY);
         }
     }

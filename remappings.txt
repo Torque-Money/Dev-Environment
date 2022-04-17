@@ -1,5 +1,7 @@
 ds-test/=lib/ds-test/src/
+@chainlink/=node_modules/@chainlink/
 @openzeppelin/=node_modules/@openzeppelin/
 @contracts/=src/contracts/
 @uniswap/=node_modules/@uniswap/
-@solidity-stringutils/=lib/solidity-stringutils/src/
+solidity-stringutils/=lib/solidity-stringutils/src/
+solidity-util/=node_modules/solidity-util/
