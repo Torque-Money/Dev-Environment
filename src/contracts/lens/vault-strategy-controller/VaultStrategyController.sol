@@ -115,7 +115,16 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     }
 
     function _updateAPY(string memory APYString) private {
-        // **** Now we need to parse this APY string and update our strategies off of it
+        // Seperate APY's by commas and distribute them to their respective strategies
+        strings.slice memory s = APYString.toSlice();
+        strings.slice memory delim = string(",").toSlice();
+
+        assert(s.count(delim) == entryCount());
+        for (uint256 i = 0; i < entryCount(); i++) {
+            IStrategy strategy = IStrategy(entryByIndex(i));
+            uint256 newAPY = uint256(abi.encodePacked(s.split(delim).toString()));
+            strategy.updateAPY(newAPY);
+        }
     }
 
     function update() external override {
