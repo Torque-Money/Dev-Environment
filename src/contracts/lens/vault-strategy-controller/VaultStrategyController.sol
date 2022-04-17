@@ -111,7 +111,9 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
         nextUpdate = block.timestamp.add(APYRequestDelay);
     }
 
-    function _updateAPY(string memory APYString) private {}
+    function _updateAPY(string memory APYString) private {
+        // **** Now we need to parse this APY string and update our strategies off of it
+    }
 
     function update() external override {
         require(isUpdateable(), "StrategyController: Not updateable");
