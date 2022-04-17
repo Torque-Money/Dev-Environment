@@ -15,7 +15,7 @@ contract VaultBase is DSTest, UsesTokenBase {
     TorqueVaultV1 private vault;
     MockStrategy private strategy;
 
-    function setUp() public {
+    function setUp() public virtual {
         empty = new Empty();
 
         strategy = new MockStrategy();
