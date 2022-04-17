@@ -111,7 +111,9 @@ contract VaultTest is VaultBase {
 
         cheats.startPrank(address(empty));
 
-        // **** I also need to allocate the appropriate balance on behalf of myself ?
+        address[] memory spender = new address[](1);
+        spender[0] = address(vault);
+        _approveAll(spender);
 
         uint256 shares2 = vault.deposit(tokenAmount);
         uint256[] memory out2 = vault.previewRedeem(shares2);

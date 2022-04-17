@@ -29,10 +29,9 @@ contract VaultBase is DSTest, UsesTokenBase {
 
         _fundCaller();
 
-        address[] memory toApprove = new address[](2);
-        toApprove[0] = address(strategy);
-        toApprove[1] = address(vault);
-        _approveAll(toApprove);
+        address[] memory spender = new address[](1);
+        spender[0] = address(vault);
+        _approveAll(spender);
     }
 
     function _getEmpty() internal view returns (Empty _empty) {
