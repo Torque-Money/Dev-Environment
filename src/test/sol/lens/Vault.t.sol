@@ -54,8 +54,9 @@ contract VaultTest is DSTest, UsesTokenBase {
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
-        // **** Check that the redeem preview is valid
-        // **** Check that the amount withdrawn is now valid
+        // Check that the redeem preview matches the amount allocated
+
+        // Check the the correct shares are burned
     }
 
     // function testDepositRedeemZero() public {}
