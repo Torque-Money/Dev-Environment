@@ -103,9 +103,9 @@ contract VaultTest is VaultBase {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
-        // Deposit initial funds from account 1
-        uint256 shares1 = vault.deposit(tokenAmount);
-        uint256[] memory out1 = vault.previewRedeem(shares1);
+        // Deposit initial funds from account 0
+        uint256 shares0 = vault.deposit(tokenAmount);
+        uint256[] memory out0 = vault.previewRedeem(shares0);
 
         ICheatCodes cheats = Config.getCheatCodes();
 
@@ -114,20 +114,20 @@ contract VaultTest is VaultBase {
 
         // Make deposit on behalf of account 2
         cheats.startPrank(address(empty));
+        {
+            address[] memory spender = new address[](1);
+            spender[0] = address(vault);
+            _approveAll(spender);
 
-        address[] memory spender = new address[](1);
-        spender[0] = address(vault);
-        _approveAll(spender);
+            uint256 shares1 = vault.deposit(tokenAmount);
+            uint256[] memory out1 = vault.previewRedeem(shares1);
 
-        uint256 shares2 = vault.deposit(tokenAmount);
-        uint256[] memory out2 = vault.previewRedeem(shares2);
+            for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
 
-        // **** Now we compare the out1 and the out2 with the exact same deposits
-
-        // **** Now we withdraw from the second
-
+            vault.redeem(shares1);
+        }
         cheats.stopPrank();
 
-        // **** Now we withdraw from the first
+        vault.redeem(shares0);
     }
 }
