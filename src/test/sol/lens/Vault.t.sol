@@ -2,7 +2,9 @@
 pragma solidity ^0.8.0;
 
 import {DSTest} from "ds-test/test.sol";
+
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import {UsesTokenBase} from "../helpers/UsesTokenBase.sol";
 
@@ -12,6 +14,8 @@ import {MockStrategy} from "../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is DSTest, UsesTokenBase {
+    using SafeMath for uint256;
+
     Empty private empty;
     TorqueVaultV1 private vault;
     MockStrategy private strategy;
@@ -23,7 +27,7 @@ contract VaultTest is DSTest, UsesTokenBase {
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), strategy, address(empty), 0, 1000);
+        vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
@@ -57,12 +61,19 @@ contract VaultTest is DSTest, UsesTokenBase {
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
-        // Check that the redeem preview matches the amount allocated
-        // **** How am I going to get the amount that was given out to me ?
+        // Check that the redeem preview matches the amount allocated and check that the amount out is less than what was deposited
         uint256[] memory expectedOut = vault.previewRedeem(expectedShares);
+
+        uint256[] memory initialAmount = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+
         vault.redeem(expectedShares);
 
-        // Check that the amount out is less than what was deposited
+        for (uint256 i = 0; i < token.length; i++) {
+            uint256 out = token[i].balanceOf(address(this)).sub(initialAmount[i]);
+            assertEq(expectedOut[i], out);
+            assertLt(out, tokenAmount[i]);
+        }
 
         // Check the the correct shares are burned
         assertEq(vault.balanceOf(address(this)), 0);
