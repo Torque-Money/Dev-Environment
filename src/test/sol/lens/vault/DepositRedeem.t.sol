@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {VaultBase} from "./VaultBase.sol";
 
@@ -13,6 +14,7 @@ import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is VaultBase {
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     function testDepositRedeem() public {
         TorqueVaultV1 vault = _getVault();
@@ -58,10 +60,10 @@ contract VaultTest is VaultBase {
 
         // Check that the previewed shares becomes zero
         tokenAmount[0] = 0;
-        uint256 expectedShares = vault.previewDeposit(tokenAmount);
+        uint256 shares = vault.previewDeposit(tokenAmount);
         vault.deposit(tokenAmount);
 
-        assertEq(expectedShares, 0);
+        assertEq(shares, 0);
         assertEq(vault.balanceOf(address(this)), 0);
 
         // Check that the vault has been allocated the correct amount of tokens
@@ -70,18 +72,36 @@ contract VaultTest is VaultBase {
         // Redeposit to accumulate the lost funds
         tokenAmount = Config.getTokenAmount();
 
-        expectedShares = vault.deposit(tokenAmount);
+        shares = vault.deposit(tokenAmount);
 
         uint256[] memory initialAmount = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-        vault.redeem(expectedShares);
+        vault.redeem(shares);
 
         // Check that the amount allocated out was more than the initial deposit
         assertGt(token[1].balanceOf(address(this)).sub(initialAmount[1]), tokenAmount[1]);
     }
 
-    // function testDepositRedeemWithFundInjection() public {}
+    function testDepositRedeemWithTokenInjection() public {
+        TorqueVaultV1 vault = _getVault();
+
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Check that the previewed shares becomes zero
+        uint256 shares = vault.previewDeposit(tokenAmount);
+        vault.deposit(tokenAmount);
+
+        // Compare the allocated assets before and after the token injection
+        uint256[] memory initialOut = vault.previewRedeem(shares);
+
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(vault), tokenAmount[i]);
+
+        uint256[] memory out = vault.redeem(shares);
+
+        for (uint256 i = 0; i < token.length; i++) assertGt(out[i], initialOut[i]);
+    }
 
     // function testDepositRedeemMultiple() public {}
 }
