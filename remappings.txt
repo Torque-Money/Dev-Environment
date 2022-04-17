@@ -1,8 +1,8 @@
-ds-test/=lib/ds-test/src/
 @chainlink/=node_modules/@chainlink/
 @openzeppelin/=node_modules/@openzeppelin/
 @contracts/=src/contracts/
 @uniswap/=node_modules/@uniswap/
+ds-test/=lib/ds-test/src/
 beefy/=lib/beefy-contracts/
 solidity-stringutils/=lib/solidity-stringutils/src/
 solidity-util/=lib/solidity-util/
