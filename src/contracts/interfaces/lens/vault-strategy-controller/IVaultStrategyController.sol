@@ -8,20 +8,12 @@ interface IVaultStrategyController {
     // Get the vault used by the controller.
     function getVault() external view returns (IVaultV1 vault);
 
-    // Check if the strategy can be updated.
-    function isStrategyUpdateable() external view returns (bool updateable);
-
-    // Update the strategy.
-    // Reverts if the strategy is not upgradeable.
-    function updateStrategy() external;
-
     // Check if the APY can be updated.
-    function isAPYUpdateable() external view returns (bool updateable);
+    function isUpdateable() external view returns (bool updateable);
 
-    // Update the APY.
-    // Reverts if the APY is not upgradeable.
-    function updateAPY() external;
+    // Update the vault and strategy.
+    // Reverts if not updateable.
+    function update() external;
 
-    event UpdateStrategy(address indexed caller);
-    event UpdateAPY(address indexed caller);
+    event Update(address indexed caller);
 }
