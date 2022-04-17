@@ -8,6 +8,7 @@ import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-con
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
+import {strings} from "@solidity-stringutils/strings.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
@@ -15,6 +16,8 @@ import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
+    using strings for string;
+    using strings for strings.slice;
     using SafeMath for uint256;
     using Chainlink for Chainlink.Request;
 
