@@ -29,8 +29,10 @@ contract VaultTest is DSTest, UsesTokenBase {
     }
 
     function testDepositRedeem() public {
+        // **** Check that the previewed amount matches the required amount
         // **** Deposit funds into the vault
         // **** Check that the balance of the vault has been updated
+        // **** Check that the recipient has more funds that what they begun with
         // **** Check that the strategy has been updated with funds
         // **** Check that the vault balance reflects the appropriate funds
         // **** Check that the redeem preview is valid
