@@ -6,7 +6,7 @@ import {Config} from "./Config.sol";
 import {ICheatCodes} from "./ICheatCodes.sol";
 
 contract UsesTokenBase {
-    function setUp() public {
+    function setUp() public virtual {
         _fundCaller();
     }
 
