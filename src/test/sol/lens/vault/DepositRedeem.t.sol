@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {VaultBase} from "./VaultBase.sol";
 
@@ -60,8 +61,7 @@ contract VaultTest is VaultBase {
 
         // Check that the previewed shares becomes zero
         tokenAmount[0] = 0;
-        uint256 shares = vault.previewDeposit(tokenAmount);
-        vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(tokenAmount);
 
         assertEq(shares, 0);
         assertEq(vault.balanceOf(address(this)), 0);
@@ -83,9 +83,8 @@ contract VaultTest is VaultBase {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
-        // Check that the previewed shares becomes zero
-        uint256 shares = vault.previewDeposit(tokenAmount);
-        vault.deposit(tokenAmount);
+        // Deposit funds initially
+        uint256 shares = vault.deposit(tokenAmount);
 
         // Compare the allocated assets before and after the token injection
         uint256[] memory initialOut = vault.previewRedeem(shares);
@@ -98,7 +97,31 @@ contract VaultTest is VaultBase {
     }
 
     function testDepositRedeemMultiple() public {
-        // **** This one is going to be the hardest because it requires multiple people to enter and then exit a position
-        // **** We might also have a problem where the ratios get messed up ? (nah we won't since we are depositing the same amount)
+        TorqueVaultV1 vault = _getVault();
+        Empty empty = _getEmpty();
+
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Deposit initial funds from account 1
+        uint256 shares1 = vault.deposit(tokenAmount);
+        uint256[] memory out1 = vault.previewRedeem(shares1);
+
+        ICheatCodes cheats = Config.getCheatCodes();
+
+        cheats.startPrank(address(empty));
+
+        // **** I also need to allocate the appropriate balance on behalf of myself ?
+
+        uint256 shares2 = vault.deposit(tokenAmount);
+        uint256[] memory out2 = vault.previewRedeem(shares2);
+
+        // **** Now we compare the out1 and the out2 with the exact same deposits
+
+        // **** Now we withdraw from the second
+
+        cheats.stopPrank();
+
+        // **** Now we withdraw from the first
     }
 }
