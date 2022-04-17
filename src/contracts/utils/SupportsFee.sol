@@ -30,6 +30,7 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
         uint256 _amount
     ) internal onlyInitializing {
         require(_denominator != 0, "SupportsFee: Denominator cannot be 0");
+        require(_percent <= _denominator, "SupportsFee: Percent cannot be greater than denominator");
 
         FEE_ADMIN_ROLE = keccak256("FEE_ADMIN_ROLE");
         _setRoleAdmin(FEE_ADMIN_ROLE, FEE_ADMIN_ROLE);
@@ -42,6 +43,9 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
     }
 
     function setFeePercent(uint256 _percent, uint256 _denominator) external virtual onlyRole(FEE_ADMIN_ROLE) {
+        require(_denominator != 0, "SupportsFee: Denominator cannot be 0");
+        require(_percent <= _denominator, "SupportsFee: Percent cannot be greater than denominator");
+
         percent = _percent;
         denominator = _denominator;
     }

@@ -8,7 +8,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {ISupportsToken} from "../interfaces/utils/ISupportsToken.sol";
 
-abstract contract SupportsToken is Initializable, ISupportsToken {
+contract SupportsToken is Initializable, ISupportsToken {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     EnumerableSet.AddressSet private tokenSet;
