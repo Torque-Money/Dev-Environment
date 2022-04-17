@@ -64,8 +64,18 @@ contract VaultTest is VaultBase {
         // Check that the previewed shares becomes zero
         tokenAmount[0] = 0;
         uint256 expectedShares = vault.previewDeposit(tokenAmount);
+        vault.deposit(tokenAmount);
 
         assertEq(expectedShares, 0);
+        assertEq(vault.balanceOf(address(this)), 0);
+
+        // Check that the vault has been allocated the correct amount of tokens
+        for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
+
+        // Redeposit to accumulate the lost funds
+        tokenAmount = Config.getTokenAmount();
+
+        expectedShares = vault.previewDeposit(tokenAmount);
     }
 
     // function testDepositRedeemWithFundInjection() public {}
