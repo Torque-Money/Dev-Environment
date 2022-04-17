@@ -33,4 +33,8 @@ contract VaultTest is DSTest, UsesTokenBase {
     function testDepositRedeemZero() public {}
 
     function testDepositRedeemNormalWithFunds() public {}
+
+    function testFailDepositAllIntoStrategy() public {}
+
+    function testDepositAllIntoStrategy() public {}
 }
