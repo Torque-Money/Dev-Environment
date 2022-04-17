@@ -1,7 +1,8 @@
 {
     "name": "dev-environment",
     "scripts": {
-        "fork": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node"
+        "run-node": "NODE_OPTIONS=--openssl-legacy-provider npx hardhat node",
+        "test": "forge test --fork-url "
     },
     "devDependencies": {
         "@chainlink/contracts": "^0.4.0",
