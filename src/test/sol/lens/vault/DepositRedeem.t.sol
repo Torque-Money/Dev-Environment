@@ -1,46 +1,22 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {DSTest} from "ds-test/test.sol";
-
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
+import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {Empty} from "../../helpers/Empty.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
-contract VaultTest is DSTest, UsesTokenBase {
+contract VaultTest is VaultBase {
     using SafeMath for uint256;
 
-    Empty private empty;
-    TorqueVaultV1 private vault;
-    MockStrategy private strategy;
-
-    function setUp() public {
-        empty = new Empty();
-
-        strategy = new MockStrategy();
-        strategy.initialize(Config.getToken(), Config.getInitialAPY());
-
-        vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
-
-        strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
-        vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
-
-        _fundCaller();
-
-        address[] memory toApprove = new address[](2);
-        toApprove[0] = address(strategy);
-        toApprove[1] = address(vault);
-        _approveAll(toApprove);
-    }
-
     function testDepositRedeem() public {
+        TorqueVaultV1 vault = _getVault();
+
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
