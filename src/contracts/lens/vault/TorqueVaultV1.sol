@@ -99,7 +99,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         uint256 fees;
         (shares, fees) = _previewDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]); // **** Must be this line then ?
 
         _depositAllIntoStrategy();
 

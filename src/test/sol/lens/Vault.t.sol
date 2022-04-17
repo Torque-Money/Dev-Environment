@@ -25,6 +25,8 @@ contract VaultTest is DSTest, UsesTokenBase {
         vault = new TorqueVaultV1();
         vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
 
+        strategy.grantRole(strategy.STRATEGY_ADMIN_ROLE(), address(vault));
+
         _fundCaller();
 
         address[] memory toApprove = new address[](2);
@@ -36,6 +38,7 @@ contract VaultTest is DSTest, UsesTokenBase {
     function testDepositRedeem() public {
         uint256 expectedShares = vault.previewDeposit(Config.getTokenAmount());
         vault.deposit(Config.getTokenAmount());
+
         assertEq(vault.balanceOf(address(this)), expectedShares);
 
         // **** Check that the previewed amount matches the required amount
