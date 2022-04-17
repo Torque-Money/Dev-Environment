@@ -6,11 +6,11 @@ import {DSTest} from "ds-test/test.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import {UsesTokenBase} from "../helpers/UsesTokenBase.sol";
+import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
-import {Config} from "../helpers/Config.sol";
-import {Empty} from "../helpers/Empty.sol";
-import {MockStrategy} from "../../mocks/MockStrategy.sol";
+import {Config} from "../../helpers/Config.sol";
+import {Empty} from "../../helpers/Empty.sol";
+import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is DSTest, UsesTokenBase {
@@ -79,9 +79,11 @@ contract VaultTest is DSTest, UsesTokenBase {
         assertEq(vault.balanceOf(address(this)), 0);
     }
 
-    // function testDepositRedeemZero() public {}
+    function testDepositRedeemZero() public {}
 
     // function testDepositRedeemWithFundInjection() public {}
+
+    // function testDepositRedeemMultiple() public {}
 
     // function testFailDepositAllIntoStrategy() public {}
 
