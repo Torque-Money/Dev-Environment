@@ -11,7 +11,7 @@ contract UsesTokenBase {
     }
 
     // Fund a contract with the required tokens
-    function _fundCaller() internal {
+    function _fundCaller() private {
         IERC20[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
 
