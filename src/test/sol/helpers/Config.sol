@@ -12,7 +12,7 @@ library Config {
         return ICheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
     }
 
-    function getTokens() internal pure returns (IERC20[] memory tokens) {
+    function getToken() internal pure returns (IERC20[] memory tokens) {
         tokens = new IERC20[](2);
 
         tokens[0] = IERC20(0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83); // wFTM
@@ -20,9 +20,9 @@ library Config {
     }
 
     function fundCaller() internal {
-        IERC20[] memory tokens = getTokens();
+        IERC20[] memory token = getToken();
         address[] memory whales = new address[](2);
-        assert(tokens.length == whales.length);
+        assert(token.length == whales.length);
 
         whales[0] = 0x60a861Cd30778678E3d613db96139440Bd333143; // wFTM whale
         whales[1] = 0xc5ed2333f8a2C351fCA35E5EBAdb2A82F5d254C3; // USDC whale
@@ -30,11 +30,11 @@ library Config {
         ICheatCodes cheats = getCheatCodes();
 
         cheats.startPrank(whales[0]);
-        tokens[0].transfer(address(this), tokens[0].balanceOf(whales[0]));
+        token[0].transfer(address(this), token[0].balanceOf(whales[0]));
         cheats.stopPrank();
 
         cheats.startPrank(whales[1]);
-        tokens[1].transfer(address(this), tokens[1].balanceOf(whales[1]));
+        token[1].transfer(address(this), token[1].balanceOf(whales[1]));
         cheats.stopPrank();
     }
 

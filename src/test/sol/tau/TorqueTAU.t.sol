@@ -12,25 +12,25 @@ contract TorqueTAUTest is DSTest {
 
     uint256 constant MINT_AMOUNT = 10 * 1e18;
 
-    function setUp() external {
+    function setUp() public {
         tau = new TorqueTAU();
         tau.initialize(INITIAL_SUPPLY);
     }
 
     // Check the initial supply minted
-    function testInitialSupply() external {
+    function testInitialSupply() public {
         assertEq(tau.totalSupply(), INITIAL_SUPPLY, "Total supply does not match initially supply minted");
         assertEq(tau.balanceOf(address(this)), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
     }
 
     // Fail to mint and burn tokens
-    function testFailMintBurn() external {
+    function testFailMintBurn() public {
         tau.mint(address(this), MINT_AMOUNT);
         tau.burn(address(this), MINT_AMOUNT);
     }
 
     // Mint and burn tokens
-    function testMintBurn() external {
+    function testMintBurn() public {
         tau.grantRole(tau.TOKEN_MINTER_ROLE(), address(this));
         tau.grantRole(tau.TOKEN_BURNER_ROLE(), address(this));
 
