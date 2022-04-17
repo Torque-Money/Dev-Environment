@@ -16,6 +16,7 @@ contract InjectEjectTest is VaultBase {
     }
 
     function testDepositAllIntoStrategy() public useFunds {
-        // **** We want to move the funds back and fourth using the withdraw
+        // **** We want to move the funds back and fourth using the withdraw and check that the balances get updated properly
+        // **** Also need to check that the funds in the strategy have been moved there correctly
     }
 }
