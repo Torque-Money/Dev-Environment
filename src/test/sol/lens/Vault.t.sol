@@ -21,18 +21,25 @@ contract VaultTest is DSTest, UsesTokenBase {
 
         empty = new Empty();
 
-        vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), address(empty), 1, 1000);
-
         strategy = new MockStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
+
+        vault = new TorqueVaultV1();
+        vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
     }
 
-    function testDepositRedeem() public {}
+    function testDepositRedeem() public {
+        // **** Deposit funds into the vault
+        // **** Check that the balance of the vault has been updated
+        // **** Check that the strategy has been updated with funds
+        // **** Check that the vault balance reflects the appropriate funds
+        // **** Check that the redeem preview is valid
+        // **** Check that the amount withdrawn is now valid
+    }
 
     function testDepositRedeemZero() public {}
 
-    function testDepositRedeemNormalWithFunds() public {}
+    function testDepositRedeemWithFundInjection() public {}
 
     function testFailDepositAllIntoStrategy() public {}
 

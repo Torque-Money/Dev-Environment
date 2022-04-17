@@ -27,6 +27,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function initialize(
         IERC20[] memory token,
+        IStrategy _strategy,
         address _feeRecipient,
         uint256 _feePercent,
         uint256 _feePercentDenominator
@@ -43,6 +44,8 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
         VAULT_CONTROLLER_ROLE = keccak256("VAULT_CONTROLLER_ROLE");
         _setRoleAdmin(VAULT_CONTROLLER_ROLE, VAULT_ADMIN_ROLE);
+
+        strategy = _strategy;
     }
 
     function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
