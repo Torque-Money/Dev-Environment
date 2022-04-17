@@ -78,7 +78,6 @@ contract VaultTest is VaultBase {
         vault.redeem(expectedShares);
 
         // Check that the amount allocated out was more than the initial deposit
-        assertEq(token[0].balanceOf(address(this)).sub(initialAmount[0]), tokenAmount[0]);
         assertGt(token[1].balanceOf(address(this)).sub(initialAmount[1]), tokenAmount[1]);
     }
 
