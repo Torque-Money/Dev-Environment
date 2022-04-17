@@ -97,5 +97,8 @@ contract VaultTest is VaultBase {
         for (uint256 i = 0; i < token.length; i++) assertGt(out[i], initialOut[i]);
     }
 
-    // function testDepositRedeemMultiple() public {}
+    function testDepositRedeemMultiple() public {
+        // **** This one is going to be the hardest because it requires multiple people to enter and then exit a position
+        // **** We might also have a problem where the ratios get messed up ? (nah we won't since we are depositing the same amount)
+    }
 }
