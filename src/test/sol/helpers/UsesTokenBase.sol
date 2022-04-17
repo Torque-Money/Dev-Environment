@@ -30,8 +30,8 @@ contract UsesTokenBase {
         IERC20[] memory token = Config.getToken();
         require(spender.length == token.length, "UsesTokenBase: Spender list length must match token length");
 
-        uint256 MAX = 2**256 - 1;
+        uint256 MAX_INT = 2**256 - 1;
 
-        for (uint256 i = 0; i < token.length; i++) token[0].safeIncreaseAllowance(spender[0], MAX);
+        for (uint256 i = 0; i < token.length; i++) token[0].approve(spender[0], MAX_INT);
     }
 }
