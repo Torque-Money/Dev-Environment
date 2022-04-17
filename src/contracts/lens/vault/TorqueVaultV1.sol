@@ -62,7 +62,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         else shares = amount.mul(totalShares).div(_balance);
     }
 
-    function previewDeposit(uint256[] memory amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
+    function _previewDeposit(uint256[] memory amount) private view returns (uint256 shares, uint256 fees) {
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
@@ -80,21 +80,30 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
                 if (_shares < shares) shares = _shares;
             }
         }
+
+        fees = shares.mul(feePercent()).div(100);
+        shares = shares.sub(fees);
+    }
+
+    function previewDeposit(uint256[] memory amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
+        (shares, ) = _previewDeposit(amount);
     }
 
     function deposit(uint256[] memory amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
-        shares = previewDeposit(amount);
+        uint256 fees;
+        (shares, fees) = _previewDeposit(amount);
 
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
         _depositAllIntoStrategy();
 
         _mint(_msgSender(), shares);
+        _mint(feeRecipient(), fees);
 
         emit Deposit(_msgSender(), amount, shares);
     }
 
-    function _previewRedeem(uint256 shares) private view returns (uint256[] memory amount) {
+    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
@@ -108,12 +117,8 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         }
     }
 
-    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
-        return _previewRedeem(shares);
-    }
-
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        amount = _previewRedeem(shares);
+        amount = previewRedeem(shares);
 
         _withdrawAllFromStrategy();
 
