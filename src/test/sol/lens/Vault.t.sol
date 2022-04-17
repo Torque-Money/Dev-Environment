@@ -25,7 +25,7 @@ contract VaultTest is DSTest, UsesTokenBase {
         vault = new TorqueVaultV1();
         vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
 
-        strategy.grantRole(strategy.STRATEGY_ADMIN_ROLE(), address(vault));
+        strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
 
         _fundCaller();
 
