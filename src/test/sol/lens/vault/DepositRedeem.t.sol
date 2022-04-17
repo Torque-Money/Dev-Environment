@@ -19,12 +19,14 @@ contract VaultTest is VaultBase {
 
     TorqueVaultV1 vault;
     Empty empty;
+    ICheatCodes cheats;
 
     function setUp() public override {
         super.setUp();
 
         vault = _getVault();
         empty = _getEmpty();
+        cheats = _getCheats();
     }
 
     function testDepositRedeem() public useFunds {
@@ -108,8 +110,6 @@ contract VaultTest is VaultBase {
         uint256 shares0 = vault.deposit(tokenAmount);
         uint256[] memory out0 = vault.previewRedeem(shares0);
 
-        ICheatCodes cheats = Config.getCheatCodes();
-
         // Transfer funds to account 2
         for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
 
@@ -144,8 +144,6 @@ contract VaultTest is VaultBase {
         uint256 shares0 = vault.deposit(tokenAmount);
         for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
         uint256[] memory out0 = vault.previewRedeem(shares0);
-
-        ICheatCodes cheats = Config.getCheatCodes();
 
         // Make deposit on behalf of account 2
         cheats.startPrank(address(empty));

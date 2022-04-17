@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {DSTest} from "ds-test/test.sol";
+import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
@@ -11,12 +12,16 @@ import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultBase is DSTest, UsesTokenBase {
+    ICheatCodes private cheats;
+
     Empty private empty;
     TorqueVaultV1 private vault;
     MockStrategy private strategy;
 
     function setUp() public virtual {
         empty = new Empty();
+
+        cheats = Config.getCheatCodes();
 
         strategy = new MockStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
@@ -42,5 +47,9 @@ contract VaultBase is DSTest, UsesTokenBase {
 
     function _getStrategy() internal view returns (MockStrategy _strategy) {
         return strategy;
+    }
+
+    function _getCheats() internal view returns (ICheatCodes _cheats) {
+        return cheats;
     }
 }
