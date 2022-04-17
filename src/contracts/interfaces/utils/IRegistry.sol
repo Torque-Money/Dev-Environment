@@ -19,7 +19,4 @@ interface IRegistry {
 
     // Gets an entry in the registry by its index. Must be less than count or else will revert.
     function entryByIndex(uint256 index) external view returns (address entry);
-
-    event Add(address indexed caller, address entry);
-    event Remove(address indexed caller, address entry);
 }

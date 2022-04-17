@@ -27,7 +27,7 @@ contract Emergency is Initializable, AccessControlUpgradeable, IEmergency {
     }
 
     function inCaseTokensGetStuck(IERC20 token, uint256 amount) public virtual override onlyRole(EMERGENCY_ADMIN_ROLE) {
-        if (address(token) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE) payable(msg.sender).transfer(amount);
-        else token.safeTransfer(msg.sender, amount);
+        if (address(token) == 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE) payable(_msgSender()).transfer(amount);
+        else token.safeTransfer(_msgSender(), amount);
     }
 }

@@ -129,5 +129,38 @@ contract VaultTest is VaultBase {
         vault.redeem(shares0);
     }
 
-    function testDepositRedeemMultipleWithInjection() public {}
+    function testDepositRedeemMultipleWithInjection() public {
+        // **** I want to test this by
+
+        TorqueVaultV1 vault = _getVault();
+        Empty empty = _getEmpty();
+
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Deposit initial funds from account 0
+        uint256 shares0 = vault.deposit(tokenAmount);
+        uint256[] memory out0 = vault.previewRedeem(shares0);
+
+        ICheatCodes cheats = Config.getCheatCodes();
+
+        // Transfer funds to account 2
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
+
+        // Make deposit on behalf of account 2
+        cheats.startPrank(address(empty));
+        {
+            address[] memory spender = new address[](1);
+            spender[0] = address(vault);
+            _approveAll(spender);
+
+            uint256 shares1 = vault.deposit(tokenAmount);
+            uint256[] memory out1 = vault.redeem(shares1);
+
+            for (uint256 i = 0; i < token.length; i++) assertEq(out0[i], out1[i]);
+        }
+        cheats.stopPrank();
+
+        vault.redeem(shares0);
+    }
 }
