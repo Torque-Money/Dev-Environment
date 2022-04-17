@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import "ds-test/test.sol";
 
-contract VaultTest is DSTest {
+contract ControllerTest is DSTest {
     function setUp() public {
         // **** I need to declare the vault, the strategy, and the controller to be used
     }
