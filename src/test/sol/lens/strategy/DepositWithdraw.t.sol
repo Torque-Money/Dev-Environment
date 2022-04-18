@@ -116,15 +116,17 @@ contract DepositWithdrawTest is StrategyBase {
     // Deposit and withdraw zero funds from the strategy.
     function testDepositWithdrawZero() public useFunds {
         IERC20[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = new uint256[](token.length);
+        uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit zero into the strategy
+        tokenAmount[0] = 0;
+
         uint256[] memory initialAmount = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
         strategy.deposit(tokenAmount);
 
-        for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), 0);
+        assertEq(initialAmount[0].sub(token[0].balanceOf(address(this))), 0);
 
         // Attempt to withdraw when there are no funds in the strategy
         strategy.withdraw(tokenAmount);
