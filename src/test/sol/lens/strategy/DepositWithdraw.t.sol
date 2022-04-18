@@ -32,7 +32,7 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy.deposit(tokenAmount);
 
-        // for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
     }
 
     function testDepositAllWithdrawAll() public useFunds {}
