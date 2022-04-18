@@ -41,7 +41,7 @@ library Config {
     }
 
     function getInitialAPY() internal pure returns (uint256 apy) {
-        apy = 20;
+        apy = 20 * 1e4;
     }
 
     function getUniRouter() internal pure returns (IUniswapV2Router02 router) {
