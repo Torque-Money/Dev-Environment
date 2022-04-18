@@ -5,8 +5,6 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {ISupportsToken} from "../../utils/ISupportsToken.sol";
 
-import {IVaultV1} from "../vault/IVaultV1.sol";
-
 // A strategy that integrates with a vault to earn rewards on deposited tokens.
 // Strategy should only ever integrate with a single vault.
 interface IStrategy is ISupportsToken {

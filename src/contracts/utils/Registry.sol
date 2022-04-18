@@ -7,7 +7,7 @@ import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet
 
 import {IRegistry} from "../interfaces/utils/IRegistry.sol";
 
-contract Registry is IRegistry, Initializable, AccessControlUpgradeable {
+contract Registry is Initializable, AccessControlUpgradeable, IRegistry {
     using EnumerableSet for EnumerableSet.AddressSet;
 
     bytes32 public REGISTRY_ADMIN_ROLE;
