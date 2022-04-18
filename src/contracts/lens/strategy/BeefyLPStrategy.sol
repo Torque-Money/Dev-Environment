@@ -1,6 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {DSTest} from "ds-test/test.sol";
+
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
@@ -20,7 +22,7 @@ import {Emergency} from "../../utils/Emergency.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency, DSTest {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -76,7 +78,14 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        beVault.depositAll();
+        emit log_uint(pair.balanceOf(address(this)));
+
+        beVault.depositAll(); // **** Why is this not being depositing
+
+        emit log_uint(pair.balanceOf(address(this)));
+
+        uint256 beBal = IERC20(address(beVault)).balanceOf(address(this));
+        emit log_uint(beBal);
     }
 
     function _ejectAllFromStrategy() private {
@@ -147,8 +156,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         // Get LP tokens owed by beVault
         uint256 SHARE_BASE = 1e18;
         uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
-
-        return IERC20(address(beVault)).balanceOf(address(this));
 
         // Get the allocation of the specified balance
         IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));
