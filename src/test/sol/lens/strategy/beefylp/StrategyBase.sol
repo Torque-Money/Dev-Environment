@@ -16,10 +16,6 @@ contract StrategyBase is DSTest, UsesTokenBase {
     BeefyLPStrategy private strategy;
 
     function setUp() public virtual {
-        empty = address(new Empty());
-
-        cheats = Config.getCheatCodes();
-
         strategy = new BeefyLPStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
 

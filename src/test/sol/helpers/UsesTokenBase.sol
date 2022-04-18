@@ -6,7 +6,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {Config} from "./Config.sol";
 import {ICheatCodes} from "./ICheatCodes.sol";
 
-contract UsesTokenBase {
+abstract contract UsesTokenBase {
     using SafeERC20 for IERC20;
 
     modifier useFunds() {
@@ -20,7 +20,7 @@ contract UsesTokenBase {
         IERC20[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
 
-        ICheatCodes cheats = Config.getCheatCodes();
+        ICheatCodes cheats = _getCheats();
 
         cheats.startPrank(tokenWhale[0]);
         token[0].transfer(address(this), token[0].balanceOf(tokenWhale[0]));
@@ -47,4 +47,6 @@ contract UsesTokenBase {
 
         for (uint256 i = 0; i < token.length; i++) for (uint256 j = 0; j < spender.length; j++) token[i].approve(spender[j], MAX_INT);
     }
+
+    function _getCheats() internal view virtual returns (ICheatCodes _cheats);
 }
