@@ -127,7 +127,6 @@ contract DepositWithdrawTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), 0);
 
         // Attempt to withdraw when there are no funds in the strategy
-        cheats.expectRevert();
         strategy.withdraw(tokenAmount);
 
         // Attempt to withdraw zero when there are tokens
