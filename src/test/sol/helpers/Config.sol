@@ -2,6 +2,9 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+import {IBeefyVaultV6} from "beefy/IBeefyVaultV6.sol";
 
 import {ICheatCodes} from "./ICheatCodes.sol";
 
@@ -39,5 +42,17 @@ library Config {
 
     function getInitialAPY() internal pure returns (uint256 apy) {
         apy = 20;
+    }
+
+    function getUniRouter() internal pure returns (IUniswapV2Router02 router) {
+        return IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29);
+    }
+
+    function getUniFactory() internal pure returns (IUniswapV2Factory factory) {
+        return IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3);
+    }
+
+    function getBeefyVault() internal pure returns (IBeefyVaultV6 beefyVault) {
+        return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE);
     }
 }
