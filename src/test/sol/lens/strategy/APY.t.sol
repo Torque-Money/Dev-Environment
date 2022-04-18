@@ -19,6 +19,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy = _getStrategy();
     }
 
+    // Test that updating the strategies APY works properly.
     function testUpdateAPY() public {
         (uint256 initialAPY, uint256 decimals) = strategy.APY();
 
