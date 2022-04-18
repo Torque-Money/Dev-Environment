@@ -84,6 +84,27 @@ contract DepositWithdrawTest is StrategyBase {
     }
 
     function testDepositAllWithdrawAll() public useFunds {
-        // **** Pretty much the same as above except this time we are going to deposit and withdraw all
+        IERC20[] memory token = Config.getToken();
+
+        // Deposit all into the strategy and check the balance is what was deposited
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
+
+        strategy.depositAll();
+
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
+
+            assertEq(token[i].balanceOf(address(this)), 0);
+        }
+
+        // Withdraw all tokens from the strategy
+        strategy.withdrawAll();
+
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
+
+            assertEq(strategy.approxBalance(token[i]), 0);
+        }
     }
 }
