@@ -22,7 +22,7 @@ contract InjectEjectTest is VaultBase {
     }
 
     // Inject and eject vault funds into the strategy.
-    function testInjectEjectAllStrategy() public useFunds {
+    function testInjectEjectAll() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
