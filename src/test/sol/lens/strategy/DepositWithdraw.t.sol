@@ -58,7 +58,7 @@ contract DepositWithdrawTest is StrategyBase {
         // Check the balance is what was deposited
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
-            balance[i] = strategy.balance(token[i]);
+            balance[i] = strategy.approxBalance(token[i]);
             _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
         }
 
@@ -79,7 +79,7 @@ contract DepositWithdrawTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) {
             _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
 
-            assertEq(strategy.balance(token[i]), 0);
+            assertEq(strategy.approxBalance(token[i]), 0);
         }
     }
 
