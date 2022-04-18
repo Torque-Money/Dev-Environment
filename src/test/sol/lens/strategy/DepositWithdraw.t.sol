@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -16,7 +15,6 @@ contract DepositWithdrawTest is StrategyBase {
     using SafeERC20 for IERC20;
 
     BeefyLPStrategy private strategy;
-    ICheatCodes private cheats;
 
     uint256 private fosPercent;
     uint256 private fosDenominator;
@@ -113,38 +111,38 @@ contract DepositWithdrawTest is StrategyBase {
     //     }
     // }
 
-    // Deposit and withdraw zero funds from the strategy.
-    function testDepositWithdrawZero() public useFunds {
+    // Deposit zero funds into the strategy.
+    function testFailDepositZero() public {
         IERC20[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
-        // Deposit zero into the strategy
-        tokenAmount[0] = 0;
-
-        uint256[] memory initialAmount = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        uint256[] memory tokenAmount = new uint256[](token.length);
 
         strategy.deposit(tokenAmount);
 
-        assertEq(initialAmount[0].sub(token[0].balanceOf(address(this))), 0);
+        // // Attempt to withdraw when there are no funds in the strategy
+        // strategy.withdraw(tokenAmount);
 
-        // Attempt to withdraw when there are no funds in the strategy
+        // // Attempt to withdraw zero when there are tokens
+        // tokenAmount = Config.getTokenAmount();
+
+        // strategy.deposit(tokenAmount);
+
+        // uint256[] memory stratInitialBal = new uint256[](token.length);
+        // for (uint256 i = 0; i < token.length; i++) stratInitialBal[i] = strategy.approxBalance(token[i]);
+
+        // tokenAmount = new uint256[](token.length);
+
+        // strategy.withdraw(tokenAmount);
+
+        // for (uint256 i = 0; i < token.length; i++) assertEq(stratInitialBal[i], strategy.approxBalance(token[i]));
+
+        // strategy.withdrawAll();
+    }
+
+    // Withdraw zero funds from the strategy.
+    function testFailWithdrawZero() public {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = new uint256[](token.length);
+
         strategy.withdraw(tokenAmount);
-
-        // Attempt to withdraw zero when there are tokens
-        tokenAmount = Config.getTokenAmount();
-
-        strategy.deposit(tokenAmount);
-
-        uint256[] memory stratInitialBal = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) stratInitialBal[i] = strategy.approxBalance(token[i]);
-
-        tokenAmount = new uint256[](token.length);
-
-        strategy.withdraw(tokenAmount);
-
-        for (uint256 i = 0; i < token.length; i++) assertEq(stratInitialBal[i], strategy.approxBalance(token[i]));
-
-        strategy.withdrawAll();
     }
 }
