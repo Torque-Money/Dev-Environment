@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
@@ -32,9 +31,6 @@ contract DepositWithdrawTest is StrategyBase {
     ) private {
         require(denominator != 0, "DepositWithdrawTest: Denominator cannot equal 0");
         require(percent <= denominator, "DepositWithdrawTest: Percent cannot be greater than denominator");
-
-        uint256 max = Math.max(a, b);
-        uint256 min = Math.min(a, b);
 
         uint256 compPercent = denominator.sub(percent);
 
