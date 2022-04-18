@@ -36,7 +36,9 @@ contract VaultTest is StrategyBase {
         _approveAll(spender);
     }
 
-    // **** I need to try and do a deposit and then a withdraw
+    // Test a deposit and redeem with the vault and Beefy LP strategy
+    function testDepositRedeem() public useFunds {}
 
     // **** I also need to try moving the funds back and fourth through the pool
+    function testInjectEject() public useFunds {}
 }
