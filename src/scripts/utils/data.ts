@@ -1,20 +1,24 @@
 import fs from "fs";
 
+type Address = string;
+
 interface Proxy {
-    proxy: string;
-    implementation: string;
+    proxy: Address;
+    implementation: Address;
 }
 
 interface BeaconProxy {
     proxies: Proxy[];
-    beacon: string;
+    beacon: Address;
 }
 
 interface Data {
     contracts: {
-        multisig: string;
-        timelock: string;
+        multisig: Address;
+        timelock: Address;
         TAU: Proxy;
+        VaultV1: BeaconProxy,
+        BeefyLPStrategy: BeaconProxy
     };
 }
 
