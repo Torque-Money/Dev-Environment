@@ -43,72 +43,72 @@ contract DepositWithdrawTest is StrategyBase {
         assertGt(a.mul(denominator), compPercent.mul(b));
     }
 
-    // // Deposit and withdraw funds from the strategy.
-    // function testDepositWithdraw() public useFunds {
-    //     IERC20[] memory token = Config.getToken();
-    //     uint256[] memory tokenAmount = Config.getTokenAmount();
+    // Deposit and withdraw funds from the strategy.
+    function testDepositWithdraw() public useFunds {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
 
-    //     // Deposit amount into the strategy
-    //     uint256[] memory initialAmount = new uint256[](token.length);
-    //     for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        // Deposit amount into the strategy
+        uint256[] memory initialAmount = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-    //     strategy.deposit(tokenAmount);
+        strategy.deposit(tokenAmount);
 
-    //     // Check the balance is what was deposited
-    //     uint256[] memory balance = new uint256[](token.length);
-    //     for (uint256 i = 0; i < token.length; i++) {
-    //         assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+        // Check the balance is what was deposited
+        uint256[] memory balance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
-    //         balance[i] = strategy.approxBalance(token[i]);
-    //         _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
-    //     }
+            balance[i] = strategy.approxBalance(token[i]);
+            _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
+        }
 
-    //     // Calculate initial amount before withdraw
-    //     for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        // Calculate initial amount before withdraw
+        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-    //     // Withdraw a safe amount to where the whole balance is not extracted
-    //     uint256[] memory fosBalance = new uint256[](token.length);
-    //     for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosPercent).mul(tokenAmount[i]).div(fosDenominator);
+        // Withdraw a safe amount to where the whole balance is not extracted
+        uint256[] memory fosBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosPercent).mul(tokenAmount[i]).div(fosDenominator);
 
-    //     strategy.withdraw(fosBalance);
+        strategy.withdraw(fosBalance);
 
-    //     for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
 
-    //     // Withdraw all tokens from the strategy
-    //     strategy.withdrawAll();
+        // Withdraw all tokens from the strategy
+        strategy.withdrawAll();
 
-    //     for (uint256 i = 0; i < token.length; i++) {
-    //         _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
 
-    //         assertEq(strategy.approxBalance(token[i]), 0);
-    //     }
-    // }
+            assertEq(strategy.approxBalance(token[i]), 0);
+        }
+    }
 
-    // // Deposit and withdraw all funds from the strategy.
-    // function testDepositAllWithdrawAll() public useFunds {
-    //     IERC20[] memory token = Config.getToken();
+    // Deposit and withdraw all funds from the strategy.
+    function testDepositAllWithdrawAll() public useFunds {
+        IERC20[] memory token = Config.getToken();
 
-    //     // Deposit all into the strategy and check the balance is what was deposited
-    //     uint256[] memory initialBalance = new uint256[](token.length);
-    //     for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
+        // Deposit all into the strategy and check the balance is what was deposited
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-    //     strategy.depositAll();
+        strategy.depositAll();
 
-    //     for (uint256 i = 0; i < token.length; i++) {
-    //         _assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
 
-    //         assertEq(token[i].balanceOf(address(this)), 0);
-    //     }
+            assertEq(token[i].balanceOf(address(this)), 0);
+        }
 
-    //     // Withdraw all tokens from the strategy
-    //     strategy.withdrawAll();
+        // Withdraw all tokens from the strategy
+        strategy.withdrawAll();
 
-    //     for (uint256 i = 0; i < token.length; i++) {
-    //         _assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
 
-    //         assertEq(strategy.approxBalance(token[i]), 0);
-    //     }
-    // }
+            assertEq(strategy.approxBalance(token[i]), 0);
+        }
+    }
 
     // Deposit zero funds into the strategy.
     function testFailDepositZero() public {
