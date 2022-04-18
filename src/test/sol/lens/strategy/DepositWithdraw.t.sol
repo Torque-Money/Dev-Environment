@@ -83,5 +83,7 @@ contract DepositWithdrawTest is StrategyBase {
         }
     }
 
-    function testDepositAllWithdrawAll() public useFunds {}
+    function testDepositAllWithdrawAll() public useFunds {
+        // **** Pretty much the same as above except this time we are going to deposit and withdraw all
+    }
 }
