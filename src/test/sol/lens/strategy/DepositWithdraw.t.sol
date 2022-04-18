@@ -24,8 +24,8 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy = _getStrategy();
 
-        fosNumerator = 1;
-        fosDenominator = 100;
+        fosNumerator = 5;
+        fosDenominator = 1000;
     }
 
     // Check if two numbers are equal off of a given percentage
@@ -71,16 +71,16 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy.withdraw(fosBalance);
 
-        // for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
 
-        // // Withdraw all tokens from the strategy
-        // strategy.withdrawAll();
+        // Withdraw all tokens from the strategy
+        strategy.withdrawAll();
 
-        // for (uint256 i = 0; i < token.length; i++) {
-        //     _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosNumerator, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) {
+            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosNumerator, fosDenominator);
 
-        //     assertEq(strategy.balance(token[i]), 0);
-        // }
+            assertEq(strategy.balance(token[i]), 0);
+        }
     }
 
     function testDepositAllWithdrawAll() public useFunds {}
