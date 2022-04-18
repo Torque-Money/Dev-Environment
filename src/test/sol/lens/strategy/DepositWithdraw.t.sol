@@ -33,6 +33,11 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.deposit(tokenAmount);
 
         for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+
+        // Check the balance is what was deposited
+        // for (uint256 i = 0; i < token.length; i++) assertEq(strategy.balance(token[i]), tokenAmount[i]);
+
+        // Withdraw the given amounts and check what was withdrawn is equivalent (MAYBE NEEDS TO RETURN AMOUNTS)
     }
 
     function testDepositAllWithdrawAll() public useFunds {}
