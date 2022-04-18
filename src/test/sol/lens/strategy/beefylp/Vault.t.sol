@@ -64,6 +64,8 @@ contract VaultTest is StrategyBase {
         // Withdraw funds
         uint256[] memory out = vault.redeem(shares);
 
+        // **** The problem comes when we attempt to reinject the funds and there are none there - we have to make it so it wont try when the amounts are 0
+
         // Check the balances of the withdrawn funds
     }
 
