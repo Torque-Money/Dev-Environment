@@ -1,6 +1,12 @@
 import hre from "hardhat";
 
 async function main() {
+    const VaultV1 = await hre.ethers.getContractFactory("TorqueVaultV1");
+    const beacon = await hre.upgrades.deployBeacon(VaultV1);
+    await beacon.deployed();
+
+    console.log("VaultV1 beacon:", beacon.address);
+    console.log("VaultV1 implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
 }
 
 main()
