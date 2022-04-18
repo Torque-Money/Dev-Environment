@@ -11,9 +11,6 @@ interface BeaconProxy {
 }
 
 interface Data {
-    config: {
-        TAUInitialSupply: string;
-    };
     contracts: {
         multisig: string;
         timelock: string;
