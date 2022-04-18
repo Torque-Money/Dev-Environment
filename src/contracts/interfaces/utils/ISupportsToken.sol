@@ -18,9 +18,10 @@ interface ISupportsToken {
     // Returns the amount of the given asset owned by the contract.
     // Not guaranteed to be the exact amount of tokens held by the contract - slight variation expected.
     // Reverts if the token is not supported.
-    function balance(IERC20 token) external view returns (uint256 amount);
+    function approxBalance(IERC20 token) external view returns (uint256 amount);
 
     // Returns the available amount of a given asset the contract can use.
     // By default returns the balance.
-    function available(IERC20 token) external view returns (uint256 amount);
+    // Not guranteed to be the exact amount of availabe tokens - slight variation expected.
+    function approxAvailable(IERC20 token) external view returns (uint256 amount);
 }

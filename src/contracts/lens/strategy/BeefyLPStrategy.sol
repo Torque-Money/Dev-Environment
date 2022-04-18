@@ -146,7 +146,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
         twaAPY = temp;
     }
 
-    function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
         uint256 SHARE_BASE = 1e18;
         uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);

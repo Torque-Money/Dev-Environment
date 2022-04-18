@@ -61,7 +61,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         uint256 amount,
         uint256 totalShares
     ) private view returns (uint256 shares) {
-        uint256 _balance = balance(token);
+        uint256 _balance = approxBalance(token);
 
         if (_balance == 0) shares = amount;
         else shares = amount.mul(totalShares).div(_balance);
@@ -118,7 +118,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20 token = tokenByIndex(i);
 
-            uint256 _balance = balance(token);
+            uint256 _balance = approxBalance(token);
             amount[i] = _balance.mul(shares).div(_totalShares);
         }
     }
@@ -137,8 +137,8 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
-        return token.balanceOf(address(this)).add(strategy.balance(token));
+    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+        return token.balanceOf(address(this)).add(strategy.approxBalance(token));
     }
 
     function _depositIntoStrategy(uint256[] memory amount) private {
