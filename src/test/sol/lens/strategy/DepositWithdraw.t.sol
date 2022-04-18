@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
@@ -15,6 +16,7 @@ contract DepositWithdrawTest is StrategyBase {
     using SafeERC20 for IERC20;
 
     BeefyLPStrategy private strategy;
+    ICheatCodes private cheats;
 
     uint256 private fosPercent;
     uint256 private fosDenominator;
@@ -23,6 +25,7 @@ contract DepositWithdrawTest is StrategyBase {
         super.setUp();
 
         strategy = _getStrategy();
+        cheats = _getCheats();
 
         fosPercent = Config.getFosPercent();
         fosDenominator = Config.getFosDenominator();
@@ -54,11 +57,11 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy.deposit(tokenAmount);
 
-        for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
-
         // Check the balance is what was deposited
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
+            assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+
             balance[i] = strategy.approxBalance(token[i]);
             _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
         }
@@ -82,6 +85,40 @@ contract DepositWithdrawTest is StrategyBase {
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }
+    }
+
+    // Deposit and withdraw zero funds from the strategy.
+    function testDepositWithdrawZero() public useFunds {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = new uint256[](token.length);
+
+        // Deposit zero into the strategy
+        uint256[] memory initialAmount = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+
+        strategy.deposit(tokenAmount);
+
+        for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), 0);
+
+        // Attempt to withdraw when there are no funds in the strategy
+        cheats.expectRevert();
+        strategy.withdraw(tokenAmount);
+
+        // Attempt to withdraw zero when there are tokens
+        tokenAmount = Config.getTokenAmount();
+
+        strategy.deposit(tokenAmount);
+
+        uint256[] memory stratInitialBal = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) stratInitialBal[i] = strategy.approxBalance(token[i]);
+
+        tokenAmount = new uint256[](token.length);
+
+        strategy.withdraw(tokenAmount);
+
+        for (uint256 i = 0; i < token.length; i++) assertEq(stratInitialBal[i], strategy.approxBalance(token[i]));
+
+        strategy.withdrawAll();
     }
 
     // Deposit and withdraw all funds from the strategy.
