@@ -29,6 +29,7 @@ contract DepositRedeemTest is VaultBase {
         cheats = _getCheats();
     }
 
+    // Test a regular deposit and redeem.
     function testDepositRedeem() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -63,6 +64,7 @@ contract DepositRedeemTest is VaultBase {
         assertEq(vault.balanceOf(address(this)), 0);
     }
 
+    // Test a deposit and redeem when one of the amounts deposited is zero.
     function testDepositRedeemZero() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -85,6 +87,7 @@ contract DepositRedeemTest is VaultBase {
         assertGt(out[1], tokenAmount[1]);
     }
 
+    // Test a deposit and redeem when funds have been injected to the vault after the deposit.
     function testDepositRedeemWithTokenInjection() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -102,6 +105,7 @@ contract DepositRedeemTest is VaultBase {
         for (uint256 i = 0; i < token.length; i++) assertGt(out[i], initialOut[i]);
     }
 
+    // Test a deposit and redeem when multiple users have deposited into the vault.
     function testDepositRedeemMultiple() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -130,6 +134,7 @@ contract DepositRedeemTest is VaultBase {
         vault.redeem(shares0);
     }
 
+    // Test a deposit and redeem when multiple users have deposited into the vault and a fund injection has been made.
     function testDepositRedeemMultipleWithInjection() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
