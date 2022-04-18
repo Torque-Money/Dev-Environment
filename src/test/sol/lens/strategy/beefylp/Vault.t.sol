@@ -62,7 +62,6 @@ contract VaultTest is StrategyBase {
         }
 
         // Withdraw funds
-        emit log_uint(shares);
         uint256[] memory out = vault.redeem(shares);
 
         // Check the balances of the withdrawn funds
