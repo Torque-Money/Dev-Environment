@@ -30,7 +30,7 @@ contract DepositWithdrawTest is StrategyBase {
         uint256[] memory initialAmount = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-        // strategy.deposit(tokenAmount);
+        strategy.deposit(tokenAmount);
 
         // for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
     }
