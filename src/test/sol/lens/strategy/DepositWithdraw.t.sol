@@ -15,7 +15,9 @@ contract DepositWithdrawTest is StrategyBase {
         strategy = _getStrategy();
     }
 
-    function testDepositWithdraw() public {}
+    function testDepositWithdraw() public useFunds {
+        // **** First we need to deposit the given amount of tokens into the strategy and see what happens
+    }
 
-    function testDepositAllWithdrawAll() public {}
+    function testDepositAllWithdrawAll() public useFunds {}
 }
