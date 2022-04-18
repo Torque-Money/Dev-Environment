@@ -1,12 +1,19 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {BeefyLPStrategy} from "@contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
+    using SafeMath for uint256;
+    using SafeERC20 for IERC20;
+
     BeefyLPStrategy strategy;
 
     function setUp() public override {
@@ -16,7 +23,16 @@ contract DepositWithdrawTest is StrategyBase {
     }
 
     function testDepositWithdraw() public useFunds {
-        // **** First we need to deposit the given amount of tokens into the strategy and see what happens
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Deposit amount into the strategy
+        uint256[] memory initialAmount = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+
+        // strategy.deposit(tokenAmount);
+
+        // for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
     }
 
     function testDepositAllWithdrawAll() public useFunds {}
