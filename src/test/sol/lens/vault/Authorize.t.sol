@@ -20,7 +20,7 @@ contract AuthorizeTest is VaultBase, Impersonate {
 
         vault = _getVault();
         empty = _getEmpty();
-        cheats = Config.getCheatCodes();
+        cheats = _getCheats();
     }
 
     // Fail to deposit moving funds into the strategy due to lack of authorization.

@@ -25,5 +25,23 @@ contract DepositWithdrawTest is StrategyBase, Impersonate {
         cheats = _getCheats();
     }
 
-    function testFail() public impersonate(cheats, empty) {}
+    function testFailDeposit() public impersonate(cheats, empty) {
+        strategy.deposit(Config.getTokenAmount());
+    }
+
+    function testFailDepositAll() public impersonate(cheats, empty) {
+        strategy.depositAll();
+    }
+
+    function testFailWithdraw() public impersonate(cheats, empty) {
+        strategy.withdraw(Config.getTokenAmount());
+    }
+
+    function testFailWithdrawAll() public impersonate(cheats, empty) {
+        strategy.withdrawAll();
+    }
+
+    function testFailUpdateAPY() public impersonate(cheats, empty) {
+        strategy.updateAPY(Config.getInitialAPY());
+    }
 }
