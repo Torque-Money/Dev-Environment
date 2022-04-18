@@ -22,6 +22,16 @@ contract DepositWithdrawTest is StrategyBase {
         strategy = _getStrategy();
     }
 
+    // Check if two numbers are equal up to a given amount of figures
+    function _approxEqual(
+        uint256 a,
+        uint256 b,
+        uint256 figures
+    ) private {
+        uint256 divider = 10**figures;
+        assertEq(a.div(divider), b.div(divider));
+    }
+
     function testDepositWithdraw() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -35,7 +45,7 @@ contract DepositWithdrawTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
         // Check the balance is what was deposited
-        for (uint256 i = 0; i < token.length; i++) assertEq(strategy.balance(token[i]), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) _approxEqual(strategy.balance(token[i]), tokenAmount[i], 2);
 
         // Withdraw the given amounts and check what was withdrawn is equivalent (MAYBE NEEDS TO RETURN AMOUNTS)
     }
