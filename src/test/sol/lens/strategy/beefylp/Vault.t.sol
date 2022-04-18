@@ -53,7 +53,6 @@ contract VaultTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
         uint256 shares = vault.deposit(tokenAmount);
-        assertGt(shares, 0);
 
         // Check the balances of the vault and the user
         for (uint256 i = 0; i < token.length; i++) {
