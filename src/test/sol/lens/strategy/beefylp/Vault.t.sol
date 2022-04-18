@@ -36,5 +36,7 @@ contract VaultTest is StrategyBase {
         _approveAll(spender);
     }
 
-    // Tests
+    // **** I need to try and do a deposit and then a withdraw
+
+    // **** I also need to try moving the funds back and fourth through the pool
 }

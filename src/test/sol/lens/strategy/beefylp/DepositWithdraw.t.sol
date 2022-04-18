@@ -28,21 +28,6 @@ contract DepositWithdrawTest is StrategyBase {
         fosDenominator = Config.getFosDenominator();
     }
 
-    // Check if two numbers are equal with a given percentage of error allowed.
-    function _assertApproxEqual(
-        uint256 a,
-        uint256 b,
-        uint256 percent,
-        uint256 denominator
-    ) private {
-        require(denominator != 0, "DepositWithdrawTest: Denominator cannot equal 0");
-        require(percent <= denominator, "DepositWithdrawTest: Percent cannot be greater than denominator");
-
-        uint256 compPercent = denominator.sub(percent);
-
-        assertGt(a.mul(denominator), compPercent.mul(b));
-    }
-
     // Deposit and withdraw funds from the strategy.
     function testDepositWithdraw() public useFunds {
         IERC20[] memory token = Config.getToken();
