@@ -2,13 +2,13 @@
 pragma solidity ^0.8.0;
 
 import {DSTest} from "ds-test/test.sol";
-import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
+import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
 
-import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
+import {UsesTokenBase} from "../../../helpers/UsesTokenBase.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {Empty} from "../../helpers/Empty.sol";
-import {BeefyLPStrategy} from "../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
+import {Config} from "../../../helpers/Config.sol";
+import {Empty} from "../../../helpers/Empty.sol";
+import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract StrategyBase is DSTest, UsesTokenBase {
     ICheatCodes private cheats;

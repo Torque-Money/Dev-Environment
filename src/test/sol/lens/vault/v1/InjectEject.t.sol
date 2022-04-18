@@ -6,9 +6,9 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 
 import {VaultBase} from "./VaultBase.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "../../../../contracts/lens/vault/TorqueVaultV1.sol";
+import {Config} from "../../../helpers/Config.sol";
+import {MockStrategy} from "../../../../mocks/MockStrategy.sol";
+import {TorqueVaultV1} from "../../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
 contract InjectEjectTest is VaultBase {
     TorqueVaultV1 private vault;

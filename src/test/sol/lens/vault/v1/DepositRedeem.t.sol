@@ -4,13 +4,13 @@ pragma solidity ^0.8.0;
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
+import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
 
 import {VaultBase} from "./VaultBase.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "../../../../contracts/lens/vault/TorqueVaultV1.sol";
+import {Config} from "../../../helpers/Config.sol";
+import {MockStrategy} from "../../../../mocks/MockStrategy.sol";
+import {TorqueVaultV1} from "../../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
 contract DepositRedeemTest is VaultBase {
     using SafeMath for uint256;
