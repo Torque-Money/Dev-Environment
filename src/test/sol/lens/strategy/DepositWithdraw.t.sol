@@ -36,6 +36,7 @@ contract DepositWithdrawTest is StrategyBase {
 
         // Check the balance is what was deposited
         // for (uint256 i = 0; i < token.length; i++) assertEq(strategy.balance(token[i]), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) emit log_uint(strategy.balance(token[i]));
 
         // Withdraw the given amounts and check what was withdrawn is equivalent (MAYBE NEEDS TO RETURN AMOUNTS)
     }
