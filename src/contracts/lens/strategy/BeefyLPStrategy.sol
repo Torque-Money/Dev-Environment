@@ -140,7 +140,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
     function updateAPY(uint256 apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
         uint256 EMA_WEIGHT_PERCENT = 70;
 
-        uint256 temp = twaAPY.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100));
+        uint256 temp = twaAPY.mul(uint256(100).sub(EMA_WEIGHT_PERCENT)).div(100);
         temp = temp.add(apy.mul(EMA_WEIGHT_PERCENT).div(100));
 
         twaAPY = temp;
