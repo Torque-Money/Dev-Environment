@@ -1,28 +1,28 @@
-// import hre from "hardhat";
+import hre from "hardhat";
 
-// import { TorqueTAU } from "../../../../typechain-types";
+import { TorqueTAU } from "../../../../typechain-types";
 
-// import { loadData, saveData } from "../../utils/data";
+import { loadData, saveData } from "../../utils/data";
 
-// async function main() {
-//     const data = loadData();
+async function main() {
+    const data = loadData();
 
-//     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
-//     const tau = (await hre.upgrades.deployProxy(TAU, [data.config.TAUInitialSupply])) as TorqueTAU;
-//     await tau.deployed();
+    const TAU = await hre.ethers.getContractFactory("TorqueTAU");
+    const tau = (await hre.upgrades.deployProxy(TAU, [data.config.TAUInitialSupply])) as TorqueTAU;
+    await tau.deployed();
 
-//     data.contracts.TAU.proxy = tau.address;
-//     console.log("TAU proxy:", data.contracts.TAU.proxy);
+    data.contracts.TAU.proxy = tau.address;
+    console.log("TAU proxy:", data.contracts.TAU.proxy);
 
-//     data.contracts.TAU.implementation = await hre.upgrades.erc1967.getImplementationAddress(tau.address);
-//     console.log("TAU implementation:", data.contracts.TAU.implementation);
+    data.contracts.TAU.implementation = await hre.upgrades.erc1967.getImplementationAddress(tau.address);
+    console.log("TAU implementation:", data.contracts.TAU.implementation);
 
-//     saveData(data);
-// }
+    saveData(data);
+}
 
-// main()
-//     .then(() => process.exit(0))
-//     .catch((error) => {
-//         console.error(error);
-//         process.exit(1);
-//     });
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
