@@ -9,7 +9,7 @@ import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 import {Config} from "../../helpers/Config.sol";
 import {Empty} from "../../helpers/Empty.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
+import {TorqueVaultV1} from "../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultBase is DSTest, UsesTokenBase {
     ICheatCodes private cheats;

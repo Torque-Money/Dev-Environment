@@ -8,7 +8,7 @@ import {Impersonate} from "../../helpers/Impersonate.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
+import {TorqueVaultV1} from "../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
 contract AuthorizeTest is VaultBase, Impersonate {
     TorqueVaultV1 private vault;

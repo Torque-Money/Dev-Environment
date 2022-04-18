@@ -8,7 +8,7 @@ import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
+import {TorqueVaultV1} from "../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
 contract InjectEjectTest is VaultBase {
     TorqueVaultV1 private vault;

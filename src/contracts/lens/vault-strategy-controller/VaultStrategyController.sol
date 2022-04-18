@@ -8,8 +8,8 @@ import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-con
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
-import {strings} from "solidity-stringutils/strings.sol";
-import {Integers} from "solidity-util/Integers.sol";
+import {strings} from "../../../../lib/solidity-stringutils/strings.sol";
+import {Integers} from "../../../../lib/solidity-util/Integers.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategyAPY} from "../../interfaces/lens/strategy/IStrategyAPY.sol";

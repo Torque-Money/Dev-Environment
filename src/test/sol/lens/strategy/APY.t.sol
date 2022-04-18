@@ -6,7 +6,7 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {BeefyLPStrategy} from "@contracts/lens/strategy/BeefyLPStrategy.sol";
+import {BeefyLPStrategy} from "../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
     using SafeMath for uint256;
