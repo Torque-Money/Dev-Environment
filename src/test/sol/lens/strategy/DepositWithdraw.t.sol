@@ -116,25 +116,6 @@ contract DepositWithdrawTest is StrategyBase {
         uint256[] memory tokenAmount = new uint256[](token.length);
 
         strategy.deposit(tokenAmount);
-
-        // // Attempt to withdraw when there are no funds in the strategy
-        // strategy.withdraw(tokenAmount);
-
-        // // Attempt to withdraw zero when there are tokens
-        // tokenAmount = Config.getTokenAmount();
-
-        // strategy.deposit(tokenAmount);
-
-        // uint256[] memory stratInitialBal = new uint256[](token.length);
-        // for (uint256 i = 0; i < token.length; i++) stratInitialBal[i] = strategy.approxBalance(token[i]);
-
-        // tokenAmount = new uint256[](token.length);
-
-        // strategy.withdraw(tokenAmount);
-
-        // for (uint256 i = 0; i < token.length; i++) assertEq(stratInitialBal[i], strategy.approxBalance(token[i]));
-
-        // strategy.withdrawAll();
     }
 
     // Withdraw zero funds from the strategy.
