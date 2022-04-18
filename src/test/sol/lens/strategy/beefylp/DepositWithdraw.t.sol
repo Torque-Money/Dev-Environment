@@ -8,6 +8,7 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
+import {AssertUtils} from "../../../helpers/AssertUtils.sol";
 import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
@@ -45,7 +46,7 @@ contract DepositWithdrawTest is StrategyBase {
             assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
             balance[i] = strategy.approxBalance(token[i]);
-            _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
         }
 
         // Calculate initial amount before withdraw
@@ -63,7 +64,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }
@@ -80,7 +81,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.depositAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
 
             assertEq(token[i].balanceOf(address(this)), 0);
         }
@@ -89,7 +90,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }
