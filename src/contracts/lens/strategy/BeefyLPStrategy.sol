@@ -134,7 +134,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
     }
 
     function APY() external view returns (uint256 apy, uint256 decimals) {
-        return (twaAPY, 1e4);
+        return (twaAPY, 4);
     }
 
     function updateAPY(uint256 apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
