@@ -23,7 +23,7 @@ contract StrategyBase is DSTest, UsesTokenBase {
         cheats = Config.getCheatCodes();
 
         strategy = new BeefyLPStrategy();
-        strategy.initialize(Config.getToken(), Config.getInitialAPY());
+        strategy.initialize(Config.getToken(), Config.getInitialAPY(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
 
