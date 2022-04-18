@@ -13,13 +13,12 @@ import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract VaultBase is DSTest, UsesTokenBase {
     ICheatCodes private cheats;
-
-    Empty private empty;
+    address private empty;
     TorqueVaultV1 private vault;
     MockStrategy private strategy;
 
     function setUp() public virtual {
-        empty = new Empty();
+        empty = address(new Empty());
 
         cheats = Config.getCheatCodes();
 
@@ -27,7 +26,7 @@ contract VaultBase is DSTest, UsesTokenBase {
         strategy.initialize(Config.getToken(), Config.getInitialAPY());
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), strategy, address(empty), 1, 1000);
+        vault.initialize(Config.getToken(), strategy, empty, 1, 1000);
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
@@ -37,7 +36,7 @@ contract VaultBase is DSTest, UsesTokenBase {
         _approveAll(spender);
     }
 
-    function _getEmpty() internal view returns (Empty _empty) {
+    function _getEmpty() internal view returns (address _empty) {
         return empty;
     }
 

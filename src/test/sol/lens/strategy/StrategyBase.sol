@@ -12,12 +12,11 @@ import {BeefyLPStrategy} from "@contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract StrategyBase is DSTest, UsesTokenBase {
     ICheatCodes private cheats;
-
-    Empty private empty;
+    address private empty;
     BeefyLPStrategy private strategy;
 
     function setUp() public virtual {
-        empty = new Empty();
+        empty = address(new Empty());
 
         cheats = Config.getCheatCodes();
 
@@ -31,7 +30,7 @@ contract StrategyBase is DSTest, UsesTokenBase {
         _approveAll(spender);
     }
 
-    function _getEmpty() internal view returns (Empty _empty) {
+    function _getEmpty() internal view returns (address _empty) {
         return empty;
     }
 

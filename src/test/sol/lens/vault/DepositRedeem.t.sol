@@ -9,7 +9,6 @@ import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {Empty} from "../../helpers/Empty.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
@@ -18,7 +17,7 @@ contract DepositRedeemTest is VaultBase {
     using SafeERC20 for IERC20;
 
     TorqueVaultV1 private vault;
-    Empty private empty;
+    address private empty;
     ICheatCodes private cheats;
 
     function setUp() public override {
@@ -115,10 +114,10 @@ contract DepositRedeemTest is VaultBase {
         uint256[] memory out0 = vault.previewRedeem(shares0);
 
         // Transfer funds to account 2
-        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(empty, tokenAmount[i]);
 
         // Make deposit on behalf of account 2
-        cheats.startPrank(address(empty));
+        cheats.startPrank(empty);
         {
             address[] memory spender = new address[](1);
             spender[0] = address(vault);
@@ -147,11 +146,11 @@ contract DepositRedeemTest is VaultBase {
 
         // Deposit initial funds from account 0 and inject funds
         uint256 shares0 = vault.deposit(tokenAmount);
-        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(address(empty), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(empty, tokenAmount[i]);
         uint256[] memory out0 = vault.previewRedeem(shares0);
 
         // Make deposit on behalf of account 2
-        cheats.startPrank(address(empty));
+        cheats.startPrank(empty);
         {
             address[] memory spender = new address[](1);
             spender[0] = address(vault);

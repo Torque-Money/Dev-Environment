@@ -4,15 +4,15 @@ pragma solidity ^0.8.0;
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {VaultBase} from "./VaultBase.sol";
+import {Impersonate} from "../../helpers/Impersonate.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {Empty} from "../../helpers/Empty.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
-contract AuthorizeTest is VaultBase {
+contract AuthorizeTest is VaultBase, Impersonate {
     TorqueVaultV1 private vault;
-    Empty private empty;
+    address private empty;
     ICheatCodes private cheats;
 
     function setUp() public override {
@@ -23,29 +23,23 @@ contract AuthorizeTest is VaultBase {
         cheats = Config.getCheatCodes();
     }
 
-    modifier impersonate() {
-        cheats.startPrank(address(empty));
-        _;
-        cheats.stopPrank();
-    }
-
     // Fail to deposit moving funds into the strategy due to lack of authorization.
-    function testFailInjectFunds() public impersonate {
+    function testFailInjectFunds() public impersonate(cheats, empty) {
         vault.depositIntoStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds into the strategy due to lack of authorization.
-    function testFailInjectAllFunds() public impersonate {
+    function testFailInjectAllFunds() public impersonate(cheats, empty) {
         vault.depositAllIntoStrategy();
     }
 
     // Fail to deposit moving funds from the strategy due to lack of authorization.
-    function testFailEjectFunds() public impersonate {
+    function testFailEjectFunds() public impersonate(cheats, empty) {
         vault.withdrawFromStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds from the strategy due to lack of authorization.
-    function testFailEjectAllFunds() public impersonate {
+    function testFailEjectAllFunds() public impersonate(cheats, empty) {
         vault.withdrawAllFromStrategy();
     }
 }
