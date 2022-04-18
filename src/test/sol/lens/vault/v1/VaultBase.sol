@@ -40,7 +40,7 @@ contract VaultBase is Base, UsesTokenBase {
         return strategy;
     }
 
-    function _getCheats() internal view override(Base, UsesTokenBase) returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual override(Base, UsesTokenBase) returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
 }
