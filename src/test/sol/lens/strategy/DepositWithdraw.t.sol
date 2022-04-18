@@ -14,12 +14,18 @@ contract DepositWithdrawTest is StrategyBase {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    BeefyLPStrategy strategy;
+    BeefyLPStrategy private strategy;
+
+    uint256 private fosNumerator;
+    uint256 private fosDenominator;
 
     function setUp() public override {
         super.setUp();
 
         strategy = _getStrategy();
+
+        fosNumerator = 1;
+        fosDenominator = 1000;
     }
 
     // Check if two numbers are equal off of a given percentage
@@ -59,7 +65,7 @@ contract DepositWithdrawTest is StrategyBase {
         // Withdraw the given amounts and check what was withdrawn is equivalent to the balance
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-        strategy.withdrawAll();
+        strategy.withdraw(balance);
 
         for (uint256 i = 0; i < token.length; i++) {
             // assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i]);

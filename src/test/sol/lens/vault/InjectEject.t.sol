@@ -11,8 +11,8 @@ import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract InjectEjectTest is VaultBase {
-    TorqueVaultV1 vault;
-    MockStrategy strategy;
+    TorqueVaultV1 private vault;
+    MockStrategy private strategy;
 
     function setUp() public override {
         super.setUp();
