@@ -2,5 +2,5 @@
 pragma solidity ^0.8.0;
 
 contract VaultTest {
-    // **** Test strategy with the vault
+    function setUp() public {}
 }
