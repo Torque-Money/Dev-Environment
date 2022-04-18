@@ -53,6 +53,6 @@ library Config {
     }
 
     function getBeefyVault() internal pure returns (IBeefyVaultV6 beVault) {
-        return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE); // Beefy USDC-FTM LP Spookyswap
+        return IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968); // Beefy USDC-FTM LP Spookyswap
     }
 }

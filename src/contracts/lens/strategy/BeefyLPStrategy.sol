@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {DSTest} from "ds-test/test.sol";
-
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
@@ -22,7 +20,9 @@ import {Emergency} from "../../utils/Emergency.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency, DSTest {
+// **** MAKE SURE TO REMOVE THE DS-TEST ONCE DONE
+
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -78,14 +78,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        emit log_uint(pair.balanceOf(address(this)));
-
-        beVault.depositAll(); // **** Why is this not being depositing
-
-        emit log_uint(pair.balanceOf(address(this)));
-
-        uint256 beBal = IERC20(address(beVault)).balanceOf(address(this));
-        emit log_uint(beBal);
+        beVault.depositAll();
     }
 
     function _ejectAllFromStrategy() private {
