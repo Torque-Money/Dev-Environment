@@ -26,27 +26,31 @@ contract DepositWithdrawTest is StrategyBase, Impersonate {
     }
 
     // Fail to deposit into the strategy due to lack of authorization.
-    function testFailDeposit() public impersonate(cheats, empty) {
+    function testFailDeposit() public impersonate(empty) {
         strategy.deposit(Config.getTokenAmount());
     }
 
     // Fail to deposit all into the strategy due to lack of authorization.
-    function testFailDepositAll() public impersonate(cheats, empty) {
+    function testFailDepositAll() public impersonate(empty) {
         strategy.depositAll();
     }
 
     // Fail to withdraw from the strategy due to lack of authorization.
-    function testFailWithdraw() public impersonate(cheats, empty) {
+    function testFailWithdraw() public impersonate(empty) {
         strategy.withdraw(Config.getTokenAmount());
     }
 
     // Fail to withdraw all from the strategy due to lack of authorization.
-    function testFailWithdrawAll() public impersonate(cheats, empty) {
+    function testFailWithdrawAll() public impersonate(empty) {
         strategy.withdrawAll();
     }
 
     // Fail to update the strategies APY.
-    function testFailUpdateAPY() public impersonate(cheats, empty) {
+    function testFailUpdateAPY() public impersonate(empty) {
         strategy.updateAPY(Config.getInitialAPY());
+    }
+
+    function _getCheats() internal view override(StrategyBase, Impersonate) returns (ICheatCodes _cheats) {
+        return super._getCheats();
     }
 }
