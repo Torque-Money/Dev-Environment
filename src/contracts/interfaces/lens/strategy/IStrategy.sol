@@ -24,11 +24,4 @@ interface IStrategy is ISupportsToken {
 
     // Withdraw all of the contracts funds to the caller.
     function withdrawAll() external;
-
-    // Get the current APY and decimals for the strategy.
-    function APY() external view returns (uint256 apy, uint256 decimals);
-
-    // Update the current APY for the strategy.
-    // Calling APY after does not necessarily need to equal the submitted APY.
-    function updateAPY(uint256 apy) external;
 }

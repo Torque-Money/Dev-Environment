@@ -12,7 +12,7 @@ import {strings} from "solidity-stringutils/strings.sol";
 import {Integers} from "solidity-util/Integers.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
-import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
+import {IStrategyAPY} from "../../interfaces/lens/strategy/IStrategyAPY.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
@@ -89,9 +89,9 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
 
         // Find the highest APY strategy
         uint256 maxAPY;
-        IStrategy strategy;
+        IStrategyAPY strategy;
         for (uint256 i = 0; i < entryCount(); i++) {
-            IStrategy _strategy = IStrategy(entryByIndex(i));
+            IStrategyAPY _strategy = IStrategyAPY(entryByIndex(i));
             (uint256 _apy, ) = _strategy.APY();
 
             if (_apy > maxAPY) {
@@ -123,7 +123,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
 
         assert(s.count(delim) == entryCount());
         for (uint256 i = 0; i < entryCount(); i++) {
-            IStrategy strategy = IStrategy(entryByIndex(i));
+            IStrategyAPY strategy = IStrategyAPY(entryByIndex(i));
             uint256 newAPY = s.split(delim).toString().parseInt();
             strategy.updateAPY(newAPY);
         }

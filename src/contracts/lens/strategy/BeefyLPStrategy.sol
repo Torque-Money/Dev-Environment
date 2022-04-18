@@ -12,7 +12,7 @@ import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
 import {IBeefyVaultV6} from "beefy/IBeefyVaultV6.sol";
 
-import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
+import {IStrategyAPY} from "../../interfaces/lens/strategy/IStrategyAPY.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
 import {Emergency} from "../../utils/Emergency.sol";
@@ -20,7 +20,7 @@ import {Emergency} from "../../utils/Emergency.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, SupportsToken, Emergency {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
