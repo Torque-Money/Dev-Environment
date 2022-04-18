@@ -55,4 +55,12 @@ library Config {
     function getBeefyVault() internal pure returns (IBeefyVaultV6 beVault) {
         return IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968); // Beefy USDC-FTM LP Spookyswap
     }
+
+    function getFosPercent() internal pure returns (uint256 fosPercent) {
+        return 5;
+    }
+
+    function getFosDenominator() internal pure returns (uint256 fosPercent) {
+        return 1000;
+    }
 }

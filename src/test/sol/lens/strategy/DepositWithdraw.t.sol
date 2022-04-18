@@ -16,7 +16,7 @@ contract DepositWithdrawTest is StrategyBase {
 
     BeefyLPStrategy private strategy;
 
-    uint256 private fosNumerator;
+    uint256 private fosPercent;
     uint256 private fosDenominator;
 
     function setUp() public override {
@@ -24,8 +24,8 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy = _getStrategy();
 
-        fosNumerator = 5;
-        fosDenominator = 1000;
+        fosPercent = Config.getFosPercent();
+        fosDenominator = Config.getFosDenominator();
     }
 
     // Check if two numbers are equal off of a given percentage
@@ -59,7 +59,7 @@ contract DepositWithdrawTest is StrategyBase {
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
             balance[i] = strategy.balance(token[i]);
-            _assertApproxEqual(balance[i], tokenAmount[i], fosNumerator, fosDenominator);
+            _assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
         }
 
         // Calculate initial amount before withdraw
@@ -67,7 +67,7 @@ contract DepositWithdrawTest is StrategyBase {
 
         // Withdraw a safe amount to where the whole balance is not extracted
         uint256[] memory fosBalance = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosNumerator).mul(tokenAmount[i]).div(fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosPercent).mul(tokenAmount[i]).div(fosDenominator);
 
         strategy.withdraw(fosBalance);
 
@@ -77,7 +77,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosNumerator, fosDenominator);
+            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
 
             assertEq(strategy.balance(token[i]), 0);
         }
