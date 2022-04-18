@@ -18,6 +18,6 @@ library AssertUtils {
 
         uint256 compPercent = denominator.sub(percent);
 
-        assert(a.mul(denominator) == compPercent.mul(b));
+        assert(a.mul(denominator) >= compPercent.mul(b));
     }
 }
