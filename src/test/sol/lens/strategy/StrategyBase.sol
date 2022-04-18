@@ -9,7 +9,6 @@ import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 import {Config} from "../../helpers/Config.sol";
 import {Empty} from "../../helpers/Empty.sol";
 import {BeefyLPStrategy} from "@contracts/lens/strategy/BeefyLPStrategy.sol";
-import {TorqueVaultV1} from "@contracts/lens/vault/TorqueVaultV1.sol";
 
 contract StrategyBase is DSTest, UsesTokenBase {
     ICheatCodes private cheats;
