@@ -43,7 +43,7 @@ contract DepositRedeemTest is VaultBase {
         assertGt(vault.balanceOf(vault.feeRecipient()), 0);
 
         // Check that vault has been allocated the correct amount of tokens
-        for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
 
         // Check that the redeem preview matches the amount allocated and check that the amount out is less than what was deposited
         uint256[] memory expectedOut = vault.previewRedeem(expectedShares);
@@ -75,7 +75,7 @@ contract DepositRedeemTest is VaultBase {
         assertEq(vault.balanceOf(address(this)), 0);
 
         // Check that the vault has been allocated the correct amount of tokens
-        for (uint256 i = 0; i < token.length; i++) assertEq(vault.balance(token[i]), tokenAmount[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
 
         // Check that the amount allocated out was more than the initial deposit after a proper share allocation
         tokenAmount = Config.getTokenAmount();

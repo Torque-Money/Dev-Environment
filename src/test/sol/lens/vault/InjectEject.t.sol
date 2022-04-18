@@ -30,10 +30,10 @@ contract InjectEjectTest is VaultBase {
 
         // Check that vault has been allocated the correct amount of tokens and they have flowed into the right contracts
         for (uint256 i = 0; i < token.length; i++) {
-            assertEq(vault.balance(token[i]), tokenAmount[i]);
+            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
             assertEq(token[i].balanceOf(address(vault)), 0);
 
-            assertEq(strategy.balance(token[i]), tokenAmount[i]);
+            assertEq(strategy.approxBalance(token[i]), tokenAmount[i]);
             assertEq(token[i].balanceOf(address(strategy)), tokenAmount[i]);
         }
 
@@ -41,10 +41,10 @@ contract InjectEjectTest is VaultBase {
         vault.withdrawAllFromStrategy();
 
         for (uint256 i = 0; i < token.length; i++) {
-            assertEq(vault.balance(token[i]), tokenAmount[i]);
+            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
             assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
-            assertEq(strategy.balance(token[i]), 0);
+            assertEq(strategy.approxBalance(token[i]), 0);
             assertEq(token[i].balanceOf(address(strategy)), 0);
         }
 
