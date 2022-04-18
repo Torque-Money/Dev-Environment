@@ -48,13 +48,13 @@ contract DepositRedeemTest is VaultBase {
         // Check that the redeem preview matches the amount allocated and check that the amount out is less than what was deposited
         uint256[] memory expectedOut = vault.previewRedeem(expectedShares);
 
-        uint256[] memory initialAmount = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
         vault.redeem(expectedShares);
 
         for (uint256 i = 0; i < token.length; i++) {
-            uint256 out = token[i].balanceOf(address(this)).sub(initialAmount[i]);
+            uint256 out = token[i].balanceOf(address(this)).sub(initialBalance[i]);
             assertEq(expectedOut[i], out);
             assertLt(out, tokenAmount[i]);
         }

@@ -37,7 +37,20 @@ contract VaultTest is StrategyBase {
     }
 
     // Test a deposit and redeem with the vault and Beefy LP strategy.
-    function testDepositRedeem() public useFunds {}
+    function testDepositRedeem() public useFunds {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Deposit funds into the vault
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
+
+        vault.deposit(tokenAmount);
+
+        // Check the balances of the vault and the user
+
+        // Attempt to withdraw
+    }
 
     // Inject and eject vault funds into the strategy.
     function testInjectEjectAll() public useFunds {}

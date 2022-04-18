@@ -35,22 +35,22 @@ contract DepositWithdrawTest is StrategyBase {
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit amount into the strategy
-        uint256[] memory initialAmount = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
         strategy.deposit(tokenAmount);
 
         // Check the balance is what was deposited
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
-            assertEq(initialAmount[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+            assertEq(initialBalance[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
             balance[i] = strategy.approxBalance(token[i]);
             AssertUtils.assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
         }
 
         // Calculate initial amount before withdraw
-        for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
         // Withdraw a safe amount to where the whole balance is not extracted
         uint256[] memory fosBalance = new uint256[](token.length);
@@ -58,13 +58,13 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy.withdraw(fosBalance);
 
-        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
+        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
 
         // Withdraw all tokens from the strategy
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i], fosPercent, fosDenominator);
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }
