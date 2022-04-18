@@ -90,7 +90,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         IERC20 pair = IERC20(uniFactory.getPair(token0, token1));
         uint256 pairBalance = pair.balanceOf(address(this));
 
-        pair.safeIncreaseAllowance(address(uniFactory), pairBalance);
+        pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
 
         uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
     }
@@ -119,9 +119,9 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
         _ejectAllFromStrategy();
 
-        // _withdraw(amount);
+        _withdraw(amount);
 
-        // _injectAllIntoStrategy();
+        _injectAllIntoStrategy();
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
