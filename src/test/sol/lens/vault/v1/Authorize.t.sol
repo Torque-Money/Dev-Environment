@@ -24,22 +24,26 @@ contract AuthorizeTest is VaultBase, Impersonate {
     }
 
     // Fail to deposit moving funds into the strategy due to lack of authorization.
-    function testFailInjectFunds() public impersonate(cheats, empty) {
+    function testFailInjectFunds() public impersonate(empty) {
         vault.depositIntoStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds into the strategy due to lack of authorization.
-    function testFailInjectAllFunds() public impersonate(cheats, empty) {
+    function testFailInjectAllFunds() public impersonate(empty) {
         vault.depositAllIntoStrategy();
     }
 
     // Fail to deposit moving funds from the strategy due to lack of authorization.
-    function testFailEjectFunds() public impersonate(cheats, empty) {
+    function testFailEjectFunds() public impersonate(empty) {
         vault.withdrawFromStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds from the strategy due to lack of authorization.
-    function testFailEjectAllFunds() public impersonate(cheats, empty) {
+    function testFailEjectAllFunds() public impersonate(empty) {
         vault.withdrawAllFromStrategy();
+    }
+
+    function _getCheats() internal view override(VaultBase, Impersonate) returns (ICheatCodes _cheats) {
+        return super._getCheats();
     }
 }
