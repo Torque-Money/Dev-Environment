@@ -83,7 +83,7 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, 
         twaAPY = temp;
     }
 
-    function balance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this));
     }
 }
