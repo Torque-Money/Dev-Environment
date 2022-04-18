@@ -29,7 +29,7 @@ contract DepositWithdrawTest is StrategyBase {
     }
 
     // Check if two numbers are equal off of a given percentage
-    function _approxEqual(
+    function _assertApproxEqual(
         uint256 a,
         uint256 b,
         uint256 percent,
@@ -59,16 +59,25 @@ contract DepositWithdrawTest is StrategyBase {
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
             balance[i] = strategy.balance(token[i]);
-            _approxEqual(balance[i], tokenAmount[i], fosNumerator, fosDenominator);
+            _assertApproxEqual(balance[i], tokenAmount[i], fosNumerator, fosDenominator);
         }
 
-        // Withdraw the given amounts and check what was withdrawn is equivalent to the balance
+        // Calculate initial amount before withdraw
         for (uint256 i = 0; i < token.length; i++) initialAmount[i] = token[i].balanceOf(address(this));
 
-        strategy.withdraw(balance);
+        // Withdraw a safe amount to where the whole balance is not extracted
+        uint256[] memory fosBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosNumerator).mul(balance[i]).div(fosDenominator);
+
+        strategy.withdraw(fosBalance);
+
+        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialAmount[i]), fosBalance[i]);
+
+        // Withdraw all tokens from the strategy
+        strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _approxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosNumerator, fosDenominator);
+            _assertApproxEqual(token[i].balanceOf(address(this)).sub(initialAmount[i]), balance[i], fosNumerator, fosDenominator);
 
             assertEq(strategy.balance(token[i]), 0);
         }
