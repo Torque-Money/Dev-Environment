@@ -23,7 +23,6 @@ contract DepositWithdrawTest is StrategyBase {
         super.setUp();
 
         strategy = _getStrategy();
-        cheats = _getCheats();
 
         fosPercent = Config.getFosPercent();
         fosDenominator = Config.getFosDenominator();
