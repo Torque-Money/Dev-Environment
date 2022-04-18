@@ -7,7 +7,7 @@ import {ICheatCodes} from "./ICheatCodes.sol";
 import {Config} from "./Config.sol";
 import {Empty} from "./Empty.sol";
 
-contract StrategyBase is DSTest {
+contract Base is DSTest {
     ICheatCodes private cheats;
     address private empty;
 
@@ -17,11 +17,11 @@ contract StrategyBase is DSTest {
         cheats = Config.getCheatCodes();
     }
 
-    function _getEmpty() internal view returns (address _empty) {
+    function _getEmpty() internal view virtual returns (address _empty) {
         return empty;
     }
 
-    function _getCheats() internal view returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual returns (ICheatCodes _cheats) {
         return cheats;
     }
 }

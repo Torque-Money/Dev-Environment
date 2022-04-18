@@ -1,21 +1,21 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {DSTest} from "ds-test/test.sol";
 import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
 
+import {Base} from "../../../helpers/Base.sol";
 import {UsesTokenBase} from "../../../helpers/UsesTokenBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 import {Empty} from "../../../helpers/Empty.sol";
 import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 
-contract StrategyBase is DSTest, UsesTokenBase {
-    ICheatCodes private cheats;
-    address private empty;
+contract StrategyBase is Base, UsesTokenBase {
     BeefyLPStrategy private strategy;
 
-    function setUp() public virtual {
+    function setUp() public virtual override {
+        super.setUp();
+
         strategy = new BeefyLPStrategy();
         strategy.initialize(Config.getToken(), Config.getInitialAPY(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
 
@@ -26,15 +26,11 @@ contract StrategyBase is DSTest, UsesTokenBase {
         _approveAll(spender);
     }
 
-    function _getEmpty() internal view returns (address _empty) {
-        return empty;
-    }
-
     function _getStrategy() internal view returns (BeefyLPStrategy _strategy) {
         return strategy;
     }
 
-    function _getCheats() internal view returns (ICheatCodes _cheats) {
-        return cheats;
+    function _getCheats() internal view override(Base, UsesTokenBase) returns (ICheatCodes _cheats) {
+        return super._getCheats();
     }
 }
