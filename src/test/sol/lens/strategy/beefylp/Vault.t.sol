@@ -52,7 +52,8 @@ contract VaultTest is StrategyBase {
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(tokenAmount);
+        assertGt(shares, 0);
 
         // Check the balances of the vault and the user
         for (uint256 i = 0; i < token.length; i++) {
@@ -61,7 +62,10 @@ contract VaultTest is StrategyBase {
             AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), tokenAmount[i], fosPercent, fosDenominator);
         }
 
-        // Attempt to withdraw
+        // Withdraw funds
+        uint256[] memory out = vault.redeem(shares);
+
+        // Check the balances of the withdrawn funds
     }
 
     // Inject and eject vault funds into the strategy.
