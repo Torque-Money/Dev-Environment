@@ -8,7 +8,6 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
-import {AssertUtils} from "../../../helpers/AssertUtils.sol";
 import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
@@ -17,16 +16,10 @@ contract DepositWithdrawTest is StrategyBase {
 
     BeefyLPStrategy private strategy;
 
-    uint256 private fosPercent;
-    uint256 private fosDenominator;
-
     function setUp() public override {
         super.setUp();
 
         strategy = _getStrategy();
-
-        fosPercent = Config.getFosPercent();
-        fosDenominator = Config.getFosDenominator();
     }
 
     // Deposit and withdraw funds from the strategy.
@@ -46,7 +39,7 @@ contract DepositWithdrawTest is StrategyBase {
             assertEq(initialBalance[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
             balance[i] = strategy.approxBalance(token[i]);
-            AssertUtils.assertApproxEqual(balance[i], tokenAmount[i], fosPercent, fosDenominator);
+            _assertApproxEq(balance[i], tokenAmount[i]);
         }
 
         // Calculate initial amount before withdraw
@@ -54,18 +47,17 @@ contract DepositWithdrawTest is StrategyBase {
 
         // Withdraw a safe amount to where the whole balance is not extracted
         uint256[] memory fosBalance = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = fosDenominator.sub(fosPercent).mul(tokenAmount[i]).div(fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = tokenAmount[i].mul(90).div(100);
 
         strategy.withdraw(fosBalance);
 
-        for (uint256 i = 0; i < token.length; i++)
-            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) _assertApproxEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
 
         // Withdraw all tokens from the strategy
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i], fosPercent, fosDenominator);
+            _assertApproxEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }
@@ -82,7 +74,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.depositAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            AssertUtils.assertApproxEqual(strategy.approxBalance(token[i]), initialBalance[i], fosPercent, fosDenominator);
+            _assertApproxEq(strategy.approxBalance(token[i]), initialBalance[i]);
 
             assertEq(token[i].balanceOf(address(this)), 0);
         }
@@ -91,7 +83,7 @@ contract DepositWithdrawTest is StrategyBase {
         strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
+            _assertApproxEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
             assertEq(strategy.approxBalance(token[i]), 0);
         }

@@ -8,7 +8,6 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
-import {AssertUtils} from "../../../helpers/AssertUtils.sol";
 import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
 import {TorqueVaultV1} from "../../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
@@ -19,9 +18,6 @@ contract VaultTest is StrategyBase {
     TorqueVaultV1 private vault;
     BeefyLPStrategy private strategy;
     address private empty;
-
-    uint256 private fosPercent;
-    uint256 private fosDenominator;
 
     function setUp() public override {
         super.setUp();
@@ -34,9 +30,6 @@ contract VaultTest is StrategyBase {
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
-
-        fosPercent = Config.getFosPercent();
-        fosDenominator = Config.getFosDenominator();
 
         address[] memory spender = new address[](1);
         spender[0] = address(vault);
@@ -58,7 +51,7 @@ contract VaultTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) {
             assertEq(initialBalance[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
-            AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), tokenAmount[i], fosPercent, fosDenominator);
+            _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
         }
 
         // Withdraw funds and check the balances

@@ -7,7 +7,7 @@ library AssertUtils {
     using SafeMath for uint256;
 
     // Check if two numbers are equal with a given percentage of error allowed.
-    function assertApproxEqual(
+    function assertApproxEq(
         uint256 a,
         uint256 b,
         uint256 percent,

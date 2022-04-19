@@ -9,7 +9,6 @@ import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
 import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
-import {AssertUtils} from "../../../helpers/AssertUtils.sol";
 import {MockStrategy} from "../../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "../../../../../contracts/lens/vault/TorqueVaultV1.sol";
 
@@ -21,18 +20,12 @@ contract DepositRedeemTest is VaultBase {
     address private empty;
     ICheatCodes private cheats;
 
-    uint256 private fosPercent;
-    uint256 private fosDenominator;
-
     function setUp() public override {
         super.setUp();
 
         vault = _getVault();
         empty = _getEmpty();
         cheats = _getCheats();
-
-        fosPercent = Config.getFosPercent();
-        fosDenominator = Config.getFosDenominator();
     }
 
     // Test a regular deposit and redeem.
@@ -44,14 +37,14 @@ contract DepositRedeemTest is VaultBase {
         uint256 expectedShares = vault.estimateDeposit(tokenAmount);
         uint256 shares = vault.deposit(tokenAmount);
 
-        AssertUtils.assertApproxEqual(expectedShares, shares, fosPercent, fosDenominator);
+        _assertApproxEq(expectedShares, shares);
         assertEq(vault.balanceOf(address(this)), shares);
 
         // Check that the recipient has shares minted
         assertGt(vault.balanceOf(vault.feeRecipient()), 0);
 
         // Check that vault has been allocated the correct amount of tokens
-        for (uint256 i = 0; i < token.length; i++) AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), tokenAmount[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
 
         // Check that the redeem estimate matches the amount allocated and check that the amount out is less than what was deposited
         uint256[] memory initialBalance = new uint256[](token.length);
@@ -63,7 +56,7 @@ contract DepositRedeemTest is VaultBase {
         for (uint256 i = 0; i < token.length; i++) {
             assertEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), out[i]);
 
-            AssertUtils.assertApproxEqual(expectedOut[i], out[i], fosPercent, fosDenominator);
+            _assertApproxEq(expectedOut[i], out[i]);
             assertLt(out[i], tokenAmount[i]);
         }
 
@@ -83,7 +76,7 @@ contract DepositRedeemTest is VaultBase {
         assertEq(shares, 0);
 
         // Check that the vault has been allocated the correct amount of tokens
-        for (uint256 i = 0; i < token.length; i++) AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), tokenAmount[i], fosPercent, fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
 
         // Check that the amount allocated out was more than the initial deposit after a proper share allocation
         tokenAmount = Config.getTokenAmount();
@@ -133,7 +126,7 @@ contract DepositRedeemTest is VaultBase {
             uint256 shares1 = vault.deposit(tokenAmount);
             uint256[] memory out1 = vault.estimateRedeem(shares1);
 
-            for (uint256 i = 0; i < token.length; i++) AssertUtils.assertApproxEqual(out0[i], out1[i], fosPercent, fosDenominator);
+            for (uint256 i = 0; i < token.length; i++) _assertApproxEq(out0[i], out1[i]);
 
             vault.redeem(shares1);
         }
@@ -169,12 +162,12 @@ contract DepositRedeemTest is VaultBase {
             uint256 shares1 = vault.deposit(tokenAmount);
 
             uint256[] memory out0New = vault.estimateRedeem(shares0);
-            for (uint256 i = 0; i < token.length; i++) AssertUtils.assertApproxEqual(out0[i], out0New[i], fosPercent, fosDenominator);
+            for (uint256 i = 0; i < token.length; i++) _assertApproxEq(out0[i], out0New[i]);
 
             // Check that redeeming ends with the same tokens as initially deposited for the second user
             uint256[] memory out1 = vault.redeem(shares1);
 
-            for (uint256 i = 0; i < token.length; i++) AssertUtils.assertApproxEqual(tokenAmount[i], out1[i], fosPercent, fosDenominator);
+            for (uint256 i = 0; i < token.length; i++) _assertApproxEq(tokenAmount[i], out1[i]);
         }
         cheats.stopPrank();
 
