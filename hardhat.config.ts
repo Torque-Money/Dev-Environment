@@ -19,7 +19,7 @@ task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => 
 
     // === Strategy ===
     // Assign the vault as a controller of the strategy
-    await (await strategy.grantRole(await strategy.STRATEGY_CONTROLLER_ROLE(), vaultV1.address)).wait();
+    // await (await strategy.grantRole(await strategy.STRATEGY_CONTROLLER_ROLE(), vaultV1.address)).wait();
 
     // Assign the emergency to the timelock (and revoke)
     // const EMERGENCY_ADMIN_ROLE = await strategy.EMERGENCY_ADMIN_ROLE();
@@ -27,8 +27,8 @@ task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => 
     // await (await strategy.renounceRole(EMERGENCY_ADMIN_ROLE, caller)).wait();
 
     // Assign strategy admin to the timelock (and revoke)
-    // const STRATEGY_ADMIN_ROLE = await strategy.STRATEGY_ADMIN_ROLE();
-    // await (await strategy.grantRole(STRATEGY_ADMIN_ROLE, data.contracts.timelock)).wait();
+    const STRATEGY_ADMIN_ROLE = await strategy.STRATEGY_ADMIN_ROLE();
+    await (await strategy.grantRole(STRATEGY_ADMIN_ROLE, data.contracts.timelock)).wait();
     // await (await strategy.renounceRole(STRATEGY_ADMIN_ROLE, caller)).wait();
 
     // === Vault ===
