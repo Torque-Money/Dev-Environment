@@ -58,7 +58,8 @@ contract DepositWithdrawTest is StrategyBase {
 
         strategy.withdraw(fosBalance);
 
-        for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
+        for (uint256 i = 0; i < token.length; i++)
+            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i], fosPercent, fosDenominator);
 
         // Withdraw all tokens from the strategy
         strategy.withdrawAll();
