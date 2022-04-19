@@ -63,7 +63,7 @@ contract InjectEjectTest is VaultBase {
         vault.redeem(shares);
     }
 
-    // Inject vault funds into the strategy. (**** THIS NEEDS TO BE TESTED)
+    // Inject vault funds into the strategy.
     function testInjectAll() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
@@ -71,6 +71,19 @@ contract InjectEjectTest is VaultBase {
         // Make deposit
         uint256 shares = vault.deposit(tokenAmount);
 
-        // **** How am I going to go about testing this ?
+        // Eject funds
+        vault.withdrawAllFromStrategy();
+
+        // Inject funds and check they have flowed correctly
+        vault.depositAllIntoStrategy();
+
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(vault)), 0);
+
+            assertEq(strategy.approxBalance(token[i]), tokenAmount[i]);
+        }
+
+        vault.redeem(shares);
     }
 }
