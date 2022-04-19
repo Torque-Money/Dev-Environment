@@ -12,7 +12,7 @@ contract Registry is Initializable, AccessControlUpgradeable, IRegistry {
 
     bytes32 public REGISTRY_ADMIN_ROLE;
 
-    EnumerableSet.AddressSet private _set;
+    EnumerableSetUpgradeable.AddressSet private _set;
 
     function __Registry_init() internal onlyInitializing {
         __AccessControl_init();
