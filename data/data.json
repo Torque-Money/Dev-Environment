@@ -5,13 +5,13 @@
         "TAU": { "proxy": "0x4579F9832DC20567E4d690d0a981Cab0DC4E15FA", "implementation": "0x1526Ea5a1Cb630F0dcaB045A34D0215579fe3c13" },
         "VaultV1": {
             "proxies": [],
-            "beacon": "",
-            "implementation": ""
+            "beacon": "0xAA6F01966f379dfCD7E8817F248643000b39f06D",
+            "implementation": "0x6b71f6e5C6b2FC1C0B3F52fD1b45D0FA724f35ea"
         },
         "BeefyLPStrategy": {
             "proxies": [],
-            "beacon": "",
-            "implementation": ""
+            "beacon": "0xAcB597F234ECdb6E8E67773D1a9952877CDe708E",
+            "implementation": "0x87E995ee8fC7B92AE651169a62Be8986d71cC895"
         }
     }
 }
