@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
@@ -21,8 +21,8 @@ import {Emergency} from "../../utils/Emergency.sol";
 // It will then take the LP token and deposit it into a Beefy vault.
 
 contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, SupportsToken, Emergency {
-    using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeMathUpgradeable for uint256;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public STRATEGY_ADMIN_ROLE;
     bytes32 public STRATEGY_CONTROLLER_ROLE;
@@ -34,7 +34,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
     uint256 private twaAPY;
 
     function initialize(
-        IERC20[] memory token,
+        IERC20Upgradeable[] memory token,
         uint256 initialAPY,
         IUniswapV2Router02 _uniRouter,
         IUniswapV2Factory _uniFactory,
@@ -60,8 +60,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
 
     function _injectAllIntoStrategy() private {
         // Deposit assets into LP tokens
-        IERC20 token0 = tokenByIndex(0);
-        IERC20 token1 = tokenByIndex(1);
+        IERC20Upgradeable token0 = tokenByIndex(0);
+        IERC20Upgradeable token1 = tokenByIndex(1);
         uint256 amountADesired = token0.balanceOf(address(this));
         uint256 amountBDesired = token1.balanceOf(address(this));
 
@@ -73,7 +73,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
         uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
 
         // Deposit into Beefy vault
-        IERC20 pair = IERC20(uniFactory.getPair(address(token0), address(token1)));
+        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(address(token0), address(token1)));
         uint256 pairBalance = pair.balanceOf(address(this));
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
@@ -82,7 +82,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
     }
 
     function _ejectAllFromStrategy() private {
-        if (IERC20(address(beVault)).balanceOf(address(this)) == 0) return;
+        if (IERC20Upgradeable(address(beVault)).balanceOf(address(this)) == 0) return;
 
         // Withdraw from Beefy vault
         beVault.withdrawAll();
@@ -91,7 +91,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
         address token0 = address(tokenByIndex(0));
         address token1 = address(tokenByIndex(1));
 
-        IERC20 pair = IERC20(uniFactory.getPair(token0, token1));
+        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(token0, token1));
         uint256 pairBalance = pair.balanceOf(address(this));
 
         pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
@@ -150,10 +150,10 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
         twaAPY = temp;
     }
 
-    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
         uint256 SHARE_BASE = 1e18;
-        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
+        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20Upgradeable(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
 
         // Get the allocation of the specified balance
         IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));

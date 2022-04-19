@@ -4,12 +4,12 @@ pragma solidity ^0.8.0;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-controller/IVaultStrategyController.sol";
-import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
+import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {strings} from "../../../../lib/solidity-stringutils/strings.sol";
 import {Integers} from "../../../../lib/solidity-util/Integers.sol";
+import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-controller/IVaultStrategyController.sol";
+import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategyAPY} from "../../interfaces/lens/strategy/IStrategyAPY.sol";
@@ -20,7 +20,7 @@ contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVa
     using strings for string;
     using strings for strings.slice;
     using Integers for string;
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
     using Chainlink for Chainlink.Request;
 
     IVaultV1 private vault;

@@ -5,10 +5,10 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
+import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
@@ -18,8 +18,8 @@ import {SupportsFee} from "../../utils/SupportsFee.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, SupportsFee, Emergency {
-    using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeMathUpgradeable for uint256;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public VAULT_ADMIN_ROLE;
     bytes32 public VAULT_CONTROLLER_ROLE;
@@ -27,7 +27,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     IStrategy private strategy;
 
     function initialize(
-        IERC20[] memory token,
+        IERC20Upgradeable[] memory token,
         IStrategy _strategy,
         address _feeRecipient,
         uint256 _feePercent,
@@ -58,7 +58,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     }
 
     function _sharesFromAmount(
-        IERC20 token,
+        IERC20Upgradeable token,
         uint256 amount,
         uint256 totalShares
     ) private view returns (uint256 shares) {
@@ -117,7 +117,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         if (_totalShares == 0) return amount;
 
         for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
+            IERC20Upgradeable token = tokenByIndex(i);
 
             uint256 _balance = approxBalance(token);
             amount[i] = _balance.mul(shares).div(_totalShares);
@@ -130,9 +130,9 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         _withdrawAllFromStrategy();
 
         for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
+            IERC20Upgradeable token = tokenByIndex(i);
 
-            amount[i] = Math.min(amount[i], token.balanceOf(address(this)));
+            amount[i] = MathUpgradeable.min(amount[i], token.balanceOf(address(this)));
             token.safeTransfer(_msgSender(), amount[i]);
         }
 
@@ -143,7 +143,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this)).add(strategy.approxBalance(token));
     }
 
@@ -155,7 +155,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
 
     function _depositAllIntoStrategy() private {
         for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20 token = tokenByIndex(i);
+            IERC20Upgradeable token = tokenByIndex(i);
             token.safeIncreaseAllowance(address(strategy), token.balanceOf(address(this)));
         }
 
