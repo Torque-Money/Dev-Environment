@@ -4,7 +4,7 @@
         "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
         "TAU": { "proxy": "0x4579F9832DC20567E4d690d0a981Cab0DC4E15FA", "implementation": "0x1526Ea5a1Cb630F0dcaB045A34D0215579fe3c13" },
         "VaultV1": {
-            "proxies": [],
+            "proxies": ["0x7b02CBA8c6bFAc6eBAb2dfA57096A9D60d2162Ae"],
             "beacon": "0xAA6F01966f379dfCD7E8817F248643000b39f06D",
             "implementation": "0x6b71f6e5C6b2FC1C0B3F52fD1b45D0FA724f35ea"
         },
