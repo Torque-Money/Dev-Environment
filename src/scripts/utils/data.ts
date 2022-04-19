@@ -8,8 +8,9 @@ interface Proxy {
 }
 
 interface BeaconProxy {
-    proxies: Proxy[];
+    proxies: Address[];
     beacon: Address;
+    implementation: Address;
 }
 
 interface Data {

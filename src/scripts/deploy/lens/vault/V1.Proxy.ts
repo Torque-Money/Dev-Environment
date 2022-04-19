@@ -12,7 +12,7 @@ async function main() {
     const strategy = "";
     const feeRecipient = data.contracts.timelock;
     const feePercent = 0;
-    const feeDenominator = 1;
+    const feeDenominator = 100;
 
     const VaultV1 = await hre.ethers.getContractFactory("TorqueVaultV1");
     const vaultV1 = await hre.upgrades.deployBeaconProxy(beacon, VaultV1, [tokens, strategy, feeRecipient, feePercent, feeDenominator]);
