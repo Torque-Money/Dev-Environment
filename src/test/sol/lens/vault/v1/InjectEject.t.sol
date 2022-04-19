@@ -21,6 +21,11 @@ contract InjectEjectTest is VaultBase {
         strategy = _getStrategy();
     }
 
+    // Test the flow of funds between the vault and the strategy
+    function testFundFlow() public useFunds {
+        // **** TODO
+    }
+
     // Eject vault funds from the strategy.
     function testEjectAll() public useFunds {
         IERC20[] memory token = Config.getToken();
