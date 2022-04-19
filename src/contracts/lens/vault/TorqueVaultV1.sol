@@ -8,6 +8,7 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
@@ -67,7 +68,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         else shares = amount.mul(totalShares).div(_balance);
     }
 
-    function _previewDeposit(uint256[] memory amount) private view returns (uint256 shares, uint256 fees) {
+    function _estimateDeposit(uint256[] memory amount) private view returns (uint256 shares, uint256 fees) {
         uint256 _totalShares = totalSupply();
 
         if (_totalShares == 0) {
@@ -91,15 +92,15 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         shares = shares.sub(fees);
     }
 
-    function previewDeposit(uint256[] memory amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
-        (shares, ) = _previewDeposit(amount);
+    function estimateDeposit(uint256[] memory amount) public view override onlyTokenAmount(amount) returns (uint256 shares) {
+        (shares, ) = _estimateDeposit(amount);
     }
 
     function deposit(uint256[] memory amount) external override onlyTokenAmount(amount) returns (uint256 shares) {
         uint256 fees;
-        (shares, fees) = _previewDeposit(amount);
+        (shares, fees) = _estimateDeposit(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]); // **** Must be this line then ?
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransferFrom(_msgSender(), address(this), amount[i]);
 
         _depositAllIntoStrategy();
 
@@ -109,7 +110,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Deposit(_msgSender(), amount, shares);
     }
 
-    function previewRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
+    function estimateRedeem(uint256 shares) public view override returns (uint256[] memory amount) {
         uint256 _totalShares = totalSupply();
 
         amount = new uint256[](tokenCount());
@@ -124,11 +125,16 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        amount = previewRedeem(shares);
+        amount = estimateRedeem(shares);
 
         _withdrawAllFromStrategy();
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20 token = tokenByIndex(i);
+
+            amount[i] = Math.min(amount[i], token.balanceOf(address(this)));
+            token.safeTransfer(_msgSender(), amount[i]);
+        }
 
         _depositAllIntoStrategy();
 

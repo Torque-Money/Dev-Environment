@@ -64,10 +64,12 @@ contract VaultTest is StrategyBase {
         // Withdraw funds and check the balances
         uint256[] memory out = vault.redeem(shares);
 
+        // **** Its probably because it is trying to get the balance and since it is not the exact amount it breaks - we have to do something about this ???
+
         for (uint256 i = 0; i < token.length; i++) {
             // AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
             // AssertUtils.assertApproxEqual(out[i], tokenAmount[i], fosPercent, fosDenominator);
-            // assertEq(vault.approxBalance(token[i]), 0);
+            // AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), 0, fosPercent, fosDenominator);
         }
     }
 
