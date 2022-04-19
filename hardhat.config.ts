@@ -10,14 +10,14 @@ require("dotenv").config();
 task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => {
     const data = {
         VaultV1: {
-            proxies: ["0x5FC8d32690cc91D4c39d9d3abcBD16989F875707"],
-            beacon: "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-            implementation: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+            proxies: ["0x7b02CBA8c6bFAc6eBAb2dfA57096A9D60d2162Ae"],
+            beacon: "0xAA6F01966f379dfCD7E8817F248643000b39f06D",
+            implementation: "0x6b71f6e5C6b2FC1C0B3F52fD1b45D0FA724f35ea",
         },
         BeefyLPStrategy: {
-            proxies: ["0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"],
-            beacon: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-            implementation: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+            proxies: ["0x6Ad07E659563490d40377a98a7f0f62ed7d38C41"],
+            beacon: "0xAcB597F234ECdb6E8E67773D1a9952877CDe708E",
+            implementation: "0x87E995ee8fC7B92AE651169a62Be8986d71cC895",
         },
     };
 
