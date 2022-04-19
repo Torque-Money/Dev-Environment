@@ -65,6 +65,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
         uint256 amountADesired = token0.balanceOf(address(this));
         uint256 amountBDesired = token1.balanceOf(address(this));
 
+        if (amountADesired == 0 || amountBDesired == 0) return;
+
         token0.safeIncreaseAllowance(address(uniRouter), amountADesired);
         token1.safeIncreaseAllowance(address(uniRouter), amountBDesired);
 
@@ -80,6 +82,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategyAP
     }
 
     function _ejectAllFromStrategy() private {
+        if (IERC20(address(beVault)).balanceOf(address(this)) == 0) return;
+
         // Withdraw from Beefy vault
         beVault.withdrawAll();
 

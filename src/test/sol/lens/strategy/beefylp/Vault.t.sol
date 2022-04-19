@@ -61,12 +61,15 @@ contract VaultTest is StrategyBase {
             AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), tokenAmount[i], fosPercent, fosDenominator);
         }
 
-        // Withdraw funds
+        // Withdraw funds and check the balances
         uint256[] memory out = vault.redeem(shares);
 
-        // **** The problem comes when we attempt to reinject the funds and there are none there - we have to make it so it wont try when the amounts are 0
+        for (uint256 i = 0; i < token.length; i++) {
+            AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
+            AssertUtils.assertApproxEqual(out[i], tokenAmount[i], fosPercent, fosDenominator);
 
-        // Check the balances of the withdrawn funds
+            assertEq(vault.approxBalance(token[i]), 0);
+        }
     }
 
     // Inject and eject vault funds into the strategy.
