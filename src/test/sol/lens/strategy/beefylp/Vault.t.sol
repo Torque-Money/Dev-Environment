@@ -60,10 +60,31 @@ contract VaultTest is StrategyBase {
         for (uint256 i = 0; i < token.length; i++) {
             _assertApproxEq(token[i].balanceOf(address(this)), initialBalance[i]);
             _assertApproxEq(out[i], tokenAmount[i]);
+
             _assertApproxEq(vault.approxBalance(token[i]), 0);
         }
     }
 
     // Inject and eject vault funds into the strategy.
-    function testInjectEjectAll() public useFunds {}
+    function testInjectEjectAll() public useFunds {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Deposit funds
+        uint256 shares = vault.deposit(tokenAmount);
+
+        // **** This is going to have to be done a little differently using the approxBalance instead of the balance itself
+        // Check that vault has been allocated the correct amount of tokens and they have flowed into the right contracts
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(vault)), 0);
+
+            assertEq(strategy.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(strategy)), tokenAmount[i]);
+        }
+
+        // Eject the funds and check it works properly
+
+        // Inject the funds and check it works properly (DO THIS FOR THE OTHER ONE AS WELL)
+    }
 }
