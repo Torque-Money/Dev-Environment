@@ -23,11 +23,6 @@ contract InjectEjectTest is VaultBase {
 
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds {
-        // **** TODO
-    }
-
-    // Eject vault funds from the strategy.
-    function testEjectAll() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -42,6 +37,17 @@ contract InjectEjectTest is VaultBase {
             assertEq(strategy.approxBalance(token[i]), tokenAmount[i]);
             assertEq(token[i].balanceOf(address(strategy)), tokenAmount[i]);
         }
+
+        vault.redeem(shares);
+    }
+
+    // Eject vault funds from the strategy.
+    function testEjectAll() public useFunds {
+        IERC20[] memory token = Config.getToken();
+        uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        // Make deposit
+        uint256 shares = vault.deposit(tokenAmount);
 
         // Withdraw shares and check funds have flowed correctly
         vault.withdrawAllFromStrategy();

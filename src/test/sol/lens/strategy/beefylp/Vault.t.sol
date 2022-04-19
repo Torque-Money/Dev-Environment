@@ -103,8 +103,6 @@ contract VaultTest is StrategyBase {
             _assertApproxEq(strategy.approxBalance(token[i]), 0);
         }
 
-        vault.redeem(shares);
-
         // Check that the funds correctly flow back
         uint256[] memory out = vault.redeem(shares);
 
