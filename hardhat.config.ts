@@ -5,24 +5,15 @@ import "@openzeppelin/hardhat-upgrades";
 
 import { HardhatUserConfig, task } from "hardhat/config";
 
+import { loadData } from "./src/scripts/utils/data";
+
 require("dotenv").config();
 
 task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => {
-    const data = {
-        VaultV1: {
-            proxies: ["0x7b02CBA8c6bFAc6eBAb2dfA57096A9D60d2162Ae"],
-            beacon: "0xAA6F01966f379dfCD7E8817F248643000b39f06D",
-            implementation: "0x6b71f6e5C6b2FC1C0B3F52fD1b45D0FA724f35ea",
-        },
-        BeefyLPStrategy: {
-            proxies: ["0x6Ad07E659563490d40377a98a7f0f62ed7d38C41"],
-            beacon: "0xAcB597F234ECdb6E8E67773D1a9952877CDe708E",
-            implementation: "0x87E995ee8fC7B92AE651169a62Be8986d71cC895",
-        },
-    };
+    const data = loadData();
 
-    const vaultV1 = await hre.ethers.getContractAt("TorqueVaultV1", data.VaultV1.proxies[0]);
-    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.BeefyLPStrategy.proxies[0]);
+    const vaultV1 = await hre.ethers.getContractAt("TorqueVaultV1", data.contracts.VaultV1.proxies[0]);
+    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.contracts.BeefyLPStrategy.proxies[0]);
 
     console.log("Vault");
     console.log(await vaultV1.feePercent());
@@ -33,6 +24,16 @@ task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => 
     console.log(await strategy.APY());
     console.log(await strategy.uniRouter());
     console.log(await strategy.tokenCount());
+
+    // **** Strategy
+    // **** Assign the vault as a controller of the strategy
+    // **** Assign the emergency to the timelock (and revoke)
+    // **** Assign strategy admin to the timelock (and revoke)
+
+    // **** Vault
+    // **** Assign the fee to the timelock (and revoke)
+    // **** Assign the emergency to the timelock (and revoke)
+    // **** Assign the vault admin to the timelock (and revoke)
 });
 
 export default {
