@@ -26,7 +26,7 @@ contract VaultTest is StrategyBase {
         empty = _getEmpty();
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), strategy, _getEmpty(), 0, 1000); // **** Changing this fee to zero seems to break things ???
+        vault.initialize(Config.getToken(), strategy, _getEmpty(), 0, 1000);
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
@@ -57,12 +57,10 @@ contract VaultTest is StrategyBase {
         // Withdraw funds and check the balances
         uint256[] memory out = vault.redeem(shares);
 
-        // **** Its probably because it is trying to get the balance and since it is not the exact amount it breaks - we have to do something about this ???
-
         for (uint256 i = 0; i < token.length; i++) {
-            // AssertUtils.assertApproxEqual(token[i].balanceOf(address(this)), initialBalance[i], fosPercent, fosDenominator);
-            // AssertUtils.assertApproxEqual(out[i], tokenAmount[i], fosPercent, fosDenominator);
-            // AssertUtils.assertApproxEqual(vault.approxBalance(token[i]), 0, fosPercent, fosDenominator);
+            _assertApproxEq(token[i].balanceOf(address(this)), initialBalance[i]);
+            _assertApproxEq(out[i], tokenAmount[i]);
+            _assertApproxEq(vault.approxBalance(token[i]), 0);
         }
     }
 
