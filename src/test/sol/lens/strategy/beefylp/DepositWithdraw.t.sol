@@ -94,9 +94,17 @@ contract DepositWithdrawTest is StrategyBase {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = new uint256[](token.length);
 
-        // **** This actually needs a proper test to make sure nothing is updated
+        // Deposit zero and check no balances have been updated
+        uint256[] memory initialBalance = new uint256[](token.length);
+        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
         strategy.deposit(tokenAmount);
+
+        for (uint256 i = 0; i < token.length; i++) {
+            assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
+
+            assertEq(strategy.approxBalance(token[i]), 0);
+        }
     }
 
     // Withdraw zero funds from the strategy.
