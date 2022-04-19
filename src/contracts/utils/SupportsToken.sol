@@ -2,16 +2,16 @@
 pragma solidity ^0.8.0;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {EnumerableSetUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol";
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 import {ISupportsToken} from "../interfaces/utils/ISupportsToken.sol";
 
 contract SupportsToken is Initializable, ISupportsToken {
-    using EnumerableSet for EnumerableSet.AddressSet;
+    using EnumerableSetUpgradeable for EnumerableSetUpgradeable.AddressSet;
 
-    EnumerableSet.AddressSet private tokenSet;
+    EnumerableSetUpgradeable.AddressSet private tokenSet;
 
     function __SupportsToken_init(IERC20[] memory token) internal onlyInitializing {
         __SupportsToken_init_unchained(token);
