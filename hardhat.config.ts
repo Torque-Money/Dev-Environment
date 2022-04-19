@@ -19,32 +19,32 @@ task("sandbox", "Sandbox for interacting with blockchain", async (args, hre) => 
 
     // === Strategy ===
     // Assign the vault as a controller of the strategy
-    await strategy.grantRole(await strategy.STRATEGY_CONTROLLER_ROLE(), vaultV1.address);
+    await (await strategy.grantRole(await strategy.STRATEGY_CONTROLLER_ROLE(), vaultV1.address)).wait();
 
     // Assign the emergency to the timelock (and revoke)
     const EMERGENCY_ADMIN_ROLE = await strategy.EMERGENCY_ADMIN_ROLE();
-    await strategy.grantRole(EMERGENCY_ADMIN_ROLE, data.contracts.timelock);
-    await strategy.renounceRole(EMERGENCY_ADMIN_ROLE, caller);
+    await (await strategy.grantRole(EMERGENCY_ADMIN_ROLE, data.contracts.timelock)).wait();
+    await (await strategy.renounceRole(EMERGENCY_ADMIN_ROLE, caller)).wait();
 
     // Assign strategy admin to the timelock (and revoke)
     const STRATEGY_ADMIN_ROLE = await strategy.STRATEGY_ADMIN_ROLE();
-    await strategy.grantRole(STRATEGY_ADMIN_ROLE, data.contracts.timelock);
-    await strategy.renounceRole(STRATEGY_ADMIN_ROLE, caller);
+    await (await strategy.grantRole(STRATEGY_ADMIN_ROLE, data.contracts.timelock)).wait();
+    await (await strategy.renounceRole(STRATEGY_ADMIN_ROLE, caller)).wait();
 
     // === Vault ===
     // Assign the fee to the timelock (and revoke)
     const FEE_ADMIN_ROLE = await vaultV1.FEE_ADMIN_ROLE();
-    await vaultV1.grantRole(FEE_ADMIN_ROLE, data.contracts.timelock);
-    await vaultV1.renounceRole(FEE_ADMIN_ROLE, caller);
+    await (await vaultV1.grantRole(FEE_ADMIN_ROLE, data.contracts.timelock)).wait();
+    await (await vaultV1.renounceRole(FEE_ADMIN_ROLE, caller)).wait();
 
     // Assign the emergency to the timelock (and revoke)
-    await vaultV1.grantRole(EMERGENCY_ADMIN_ROLE, data.contracts.timelock);
-    await vaultV1.renounceRole(EMERGENCY_ADMIN_ROLE, caller);
+    await (await vaultV1.grantRole(EMERGENCY_ADMIN_ROLE, data.contracts.timelock)).wait();
+    await (await vaultV1.renounceRole(EMERGENCY_ADMIN_ROLE, caller)).wait();
 
     // Assign the vault admin to the timelock (and revoke)
     const VAULT_ADMIN_ROLE = await vaultV1.VAULT_ADMIN_ROLE();
-    await vaultV1.grantRole(VAULT_ADMIN_ROLE, data.contracts.timelock);
-    await vaultV1.renounceRole(VAULT_ADMIN_ROLE, caller);
+    await (await vaultV1.grantRole(VAULT_ADMIN_ROLE, data.contracts.timelock)).wait();
+    await (await vaultV1.renounceRole(VAULT_ADMIN_ROLE, caller)).wait();
 });
 
 export default {
