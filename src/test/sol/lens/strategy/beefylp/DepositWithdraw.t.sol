@@ -90,7 +90,7 @@ contract DepositWithdrawTest is StrategyBase {
     }
 
     // Deposit zero funds into the strategy.
-    function testFailDepositZero() public {
+    function testDepositZero() public {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = new uint256[](token.length);
 
