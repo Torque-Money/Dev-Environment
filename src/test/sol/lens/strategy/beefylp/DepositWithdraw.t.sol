@@ -92,13 +92,13 @@ contract DepositWithdrawTest is StrategyBase {
     // Deposit zero funds into the strategy.
     function testDepositZero() public {
         IERC20[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = new uint256[](token.length);
+        uint256[] memory tokenAmountZero = new uint256[](token.length);
 
         // Deposit zero and check no balances have been updated
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.deposit(tokenAmount);
+        strategy.deposit(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) {
             assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
@@ -108,17 +108,17 @@ contract DepositWithdrawTest is StrategyBase {
     }
 
     // Withdraw zero funds from the strategy.
-    function testWithdrawZero() public {
+    function testWithdrawZero() public useFunds {
         IERC20[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
-        uint256[] memory zeroTokenAmount = new uint256[](token.length);
+        uint256[] memory tokenAmountZero = new uint256[](token.length);
 
         // Withdraw zero when there are no tokens
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.withdraw(zeroTokenAmount);
+        strategy.withdraw(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
@@ -128,7 +128,7 @@ contract DepositWithdrawTest is StrategyBase {
         initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.withdraw(zeroTokenAmount);
+        strategy.withdraw(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
