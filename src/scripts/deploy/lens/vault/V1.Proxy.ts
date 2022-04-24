@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-import { loadData } from "../../../utils/data";
+import { loadData } from "../../../utils";
 
 async function main() {
     const data = loadData();
@@ -27,4 +27,3 @@ main()
         console.error(error);
         process.exit(1);
     });
-
