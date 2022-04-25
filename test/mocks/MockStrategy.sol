@@ -8,10 +8,10 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import {IStrategyAPY} from "../../contracts/interfaces/lens/strategy/IStrategyAPY.sol";
-import {ISupportsToken} from "../../contracts/interfaces/utils/ISupportsToken.sol";
-import {SupportsToken} from "../../contracts/utils/SupportsToken.sol";
-import {Emergency} from "../../contracts/utils/Emergency.sol";
+import {IStrategyAPY} from "../../src/interfaces/lens/IStrategyAPY.sol";
+import {ISupportsToken} from "../../src/interfaces/utils/ISupportsToken.sol";
+import {SupportsToken} from "../../src/utils/SupportsToken.sol";
+import {Emergency} from "../../src/utils/Emergency.sol";
 
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
