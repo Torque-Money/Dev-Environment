@@ -5,20 +5,16 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import {strings} from "../../../../lib/solidity-stringutils/strings.sol";
-import {Integers} from "../../../../lib/solidity-util/Integers.sol";
-import {IVaultStrategyController} from "../../interfaces/lens/vault-strategy-controller/IVaultStrategyController.sol";
+import {IVaultStrategyController} from "../../interfaces/lens/IVaultStrategyController.sol";
 import {ChainlinkClient} from "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import {Chainlink} from "@chainlink/contracts/src/v0.8/Chainlink.sol";
 
-import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
-import {IStrategyAPY} from "../../interfaces/lens/strategy/IStrategyAPY.sol";
+import {IVaultV1} from "../../interfaces/lens/IVaultV1.sol";
+import {IStrategyAPY} from "../../interfaces/lens/IStrategyAPY.sol";
 import {Registry} from "../../utils/Registry.sol";
 import {Emergency} from "../../utils/Emergency.sol";
 
 contract VaultStrategyController is Initializable, AccessControlUpgradeable, IVaultStrategyController, Registry, Emergency, ChainlinkClient {
-    using strings for string;
-    using strings for strings.slice;
     using Integers for string;
     using SafeMathUpgradeable for uint256;
     using Chainlink for Chainlink.Request;

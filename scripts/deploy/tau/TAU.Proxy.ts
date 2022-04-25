@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-import { TorqueTAU } from "../../../../typechain-types";
+import { TorqueTAU } from "../../../typechain-types";
 
 async function main() {
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");

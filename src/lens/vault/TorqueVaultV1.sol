@@ -10,8 +10,8 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
-import {IVaultV1} from "../../interfaces/lens/vault/IVaultV1.sol";
-import {IStrategy} from "../../interfaces/lens/strategy/IStrategy.sol";
+import {IVaultV1} from "../../interfaces/lens/IVaultV1.sol";
+import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../utils/SupportsToken.sol";
 import {SupportsFee} from "../../utils/SupportsFee.sol";

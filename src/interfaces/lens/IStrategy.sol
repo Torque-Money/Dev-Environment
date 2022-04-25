@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {ISupportsToken} from "../../utils/ISupportsToken.sol";
+import {ISupportsToken} from "../utils/ISupportsToken.sol";
 
 // A strategy that integrates with a vault to earn rewards on deposited tokens.
 // Strategy should only ever integrate with a single vault.

@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
-import {IStrategy} from "../strategy/IStrategy.sol";
-import {ISupportsToken} from "../../utils/ISupportsToken.sol";
+import {IStrategy} from "./IStrategy.sol";
+import {ISupportsToken} from "../utils/ISupportsToken.sol";
 
 // A multi-token vault that tracks each users share with its own ERC20 interface. Manages deposited funds using a strategy to earn rewards.
 interface IVaultV1 is ISupportsToken, IERC20Upgradeable {

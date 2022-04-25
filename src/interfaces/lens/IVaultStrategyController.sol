@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IVaultV1} from "../vault/IVaultV1.sol";
+import {IVaultV1} from "./IVaultV1.sol";
 
 // Controls a vault and the strategies it can implement.
 interface IVaultStrategyController {
