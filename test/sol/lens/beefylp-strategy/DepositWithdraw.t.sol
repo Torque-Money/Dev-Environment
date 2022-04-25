@@ -7,8 +7,8 @@ import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol
 
 import {StrategyBase} from "./StrategyBase.sol";
 
-import {Config} from "../../../helpers/Config.sol";
-import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
+import {Config} from "../../helpers/Config.sol";
+import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
     using SafeMath for uint256;

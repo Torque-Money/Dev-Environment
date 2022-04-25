@@ -1,14 +1,14 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
+import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
-import {Base} from "../../../helpers/Base.sol";
-import {UsesTokenBase} from "../../../helpers/UsesTokenBase.sol";
+import {Base} from "../../helpers/Base.sol";
+import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
-import {Config} from "../../../helpers/Config.sol";
-import {Empty} from "../../../helpers/Empty.sol";
-import {BeefyLPStrategy} from "../../../../../contracts/lens/strategy/BeefyLPStrategy.sol";
+import {Config} from "../../helpers/Config.sol";
+import {Empty} from "../../helpers/Empty.sol";
+import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract StrategyBase is Base, UsesTokenBase {
     BeefyLPStrategy private strategy;
