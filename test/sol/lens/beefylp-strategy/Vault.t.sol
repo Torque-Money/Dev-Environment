@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
 
@@ -13,7 +13,7 @@ import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is StrategyBase {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     TorqueVaultV1 private vault;
     BeefyLPStrategy private strategy;
@@ -38,7 +38,7 @@ contract VaultTest is StrategyBase {
 
     // Test a deposit and redeem with the vault and Beefy LP strategy.
     function testDepositRedeem() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit funds into the vault
@@ -67,7 +67,7 @@ contract VaultTest is StrategyBase {
 
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit funds
@@ -86,7 +86,7 @@ contract VaultTest is StrategyBase {
 
     // Eject vault funds from the strategy
     function testEjectAll() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit funds
@@ -111,7 +111,7 @@ contract VaultTest is StrategyBase {
 
     // Inject vault funds into the strategy.
     function testInjectAll() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit funds
