@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IBeefyVaultV6} from "../../../src/interfaces/beefy/IBeefyVaultV6.sol";
@@ -15,11 +15,11 @@ library Config {
         return ICheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
     }
 
-    function getToken() internal pure returns (IERC20[] memory token) {
-        token = new IERC20[](2);
+    function getToken() internal pure returns (IERC20Upgradeable[] memory token) {
+        token = new IERC20Upgradeable[](2);
 
-        token[0] = IERC20(0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83); // wFTM
-        token[1] = IERC20(0x04068DA6C83AFCFA0e13ba15A6696662335D5B75); // USDC
+        token[0] = IERC20Upgradeable(0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83); // wFTM
+        token[1] = IERC20Upgradeable(0x04068DA6C83AFCFA0e13ba15A6696662335D5B75); // USDC
     }
 
     function getTokenWhale() internal pure returns (address[] memory whale) {
