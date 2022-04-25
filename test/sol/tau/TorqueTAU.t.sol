@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {DSTest} from "ds-test/test.sol";
 
-import {TorqueTAU} from "../../../contracts/tau/TorqueTAU.sol";
+import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
 
 contract TorqueTAUTest is DSTest {
     TorqueTAU tau;
