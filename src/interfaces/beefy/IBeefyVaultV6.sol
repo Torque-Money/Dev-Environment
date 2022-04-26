@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 interface IBeefyVaultV6 {
-    function want() external view returns (IERC20);
+    function want() external view returns (IERC20Upgradeable);
 
     function balance() external view returns (uint256);
 

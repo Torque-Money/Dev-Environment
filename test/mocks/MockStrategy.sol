@@ -6,7 +6,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
 import {IStrategyAPY} from "../../src/interfaces/lens/IStrategyAPY.sol";
 import {ISupportsToken} from "../../src/interfaces/utils/ISupportsToken.sol";
@@ -17,7 +17,7 @@ import {Emergency} from "../../src/utils/Emergency.sol";
 // It will then take the LP token and deposit it into a Beefy vault.
 
 contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, SupportsToken, Emergency {
-    using SafeMath for uint256;
+    using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public STRATEGY_ADMIN_ROLE;
