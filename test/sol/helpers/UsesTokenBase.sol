@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {Config} from "./Config.sol";
 import {ICheatCodes} from "./ICheatCodes.sol";
 
 abstract contract UsesTokenBase {
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     modifier useFunds() {
         _fundCaller();
@@ -17,7 +17,7 @@ abstract contract UsesTokenBase {
 
     // Fund a contract with the required tokens
     function _fundCaller() internal {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
 
         ICheatCodes cheats = _getCheats();
@@ -33,7 +33,7 @@ abstract contract UsesTokenBase {
 
     // Withdraw all funds from the contract back into the whales
     function _defundCaller() internal {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
 
         for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(tokenWhale[i], token[i].balanceOf(address(this)));
@@ -41,7 +41,7 @@ abstract contract UsesTokenBase {
 
     // Approves funds for use with the given contracts
     function _approveAll(address[] memory spender) internal {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
 
         uint256 MAX_INT = 2**256 - 1;
 
