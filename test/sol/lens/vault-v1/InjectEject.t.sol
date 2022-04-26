@@ -1,8 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
 import {VaultBase} from "./VaultBase.sol";
 
@@ -23,7 +22,7 @@ contract InjectEjectTest is VaultBase {
 
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Make deposit
@@ -43,7 +42,7 @@ contract InjectEjectTest is VaultBase {
 
     // Eject vault funds from the strategy.
     function testEjectAll() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Make deposit
@@ -65,7 +64,7 @@ contract InjectEjectTest is VaultBase {
 
     // Inject vault funds into the strategy.
     function testInjectAll() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Make deposit

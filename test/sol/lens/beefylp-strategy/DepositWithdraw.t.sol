@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
 
@@ -11,8 +11,8 @@ import {Config} from "../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
-    using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeMathUpgradeable for uint256;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     BeefyLPStrategy private strategy;
 
@@ -24,7 +24,7 @@ contract DepositWithdrawTest is StrategyBase {
 
     // Deposit and withdraw funds from the strategy.
     function testDepositWithdraw() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Deposit amount into the strategy
@@ -65,7 +65,7 @@ contract DepositWithdrawTest is StrategyBase {
 
     // Deposit and withdraw all funds from the strategy.
     function testDepositAllWithdrawAll() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
 
         // Deposit all into the strategy and check the balance is what was deposited
         uint256[] memory initialBalance = new uint256[](token.length);
@@ -91,7 +91,7 @@ contract DepositWithdrawTest is StrategyBase {
 
     // Deposit zero funds into the strategy.
     function testDepositZero() public {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmountZero = new uint256[](token.length);
 
         // Deposit zero and check no balances have been updated
@@ -109,7 +109,7 @@ contract DepositWithdrawTest is StrategyBase {
 
     // Withdraw zero funds from the strategy.
     function testWithdrawZero() public useFunds {
-        IERC20[] memory token = Config.getToken();
+        IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         uint256[] memory tokenAmountZero = new uint256[](token.length);

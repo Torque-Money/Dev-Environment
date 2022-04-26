@@ -4,8 +4,8 @@ pragma solidity ^0.8.0;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import {IStrategyAPY} from "../../src/interfaces/lens/IStrategyAPY.sol";
@@ -18,14 +18,14 @@ import {Emergency} from "../../src/utils/Emergency.sol";
 
 contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, SupportsToken, Emergency {
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public STRATEGY_ADMIN_ROLE;
     bytes32 public STRATEGY_CONTROLLER_ROLE;
 
     uint256 private twaAPY;
 
-    function initialize(IERC20[] memory token, uint256 initialAPY) external initializer {
+    function initialize(IERC20Upgradeable[] memory token, uint256 initialAPY) external initializer {
         __AccessControl_init();
         __SupportsToken_init(token, 2);
         __Emergency_init();
@@ -83,7 +83,7 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, 
         twaAPY = temp;
     }
 
-    function approxBalance(IERC20 token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this));
     }
 }
