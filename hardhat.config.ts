@@ -5,7 +5,7 @@ import "@openzeppelin/hardhat-upgrades";
 
 import { HardhatUserConfig, task } from "hardhat/config";
 
-import { loadData } from "./src/scripts/utils";
+import { loadData } from "./scripts/utils";
 
 require("dotenv").config();
 
