@@ -140,8 +140,6 @@ contract DepositRedeemTest is VaultBase {
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Use 0 fees for the test
-        uint256 amount = vault.feeAmount();
-        vault.setFeeAmount(0);
         (uint256 percent, uint256 denominator) = vault.feePercent();
         vault.setFeePercent(0, denominator);
 
@@ -174,6 +172,5 @@ contract DepositRedeemTest is VaultBase {
 
         // Reset the fees
         vault.setFeePercent(percent, denominator);
-        vault.setFeeAmount(amount);
     }
 }
