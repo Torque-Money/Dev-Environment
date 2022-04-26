@@ -1,5 +1,2 @@
-@chainlink/=node_modules/@chainlink/
-@openzeppelin/=node_modules/@openzeppelin/
-@uniswap/=node_modules/@uniswap/
 
 ds-test/=lib/ds-test/src/

@@ -1,8 +1,14 @@
 [default]
 src = "src"
-out = "out"
+out = "artifacts"
 test = "test/sol"
-libs = ["lib"]
+libs = ["node_moduless"]
+
+remappings = [
+    "@chainlink/=node_modules/@chainlink/",
+    "@openzeppelin/=node_modules/@openzeppelin/",
+    "@uniswap/=node_modules/@uniswap/",
+]
 
 solc_version = "0.8.10"
 optimizer = true
