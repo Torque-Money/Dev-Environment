@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
 
@@ -13,7 +12,6 @@ import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is StrategyBase {
     using SafeMathUpgradeable for uint256;
-    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     TorqueVaultV1 private vault;
     BeefyLPStrategy private strategy;

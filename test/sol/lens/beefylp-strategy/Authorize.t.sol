@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
@@ -11,8 +10,6 @@ import {Config} from "../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase, Impersonate {
-    using SafeMathUpgradeable for uint256;
-
     BeefyLPStrategy private strategy;
     address private empty;
     ICheatCodes private cheats;

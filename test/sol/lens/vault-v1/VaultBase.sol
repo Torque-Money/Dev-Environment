@@ -7,7 +7,6 @@ import {Base} from "../../helpers/Base.sol";
 import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {Empty} from "../../helpers/Empty.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 

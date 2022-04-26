@@ -7,7 +7,6 @@ import {Base} from "../../helpers/Base.sol";
 import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {Empty} from "../../helpers/Empty.sol";
 import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract StrategyBase is Base, UsesTokenBase {

@@ -9,7 +9,6 @@ import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract DepositRedeemTest is VaultBase {

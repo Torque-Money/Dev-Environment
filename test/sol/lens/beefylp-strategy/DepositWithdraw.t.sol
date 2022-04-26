@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
 import {StrategyBase} from "./StrategyBase.sol";
 
@@ -12,7 +11,6 @@ import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol
 
 contract DepositWithdrawTest is StrategyBase {
     using SafeMathUpgradeable for uint256;
-    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     BeefyLPStrategy private strategy;
 
