@@ -6,9 +6,6 @@ interface ISupportsFee {
     // Get the fee percentage.
     function feePercent() external view returns (uint256 percent, uint256 denominator);
 
-    // Get the fee amount.
-    function feeAmount() external view returns (uint256 amount);
-
     // Set the fee recipient.
     function setFeeRecipient(address recipient) external;
 
