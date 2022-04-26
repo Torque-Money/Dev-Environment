@@ -40,10 +40,6 @@ library Config {
         amount[1] = 10 * 1e6; // USDC amount
     }
 
-    function getInitialAPY() internal pure returns (uint256 apy) {
-        apy = 20 * 1e4;
-    }
-
     function getUniRouter() internal pure returns (IUniswapV2Router02 router) {
         return IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29); // Spookyswap router
     }

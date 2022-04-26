@@ -16,7 +16,7 @@ contract StrategyBase is Base, UsesTokenBase {
         super.setUp();
 
         strategy = new BeefyLPStrategy();
-        strategy.initialize(Config.getToken(), Config.getInitialAPY(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
+        strategy.initialize(Config.getToken(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
 
         strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
 

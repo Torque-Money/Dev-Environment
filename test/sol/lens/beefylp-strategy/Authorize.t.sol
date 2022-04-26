@@ -42,11 +42,6 @@ contract DepositWithdrawTest is StrategyBase, Impersonate {
         strategy.withdrawAll();
     }
 
-    // Fail to update the strategies APY.
-    function testFailUpdateAPY() public impersonate(empty) {
-        strategy.updateAPY(Config.getInitialAPY());
-    }
-
     function _getCheats() internal view override(StrategyBase, Impersonate) returns (ICheatCodes _cheats) {
         return super._getCheats();
     }

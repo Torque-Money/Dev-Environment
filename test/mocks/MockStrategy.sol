@@ -8,7 +8,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
-import {IStrategyAPY} from "../../src/interfaces/lens/IStrategyAPY.sol";
+import {IStrategy} from "../../src/interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../src/interfaces/utils/ISupportsToken.sol";
 import {SupportsToken} from "../../src/utils/SupportsToken.sol";
 import {Emergency} from "../../src/utils/Emergency.sol";
@@ -16,16 +16,14 @@ import {Emergency} from "../../src/utils/Emergency.sol";
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, SupportsToken, Emergency {
+contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public STRATEGY_ADMIN_ROLE;
     bytes32 public STRATEGY_CONTROLLER_ROLE;
 
-    uint256 private twaAPY;
-
-    function initialize(IERC20Upgradeable[] memory token, uint256 initialAPY) external initializer {
+    function initialize(IERC20Upgradeable[] memory token) external initializer {
         __AccessControl_init();
         __SupportsToken_init(token, 2);
         __Emergency_init();
@@ -36,8 +34,6 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, 
 
         STRATEGY_CONTROLLER_ROLE = keccak256("STRATEGY_CONTROLLER_ROLE");
         _setRoleAdmin(STRATEGY_CONTROLLER_ROLE, STRATEGY_ADMIN_ROLE);
-
-        twaAPY = initialAPY;
     }
 
     function _deposit(uint256[] memory amount) private {
@@ -68,19 +64,6 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategyAPY, 
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(address(this));
 
         _withdraw(amount);
-    }
-
-    function APY() external view returns (uint256 apy, uint256 decimals) {
-        return (twaAPY, 1e4);
-    }
-
-    function updateAPY(uint256 apy) external onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        uint256 EMA_WEIGHT_PERCENT = 70;
-
-        uint256 temp = twaAPY.mul(uint256(100).sub(EMA_WEIGHT_PERCENT).div(100));
-        temp = temp.add(apy.mul(EMA_WEIGHT_PERCENT).div(100));
-
-        twaAPY = temp;
     }
 
     function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {

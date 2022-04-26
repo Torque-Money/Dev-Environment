@@ -18,7 +18,7 @@ contract VaultBase is Base, UsesTokenBase {
         super.setUp();
 
         strategy = new MockStrategy();
-        strategy.initialize(Config.getToken(), Config.getInitialAPY());
+        strategy.initialize(Config.getToken());
 
         vault = new TorqueVaultV1();
         vault.initialize(Config.getToken(), strategy, _getEmpty(), 1, 1000);
