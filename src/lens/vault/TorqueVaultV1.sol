@@ -36,7 +36,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         __ERC20_init("Torque Vault V1", "TVV1");
         __AccessControl_init();
         __SupportsToken_init(token);
-        __SupportsFee_init(_feeRecipient, _feePercent, _feePercentDenominator, 0);
+        __SupportsFee_init(_feeRecipient, _feePercent, _feePercentDenominator);
         __Emergency_init();
 
         VAULT_ADMIN_ROLE = keccak256("VAULT_ADMIN_ROLE");

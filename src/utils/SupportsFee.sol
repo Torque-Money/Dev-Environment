@@ -12,22 +12,19 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
     address private recipient;
     uint256 private percent;
     uint256 private denominator;
-    uint256 private amount;
 
     function __SupportsFee_init(
         address _recipient,
         uint256 _percent,
-        uint256 _denominator,
-        uint256 _amount
+        uint256 _denominator
     ) internal onlyInitializing {
-        __SupportsFee_init_unchained(_recipient, _percent, _denominator, _amount);
+        __SupportsFee_init_unchained(_recipient, _percent, _denominator);
     }
 
     function __SupportsFee_init_unchained(
         address _recipient,
         uint256 _percent,
-        uint256 _denominator,
-        uint256 _amount
+        uint256 _denominator
     ) internal onlyInitializing {
         require(_denominator != 0, "SupportsFee: Denominator cannot be 0");
         require(_percent <= _denominator, "SupportsFee: Percent cannot be greater than denominator");
@@ -39,7 +36,6 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
         recipient = _recipient;
         percent = _percent;
         denominator = _denominator;
-        amount = _amount;
     }
 
     function setFeePercent(uint256 _percent, uint256 _denominator) external virtual onlyRole(FEE_ADMIN_ROLE) {
@@ -52,14 +48,6 @@ contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
 
     function feePercent() public view virtual override returns (uint256 _percent, uint256 _denominator) {
         return (percent, denominator);
-    }
-
-    function setFeeAmount(uint256 _amount) external virtual onlyRole(FEE_ADMIN_ROLE) {
-        amount = _amount;
-    }
-
-    function feeAmount() public view virtual override returns (uint256 _amount) {
-        return amount;
     }
 
     function setFeeRecipient(address _recipient) external virtual override onlyRole(FEE_ADMIN_ROLE) {
