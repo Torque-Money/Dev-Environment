@@ -2,7 +2,7 @@
 src = "src"
 out = "artifacts"
 test = "test/sol"
-libs = ["node_moduless"]
+libs = ["node_modules"]
 
 remappings = [
     "@chainlink/=node_modules/@chainlink/",
