@@ -2,7 +2,6 @@ cache/
 out/
 artifacts/
 typechain-types/
-lib/
 
 node_modules/
 
