@@ -4,19 +4,18 @@ pragma solidity ^0.8.0;
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {Base} from "../../helpers/Base.sol";
-import {EmergencyUpgradeable} from "../../../../src/utils/EmergencyUpgradeable.sol";
+import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
 contract EmergencyBase is Base {
-    EmergencyUpgradeable private emergency;
+    MockEmergency private emergency;
 
     function setUp() public override {
         super.setUp();
 
-        emergency = new EmergencyUpgradeable();
-        emergency.__Emergency_init();
+        emergency = new MockEmergency();
     }
 
-    function _getEmergency() internal view returns (EmergencyUpgradeable _emergency) {
+    function _getEmergency() internal view returns (MockEmergency _emergency) {
         return emergency;
     }
 
