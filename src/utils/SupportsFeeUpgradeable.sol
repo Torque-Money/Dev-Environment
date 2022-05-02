@@ -6,7 +6,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 
 import {ISupportsFee} from "../interfaces/utils/ISupportsFee.sol";
 
-contract SupportsFee is Initializable, AccessControlUpgradeable, ISupportsFee {
+contract SupportsFeeUpgradeable is Initializable, AccessControlUpgradeable, ISupportsFee {
     bytes32 public FEE_ADMIN_ROLE;
 
     address private recipient;

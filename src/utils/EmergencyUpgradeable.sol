@@ -9,7 +9,7 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 import {IEmergency} from "../interfaces/utils/IEmergency.sol";
 
-contract Emergency is Initializable, AccessControlUpgradeable, IEmergency {
+contract EmergencyUpgradeable is Initializable, AccessControlUpgradeable, IEmergency {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     bytes32 public EMERGENCY_ADMIN_ROLE;
