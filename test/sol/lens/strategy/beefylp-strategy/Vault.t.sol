@@ -6,9 +6,9 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {StrategyBase} from "./StrategyBase.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
-import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
+import {Config} from "../../../helpers/Config.sol";
+import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
+import {TorqueVaultV1} from "../../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is StrategyBase {
     using SafeMathUpgradeable for uint256;
