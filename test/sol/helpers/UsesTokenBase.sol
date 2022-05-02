@@ -3,8 +3,9 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {Config} from "./Config.sol";
 import {ICheatCodes} from "./ICheatCodes.sol";
+
+import {Config} from "./Config.sol";
 
 abstract contract UsesTokenBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
