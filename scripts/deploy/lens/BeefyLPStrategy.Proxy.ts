@@ -1,6 +1,6 @@
 import hre from "hardhat";
 
-import { loadData } from "../../../utils";
+import { loadData } from "../../utils";
 
 async function main() {
     const data = loadData();
@@ -18,7 +18,7 @@ async function main() {
     const beefyLPStrategy = await hre.upgrades.deployBeaconProxy(beacon, BeefyLPStrategy, [tokens, initialAPY, uniRouter, uniFactory, beVault]);
     await beefyLPStrategy.deployed();
 
-    console.log("BeefyLPStrategy proxy:", beefyLPStrategy.address);
+    console.log("Deploy BeefyLPStrategy proxy:", beefyLPStrategy.address);
 }
 
 main()

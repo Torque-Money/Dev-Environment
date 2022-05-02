@@ -12,6 +12,7 @@ async function main() {
     const beacon = (await getUpgradeableBeaconFactory(hre, hre.ethers.provider.getSigner())).attach(beaconAddress);
 
     await (await beacon.transferOwnership(newOwner)).wait();
+    console.log("Setup Beacon");
 }
 
 main()
