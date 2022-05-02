@@ -56,8 +56,14 @@ export default {
         tests: "test/js",
     },
     networks: {
+        hardhat: {
+            forking: {
+                url: process.env.NETWORK_URL_OPERA,
+                blockNumber: 32177754,
+            },
+            accounts: [process.env.PRIVATE_KEY_OPERA], // **** Will this work ?
+        },
         opera: {
-            chainId: 250,
             url: process.env.NETWORK_URL_OPERA,
             accounts: [process.env.PRIVATE_KEY_OPERA],
         },
