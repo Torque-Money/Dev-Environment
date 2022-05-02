@@ -1,18 +1,17 @@
+import { getUpgradeableBeaconFactory } from "@openzeppelin/hardhat-upgrades/dist/utils";
 import hre from "hardhat";
 
+import { loadData } from "../../utils";
+
 async function main() {
-    const BeefyLPStrategy = await hre.ethers.getContractFactory("BeefyLPStrategy");
-    const beacon = await hre.upgrades.deployBeacon(BeefyLPStrategy);
-    await beacon.deployed();
+    const data = loadData();
 
-    // **** First of all we need to get the strategy 
+    const beaconAddress = "";
+    const newOwner = data.contracts.timelock;
 
-    const beacon = await hre.upgrades.
+    const beacon = (await getUpgradeableBeaconFactory(hre, hre.ethers.provider.getSigner())).attach(beaconAddress);
 
-    console.log("BeefyLPStrategy beacon:", beacon.address);
-    console.log("BeefyLPStrategy implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
-
-    const beacon = 
+    await (await beacon.transferOwnership(newOwner)).wait();
 }
 
 main()
