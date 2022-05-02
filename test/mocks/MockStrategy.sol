@@ -10,13 +10,13 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {IStrategy} from "../../src/interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../src/interfaces/utils/ISupportsToken.sol";
-import {SupportsToken} from "../../src/utils/SupportsToken.sol";
-import {Emergency} from "../../src/utils/Emergency.sol";
+import {SupportsTokenUpgradeable} from "../../src/utils/SupportsTokenUpgradeable.sol";
+import {EmergencyUpgradeable} from "../../src/utils/EmergencyUpgradeable.sol";
 
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsTokenUpgradeable, EmergencyUpgradeable {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -66,7 +66,7 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, Sup
         _withdraw(amount);
     }
 
-    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this));
     }
 }
