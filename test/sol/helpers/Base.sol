@@ -32,6 +32,10 @@ contract Base is DSTest {
         return cheats;
     }
 
+    function _getFOS() internal view virtual returns (uint256 _fosPercent, uint256 _fosDenominator) {
+        return (fosPercent, fosDenominator);
+    }
+
     function _assertApproxEq(uint256 a, uint256 b) internal view {
         AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);
     }
