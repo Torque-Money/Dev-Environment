@@ -5,8 +5,8 @@ async function main() {
     const beacon = await hre.upgrades.deployBeacon(BeefyLPStrategy);
     await beacon.deployed();
 
-    console.log("Deploy BeefyLPStrategy beacon:", beacon.address);
-    console.log("Deploy BeefyLPStrategy implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
+    console.log("Deploy BeefyLPStrategy | Beacon:", beacon.address);
+    console.log("Deploy BeefyLPStrategy | Implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
 }
 
 main()

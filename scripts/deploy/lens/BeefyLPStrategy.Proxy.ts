@@ -18,7 +18,7 @@ async function main() {
     const beefyLPStrategy = await hre.upgrades.deployBeaconProxy(beacon, BeefyLPStrategy, [tokens, initialAPY, uniRouter, uniFactory, beVault]);
     await beefyLPStrategy.deployed();
 
-    console.log("Deploy BeefyLPStrategy proxy:", beefyLPStrategy.address);
+    console.log("Deploy BeefyLPStrategy | Proxy:", beefyLPStrategy.address);
 }
 
 main()

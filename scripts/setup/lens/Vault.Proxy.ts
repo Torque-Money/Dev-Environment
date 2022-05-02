@@ -11,17 +11,17 @@ async function main() {
     const FEE_ADMIN_ROLE = await vaultV1.FEE_ADMIN_ROLE();
     await (await vaultV1.grantRole(FEE_ADMIN_ROLE, data.contracts.timelock)).wait();
     await (await vaultV1.renounceRole(FEE_ADMIN_ROLE, caller)).wait();
-    console.log("Setup Vault: Fee role");
+    console.log("Setup Vault | Fee role");
 
     const EMERGENCY_ADMIN_ROLE = await vaultV1.EMERGENCY_ADMIN_ROLE();
     await (await vaultV1.grantRole(EMERGENCY_ADMIN_ROLE, data.contracts.timelock)).wait();
     await (await vaultV1.renounceRole(EMERGENCY_ADMIN_ROLE, caller)).wait();
-    console.log("Setup Vault: Emergency role");
+    console.log("Setup Vault | Emergency role");
 
     const VAULT_ADMIN_ROLE = await vaultV1.VAULT_ADMIN_ROLE();
     await (await vaultV1.grantRole(VAULT_ADMIN_ROLE, data.contracts.timelock)).wait();
     await (await vaultV1.renounceRole(VAULT_ADMIN_ROLE, caller)).wait();
-    console.log("Setup Vault: Admin role");
+    console.log("Setup Vault | Admin role");
 }
 
 main()

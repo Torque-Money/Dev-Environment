@@ -5,8 +5,8 @@ async function main() {
     const beacon = await hre.upgrades.deployBeacon(VaultV1);
     await beacon.deployed();
 
-    console.log("Deploy VaultV1 beacon:", beacon.address);
-    console.log("Deploy VaultV1 implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
+    console.log("Deploy VaultV1 | Beacon:", beacon.address);
+    console.log("Deploy VaultV1 | Implementation:", await hre.upgrades.beacon.getImplementationAddress(beacon.address));
 }
 
 main()
