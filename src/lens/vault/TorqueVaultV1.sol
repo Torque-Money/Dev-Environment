@@ -13,11 +13,11 @@ import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/Ma
 import {IVaultV1} from "../../interfaces/lens/IVaultV1.sol";
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
-import {SupportsToken} from "../../utils/SupportsToken.sol";
-import {SupportsFee} from "../../utils/SupportsFee.sol";
-import {Emergency} from "../../utils/Emergency.sol";
+import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
+import {SupportsFeeUpgradeable} from "../../utils/SupportsFeeUpgradeable.sol";
+import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
 
-contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsToken, IVaultV1, SupportsFee, Emergency {
+contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsTokenUpgradeable, IVaultV1, SupportsFeeUpgradeable, EmergencyUpgradeable {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -143,7 +143,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         emit Redeem(_msgSender(), shares, amount);
     }
 
-    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
         return token.balanceOf(address(this)).add(strategy.approxBalance(token));
     }
 

@@ -14,13 +14,13 @@ import {IBeefyVaultV6} from "../../interfaces/beefy/IBeefyVaultV6.sol";
 
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
-import {SupportsToken} from "../../utils/SupportsToken.sol";
-import {Emergency} from "../../utils/Emergency.sol";
+import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
+import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
 
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
-contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsToken, Emergency {
+contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, SupportsTokenUpgradeable, EmergencyUpgradeable {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -132,7 +132,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _withdraw(amount);
     }
 
-    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsToken) onlySupportedToken(token) returns (uint256 amount) {
+    function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
         uint256 SHARE_BASE = 1e18;
         uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20Upgradeable(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
