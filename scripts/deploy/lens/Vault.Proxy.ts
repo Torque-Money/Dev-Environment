@@ -18,7 +18,7 @@ async function main() {
     const vaultV1 = await hre.upgrades.deployBeaconProxy(beacon, VaultV1, [tokens, strategy, feeRecipient, feePercent, feeDenominator]);
     await vaultV1.deployed();
 
-    console.log("Deploy VaultV1 | Proxy:", vaultV1.address);
+    console.log("Deploy | Vault | Proxy | Proxy:", vaultV1.address);
 }
 
 main()
