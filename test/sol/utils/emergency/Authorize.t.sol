@@ -5,16 +5,15 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {EmergencyBase} from "./EmergencyBase.sol";
-import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 import {Impersonate} from "../../helpers/Impersonate.sol";
 
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
-contract Authorize is EmergencyBase, UsesTokenBase, Impersonate {
+contract Authorize is EmergencyBase, Impersonate {
     MockEmergency private emergency;
     address private empty;
 
-    function setUp() public virtual override {
+    function setUp() public override {
         super.setUp();
 
         emergency = _getEmergency();
@@ -31,7 +30,7 @@ contract Authorize is EmergencyBase, UsesTokenBase, Impersonate {
         emergency.inCaseTokensGetStuck(IERC20Upgradeable(_getETHAddress()), 0);
     }
 
-    function _getCheats() internal view virtual override(EmergencyBase, UsesTokenBase, Impersonate) returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual override(EmergencyBase, Impersonate) returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
 }

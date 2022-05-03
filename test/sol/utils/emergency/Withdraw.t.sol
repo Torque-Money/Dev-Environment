@@ -4,24 +4,27 @@ pragma solidity ^0.8.0;
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {EmergencyBase} from "./EmergencyBase.sol";
+import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
-contract Withdraw is EmergencyBase {
+contract Withdraw is EmergencyBase, UsesTokenBase {
     MockEmergency private emergency;
 
-    function setUp() public virtual override {
+    function setUp() public override {
         super.setUp();
 
         emergency = _getEmergency();
     }
 
     // Test that an ERC20 token is withdrawable
+    function testERC20Withdraw() public useFunds {}
 
     // Test that ETH is withdrawable
+    function testETHWithdraw() public useFunds {}
 
-    function _getCheats() internal view virtual override returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual override(EmergencyBase, UsesTokenBase) returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
 }
