@@ -39,6 +39,4 @@ contract Base is DSTest {
     function _assertApproxEq(uint256 a, uint256 b) internal view {
         AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);
     }
-
-    receive() external payable {}
 }

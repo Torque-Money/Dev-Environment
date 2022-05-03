@@ -23,7 +23,7 @@ contract Withdraw is EmergencyBase, UsesTokenBase {
 
     // Test that ETH is withdrawable
     function testETHWithdraw() public {
-        // **** I want to first of all transfer some to the receivable contract
+        // **** I want to first of all transfer some to the emergency contract
     }
 
     function _getCheats() internal view virtual override(EmergencyBase, UsesTokenBase) returns (ICheatCodes _cheats) {
