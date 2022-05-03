@@ -3,12 +3,12 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
-import {EmergencyBase} from "./EmergencyBase.sol";
+import {BaseEmergency} from "./BaseEmergency.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract Authorize is EmergencyBase, BaseImpersonate {
+contract Authorize is BaseEmergency, BaseImpersonate {
     // Check that an approved account will be able to use an admin function
     function testAuthorized() public {
         IERC20Upgradeable[] memory token = Config.getToken();

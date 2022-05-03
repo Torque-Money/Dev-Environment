@@ -3,11 +3,11 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
-import {VaultBase} from "./VaultBase.sol";
+import {BaseVault} from "./BaseVault.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract InjectEjectTest is VaultBase {
+contract InjectEjectTest is BaseVault {
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds {
         IERC20Upgradeable[] memory token = Config.getToken();

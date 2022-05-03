@@ -5,11 +5,11 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 
-import {VaultBase} from "./VaultBase.sol";
+import {BaseVault} from "./BaseVault.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract DepositRedeemTest is VaultBase {
+contract DepositRedeemTest is BaseVault {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 

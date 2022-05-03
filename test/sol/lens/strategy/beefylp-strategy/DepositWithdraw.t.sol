@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
-import {StrategyBase} from "./StrategyBase.sol";
+import {BaseStrategy} from "./BaseStrategy.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 
-contract DepositWithdrawTest is StrategyBase {
+contract DepositWithdrawTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;
 
     // Deposit and withdraw funds from the strategy.

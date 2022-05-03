@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {StrategyBase} from "./StrategyBase.sol";
+import {BaseStrategy} from "./BaseStrategy.sol";
 import {BaseImpersonate} from "../../../bases/BaseImpersonate.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
-contract DepositWithdrawTest is StrategyBase, BaseImpersonate {
+contract DepositWithdrawTest is BaseStrategy, BaseImpersonate {
     // Fail to deposit into the strategy due to lack of authorization.
     function testFailDeposit() public impersonate(empty) {
         strategy.deposit(Config.getTokenAmount());
