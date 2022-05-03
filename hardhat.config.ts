@@ -21,7 +21,7 @@ export default {
                 url: process.env.NETWORK_URL_OPERA,
                 blockNumber: 32177754,
             },
-            accounts: [process.env.PRIVATE_KEY_OPERA],
+            // accounts: [process.env.PRIVATE_KEY_OPERA],
         },
         opera: {
             url: process.env.NETWORK_URL_OPERA,
