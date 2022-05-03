@@ -53,4 +53,12 @@ library Config {
     function getFosDenominator() internal pure returns (uint256 fosPercent) {
         return 1000;
     }
+
+    function getTAUInitialSupply() internal pure returns (uint256 initialSupply) {
+        return 10000000 * 1e18;
+    }
+
+    function getTAUMintAmount() internal pure returns (uint256 mintAmount) {
+        return 10 * 1e18;
+    }
 }
