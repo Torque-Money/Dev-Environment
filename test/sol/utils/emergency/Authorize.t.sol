@@ -21,13 +21,13 @@ contract Authorize is EmergencyBase, Impersonate {
         empty = _getEmpty();
     }
 
-    // Check that an approved account will be able to use emergency withdraw
+    // Check that an approved account will be able to use an admin function
     function testAuthorized() public {
         IERC20Upgradeable[] memory token = Config.getToken();
         emergency.inCaseTokensGetStuck(token[0], 0);
     }
 
-    // Check that a non approved account will not be able to use an emergency withdraw
+    // Check that a non approved account will not be able to use an admin function
     function testFailUnauthorized() public impersonate(empty) {
         IERC20Upgradeable[] memory token = Config.getToken();
         emergency.inCaseTokensGetStuck(token[0], 0);

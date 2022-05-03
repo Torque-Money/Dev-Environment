@@ -19,4 +19,8 @@ contract RegistryBase is Base {
     function _getRegistry() internal view returns (MockRegistry _registry) {
         return registry;
     }
+
+    function _getCheats() internal view virtual override returns (ICheatCodes _cheats) {
+        return super._getCheats();
+    }
 }
