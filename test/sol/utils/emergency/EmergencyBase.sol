@@ -4,11 +4,10 @@ pragma solidity ^0.8.0;
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {Base} from "../../helpers/Base.sol";
-import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
-contract EmergencyBase is Base, UsesTokenBase {
+contract EmergencyBase is Base {
     MockEmergency private emergency;
 
     function setUp() public virtual override {
@@ -21,7 +20,7 @@ contract EmergencyBase is Base, UsesTokenBase {
         return emergency;
     }
 
-    function _getCheats() internal view virtual override(Base, UsesTokenBase) returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual override returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
 

@@ -18,7 +18,6 @@ contract Withdraw is EmergencyBase {
     }
 
     // Test that an ERC20 token is withdrawable
-    // **** This probably requires the funding to supply the account with ETH before this occurs
 
     // Test that ETH is withdrawable
 
