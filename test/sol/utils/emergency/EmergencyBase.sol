@@ -24,4 +24,8 @@ contract EmergencyBase is Base, UsesTokenBase {
     function _getCheats() internal view virtual override(Base, UsesTokenBase) returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
+
+    function _getETHAddress() internal pure returns (address ETHAddress) {
+        return 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
+    }
 }

@@ -6,7 +6,6 @@ import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 import {EmergencyBase} from "./EmergencyBase.sol";
 import {Impersonate} from "../../helpers/Impersonate.sol";
 
-import {Config} from "../../helpers/Config.sol";
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
 contract Authorize is EmergencyBase, Impersonate {
@@ -21,6 +20,9 @@ contract Authorize is EmergencyBase, Impersonate {
     }
 
     // Check that an approved account will be able to use emergency withdraw
+    function testAuthorized() public {
+        emergency.inCaseTokensGetStuck(token, amount);
+    }
 
     // Check that a non approved account will not be able to use an emergency withdraw
 
