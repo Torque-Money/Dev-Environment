@@ -8,24 +8,16 @@ import {Empty} from "../helpers/Empty.sol";
 import {AssertUtils} from "../helpers/AssertUtils.sol";
 
 abstract contract Base is Test {
-    address private empty;
+    address internal _empty;
 
-    uint256 private fosPercent;
-    uint256 private fosDenominator;
+    uint256 internal _fosPercent;
+    uint256 internal _fosDenominator;
 
     function setUp() public virtual {
         empty = address(new Empty());
 
         fosPercent = Config.getFosPercent();
         fosDenominator = Config.getFosDenominator();
-    }
-
-    function _getEmpty() internal view virtual returns (address _empty) {
-        return empty;
-    }
-
-    function _getFOS() internal view virtual returns (uint256 _fosPercent, uint256 _fosDenominator) {
-        return (fosPercent, fosDenominator);
     }
 
     function _assertApproxEq(uint256 a, uint256 b) internal view {

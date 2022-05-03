@@ -1,25 +1,15 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {ICheatCodes} from "../../../helpers/ICheatCodes.sol";
-
 import {StrategyBase} from "./StrategyBase.sol";
-import {Impersonate} from "../../../helpers/Impersonate.sol";
+import {BaseImpersonate} from "../../../bases/BaseImpersonate.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
-contract DepositWithdrawTest is StrategyBase, Impersonate {
-    BeefyLPStrategy private strategy;
-    address private empty;
-    ICheatCodes private cheats;
-
+contract DepositWithdrawTest is StrategyBase, BaseImpersonate {
     function setUp() public override {
         super.setUp();
-
-        strategy = _getStrategy();
-        empty = _getEmpty();
-        cheats = _getCheats();
     }
 
     // Fail to deposit into the strategy due to lack of authorization.
@@ -40,9 +30,5 @@ contract DepositWithdrawTest is StrategyBase, Impersonate {
     // Fail to withdraw all from the strategy due to lack of authorization.
     function testFailWithdrawAll() public impersonate(empty) {
         strategy.withdrawAll();
-    }
-
-    function _getCheats() internal view override(StrategyBase, Impersonate) returns (ICheatCodes _cheats) {
-        return super._getCheats();
     }
 }
