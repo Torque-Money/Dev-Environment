@@ -22,6 +22,31 @@ contract Register is RegistryBase, Impersonate {
     // Check that an approved account will be able to use an admin function
     function testRegister() public {
         registry.add(empty);
+
+        assertTrue(registry.isEntry(empty));
+        assertEq(registry.entryCount(), 1);
+        assertEq(registry.entryByIndex(0), empty);
+
+        registry.remove(empty);
+
+        assertTrue(!registry.isEntry(empty));
+        assertEq(registry.entryCount(), 0);
+    }
+
+    // Check that a non registered entry cant be removed
+    function testFailRemoveInvalid() public {
+        registry.remove(empty);
+    }
+
+    // Check that a non registered entry cant be removed
+    function testFailInvalidIndex() public view {
+        registry.entryByIndex(0);
+    }
+
+    // Check that a duplicate entry cannot be made
+    function testFailDuplicateEntry() public {
+        registry.add(empty);
+        registry.add(empty);
     }
 
     function _getCheats() internal view virtual override(RegistryBase, Impersonate) returns (ICheatCodes _cheats) {
