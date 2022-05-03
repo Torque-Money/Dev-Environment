@@ -3,12 +3,11 @@ pragma solidity ^0.8.0;
 
 import {Test} from "forge-std/Test.sol";
 
-import {Config} from "./Config.sol";
-import {Empty} from "./Empty.sol";
-import {AssertUtils} from "./AssertUtils.sol";
+import {Config} from "../helpers/Config.sol";
+import {Empty} from "../helpers/Empty.sol";
+import {AssertUtils} from "../helpers/AssertUtils.sol";
 
-contract Base is Test {
-    ICheatCodes private cheats;
+abstract contract Base is Test {
     address private empty;
 
     uint256 private fosPercent;
@@ -16,8 +15,6 @@ contract Base is Test {
 
     function setUp() public virtual {
         empty = address(new Empty());
-
-        cheats = Config.getCheatCodes();
 
         fosPercent = Config.getFosPercent();
         fosDenominator = Config.getFosDenominator();

@@ -5,9 +5,9 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {Vm} from "forge-std/Vm.sol";
 
-import {Config} from "./Config.sol";
+import {Config} from "../helpers/Config.sol";
 
-abstract contract UsesTokenBase {
+abstract contract BaseUsesToken {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     modifier useFunds(Vm vm) {

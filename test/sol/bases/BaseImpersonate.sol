@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Vm} from "forge-std/Vm.sol";
 
-abstract contract Impersonate {
+abstract contract BaseImpersonate {
     modifier impersonate(Vm vm, address impersonator) {
         vm.startPrank(impersonator);
         _;
