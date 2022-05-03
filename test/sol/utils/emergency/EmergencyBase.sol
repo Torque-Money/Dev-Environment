@@ -11,7 +11,7 @@ import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 contract EmergencyBase is Base, UsesTokenBase {
     MockEmergency private emergency;
 
-    function setUp() public override {
+    function setUp() public virtual override {
         super.setUp();
 
         emergency = new MockEmergency();
