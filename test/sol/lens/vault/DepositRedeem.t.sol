@@ -4,28 +4,14 @@ pragma solidity ^0.8.0;
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract DepositRedeemTest is VaultBase {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
-
-    TorqueVaultV1 private vault;
-    address private empty;
-    ICheatCodes private cheats;
-
-    function setUp() public override {
-        super.setUp();
-
-        vault = _getVault();
-        empty = _getEmpty();
-        cheats = _getCheats();
-    }
 
     // Test a regular deposit and redeem.
     function testDepositRedeem() public useFunds {

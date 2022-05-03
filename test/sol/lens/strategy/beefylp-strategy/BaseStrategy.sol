@@ -7,7 +7,7 @@ import {UsesTokenBase} from "../../../bases/BaseUsesToken.sol";
 import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
-contract StrategyBase is Base, UsesTokenBase {
+abstract contract BaseStrategy is Base, UsesTokenBase {
     BeefyLPStrategy internal _strategy;
 
     function setUp() public virtual override {

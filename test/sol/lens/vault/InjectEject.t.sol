@@ -6,20 +6,8 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {VaultBase} from "./VaultBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract InjectEjectTest is VaultBase {
-    TorqueVaultV1 private vault;
-    MockStrategy private strategy;
-
-    function setUp() public override {
-        super.setUp();
-
-        vault = _getVault();
-        strategy = _getStrategy();
-    }
-
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds {
         IERC20Upgradeable[] memory token = Config.getToken();

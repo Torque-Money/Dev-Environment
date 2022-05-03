@@ -1,16 +1,16 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {Base} from "../helpers/Base.sol";
+import {Base} from "../bases/Base.sol";
 
 import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
 
 contract TorqueTAUTest is Base {
-    TorqueTAU tau;
+    TorqueTAU private tau;
 
-    uint256 constant INITIAL_SUPPLY = 10000 * 1e18;
-
-    uint256 constant MINT_AMOUNT = 10 * 1e18;
+    // **** Realistically this should be in the config
+    uint256 private constant INITIAL_SUPPLY = 10000 * 1e18;
+    uint256 private constant MINT_AMOUNT = 10 * 1e18;
 
     function setUp() public override {
         tau = new TorqueTAU();
