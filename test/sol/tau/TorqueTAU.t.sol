@@ -8,25 +8,27 @@ import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
 contract TorqueTAUTest is Base {
     TorqueTAU private tau;
 
-    // **** Realistically this should be in the config
-    uint256 private constant INITIAL_SUPPLY = 10000 * 1e18;
-    uint256 private constant MINT_AMOUNT = 10 * 1e18;
+    uint256 private initialSupply;
+    uint256 private mintAmount;
 
     function setUp() public override {
+        initialSupply = Config.getTAUInitialSupply();
+        mintAmount = Config.getTAUMintAmount();
+
         tau = new TorqueTAU();
-        tau.initialize(INITIAL_SUPPLY);
+        tau.initialize(initialSupply);
     }
 
     // Check the initial supply minted
     function testInitialSupply() public {
-        assertEq(tau.totalSupply(), INITIAL_SUPPLY, "Total supply does not match initially supply minted");
-        assertEq(tau.balanceOf(address(this)), INITIAL_SUPPLY, "Balance of minter does not match supply minted");
+        assertEq(tau.totalSupply(), initialSupply);
+        assertEq(tau.balanceOf(address(this)), initialSupply);
     }
 
     // Fail to mint and burn tokens
-    function testFailMintBurn() public {
-        tau.mint(address(this), MINT_AMOUNT);
-        tau.burn(address(this), MINT_AMOUNT);
+    function testFailMint() public {
+        tau.mint(address(this), mintAmount);
+        tau.burn(address(this), mintAmount);
     }
 
     // Mint and burn tokens
@@ -34,8 +36,10 @@ contract TorqueTAUTest is Base {
         tau.grantRole(tau.TOKEN_MINTER_ROLE(), address(this));
         tau.grantRole(tau.TOKEN_BURNER_ROLE(), address(this));
 
-        tau.mint(address(this), MINT_AMOUNT);
-        tau.burn(address(this), MINT_AMOUNT);
+        // **** Instead we should grant these roles to the deployer during the initializer
+
+        tau.mint(address(this), mintAmount);
+        tau.burn(address(this), mintAmount);
 
         tau.revokeRole(tau.TOKEN_BURNER_ROLE(), address(this));
         tau.revokeRole(tau.TOKEN_MINTER_ROLE(), address(this));
