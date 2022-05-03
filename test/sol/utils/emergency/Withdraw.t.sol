@@ -24,13 +24,14 @@ contract Withdraw is EmergencyBase {
     // Test that an ERC20 token is withdrawable
     function testERC20Withdraw() public useFunds {
         IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
 
         for (uint256 i = 0; i < token.length; i++) {
-            token[i].safeTransfer(address(emergency), tokenAmount[i]);
-            emergency.inCaseTokensGetStuck(token[i], tokenAmount[i]);
+            uint256 balance = token[i].balanceOf(address(this));
 
-            assertEq(token[i].balanceOf(address(this)), tokenAmount[i]);
+            token[i].safeTransfer(address(emergency), balance);
+            emergency.inCaseTokensGetStuck(token[i], balance);
+
+            assertEq(token[i].balanceOf(address(this)), balance);
         }
     }
 
