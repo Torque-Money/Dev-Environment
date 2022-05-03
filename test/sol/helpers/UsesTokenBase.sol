@@ -23,13 +23,11 @@ abstract contract UsesTokenBase {
 
         ICheatCodes cheats = _getCheats();
 
-        cheats.startPrank(tokenWhale[0]);
-        token[0].transfer(address(this), token[0].balanceOf(tokenWhale[0]));
-        cheats.stopPrank();
-
-        cheats.startPrank(tokenWhale[1]);
-        token[1].transfer(address(this), token[1].balanceOf(tokenWhale[1]));
-        cheats.stopPrank();
+        for (uint256 i = 0; i < token.length; i++) {
+            cheats.startPrank(tokenWhale[i]);
+            token[i].safeTransfer(address(this), token[i].balanceOf(tokenWhale[i]));
+            cheats.stopPrank();
+        }
     }
 
     // Withdraw all funds from the contract back into the whales
