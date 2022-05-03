@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {EmergencyBase} from "./EmergencyBase.sol";
@@ -21,10 +22,13 @@ contract Authorize is EmergencyBase, Impersonate {
 
     // Check that an approved account will be able to use emergency withdraw
     function testAuthorized() public {
-        emergency.inCaseTokensGetStuck(token, amount);
+        emergency.inCaseTokensGetStuck(IERC20Upgradeable(_getETHAddress()), 0);
     }
 
     // Check that a non approved account will not be able to use an emergency withdraw
+    function testFailUnauthorized() public impersonate(empty) {
+        emergency.inCaseTokensGetStuck(IERC20Upgradeable(_getETHAddress()), 0);
+    }
 
     function _getCheats() internal view virtual override(EmergencyBase, Impersonate) returns (ICheatCodes _cheats) {
         return super._getCheats();
