@@ -14,13 +14,13 @@ abstract contract Base is Test {
     uint256 internal _fosDenominator;
 
     function setUp() public virtual {
-        empty = address(new Empty());
+        _empty = address(new Empty());
 
-        fosPercent = Config.getFosPercent();
-        fosDenominator = Config.getFosDenominator();
+        _fosPercent = Config.getFosPercent();
+        _fosDenominator = Config.getFosDenominator();
     }
 
     function _assertApproxEq(uint256 a, uint256 b) internal view {
-        AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);
+        AssertUtils.assertApproxEq(a, b, _fosPercent, _fosDenominator);
     }
 }

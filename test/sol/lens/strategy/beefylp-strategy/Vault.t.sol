@@ -7,26 +7,20 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
-import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 import {TorqueVaultV1} from "../../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is StrategyBase {
     using SafeMathUpgradeable for uint256;
 
     TorqueVaultV1 private vault;
-    BeefyLPStrategy private strategy;
-    address private empty;
 
     function setUp() public override {
         super.setUp();
 
-        strategy = _getStrategy();
-        empty = _getEmpty();
-
         vault = new TorqueVaultV1();
         vault.initialize(Config.getToken(), strategy, _getEmpty(), 0, 1000);
 
-        strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
+        _strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
 
         address[] memory spender = new address[](1);

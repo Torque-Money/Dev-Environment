@@ -8,7 +8,7 @@ import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract StrategyBase is Base, UsesTokenBase {
-    BeefyLPStrategy private strategy;
+    BeefyLPStrategy internal _strategy;
 
     function setUp() public virtual override {
         super.setUp();
@@ -21,9 +21,5 @@ contract StrategyBase is Base, UsesTokenBase {
         address[] memory spender = new address[](1);
         spender[0] = address(strategy);
         _approveAll(spender);
-    }
-
-    function _getStrategy() internal view returns (BeefyLPStrategy _strategy) {
-        return strategy;
     }
 }

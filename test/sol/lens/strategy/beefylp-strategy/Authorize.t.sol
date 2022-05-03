@@ -8,10 +8,6 @@ import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase, BaseImpersonate {
-    function setUp() public override {
-        super.setUp();
-    }
-
     // Fail to deposit into the strategy due to lack of authorization.
     function testFailDeposit() public impersonate(empty) {
         strategy.deposit(Config.getTokenAmount());

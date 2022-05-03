@@ -7,18 +7,9 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 import {StrategyBase} from "./StrategyBase.sol";
 
 import {Config} from "../../../helpers/Config.sol";
-import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
 contract DepositWithdrawTest is StrategyBase {
     using SafeMathUpgradeable for uint256;
-
-    BeefyLPStrategy private strategy;
-
-    function setUp() public override {
-        super.setUp();
-
-        strategy = _getStrategy();
-    }
 
     // Deposit and withdraw funds from the strategy.
     function testDepositWithdraw() public useFunds {

@@ -10,7 +10,7 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
-import {IBeefyVaultV6} from "../../interfaces/beefy/IBeefyVaultV6.sol";
+import {IBeefyVaultV6} from "../../../lib/beefy/IBeefyVaultV6.sol";
 
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
