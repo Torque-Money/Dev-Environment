@@ -12,7 +12,7 @@ contract Withdraw is EmergencyBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Test that an ERC20 token is withdrawable
-    function testERC20Withdraw() public useFunds {
+    function testERC20Withdraw() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
 
         for (uint256 i = 0; i < token.length; i++) {

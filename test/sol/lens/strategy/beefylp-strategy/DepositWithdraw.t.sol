@@ -12,7 +12,7 @@ contract DepositWithdrawTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;
 
     // Deposit and withdraw funds from the strategy.
-    function testDepositWithdraw() public useFunds {
+    function testDepositWithdraw() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -53,7 +53,7 @@ contract DepositWithdrawTest is BaseStrategy {
     }
 
     // Deposit and withdraw all funds from the strategy.
-    function testDepositAllWithdrawAll() public useFunds {
+    function testDepositAllWithdrawAll() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
 
         // Deposit all into the strategy and check the balance is what was deposited
@@ -97,7 +97,7 @@ contract DepositWithdrawTest is BaseStrategy {
     }
 
     // Withdraw zero funds from the strategy.
-    function testWithdrawZero() public useFunds {
+    function testWithdrawZero() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 

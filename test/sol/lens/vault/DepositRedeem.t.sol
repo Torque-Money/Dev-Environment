@@ -14,7 +14,7 @@ contract DepositRedeemTest is BaseVault {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Test a regular deposit and redeem.
-    function testDepositRedeem() public useFunds {
+    function testDepositRedeem() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -50,7 +50,7 @@ contract DepositRedeemTest is BaseVault {
     }
 
     // Test a deposit and redeem when one of the amounts deposited is zero.
-    function testDepositRedeemZero() public useFunds {
+    function testDepositRedeemZero() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -72,7 +72,7 @@ contract DepositRedeemTest is BaseVault {
     }
 
     // Test a deposit and redeem when funds have been injected to the vault after the deposit.
-    function testDepositRedeemWithTokenInjection() public useFunds {
+    function testDepositRedeemWithTokenInjection() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -90,7 +90,7 @@ contract DepositRedeemTest is BaseVault {
     }
 
     // Test a deposit and redeem when multiple users have deposited into the vault.
-    function testDepositRedeemMultiple() public useFunds {
+    function testDepositRedeemMultiple() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -102,7 +102,7 @@ contract DepositRedeemTest is BaseVault {
         for (uint256 i = 0; i < token.length; i++) token[i].safeTransfer(_empty, tokenAmount[i]);
 
         // Make deposit on behalf of account 2
-        vm.startPrank(empty);
+        vm.startPrank(_empty);
         {
             address[] memory spender = new address[](1);
             spender[0] = address(_vault);
@@ -121,7 +121,7 @@ contract DepositRedeemTest is BaseVault {
     }
 
     // Test a deposit and redeem when multiple users have deposited into the vault and a fund injection has been made.
-    function testDepositRedeemMultipleWithInjection() public useFunds {
+    function testDepositRedeemMultipleWithInjection() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 

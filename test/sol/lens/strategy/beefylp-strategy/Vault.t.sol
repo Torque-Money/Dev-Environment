@@ -29,7 +29,7 @@ contract VaultTest is BaseStrategy {
     }
 
     // Test a deposit and redeem with the vault and Beefy LP strategy.
-    function testDepositRedeem() public useFunds {
+    function testDepositRedeem() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -58,7 +58,7 @@ contract VaultTest is BaseStrategy {
     }
 
     // Test the flow of funds between the vault and the strategy
-    function testFundFlow() public useFunds {
+    function testFundFlow() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -77,7 +77,7 @@ contract VaultTest is BaseStrategy {
     }
 
     // Eject vault funds from the strategy
-    function testEjectAll() public useFunds {
+    function testEjectAll() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
@@ -102,7 +102,7 @@ contract VaultTest is BaseStrategy {
     }
 
     // Inject vault funds into the strategy.
-    function testInjectAll() public useFunds {
+    function testInjectAll() public useFunds(vm) {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
