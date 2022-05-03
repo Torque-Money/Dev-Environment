@@ -11,6 +11,8 @@ import {Config} from "../../helpers/Config.sol";
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
 contract Withdraw is EmergencyBase {
+    using SafeERC20Upgradeable for IERC20Upgradeable;
+
     MockEmergency private emergency;
 
     function setUp() public override {
@@ -25,7 +27,10 @@ contract Withdraw is EmergencyBase {
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         for (uint256 i = 0; i < token.length; i++) {
-            // **** Deposit, check the balances, and then rewithdraw to check it works properly
+            token[i].safeTransfer(address(emergency), tokenAmount[i]);
+            emergency.inCaseTokensGetStuck(token[i], tokenAmount[i]);
+
+            assertEq(token[i].balanceOf(address(this)), tokenAmount[i]);
         }
     }
 

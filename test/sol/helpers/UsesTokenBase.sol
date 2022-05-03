@@ -23,9 +23,11 @@ abstract contract UsesTokenBase {
 
         ICheatCodes cheats = _getCheats();
 
+        address receiver = address(this);
+
         for (uint256 i = 0; i < token.length; i++) {
             cheats.startPrank(tokenWhale[i]);
-            token[i].safeTransfer(address(this), token[i].balanceOf(tokenWhale[i]));
+            token[i].safeTransfer(receiver, token[i].balanceOf(tokenWhale[i]));
             cheats.stopPrank();
         }
     }
