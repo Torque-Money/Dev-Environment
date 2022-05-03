@@ -5,18 +5,18 @@ import {Base} from "../bases/Base.sol";
 
 import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
 
-contract TorqueTAUTest is Base {
-    TorqueTAU private tau;
+contract BaseTAU is Base {
+    TorqueTAU internal _tau;
 
-    uint256 private initialSupply;
-    uint256 private mintAmount;
+    uint256 internal _initialSupply;
+    uint256 internal _mintAmount;
 
     function setUp() public override {
-        initialSupply = Config.getTAUInitialSupply();
-        mintAmount = Config.getTAUMintAmount();
+        _initialSupply = Config.getTAUInitialSupply();
+        _mintAmount = Config.getTAUMintAmount();
 
-        tau = new TorqueTAU();
-        tau.initialize(initialSupply);
+        _tau = new TorqueTAU();
+        _tau.initialize(_initialSupply);
     }
 
     // Check the initial supply minted
