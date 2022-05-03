@@ -6,12 +6,11 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {EmergencyBase} from "./EmergencyBase.sol";
-import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
-contract Withdraw is EmergencyBase, UsesTokenBase {
+contract Withdraw is EmergencyBase {
     MockEmergency private emergency;
 
     function setUp() public override {
@@ -24,14 +23,13 @@ contract Withdraw is EmergencyBase, UsesTokenBase {
     function testERC20Withdraw() public useFunds {
         IERC20Upgradeable[] memory token = Config.getToken();
         uint256[] memory tokenAmount = Config.getTokenAmount();
+
+        for (uint256 i = 0; i < token.length; i++) {
+            // **** Deposit, check the balances, and then rewithdraw to check it works properly
+        }
     }
 
-    // Test that ETH is withdrawable
-    function testETHWithdraw() public {
-        // **** I want to first of all transfer some to the emergency contract
-    }
-
-    function _getCheats() internal view virtual override(EmergencyBase, UsesTokenBase) returns (ICheatCodes _cheats) {
+    function _getCheats() internal view virtual override returns (ICheatCodes _cheats) {
         return super._getCheats();
     }
 }
