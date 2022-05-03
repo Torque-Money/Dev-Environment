@@ -34,20 +34,20 @@ contract InjectEjectTest is BaseVault {
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Make deposit
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = _vault.deposit(tokenAmount);
 
         // Withdraw shares and check funds have flowed correctly
-        vault.withdrawAllFromStrategy();
+        _vault.withdrawAllFromStrategy();
 
         for (uint256 i = 0; i < token.length; i++) {
-            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
+            assertEq(_vault.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(_vault)), tokenAmount[i]);
 
-            assertEq(strategy.approxBalance(token[i]), 0);
-            assertEq(token[i].balanceOf(address(strategy)), 0);
+            assertEq(_strategy.approxBalance(token[i]), 0);
+            assertEq(token[i].balanceOf(address(_strategy)), 0);
         }
 
-        vault.redeem(shares);
+        _vault.redeem(shares);
     }
 
     // Inject vault funds into the strategy.
@@ -56,21 +56,21 @@ contract InjectEjectTest is BaseVault {
         uint256[] memory tokenAmount = Config.getTokenAmount();
 
         // Make deposit
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = _vault.deposit(tokenAmount);
 
         // Eject funds
-        vault.withdrawAllFromStrategy();
+        _vault.withdrawAllFromStrategy();
 
         // Inject funds and check they have flowed correctly
-        vault.depositAllIntoStrategy();
+        _vault.depositAllIntoStrategy();
 
         for (uint256 i = 0; i < token.length; i++) {
-            assertEq(vault.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(vault)), 0);
+            assertEq(_vault.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(token[i].balanceOf(address(_vault)), 0);
 
-            assertEq(strategy.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
         }
 
-        vault.redeem(shares);
+        _vault.redeem(shares);
     }
 }

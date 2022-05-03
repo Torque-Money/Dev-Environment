@@ -8,7 +8,7 @@ import {BaseEmergency} from "./BaseEmergency.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract Withdraw is EmergencyBase {
+contract Withdraw is BaseEmergency {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Test that an ERC20 token is withdrawable
@@ -18,8 +18,8 @@ contract Withdraw is EmergencyBase {
         for (uint256 i = 0; i < token.length; i++) {
             uint256 balance = token[i].balanceOf(address(this));
 
-            token[i].safeTransfer(address(emergency), balance);
-            emergency.inCaseTokensGetStuck(token[i], balance);
+            token[i].safeTransfer(address(_emergency), balance);
+            _emergency.inCaseTokensGetStuck(token[i], balance);
 
             assertEq(token[i].balanceOf(address(this)), balance);
         }

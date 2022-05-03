@@ -1,10 +1,8 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
-
-import {RegistryBase} from "./RegistryBase.sol";
-import {Impersonate} from "../../helpers/Impersonate.sol";
+import {BaseRegistry} from "./BaseRegistry.sol";
+import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 import {MockRegistry} from "../../../mocks/MockRegistry.sol";
 
@@ -25,7 +23,7 @@ contract Authorize is RegistryBase, Impersonate {
     }
 
     // Check that a non approved account will not be able to use an admin function
-    function testFailUnauthorized() public impersonate(empty) {
+    function testFailUnauthorized() public impersonate(vm, _empty) {
         registry.add(address(0));
     }
 

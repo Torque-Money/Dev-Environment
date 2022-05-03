@@ -9,22 +9,22 @@ import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.
 
 contract DepositWithdrawTest is BaseStrategy, BaseImpersonate {
     // Fail to deposit into the strategy due to lack of authorization.
-    function testFailDeposit() public impersonate(_empty) {
+    function testFailDeposit() public impersonate(vm, _empty) {
         _strategy.deposit(Config.getTokenAmount());
     }
 
     // Fail to deposit all into the strategy due to lack of authorization.
-    function testFailDepositAll() public impersonate(_empty) {
+    function testFailDepositAll() public impersonate(vm, _empty) {
         _strategy.depositAll();
     }
 
     // Fail to withdraw from the strategy due to lack of authorization.
-    function testFailWithdraw() public impersonate(_empty) {
+    function testFailWithdraw() public impersonate(vm, _empty) {
         _strategy.withdraw(Config.getTokenAmount());
     }
 
     // Fail to withdraw all from the strategy due to lack of authorization.
-    function testFailWithdrawAll() public impersonate(_empty) {
+    function testFailWithdrawAll() public impersonate(vm, _empty) {
         _strategy.withdrawAll();
     }
 }

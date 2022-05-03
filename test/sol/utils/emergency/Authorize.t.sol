@@ -12,12 +12,12 @@ contract Authorize is BaseEmergency, BaseImpersonate {
     // Check that an approved account will be able to use an admin function
     function testAuthorized() public {
         IERC20Upgradeable[] memory token = Config.getToken();
-        emergency.inCaseTokensGetStuck(token[0], 0);
+        _emergency.inCaseTokensGetStuck(token[0], 0);
     }
 
     // Check that a non approved account will not be able to use an admin function
-    function testFailUnauthorized() public impersonate(empty) {
+    function testFailUnauthorized() public impersonate(vm, _empty) {
         IERC20Upgradeable[] memory token = Config.getToken();
-        emergency.inCaseTokensGetStuck(token[0], 0);
+        _emergency.inCaseTokensGetStuck(token[0], 0);
     }
 }
