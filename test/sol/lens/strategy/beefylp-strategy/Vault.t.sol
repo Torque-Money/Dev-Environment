@@ -18,9 +18,9 @@ contract VaultTest is BaseStrategy {
         super.setUp();
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), strategy, _getEmpty(), 0, 1000);
+        vault.initialize(Config.getToken(), _strategy, _empty, 0, 1000);
 
-        _strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
+        _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
 
         address[] memory spender = new address[](1);
@@ -70,7 +70,7 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
             _assertApproxEq(token[i].balanceOf(address(vault)), 0);
 
-            _assertApproxEq(strategy.approxBalance(token[i]), tokenAmount[i]);
+            _assertApproxEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
         }
 
         vault.redeem(shares);
@@ -92,7 +92,7 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
             _assertApproxEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
 
-            _assertApproxEq(strategy.approxBalance(token[i]), 0);
+            _assertApproxEq(_strategy.approxBalance(token[i]), 0);
         }
 
         // Check that the funds correctly flow back
@@ -120,7 +120,7 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
             _assertApproxEq(token[i].balanceOf(address(vault)), 0);
 
-            _assertApproxEq(strategy.approxBalance(token[i]), tokenAmount[i]);
+            _assertApproxEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
         }
 
         // Check that the funds correctly flow back

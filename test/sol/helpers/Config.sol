@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-import {IBeefyVaultV6} from "../../../src/interfaces/beefy/IBeefyVaultV6.sol";
+import {IBeefyVaultV6} from "../../../lib/beefy/IBeefyVaultV6.sol";
 
 // Configured for the Fantom Opera mainnet
 

@@ -2,24 +2,24 @@
 pragma solidity ^0.8.0;
 
 import {Base} from "../../../bases/Base.sol";
-import {UsesTokenBase} from "../../../bases/BaseUsesToken.sol";
+import {BaseUsesToken} from "../../../bases/BaseUsesToken.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
 
-abstract contract BaseStrategy is Base, UsesTokenBase {
+abstract contract BaseStrategy is Base, BaseUsesToken {
     BeefyLPStrategy internal _strategy;
 
     function setUp() public virtual override {
         super.setUp();
 
-        strategy = new BeefyLPStrategy();
-        strategy.initialize(Config.getToken(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
+        _strategy = new BeefyLPStrategy();
+        _strategy.initialize(Config.getToken(), Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
 
-        strategy.grantRole(strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
+        _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
 
         address[] memory spender = new address[](1);
-        spender[0] = address(strategy);
+        spender[0] = address(_strategy);
         _approveAll(spender);
     }
 }

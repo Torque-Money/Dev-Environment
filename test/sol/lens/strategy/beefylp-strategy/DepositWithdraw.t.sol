@@ -20,14 +20,14 @@ contract DepositWithdrawTest is BaseStrategy {
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.deposit(tokenAmount);
+        _strategy.deposit(tokenAmount);
 
         // Check the balance is what was deposited
         uint256[] memory balance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) {
             assertEq(initialBalance[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
 
-            balance[i] = strategy.approxBalance(token[i]);
+            balance[i] = _strategy.approxBalance(token[i]);
             _assertApproxEq(balance[i], tokenAmount[i]);
         }
 
@@ -36,20 +36,19 @@ contract DepositWithdrawTest is BaseStrategy {
 
         // Withdraw a safe amount to where the whole balance is not extracted
         uint256[] memory fosBalance = new uint256[](token.length);
-        (uint256 fosPercent, uint256 fosDenominator) = _getFOS();
-        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
+        for (uint256 i = 0; i < token.length; i++) fosBalance[i] = tokenAmount[i].mul(_fosDenominator.sub(_fosPercent)).div(_fosDenominator);
 
-        strategy.withdraw(fosBalance);
+        _strategy.withdraw(fosBalance);
 
         for (uint256 i = 0; i < token.length; i++) _assertApproxEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
 
         // Withdraw all tokens from the strategy
-        strategy.withdrawAll();
+        _strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
             _assertApproxEq(token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
 
-            assertEq(strategy.approxBalance(token[i]), 0);
+            assertEq(_strategy.approxBalance(token[i]), 0);
         }
     }
 
@@ -61,21 +60,21 @@ contract DepositWithdrawTest is BaseStrategy {
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.depositAll();
+        _strategy.depositAll();
 
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(strategy.approxBalance(token[i]), initialBalance[i]);
+            _assertApproxEq(_strategy.approxBalance(token[i]), initialBalance[i]);
 
             assertEq(token[i].balanceOf(address(this)), 0);
         }
 
         // Withdraw all tokens from the strategy
-        strategy.withdrawAll();
+        _strategy.withdrawAll();
 
         for (uint256 i = 0; i < token.length; i++) {
             _assertApproxEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
-            assertEq(strategy.approxBalance(token[i]), 0);
+            assertEq(_strategy.approxBalance(token[i]), 0);
         }
     }
 
@@ -88,12 +87,12 @@ contract DepositWithdrawTest is BaseStrategy {
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.deposit(tokenAmountZero);
+        _strategy.deposit(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) {
             assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
-            assertEq(strategy.approxBalance(token[i]), 0);
+            assertEq(_strategy.approxBalance(token[i]), 0);
         }
     }
 
@@ -108,20 +107,20 @@ contract DepositWithdrawTest is BaseStrategy {
         uint256[] memory initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.withdraw(tokenAmountZero);
+        _strategy.withdraw(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
         // Withdraw zero when there are some tokens
-        strategy.deposit(tokenAmount);
+        _strategy.deposit(tokenAmount);
 
         initialBalance = new uint256[](token.length);
         for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
 
-        strategy.withdraw(tokenAmountZero);
+        _strategy.withdraw(tokenAmountZero);
 
         for (uint256 i = 0; i < token.length; i++) assertEq(token[i].balanceOf(address(this)), initialBalance[i]);
 
-        strategy.withdrawAll();
+        _strategy.withdrawAll();
     }
 }

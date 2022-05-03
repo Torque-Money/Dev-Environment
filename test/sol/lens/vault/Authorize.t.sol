@@ -8,22 +8,22 @@ import {Config} from "../../helpers/Config.sol";
 
 contract AuthorizeTest is BaseVault, BaseImpersonate {
     // Fail to deposit moving funds into the strategy due to lack of authorization.
-    function testFailInjectFunds() public impersonate(empty) {
+    function testFailInjectFunds() public impersonate(_empty) {
         _vault.depositIntoStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds into the strategy due to lack of authorization.
-    function testFailInjectAllFunds() public impersonate(empty) {
+    function testFailInjectAllFunds() public impersonate(_empty) {
         _vault.depositAllIntoStrategy();
     }
 
     // Fail to deposit moving funds from the strategy due to lack of authorization.
-    function testFailEjectFunds() public impersonate(empty) {
+    function testFailEjectFunds() public impersonate(_empty) {
         _vault.withdrawFromStrategy(Config.getTokenAmount());
     }
 
     // Fail to deposit moving all funds from the strategy due to lack of authorization.
-    function testFailEjectAllFunds() public impersonate(empty) {
+    function testFailEjectAllFunds() public impersonate(_empty) {
         _vault.withdrawAllFromStrategy();
     }
 }
