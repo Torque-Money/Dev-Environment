@@ -17,5 +17,8 @@ abstract contract BaseTAU is Base {
 
         _tau = new TorqueTAU();
         _tau.initialize(_initialSupply);
+
+        _tau.grantRole(_tau.TOKEN_MINTER_ROLE(), address(this));
+        _tau.grantRole(_tau.TOKEN_BURNER_ROLE(), address(this));
     }
 }
