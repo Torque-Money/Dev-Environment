@@ -22,7 +22,7 @@ contract Withdraw is EmergencyBase, UsesTokenBase {
     function testERC20Withdraw() public useFunds {}
 
     // Test that ETH is withdrawable
-    function testETHWithdraw() public useFunds {}
+    function testETHWithdraw() public {}
 
     function _getCheats() internal view virtual override(EmergencyBase, UsesTokenBase) returns (ICheatCodes _cheats) {
         return super._getCheats();

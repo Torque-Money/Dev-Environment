@@ -1,18 +1,18 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {DSTest} from "ds-test/test.sol";
+import {Base} from "../helpers/Base.sol";
 
 import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
 
-contract TorqueTAUTest is DSTest {
+contract TorqueTAUTest is Base {
     TorqueTAU tau;
 
     uint256 constant INITIAL_SUPPLY = 10000 * 1e18;
 
     uint256 constant MINT_AMOUNT = 10 * 1e18;
 
-    function setUp() public {
+    function setUp() public override {
         tau = new TorqueTAU();
         tau.initialize(INITIAL_SUPPLY);
     }
