@@ -3,32 +3,30 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {ICheatCodes} from "./ICheatCodes.sol";
+import {Vm} from "forge-std/Vm.sol";
 
 import {Config} from "./Config.sol";
 
 abstract contract UsesTokenBase {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
-    modifier useFunds() {
-        _fundCaller();
+    modifier useFunds(Vm vm) {
+        _fundCaller(vm);
         _;
         _defundCaller();
     }
 
     // Fund a contract with the required tokens
-    function _fundCaller() internal {
+    function _fundCaller(Vm vm) internal {
         IERC20Upgradeable[] memory token = Config.getToken();
         address[] memory tokenWhale = Config.getTokenWhale();
-
-        ICheatCodes cheats = _getCheats();
 
         address receiver = address(this);
 
         for (uint256 i = 0; i < token.length; i++) {
-            cheats.startPrank(tokenWhale[i]);
+            vm.startPrank(tokenWhale[i]);
             token[i].safeTransfer(receiver, token[i].balanceOf(tokenWhale[i]));
-            cheats.stopPrank();
+            vm.stopPrank();
         }
     }
 
@@ -48,6 +46,4 @@ abstract contract UsesTokenBase {
 
         for (uint256 i = 0; i < token.length; i++) for (uint256 j = 0; j < spender.length; j++) token[i].approve(spender[j], MAX_INT);
     }
-
-    function _getCheats() internal view virtual returns (ICheatCodes _cheats);
 }

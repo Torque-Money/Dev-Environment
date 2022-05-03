@@ -1,14 +1,13 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {DSTest} from "ds-test/test.sol";
-import {ICheatCodes} from "./ICheatCodes.sol";
+import {Test} from "forge-std/Test.sol";
 
 import {Config} from "./Config.sol";
 import {Empty} from "./Empty.sol";
 import {AssertUtils} from "./AssertUtils.sol";
 
-contract Base is DSTest {
+contract Base is Test {
     ICheatCodes private cheats;
     address private empty;
 
@@ -26,10 +25,6 @@ contract Base is DSTest {
 
     function _getEmpty() internal view virtual returns (address _empty) {
         return empty;
-    }
-
-    function _getCheats() internal view virtual returns (ICheatCodes _cheats) {
-        return cheats;
     }
 
     function _getFOS() internal view virtual returns (uint256 _fosPercent, uint256 _fosDenominator) {

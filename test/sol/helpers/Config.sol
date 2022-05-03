@@ -6,15 +6,9 @@ import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUn
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IBeefyVaultV6} from "../../../src/interfaces/beefy/IBeefyVaultV6.sol";
 
-import {ICheatCodes} from "./ICheatCodes.sol";
-
 // Configured for the Fantom Opera mainnet
 
 library Config {
-    function getCheatCodes() internal pure returns (ICheatCodes cheatCodes) {
-        return ICheatCodes(0x7109709ECfa91a80626fF3989D68f67F5b1DD12D);
-    }
-
     function getToken() internal pure returns (IERC20Upgradeable[] memory token) {
         token = new IERC20Upgradeable[](2);
 
