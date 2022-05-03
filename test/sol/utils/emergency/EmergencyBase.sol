@@ -5,6 +5,7 @@ import {ICheatCodes} from "../../helpers/ICheatCodes.sol";
 
 import {Base} from "../../helpers/Base.sol";
 import {UsesTokenBase} from "../../helpers/UsesTokenBase.sol";
+
 import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 
 contract EmergencyBase is Base, UsesTokenBase {
