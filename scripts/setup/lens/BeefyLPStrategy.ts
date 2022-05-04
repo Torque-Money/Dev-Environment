@@ -6,7 +6,7 @@ async function main() {
     const data = loadData();
 
     const vault = await hre.ethers.getContractAt("Vault", data.contracts.VaultV1.proxies[0]);
-    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.contracts.BeefyLPStrategy.proxies[0]);
+    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.contracts.BeefyLPStrategyV1.proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Assign the vault as a controller of the strategy

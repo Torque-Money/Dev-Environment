@@ -19,7 +19,7 @@ interface Data {
         timelock: Address;
         TAU: Proxy;
         VaultV1: BeaconProxy,
-        BeefyLPStrategy: BeaconProxy
+        BeefyLPStrategyV1: BeaconProxy
     };
 }
 
