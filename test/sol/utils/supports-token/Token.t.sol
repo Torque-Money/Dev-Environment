@@ -6,6 +6,13 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {BaseSupportsToken} from "./BaseSupportsToken.sol";
 
 contract Token is BaseSupportsToken, BaseImpersonate {
-    // Set the fee recipient
-    function testSetFeeRecipient() public {}
+    // Test the token count
+    function testTokenCount() public {
+        assertEq(_token.length, _supportsToken.tokenCount());
+    }
+
+    // Test the enumeration of the tokens
+    function testTokenEnumerate() public {
+        for (uint256 i = 0; i < _token.length; i++) assertEq(_token[i], _supportsFee.tokenByIndex(i));
+    }
 }
