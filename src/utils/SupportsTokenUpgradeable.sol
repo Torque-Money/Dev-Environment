@@ -17,18 +17,9 @@ contract SupportsTokenUpgradeable is Initializable, ISupportsToken {
         __SupportsToken_init_unchained(token);
     }
 
-    function __SupportsToken_init(IERC20Upgradeable[] memory token, uint256 _tokenCount) internal onlyInitializing {
-        __SupportsToken_init_unchained(token, _tokenCount);
-    }
-
     function __SupportsToken_init_unchained(IERC20Upgradeable[] memory token) internal onlyInitializing {
         require(token.length > 0, "SupportsToken: Contract must support at least one token");
         for (uint256 i = 0; i < token.length; i++) tokenSet.add(address(token[i]));
-    }
-
-    function __SupportsToken_init_unchained(IERC20Upgradeable[] memory token, uint256 _tokenCount) internal onlyInitializing {
-        require(token.length == _tokenCount, "SupportsToken: Number of tokens must match given token count");
-        __SupportsToken_init_unchained(token);
     }
 
     modifier onlySupportedToken(IERC20Upgradeable token) {
