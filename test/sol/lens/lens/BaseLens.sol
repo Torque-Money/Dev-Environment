@@ -16,9 +16,5 @@ abstract contract BaseLens is Base, BaseUsesToken {
         _strategy = new MockStrategy(_token);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
-
-        // address[] memory spender = new address[](1);
-        // spender[0] = address(_strategy);
-        // _approveAll(spender);
     }
 }
