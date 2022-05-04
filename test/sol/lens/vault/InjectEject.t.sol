@@ -10,19 +10,16 @@ import {Config} from "../../helpers/Config.sol";
 contract InjectEjectTest is BaseVault {
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Make deposit
-        uint256 shares = _vault.deposit(tokenAmount);
+        uint256 shares = _vault.deposit(_tokenAmount);
 
         // Check that vault has been allocated the correct amount of tokens and they have flowed into the right contracts (Maybe move this to a seperate test ???)
-        for (uint256 i = 0; i < token.length; i++) {
-            assertEq(_vault.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(_vault)), 0);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(_vault.approxBalance(_token[i]), _tokenAmount[i]);
+            assertEq(_token[i].balanceOf(address(_vault)), 0);
 
-            assertEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(_strategy)), tokenAmount[i]);
+            assertEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
+            assertEq(_token[i].balanceOf(address(_strategy)), _tokenAmount[i]);
         }
 
         _vault.redeem(shares);
@@ -30,21 +27,18 @@ contract InjectEjectTest is BaseVault {
 
     // Eject vault funds from the strategy.
     function testEjectAll() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Make deposit
-        uint256 shares = _vault.deposit(tokenAmount);
+        uint256 shares = _vault.deposit(_tokenAmount);
 
         // Withdraw shares and check funds have flowed correctly
         _vault.withdrawAllFromStrategy();
 
-        for (uint256 i = 0; i < token.length; i++) {
-            assertEq(_vault.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(_vault)), tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(_vault.approxBalance(_token[i]), _tokenAmount[i]);
+            assertEq(_token[i].balanceOf(address(_vault)), _tokenAmount[i]);
 
-            assertEq(_strategy.approxBalance(token[i]), 0);
-            assertEq(token[i].balanceOf(address(_strategy)), 0);
+            assertEq(_strategy.approxBalance(_token[i]), 0);
+            assertEq(_token[i].balanceOf(address(_strategy)), 0);
         }
 
         _vault.redeem(shares);
@@ -52,11 +46,8 @@ contract InjectEjectTest is BaseVault {
 
     // Inject vault funds into the strategy.
     function testInjectAll() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Make deposit
-        uint256 shares = _vault.deposit(tokenAmount);
+        uint256 shares = _vault.deposit(_tokenAmount);
 
         // Eject funds
         _vault.withdrawAllFromStrategy();
@@ -64,11 +55,11 @@ contract InjectEjectTest is BaseVault {
         // Inject funds and check they have flowed correctly
         _vault.depositAllIntoStrategy();
 
-        for (uint256 i = 0; i < token.length; i++) {
-            assertEq(_vault.approxBalance(token[i]), tokenAmount[i]);
-            assertEq(token[i].balanceOf(address(_vault)), 0);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(_vault.approxBalance(_token[i]), _tokenAmount[i]);
+            assertEq(_token[i].balanceOf(address(_vault)), 0);
 
-            assertEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
+            assertEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
         }
 
         _vault.redeem(shares);

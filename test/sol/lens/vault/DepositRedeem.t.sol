@@ -7,8 +7,6 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 import {BaseVault} from "./BaseVault.sol";
 
-import {Config} from "../../helpers/Config.sol";
-
 contract DepositRedeemTest is BaseVault {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -50,7 +48,7 @@ contract DepositRedeemTest is BaseVault {
     function testDepositRedeemZero() public useFunds(vm) {
         // Check that the shares becomes zero
         uint256[] memory tmpTokenAmount = _tokenAmount;
-        modTokenAmount[0] = 0;
+        tmpTokenAmount[0] = 0;
         uint256 shares = _vault.deposit(tmpTokenAmount);
 
         assertEq(shares, 0);
@@ -72,7 +70,7 @@ contract DepositRedeemTest is BaseVault {
         // Compare the allocated assets before and after the token injection
         uint256[] memory initialOut = _vault.estimateRedeem(shares);
 
-        for (uint256 i = 0; i < _token.length; i++) token[i].safeTransfer(address(_vault), _tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) _token[i].safeTransfer(address(_vault), _tokenAmount[i]);
 
         uint256[] memory out = _vault.redeem(shares);
 
@@ -129,7 +127,7 @@ contract DepositRedeemTest is BaseVault {
             uint256 shares1 = _vault.deposit(_tokenAmount);
 
             uint256[] memory out0New = _vault.estimateRedeem(shares0);
-            for (uint256 i = 0; i < token.length; i++) _assertApproxEq(out0[i], out0New[i]);
+            for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(out0[i], out0New[i]);
 
             // Check that redeeming ends with the same tokens as initially deposited for the second user
             uint256[] memory out1 = _vault.redeem(shares1);
