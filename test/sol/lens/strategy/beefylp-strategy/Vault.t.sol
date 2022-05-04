@@ -18,7 +18,7 @@ contract VaultTest is BaseStrategy {
         super.setUp();
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), _strategy, _empty, 0, 1000);
+        vault.initialize(Config.getToken(), _strategy, _empty, 0, 1);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));

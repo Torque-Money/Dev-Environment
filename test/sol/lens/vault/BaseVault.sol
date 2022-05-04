@@ -19,7 +19,8 @@ abstract contract BaseVault is Base, BaseUsesToken {
         _strategy.initialize(Config.getToken());
 
         _vault = new TorqueVaultV1();
-        _vault.initialize(Config.getToken(), _strategy, _empty, 1, 1000);
+        (uint256 feePercent, uint256 feeDenominator) = Config.getFeePercent();
+        _vault.initialize(Config.getToken(), _strategy, _empty, feePercent, feeDenominator);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(_vault));
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(this));
