@@ -23,7 +23,11 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, Sup
     bytes32 public STRATEGY_ADMIN_ROLE;
     bytes32 public STRATEGY_CONTROLLER_ROLE;
 
-    function initialize(IERC20Upgradeable[] memory token) external initializer {
+    constructor(IERC20Upgradeable[] memory token) {
+        _initialize(token);
+    }
+
+    function _initialize(IERC20Upgradeable[] memory token) internal initializer {
         require(token.length == 2, "MockStrategy: Strategy supports exactly 2 tokens");
 
         __AccessControl_init();

@@ -3,17 +3,23 @@ pragma solidity ^0.8.0;
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 
-import {Base} from "../../../bases/Base.sol";
-import {BaseUsesToken} from "../../../bases/BaseUsesToken.sol";
+import {Base} from "../../bases/Base.sol";
+import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
 
-import {Config} from "../../../helpers/Config.sol";
-import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.sol";
+import {Config} from "../../helpers/Config.sol";
+import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 
-abstract contract BaseStrategy is Base, BaseUsesToken {
-    BeefyLPStrategy internal _strategy;
+abstract contract BaseLens is Base, BaseUsesToken {
+    MockStrategy[] internal _strategy;
+
+    IERC20Upgradeable[] internal _token;
+    uint256[] internal _tokenAmount;
 
     function setUp() public virtual override {
         super.setUp();
+
+        _token = Config.getToken();
+        _tokenAmount = Config.getTokenAmount();
 
         _strategy = new BeefyLPStrategy();
         _strategy.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());

@@ -10,6 +10,14 @@ import {Config} from "../helpers/Config.sol";
 abstract contract BaseUsesToken {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
+    IERC20Upgradeable[] internal _token;
+    uint256[] internal _tokenAmount;
+
+    function setUp() public virtual {
+        _token = Config.getToken();
+        _tokenAmount = Config.getTokenAmount();
+    }
+
     modifier useFunds(Vm vm) {
         _fundCaller(vm);
         _;

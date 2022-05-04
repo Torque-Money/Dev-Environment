@@ -14,17 +14,10 @@ abstract contract BaseVault is Base, BaseUsesToken {
     Vault internal _vault;
     MockStrategy internal _strategy;
 
-    IERC20Upgradeable[] internal _token;
-    uint256[] internal _tokenAmount;
-
     function setUp() public virtual override {
         super.setUp();
 
-        _token = Config.getToken();
-        _tokenAmount = Config.getTokenAmount();
-
-        _strategy = new MockStrategy();
-        _strategy.initialize(_token);
+        _strategy = new MockStrategy(_token);
 
         _vault = new Vault();
         (uint256 feePercent, uint256 feeDenominator) = Config.getFee();
