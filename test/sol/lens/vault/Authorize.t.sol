@@ -4,12 +4,10 @@ pragma solidity ^0.8.0;
 import {BaseVault} from "./BaseVault.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
-import {Config} from "../../helpers/Config.sol";
-
 contract AuthorizeTest is BaseVault, BaseImpersonate {
     // Fail to deposit moving funds into the strategy due to lack of authorization.
     function testFailInjectFunds() public impersonate(vm, _empty) {
-        _vault.depositIntoStrategy(Config.getTokenAmount());
+        _vault.depositIntoStrategy(_tokenAmount);
     }
 
     // Fail to deposit moving all funds into the strategy due to lack of authorization.
@@ -19,7 +17,7 @@ contract AuthorizeTest is BaseVault, BaseImpersonate {
 
     // Fail to deposit moving funds from the strategy due to lack of authorization.
     function testFailEjectFunds() public impersonate(vm, _empty) {
-        _vault.withdrawFromStrategy(Config.getTokenAmount());
+        _vault.withdrawFromStrategy(_tokenAmount);
     }
 
     // Fail to deposit moving all funds from the strategy due to lack of authorization.

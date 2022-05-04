@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import {BaseStrategy} from "./BaseStrategy.sol";
 import {BaseImpersonate} from "../../../bases/BaseImpersonate.sol";
 
-import {Config} from "../../../helpers/Config.sol";
-
 contract DepositWithdrawTest is BaseStrategy, BaseImpersonate {
     // Fail to deposit into the strategy due to lack of authorization.
     function testFailDeposit() public impersonate(vm, _empty) {

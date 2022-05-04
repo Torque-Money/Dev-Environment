@@ -6,7 +6,6 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
-import {Config} from "../../../helpers/Config.sol";
 import {TorqueVaultV1} from "../../../../../src/lens/vault/TorqueVaultV1.sol";
 
 contract VaultTest is BaseStrategy {
