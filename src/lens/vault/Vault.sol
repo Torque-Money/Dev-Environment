@@ -10,14 +10,14 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
-import {IVaultV1} from "../../interfaces/lens/IVaultV1.sol";
+import {IVault} from "../../interfaces/lens/IVault.sol";
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
 import {SupportsFeeUpgradeable} from "../../utils/SupportsFeeUpgradeable.sol";
 import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
 
-contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsTokenUpgradeable, IVaultV1, SupportsFeeUpgradeable, EmergencyUpgradeable {
+contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsTokenUpgradeable, IVault, SupportsFeeUpgradeable, EmergencyUpgradeable {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -33,7 +33,7 @@ contract TorqueVaultV1 is Initializable, AccessControlUpgradeable, ERC20Upgradea
         uint256 _feePercent,
         uint256 _feePercentDenominator
     ) external initializer {
-        __ERC20_init("Torque Vault V1", "TVV1");
+        __ERC20_init("Torque Vault", "TVALT");
         __AccessControl_init();
         __SupportsToken_init(token);
         __SupportsFee_init(_feeRecipient, _feePercent, _feePercentDenominator);

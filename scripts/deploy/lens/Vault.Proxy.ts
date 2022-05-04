@@ -14,11 +14,11 @@ async function main() {
     const feePercent = 0;
     const feeDenominator = 100;
 
-    const VaultV1 = await hre.ethers.getContractFactory("TorqueVaultV1");
-    const vaultV1 = await hre.upgrades.deployBeaconProxy(beacon, VaultV1, [tokens, strategy, feeRecipient, feePercent, feeDenominator]);
-    await vaultV1.deployed();
+    const Vault = await hre.ethers.getContractFactory("Vault");
+    const vault = await hre.upgrades.deployBeaconProxy(beacon, Vault, [tokens, strategy, feeRecipient, feePercent, feeDenominator]);
+    await vault.deployed();
 
-    console.log("Deploy | Vault | Proxy | Proxy:", vaultV1.address);
+    console.log("Deploy | Vault | Proxy | Proxy:", vault.address);
 }
 
 main()

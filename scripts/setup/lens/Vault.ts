@@ -5,7 +5,7 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const vault = await hre.ethers.getContractAt("TorqueVaultV1", data.contracts.VaultV1.proxies[0]);
+    const vault = await hre.ethers.getContractAt("Vault", data.contracts.VaultV1.proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     const FEE_ADMIN_ROLE = await vault.FEE_ADMIN_ROLE();

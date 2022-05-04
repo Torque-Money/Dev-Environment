@@ -8,10 +8,10 @@ import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
 
 import {Config} from "../../helpers/Config.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {TorqueVaultV1} from "../../../../src/lens/vault/TorqueVaultV1.sol";
+import {Vault} from "../../../../src/lens/vault/Vault.sol";
 
 abstract contract BaseVault is Base, BaseUsesToken {
-    TorqueVaultV1 internal _vault;
+    Vault internal _vault;
     MockStrategy internal _strategy;
 
     IERC20Upgradeable[] internal _token;
@@ -26,7 +26,7 @@ abstract contract BaseVault is Base, BaseUsesToken {
         _strategy = new MockStrategy();
         _strategy.initialize(_token);
 
-        _vault = new TorqueVaultV1();
+        _vault = new Vault();
         (uint256 feePercent, uint256 feeDenominator) = Config.getFee();
         _vault.initialize(_token, _strategy, _empty, feePercent, feeDenominator);
 

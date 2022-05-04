@@ -6,17 +6,17 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
-import {TorqueVaultV1} from "../../../../../src/lens/vault/TorqueVaultV1.sol";
+import {Vault} from "../../../../../src/lens/vault/Vault.sol";
 
 contract VaultTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;
 
-    TorqueVaultV1 private vault;
+    Vault private vault;
 
     function setUp() public override {
         super.setUp();
 
-        vault = new TorqueVaultV1();
+        vault = new Vault();
         vault.initialize(_token, _strategy, _empty, 0, 1);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
