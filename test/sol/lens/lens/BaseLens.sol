@@ -29,7 +29,8 @@ abstract contract BaseLens is Base, BaseUsesToken {
         _lens = new Lens();
         _lens.initialize(_vault);
 
-        for (uint256 i = 0; i < _strategy.length; i++) _strategy[i].grantRole(_strategy[i].STRATEGY_CONTROLLER_ROLE(), address(this));
+        for (uint256 i = 0; i < _strategy.length; i++) _strategy[i].grantRole(_strategy[i].STRATEGY_CONTROLLER_ROLE(), address(_vault));
+        _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(_lens));
 
         address[] memory spender = new address[](1);
         spender[0] = address(_vault);
