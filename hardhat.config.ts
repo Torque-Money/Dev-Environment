@@ -3,9 +3,13 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig, task } from "hardhat/config";
 
 require("dotenv").config();
+
+task("Lol", "Lol", async (args, hre) => {
+    console.log(await hre.ethers.provider.getSigner().getAddress());
+});
 
 export default {
     solidity: {
@@ -21,7 +25,7 @@ export default {
                 url: process.env.NETWORK_URL_OPERA,
                 blockNumber: 32177754,
             },
-            accounts: [process.env.PRIVATE_KEY_OPERA],
+            accounts: [{privateKey: process.env.PRIVATE_KEY_OPERA, balance: "1000000000000000000000"}],
         },
         opera: {
             url: process.env.NETWORK_URL_OPERA,
