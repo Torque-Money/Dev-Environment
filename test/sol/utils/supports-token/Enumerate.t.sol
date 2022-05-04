@@ -5,7 +5,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 
 import {BaseSupportsToken} from "./BaseSupportsToken.sol";
 
-contract Token is BaseSupportsToken, BaseImpersonate {
+contract Enumerate is BaseSupportsToken, BaseImpersonate {
     // Test the token count
     function testTokenCount() public {
         assertEq(_token.length, _supportsToken.tokenCount());
