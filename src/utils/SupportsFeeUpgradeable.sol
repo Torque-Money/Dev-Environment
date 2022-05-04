@@ -50,7 +50,7 @@ contract SupportsFeeUpgradeable is Initializable, AccessControlUpgradeable, ISup
         return (percent, denominator);
     }
 
-    function setFeeRecipient(address _recipient) external virtual override onlyRole(FEE_ADMIN_ROLE) {
+    function setFeeRecipient(address _recipient) external virtual onlyRole(FEE_ADMIN_ROLE) {
         recipient = _recipient;
     }
 
