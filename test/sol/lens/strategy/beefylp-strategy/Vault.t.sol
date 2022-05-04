@@ -79,8 +79,8 @@ contract VaultTest is BaseStrategy {
         vault.withdrawAllFromStrategy();
 
         // Check that the vault has been updated with tokens and the strategy has been emptied
-        for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(vault.approxBalance(token[i]), _tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
             _assertApproxEq(_token[i].balanceOf(address(vault)), _tokenAmount[i]);
 
             _assertApproxEq(_strategy.approxBalance(_token[i]), 0);
@@ -104,11 +104,11 @@ contract VaultTest is BaseStrategy {
         vault.depositAllIntoStrategy();
 
         // Check that the vault has been updated with tokens and the strategy has been emptied
-        for (uint256 i = 0; i < token.length; i++) {
+        for (uint256 i = 0; i < _token.length; i++) {
             _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
             _assertApproxEq(_token[i].balanceOf(address(vault)), 0);
 
-            _assertApproxEq(_strategy.approxBalance(_token[i]), tokenAmount[i]);
+            _assertApproxEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
         }
 
         // Check that the funds correctly flow back

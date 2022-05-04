@@ -21,7 +21,7 @@ contract DepositWithdrawTest is BaseStrategy {
 
         // Check the balance is what was deposited
         uint256[] memory balance = new uint256[](_token.length);
-        for (uint256 i = 0; i < token.length; i++) {
+        for (uint256 i = 0; i < _token.length; i++) {
             assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
 
             balance[i] = _strategy.approxBalance(_token[i]);
@@ -104,7 +104,7 @@ contract DepositWithdrawTest is BaseStrategy {
         for (uint256 i = 0; i < _token.length; i++) assertEq(_token[i].balanceOf(address(this)), initialBalance[i]);
 
         // Withdraw zero when there are some tokens
-        _strategy.deposit(tokenAmount);
+        _strategy.deposit(_tokenAmount);
 
         initialBalance = new uint256[](_token.length);
         for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));

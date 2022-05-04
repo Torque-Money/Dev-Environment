@@ -9,7 +9,7 @@ import {Config} from "../../../helpers/Config.sol";
 contract DepositWithdrawTest is BaseStrategy, BaseImpersonate {
     // Fail to deposit into the strategy due to lack of authorization.
     function testFailDeposit() public impersonate(vm, _empty) {
-        _strategy.deposit(_amount);
+        _strategy.deposit(_tokenAmount);
     }
 
     // Fail to deposit all into the strategy due to lack of authorization.
@@ -19,7 +19,7 @@ contract DepositWithdrawTest is BaseStrategy, BaseImpersonate {
 
     // Fail to withdraw from the strategy due to lack of authorization.
     function testFailWithdraw() public impersonate(vm, _empty) {
-        _strategy.withdraw(_amount);
+        _strategy.withdraw(_tokenAmount);
     }
 
     // Fail to withdraw all from the strategy due to lack of authorization.
