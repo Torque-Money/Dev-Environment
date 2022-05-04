@@ -7,11 +7,11 @@ import {BaseImpersonate} from "../bases/BaseImpersonate.sol";
 contract Authorize is BaseTAU, BaseImpersonate {
     // Fail to mint tokens
     function testFailMint() public impersonate(vm, _empty) {
-        tau.mint(address(this), mintAmount);
+        _tau.mint(address(this), _mintAmount);
     }
 
     // Fail to burn tokens
-    function testFailMint() public impersonate(vm, _empty) {
-        tau.burn(address(this), mintAmount);
+    function testFailBurn() public impersonate(vm, _empty) {
+        _tau.burn(address(this), _mintAmount);
     }
 }

@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import {Base} from "../bases/Base.sol";
 
 import {TorqueTAU} from "../../../src/tau/TorqueTAU.sol";
+import {Config} from "../helpers/Config.sol";
 
 abstract contract BaseTAU is Base {
     TorqueTAU internal _tau;
