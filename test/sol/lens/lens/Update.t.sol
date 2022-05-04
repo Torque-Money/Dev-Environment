@@ -4,5 +4,9 @@ pragma solidity ^0.8.0;
 import {BaseLens} from "./BaseLens.sol";
 
 contract UpdateTest is BaseLens {
-    // **** We first need to test that the strategy can handle movements over the different vaults and ensure the tokens are still intact
+    // Test that the lens can update the strategies
+    function testUpdate() public {
+        // **** We will need to deposit some funds, have the strategy move the funds over a few times, and then run a withdraw and check it is roughly the same for the vault
+        // **** Also need to make sure that the funds deposited go into the correct vault (we will do this using approx eq)
+    }
 }
