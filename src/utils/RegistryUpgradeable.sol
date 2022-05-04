@@ -26,6 +26,11 @@ contract RegistryUpgradeable is Initializable, AccessControlUpgradeable, IRegist
         _grantRole(REGISTRY_ADMIN_ROLE, _msgSender());
     }
 
+    modifier onlyEntry(address entry) {
+        require(isEntry(entry), "Registry: Only entries in the registry are allowed");
+        _;
+    }
+
     function add(address entry) external virtual override onlyRole(REGISTRY_ADMIN_ROLE) {
         require(_set.add(entry), "Registry: Cannot add element to registry");
     }
