@@ -10,8 +10,9 @@ import {BeefyLPStrategy} from "../../../../../src/lens/strategy/BeefyLPStrategy.
 abstract contract BaseStrategy is Base, BaseUsesToken {
     BeefyLPStrategy internal _strategy;
 
-    function setUp() public virtual override {
-        super.setUp();
+    function setUp() public virtual override(Base, BaseUsesToken) {
+        Base.setUp();
+        BaseUsesToken.setUp();
 
         _strategy = new BeefyLPStrategy();
         _strategy.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());

@@ -10,10 +10,13 @@ import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 abstract contract BaseLens is Base, BaseUsesToken {
     MockStrategy[] internal _strategy;
 
-    function setUp() public virtual override {
-        super.setUp();
+    function setUp() public virtual override(Base, BaseUsesToken) {
+        Base.setUp();
+        BaseUsesToken.setUp();
 
-        _strategy = new MockStrategy(_token);
+        _strategy = new MockStrategy[](2);
+        _strategy[0] = new MockStrategy(_token);
+        _strategy[1] = new MockStrategy(_token);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(this));
     }

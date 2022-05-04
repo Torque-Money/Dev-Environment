@@ -9,8 +9,9 @@ import {MockEmergency} from "../../../mocks/MockEmergency.sol";
 abstract contract BaseEmergency is Base, BaseUsesToken {
     MockEmergency internal _emergency;
 
-    function setUp() public virtual override {
-        super.setUp();
+    function setUp() public virtual override(Base, BaseUsesToken) {
+        Base.setUp();
+        BaseUsesToken.setUp();
 
         _emergency = new MockEmergency();
     }

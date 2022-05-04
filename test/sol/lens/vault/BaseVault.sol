@@ -12,8 +12,9 @@ abstract contract BaseVault is Base, BaseUsesToken {
     Vault internal _vault;
     MockStrategy internal _strategy;
 
-    function setUp() public virtual override {
-        super.setUp();
+    function setUp() public virtual override(Base, BaseUsesToken) {
+        Base.setUp();
+        BaseUsesToken.setUp();
 
         _strategy = new MockStrategy(_token);
 
