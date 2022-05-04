@@ -104,7 +104,7 @@ contract DepositWithdrawTest is BaseStrategy {
         for (uint256 i = 0; i < _token.length; i++) assertEq(_token[i].balanceOf(address(this)), initialBalance[i]);
 
         // Withdraw zero when there are some tokens
-        _strategy.deposit(_tokenAmount);
+        _strategy.deposit(tokenAmount);
 
         initialBalance = new uint256[](_token.length);
         for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
