@@ -5,13 +5,13 @@ import {BaseLens} from "./BaseLens.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 contract AuthorizeTest is BaseLens, BaseImpersonate {
-    // Should set the vault
-    function testSetVault() public {
+    // Should fail to set the vault due to lack of authorization
+    function testFailSetVault() public impersonate(vm, _empty) {
         _lens.setVault(_vault);
     }
 
-    // Should fail to set the vault due to lack of authorization
-    function testFailUnauthorizedSetVault() public impersonate(vm, _empty) {
-        _lens.setVault(_vault);
+    // Should update the strategy due to lack of authorization
+    function testFailUpdate() public impersonate(vm, _empty) {
+        _lens.update(_strategy[0]);
     }
 }

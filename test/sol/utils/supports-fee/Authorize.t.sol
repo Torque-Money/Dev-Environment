@@ -5,23 +5,13 @@ import {BaseSupportsFee} from "./BaseSupportsFee.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 contract AuthorizeTest is BaseSupportsFee, BaseImpersonate {
-    // Check that an approved account will be able to use the admin set fee recipient function
-    function testSetFeeRecipient() public {
+    // Check that unauthorized accounts cant set the fee recipient
+    function testFailSetFeeRecipient() public impersonate(vm, _empty) {
         _supportsFee.setFeeRecipient(_feeRecipient);
     }
 
-    // Check that an approved account will be able to use the admin set fee function
-    function testSetFee() public {
-        _supportsFee.setFeePercent(_feePercent, _feeDenominator);
-    }
-
-    // Check that a non approved account will not be able to use the admin set fee recipient function
-    function testFailUnauthorizedSetFeeRecipient() public impersonate(vm, _empty) {
-        _supportsFee.setFeeRecipient(_feeRecipient);
-    }
-
-    // Check that a non approved account will not be able to use the admin set fee function
-    function testFailUnauthorizedSetFee() public impersonate(vm, _empty) {
+    // Check that unauthorized accounts cant set the fee
+    function testFailSetFee() public impersonate(vm, _empty) {
         _supportsFee.setFeePercent(_feePercent, _feeDenominator);
     }
 }
