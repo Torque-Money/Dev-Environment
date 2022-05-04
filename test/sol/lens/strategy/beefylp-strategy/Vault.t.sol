@@ -18,7 +18,7 @@ contract VaultTest is BaseStrategy {
         super.setUp();
 
         vault = new TorqueVaultV1();
-        vault.initialize(Config.getToken(), _strategy, _empty, 0, 1);
+        vault.initialize(_token, _strategy, _empty, 0, 1);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(vault));
         vault.grantRole(vault.VAULT_CONTROLLER_ROLE(), address(this));
@@ -30,47 +30,41 @@ contract VaultTest is BaseStrategy {
 
     // Test a deposit and redeem with the vault and Beefy LP strategy.
     function testDepositRedeem() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Deposit funds into the vault
-        uint256[] memory initialBalance = new uint256[](token.length);
-        for (uint256 i = 0; i < token.length; i++) initialBalance[i] = token[i].balanceOf(address(this));
+        uint256[] memory initialBalance = new uint256[](_token.length);
+        for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(_tokenAmount);
 
         // Check the balances of the vault and the user
-        for (uint256 i = 0; i < token.length; i++) {
-            assertEq(initialBalance[i].sub(token[i].balanceOf(address(this))), tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
 
-            _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
+            _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
         }
 
         // Withdraw funds and check the balances
         uint256[] memory out = vault.redeem(shares);
 
-        for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(token[i].balanceOf(address(this)), initialBalance[i]);
-            _assertApproxEq(out[i], tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i]);
+            _assertApproxEq(out[i], _tokenAmount[i]);
 
-            _assertApproxEq(vault.approxBalance(token[i]), 0);
+            _assertApproxEq(vault.approxBalance(_token[i]), 0);
         }
     }
 
     // Test the flow of funds between the vault and the strategy
     function testFundFlow() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Deposit funds
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(_tokenAmount);
 
         // Check that vault has been allocated the correct amount of tokens and they have flowed into the right contracts
-        for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
-            _assertApproxEq(token[i].balanceOf(address(vault)), 0);
+        for (uint256 i = 0; i < _token.length; i++) {
+            _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
+            _assertApproxEq(_token[i].balanceOf(address(vault)), 0);
 
-            _assertApproxEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
+            _assertApproxEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
         }
 
         vault.redeem(shares);
@@ -78,36 +72,30 @@ contract VaultTest is BaseStrategy {
 
     // Eject vault funds from the strategy
     function testEjectAll() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Deposit funds
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(_tokenAmount);
 
         // Eject funds
         vault.withdrawAllFromStrategy();
 
         // Check that the vault has been updated with tokens and the strategy has been emptied
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
-            _assertApproxEq(token[i].balanceOf(address(vault)), tokenAmount[i]);
+            _assertApproxEq(vault.approxBalance(token[i]), _tokenAmount[i]);
+            _assertApproxEq(_token[i].balanceOf(address(vault)), _tokenAmount[i]);
 
-            _assertApproxEq(_strategy.approxBalance(token[i]), 0);
+            _assertApproxEq(_strategy.approxBalance(_token[i]), 0);
         }
 
         // Check that the funds correctly flow back
         uint256[] memory out = vault.redeem(shares);
 
-        for (uint256 i = 0; i < token.length; i++) _assertApproxEq(out[i], tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(out[i], _tokenAmount[i]);
     }
 
     // Inject vault funds into the strategy.
     function testInjectAll() public useFunds(vm) {
-        IERC20Upgradeable[] memory token = Config.getToken();
-        uint256[] memory tokenAmount = Config.getTokenAmount();
-
         // Deposit funds
-        uint256 shares = vault.deposit(tokenAmount);
+        uint256 shares = vault.deposit(_tokenAmount);
 
         // Eject funds
         vault.withdrawAllFromStrategy();
@@ -117,15 +105,15 @@ contract VaultTest is BaseStrategy {
 
         // Check that the vault has been updated with tokens and the strategy has been emptied
         for (uint256 i = 0; i < token.length; i++) {
-            _assertApproxEq(vault.approxBalance(token[i]), tokenAmount[i]);
-            _assertApproxEq(token[i].balanceOf(address(vault)), 0);
+            _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
+            _assertApproxEq(_token[i].balanceOf(address(vault)), 0);
 
-            _assertApproxEq(_strategy.approxBalance(token[i]), tokenAmount[i]);
+            _assertApproxEq(_strategy.approxBalance(_token[i]), tokenAmount[i]);
         }
 
         // Check that the funds correctly flow back
         uint256[] memory out = vault.redeem(shares);
 
-        for (uint256 i = 0; i < token.length; i++) _assertApproxEq(out[i], tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(out[i], _tokenAmount[i]);
     }
 }
