@@ -5,7 +5,7 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseTAU} from "./BaseTAU.sol";
 
-contract Authorize is BaseTAU {
+contract SupplyTest is BaseTAU {
     using SafeMathUpgradeable for uint256;
 
     // Test the initial supply

@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {BaseSupportsFee} from "./BaseSupportsFee.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
-contract Authorize is BaseSupportsFee, BaseImpersonate {
+contract AuthorizeTest is BaseSupportsFee, BaseImpersonate {
     // Check that an approved account will be able to use the admin set fee recipient function
     function testSetFeeRecipient() public {
         _supportsFee.setFeeRecipient(_feeRecipient);

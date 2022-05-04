@@ -8,7 +8,7 @@ import {BaseEmergency} from "./BaseEmergency.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract Withdraw is BaseEmergency {
+contract WithdrawTest is BaseEmergency {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // Test that an ERC20 token is withdrawable

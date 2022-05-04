@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {BaseRegistry} from "./BaseRegistry.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
-contract Register is BaseRegistry, BaseImpersonate {
+contract RegisterTest is BaseRegistry, BaseImpersonate {
     // Check that an approved account will be able to use an admin function
     function testRegister() public {
         _registry.add(_empty);

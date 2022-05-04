@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {BaseSupportsFee} from "./BaseSupportsFee.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
-contract Fee is BaseSupportsFee, BaseImpersonate {
+contract FeeTest is BaseSupportsFee, BaseImpersonate {
     // Set the fee recipient
     function testSetFeeRecipient() public {
         _supportsFee.setFeeRecipient(_feeRecipient);

@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {BaseSupportsToken} from "./BaseSupportsToken.sol";
 
-contract Enumerate is BaseSupportsToken {
+contract EnumerateTest is BaseSupportsToken {
     // Test the token count
     function testTokenCount() public {
         assertEq(_token.length, _supportsToken.tokenCount());

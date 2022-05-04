@@ -8,7 +8,7 @@ import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 import {Config} from "../../helpers/Config.sol";
 
-contract Authorize is BaseEmergency, BaseImpersonate {
+contract AuthorizeTest is BaseEmergency, BaseImpersonate {
     // Check that an approved account will be able to use an admin function
     function testAuthorized() public {
         IERC20Upgradeable[] memory token = Config.getToken();
