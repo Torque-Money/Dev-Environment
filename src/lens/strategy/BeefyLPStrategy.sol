@@ -37,8 +37,10 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         IUniswapV2Factory _uniFactory,
         IBeefyVaultV6 _beVault
     ) external initializer {
+        require(token.length == 2, "BeefyLPStrategy: Strategy supports exactly 2 tokens");
+
         __AccessControl_init();
-        __SupportsToken_init(token, 2);
+        __SupportsToken_init(token);
         __Emergency_init();
 
         STRATEGY_ADMIN_ROLE = keccak256("STRATEGY_ADMIN_ROLE");
