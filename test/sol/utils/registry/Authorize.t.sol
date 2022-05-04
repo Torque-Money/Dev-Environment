@@ -5,9 +5,15 @@ import {BaseRegistry} from "./BaseRegistry.sol";
 import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 contract Authorize is BaseRegistry, BaseImpersonate {
-    // Check that an approved account will be able to use an admin function
+    // Check that an approved account will be able to use the admin add function
     function testAuthorizedAdd() public {
         _registry.add(_empty);
+    }
+
+    // Check that an approved account will be able to use the admin remove function
+    function testAuthorizedAdd() public {
+        _registry.add(_empty);
+        _registry.remove(_empty);
     }
 
     // Check that a non approved account will not be able to use the admin add function
