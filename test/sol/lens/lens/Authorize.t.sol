@@ -1,10 +1,12 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {BaseStrategy} from "./BaseStrategy.sol";
-import {BaseImpersonate} from "../../../bases/BaseImpersonate.sol";
+import {BaseLens} from "./BaseLens.sol";
+import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
-contract Authorize is BaseStrategy, BaseImpersonate {
+// **** WIP
+
+contract AuthorizeTest is BaseLens, BaseImpersonate {
     // Fail to deposit into the strategy due to lack of authorization.
     function testFailDeposit() public impersonate(vm, _empty) {
         _strategy.deposit(_tokenAmount);
