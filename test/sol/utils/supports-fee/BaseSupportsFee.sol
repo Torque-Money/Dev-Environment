@@ -15,7 +15,7 @@ abstract contract BaseSupportsFee is Base {
     function setUp() public virtual override {
         super.setUp();
 
-        (_feePercent, _feeDenominator) = Config.getFeePercent();
-        _registry = new MockSupportsFee(_empty, _feePercent, _feeDenominator);
+        (_feePercent, _feeDenominator) = Config.getFee();
+        _supportsFee = new MockSupportsFee(_empty, _feePercent, _feeDenominator);
     }
 }

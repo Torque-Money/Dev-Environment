@@ -14,7 +14,7 @@ abstract contract Base is Test {
         _empty = address(new Empty());
     }
 
-    function _assertApproxEq(uint256 a, uint256 b) internal view {
+    function _assertApproxEq(uint256 a, uint256 b) internal pure {
         (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
 
         AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);

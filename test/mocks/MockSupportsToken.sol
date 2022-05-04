@@ -7,7 +7,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 
 import {SupportsTokenUpgradeable} from "../../src/utils/SupportsTokenUpgradeable.sol";
 
-contract MockSupportsFee is Initializable, SupportsTokenUpgradeable {
+contract MockSupportsToken is Initializable, SupportsTokenUpgradeable {
     constructor(IERC20Upgradeable[] memory token) {
         _initialize(token);
     }
