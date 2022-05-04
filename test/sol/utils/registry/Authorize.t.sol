@@ -6,12 +6,17 @@ import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 contract Authorize is BaseRegistry, BaseImpersonate {
     // Check that an approved account will be able to use an admin function
-    function testAuthorized() public {
+    function testAuthorizedAdd() public {
         _registry.add(_empty);
     }
 
-    // Check that a non approved account will not be able to use an admin function
-    function testFailUnauthorized() public impersonate(vm, _empty) {
+    // Check that a non approved account will not be able to use the admin add function
+    function testFailUnauthorizedAdd() public impersonate(vm, _empty) {
         _registry.add(address(0));
+    }
+
+    // Check that a non approved account will not be able to use the admin remove function
+    function testFailUnauthorizedRemove() public impersonate(vm, _empty) {
+        _registry.remove(address(0));
     }
 }
