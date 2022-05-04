@@ -12,7 +12,7 @@ contract Authorize is BaseSupportsFee, BaseImpersonate {
 
     // Check that an approved account will be able to use the admin set fee function
     function testSetFee() public {
-        _supportsFee.setFee(_feePercent, _feeDenominator);
+        _supportsFee.setFeePercent(_feePercent, _feeDenominator);
     }
 
     // Check that a non approved account will not be able to use the admin set fee recipient function
@@ -22,6 +22,6 @@ contract Authorize is BaseSupportsFee, BaseImpersonate {
 
     // Check that a non approved account will not be able to use the admin set fee function
     function testFailUnauthorizedSetFee() public impersonate(vm, _empty) {
-        _supportsFee.setFee(_feePercent, _feeDenominator);
+        _supportsFee.setFeePercent(_feePercent, _feeDenominator);
     }
 }

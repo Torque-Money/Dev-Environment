@@ -11,7 +11,7 @@ contract Authorize is BaseRegistry, BaseImpersonate {
     }
 
     // Check that an approved account will be able to use the admin remove function
-    function testAuthorizedAdd() public {
+    function testAuthorizedRemove() public {
         _registry.add(_empty);
         _registry.remove(_empty);
     }
