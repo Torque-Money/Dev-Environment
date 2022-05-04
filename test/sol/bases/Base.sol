@@ -10,17 +10,13 @@ import {AssertUtils} from "../helpers/AssertUtils.sol";
 abstract contract Base is Test {
     address internal _empty;
 
-    uint256 internal _fosPercent;
-    uint256 internal _fosDenominator;
-
     function setUp() public virtual {
         _empty = address(new Empty());
-
-        _fosPercent = Config.getFosPercent();
-        _fosDenominator = Config.getFosDenominator();
     }
 
     function _assertApproxEq(uint256 a, uint256 b) internal view {
-        AssertUtils.assertApproxEq(a, b, _fosPercent, _fosDenominator);
+        (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
+
+        AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);
     }
 }
