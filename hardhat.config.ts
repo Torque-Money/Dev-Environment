@@ -5,10 +5,24 @@ import "@openzeppelin/hardhat-upgrades";
 
 import { HardhatUserConfig, task } from "hardhat/config";
 
+import { loadData } from "./scripts/utils";
+
 require("dotenv").config();
 
-task("Lol", "Lol", async (args, hre) => {
-    console.log(await hre.ethers.provider.getSigner().getAddress());
+task("Helper", "Helper task", async (args, hre) => {
+    const data = loadData();
+    
+    const vault = await hre.ethers.getContractAt("Vault", data.contracts.VaultV1.proxies[0]);
+
+    const VAULT_CONTROLLER_ROLE = await vault.VAULT_CONTROLLER_ROLE();
+    console.log("Vault controller role", VAULT_CONTROLLER_ROLE)
+    const VAULT_ADMIN_ROLE = await vault.VAULT_ADMIN_ROLE();
+    console.log("Vault admin role", VAULT_ADMIN_ROLE)
+
+    const encoded = vault.interface.encodeFunctionData("grantRole", [VAULT_CONTROLLER_ROLE, data.contracts.LensV1.proxies[0]]);
+    console.log("Encoded grant role", encoded);
+
+    console.log("Hash zero", hre.ethers.constants.HashZero);
 });
 
 export default {
