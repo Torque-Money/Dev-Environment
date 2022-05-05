@@ -35,11 +35,6 @@ contract Lens is Initializable, AccessControlUpgradeable, ILens, RegistryUpgrade
         return vault;
     }
 
-    // Set the vault to be used by the controller
-    function setVault(IVault _vault) external onlyRole(LENS_ADMIN_ROLE) {
-        vault = _vault;
-    }
-
     // Update the vaults strategy
     function update(IStrategy strategy) external override onlyRole(LENS_CONTROLLER_ROLE) onlyEntry(address(strategy)) {
         vault.withdrawAllFromStrategy();
