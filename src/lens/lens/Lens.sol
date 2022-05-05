@@ -17,6 +17,9 @@ contract Lens is Initializable, AccessControlUpgradeable, ILens, RegistryUpgrade
     IVault private vault;
 
     function initialize(IVault _vault) external initializer {
+        __AccessControl_init();
+        __Registry_init();
+
         LENS_ADMIN_ROLE = keccak256("LENS_ADMIN_ROLE");
         _setRoleAdmin(LENS_ADMIN_ROLE, LENS_ADMIN_ROLE);
         _grantRole(LENS_ADMIN_ROLE, _msgSender());
