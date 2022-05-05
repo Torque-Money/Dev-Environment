@@ -32,9 +32,9 @@ contract DepositWithdrawTest is BaseStrategy {
         // for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
         // Withdraw a safe amount to where the whole balance is not extracted
-        // uint256[] memory fosBalance = new uint256[](_token.length);
-        // (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
-        // for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
+        uint256[] memory fosBalance = new uint256[](_token.length);
+        (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
+        for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
 
         _strategy.withdraw(fosBalance);
 
