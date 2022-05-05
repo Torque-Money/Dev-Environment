@@ -5,7 +5,7 @@ import {BaseLens} from "./BaseLens.sol";
 
 contract UpdateTest is BaseLens {
     // Test that the lens can update the strategies
-    function testUpdate() public {
+    function testUpdate() public useFunds(vm) {
         // Deposit an initial amount of tokens
         uint256 shares = _vault.deposit(_tokenAmount);
 
@@ -14,7 +14,7 @@ contract UpdateTest is BaseLens {
             _lens.update(_strategy[i]);
 
             uint256[] memory out = _vault.estimateRedeem(shares);
-            for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(expectedOut[i], out[i]);
+            for (uint256 j = 0; j < _token.length; j++) _assertApproxEq(_tokenAmount[i], out[i]);
         }
 
         _vault.redeem(shares);
