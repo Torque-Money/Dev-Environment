@@ -85,7 +85,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         console2.log("After pair balance:");
         console2.log(pairBalance);
         console2.log("Made it BEFORE beVault depositAll");
-        beVault.depositAll();
+        beVault.depositAll(); // **** Something happens inside of the second deposit that it does not like for some reason...
         console2.log("Made it AFTER beVault depositAll");
     }
 
