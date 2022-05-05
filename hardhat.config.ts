@@ -23,7 +23,6 @@ export default {
         hardhat: {
             forking: {
                 url: process.env.NETWORK_URL_OPERA,
-                blockNumber: 32177754,
             },
             accounts: [{privateKey: process.env.PRIVATE_KEY_OPERA, balance: "1000000000000000000000"}],
         },
