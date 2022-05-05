@@ -10,7 +10,8 @@ async function main() {
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Assign the vault as a controller of the strategy
-    await (await strategy.grantRole(await strategy.STRATEGY_CONTROLLER_ROLE(), vault.address)).wait();
+    const STRATEGY_CONTROLLER_ROLE = await strategy.STRATEGY_CONTROLLER_ROLE();
+    await (await strategy.grantRole(STRATEGY_CONTROLLER_ROLE, vault.address)).wait();
     console.log("Setup | BeefyLPStrategy | Assign vault as strategy controller");
 
     // Assign the emergency to the timelock (and revoke)
