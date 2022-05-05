@@ -17,8 +17,6 @@ import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
 import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
 
-import "forge-std/console2.sol";
-
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
@@ -69,13 +67,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         token0.safeIncreaseAllowance(address(uniRouter), amountADesired);
         token1.safeIncreaseAllowance(address(uniRouter), amountBDesired);
 
-        console2.log("Made it before liquidity add");
-        console2.log(amountADesired);
-        console2.log(amountBDesired);
-
         uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
-
-        console2.log("Made it AFTER liquidity add");
 
         // Deposit into Beefy vault
         IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(address(token0), address(token1)));
@@ -83,11 +75,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        console2.log("BEFORE deposit into Beefy vault");
-
         beVault.depositAll();
-
-        console2.log("Deposited into Beefy vault");
     }
 
     function _ejectAllFromStrategy() private {
