@@ -19,10 +19,12 @@ contract DepositWithdrawTest is BaseStrategy {
         // uint256[] memory initialBalance = new uint256[](_token.length);
         // for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
+        // **** Something is wrong with something in `_injectAllIntoStrategy` - only allows one repetition before breaking ???
+
         console2.log("Deposit 1");
         _strategy.deposit(_tokenAmount);
 
-        console2.log("0");
+        console2.log("");
         console2.log("Deposit 2");
         _strategy.deposit(_tokenAmount);
 
