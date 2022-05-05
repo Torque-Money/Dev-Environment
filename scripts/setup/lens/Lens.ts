@@ -8,7 +8,12 @@ async function main() {
     const lens = await hre.ethers.getContractAt("Lens", data.contracts.LensV1.proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
-    // **** The lens also needs a list of strategies it can initially add (which will need to be added of course)
+    // Add initial strategies to the lens
+    const strategies = data.contracts.BeefyLPStrategyV1.proxies;
+    for (const strategy in strategies) {
+        await (await lens.add(strategy)).wait();
+        console.log(`Setup | Lens | Add strategy '${strategy}' to lens`);
+    }
 
     // Assign the caller as a controller of the lens
     const LENS_CONTROLLER_ROLE = await lens.LENS_CONTROLLER_ROLE();
