@@ -77,9 +77,14 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        console2.log("Made it BEFORE beVault depositAll");
-        beVault.depositAll(); // **** Something happens inside of the second deposit that it does not like for some reason...
-        console2.log("Made it AFTER beVault depositAll");
+        console2.log("Made it BEFORE beVault deposit");
+
+        // beVault.depositAll(); // **** Something happens inside of the second deposit that it does not like for some reason...
+        beVault.deposit(100);
+        console2.log("Made it AFTER beVault deposit 1");
+
+        beVault.deposit(100);
+        console2.log("Made it AFTER beVault deposit 2");
     }
 
     function _ejectAllFromStrategy() private {

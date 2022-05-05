@@ -21,11 +21,7 @@ contract DepositWithdrawTest is BaseStrategy {
 
         // **** Something is wrong with something in `_injectAllIntoStrategy` - only allows one repetition before breaking ???
 
-        console2.log("Deposit 1");
-        _strategy.deposit(_tokenAmount);
-
-        console2.log("");
-        console2.log("Deposit 2");
+        console2.log("Deposit");
         _strategy.deposit(_tokenAmount);
 
         // Check the balance is what was deposited
