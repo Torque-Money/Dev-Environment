@@ -69,21 +69,14 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         token0.safeIncreaseAllowance(address(uniRouter), amountADesired);
         token1.safeIncreaseAllowance(address(uniRouter), amountBDesired);
 
-        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(address(token0), address(token1)));
-        uint256 pairBalancePre = pair.balanceOf(address(this));
-        console2.log("Initial pair balance:");
-        console2.log(pairBalancePre);
-
         uniRouter.addLiquidity(address(token0), address(token1), amountADesired, amountBDesired, 1, 1, address(this), block.timestamp);
 
         // Deposit into Beefy vault
-        // IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(address(token0), address(token1)));
+        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(address(token0), address(token1)));
         uint256 pairBalance = pair.balanceOf(address(this));
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        console2.log("After pair balance:");
-        console2.log(pairBalance);
         console2.log("Made it BEFORE beVault depositAll");
         beVault.depositAll(); // **** Something happens inside of the second deposit that it does not like for some reason...
         console2.log("Made it AFTER beVault depositAll");
