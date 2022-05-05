@@ -20,6 +20,7 @@ interface Data {
         TAU: Proxy;
         VaultV1: BeaconProxy,
         BeefyLPStrategyV1: BeaconProxy
+        BeefyLPStrategyV2: BeaconProxy
         LensV1: BeaconProxy
     };
 }

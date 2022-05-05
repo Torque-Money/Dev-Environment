@@ -13,6 +13,11 @@
             "beacon": "0xAcB597F234ECdb6E8E67773D1a9952877CDe708E",
             "implementation": "0x87E995ee8fC7B92AE651169a62Be8986d71cC895"
         },
+        "BeefyLPStrategyV2": {
+            "proxies": [],
+            "beacon": "",
+            "implementation": ""
+        },
         "LensV1": {
             "proxies": [],
             "beacon": "",
