@@ -14,7 +14,7 @@
             "implementation": "0x87E995ee8fC7B92AE651169a62Be8986d71cC895"
         },
         "BeefyLPStrategyV2": {
-            "proxies": [],
+            "proxies": ["0xdFD432D8336fE8e20f3f1759C5e4F9bb4c6EA708"],
             "beacon": "0xa04723bD4a77d0d9D550830c566A55B252D3C1cc",
             "implementation": "0xED94d6e9a646864E77d9f0C5cb2B186606C21A31"
         },
