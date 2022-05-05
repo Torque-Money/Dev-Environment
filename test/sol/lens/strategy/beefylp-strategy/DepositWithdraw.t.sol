@@ -39,7 +39,7 @@ contract DepositWithdrawTest is BaseStrategy {
         (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
         for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
 
-        console2.log("Deposit");
+        console2.log("Withdraw");
         _strategy.withdraw(fosBalance);
 
         // for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
