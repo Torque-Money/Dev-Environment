@@ -533,9 +533,9 @@
         }
       }
     },
-    "6009f5edee1ba035db84655355007923075c7fede5389f9d7025bf5e3b14f3a4": {
+    "5f0c7568f20e5e58f1d527010bbd35123c7e32c23a20366d385b90e9d8db865e": {
       "address": "0x6826a50959a69C9c34B649d26F1292Fe99E87dCB",
-      "txHash": "0x6281815ce6c2885ea0c060b0a4cd53451a31c85625185dadc4049bde90d94c48",
+      "txHash": "0x38298daeff36dc1cf574601c7288784c76479962b98fa960212554ebc4261627",
       "layout": {
         "storage": [
           {
@@ -587,60 +587,44 @@
             "src": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol:235"
           },
           {
-            "label": "tokenSet",
+            "label": "REGISTRY_ADMIN_ROLE",
             "offset": 0,
             "slot": "151",
-            "type": "t_struct(AddressSet)2671_storage",
-            "contract": "SupportsTokenUpgradeable",
-            "src": "src/utils/SupportsTokenUpgradeable.sol:14"
-          },
-          {
-            "label": "EMERGENCY_ADMIN_ROLE",
-            "offset": 0,
-            "slot": "153",
             "type": "t_bytes32",
-            "contract": "EmergencyUpgradeable",
-            "src": "src/utils/EmergencyUpgradeable.sol:15"
+            "contract": "RegistryUpgradeable",
+            "src": "src/utils/RegistryUpgradeable.sol:13"
           },
           {
-            "label": "STRATEGY_ADMIN_ROLE",
+            "label": "_set",
+            "offset": 0,
+            "slot": "152",
+            "type": "t_struct(AddressSet)2671_storage",
+            "contract": "RegistryUpgradeable",
+            "src": "src/utils/RegistryUpgradeable.sol:15"
+          },
+          {
+            "label": "LENS_ADMIN_ROLE",
             "offset": 0,
             "slot": "154",
             "type": "t_bytes32",
-            "contract": "BeefyLPStrategy",
-            "src": "src/lens/strategy/BeefyLPStrategy.sol:27"
+            "contract": "Lens",
+            "src": "src/lens/lens/Lens.sol:14"
           },
           {
-            "label": "STRATEGY_CONTROLLER_ROLE",
+            "label": "LENS_CONTROLLER_ROLE",
             "offset": 0,
             "slot": "155",
             "type": "t_bytes32",
-            "contract": "BeefyLPStrategy",
-            "src": "src/lens/strategy/BeefyLPStrategy.sol:28"
+            "contract": "Lens",
+            "src": "src/lens/lens/Lens.sol:15"
           },
           {
-            "label": "uniRouter",
+            "label": "vault",
             "offset": 0,
             "slot": "156",
-            "type": "t_contract(IUniswapV2Router02)3659",
-            "contract": "BeefyLPStrategy",
-            "src": "src/lens/strategy/BeefyLPStrategy.sol:30"
-          },
-          {
-            "label": "uniFactory",
-            "offset": 0,
-            "slot": "157",
-            "type": "t_contract(IUniswapV2Factory)3021",
-            "contract": "BeefyLPStrategy",
-            "src": "src/lens/strategy/BeefyLPStrategy.sol:31"
-          },
-          {
-            "label": "beVault",
-            "offset": 0,
-            "slot": "158",
-            "type": "t_contract(IBeefyVaultV6)3704",
-            "contract": "BeefyLPStrategy",
-            "src": "src/lens/strategy/BeefyLPStrategy.sol:32"
+            "type": "t_contract(IVault)3845",
+            "contract": "Lens",
+            "src": "src/lens/lens/Lens.sol:17"
           }
         ],
         "types": {
@@ -668,16 +652,8 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(IBeefyVaultV6)3704": {
-            "label": "contract IBeefyVaultV6",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IUniswapV2Factory)3021": {
-            "label": "contract IUniswapV2Factory",
-            "numberOfBytes": "20"
-          },
-          "t_contract(IUniswapV2Router02)3659": {
-            "label": "contract IUniswapV2Router02",
+          "t_contract(IVault)3845": {
+            "label": "contract IVault",
             "numberOfBytes": "20"
           },
           "t_mapping(t_address,t_bool)": {
