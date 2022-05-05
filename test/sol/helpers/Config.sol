@@ -50,7 +50,7 @@ library Config {
     }
 
     function getFos() internal pure returns (uint256 fosPercent, uint256 fosDenominator) {
-        return (5, 1000);
+        return (1, 100);
     }
 
     function getTAUInitialSupply() internal pure returns (uint256 initialSupply) {
