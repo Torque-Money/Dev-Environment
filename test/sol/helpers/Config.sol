@@ -48,11 +48,14 @@ library Config {
         // return IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3); // Spookyswap factory
     }
 
-    function getBeefyVault() internal pure returns (IBeefyVaultV6 beVault) {
-        return IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05); // Beefy USDC-FTM LP WigoSwap
-        // return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE); // Beefy USDC-FTM LP SpiritSwap
-        // return IBeefyVaultV6(0xb870e4755C737D2753D7298D0e70344077905Ed5); // Beefy USDC-FTM LP SushiSwap
+    function getBeefyLPVault() internal pure returns (IBeefyVaultV6 beVault) {
+        return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE); // Beefy USDC-FTM LP SpiritSwap
         // return IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968); // Beefy USDC-FTM LP Spookyswap
+    }
+
+    function getBeefyMasterChefVault() internal pure returns (IBeefyVaultV6 beVault) {
+        return IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05); // Beefy USDC-FTM LP WigoSwap
+        // return IBeefyVaultV6(0xb870e4755C737D2753D7298D0e70344077905Ed5); // Beefy USDC-FTM LP SushiSwap
     }
 
     function getFos() internal pure returns (uint256 fosPercent, uint256 fosDenominator) {
