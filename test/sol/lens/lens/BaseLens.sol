@@ -8,9 +8,12 @@ import {Config} from "../../helpers/Config.sol";
 import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {Lens} from "../../../../src/lens/lens/Lens.sol";
 import {Vault} from "../../../../src/lens/vault/Vault.sol";
+import {BeefyLPStrategy} from "../../../../src/lens/strategy/BeefyLPStrategy.sol";
+import {IStrategy} from "../../../../src/interfaces/lens/IStrategy.sol";
 
 abstract contract BaseLens is Base, BaseUsesToken {
-    MockStrategy[] internal _strategy;
+    IStrategy[] internal _strategy;
+
     Vault internal _vault;
     Lens internal _lens;
 
@@ -18,9 +21,11 @@ abstract contract BaseLens is Base, BaseUsesToken {
         Base.setUp();
         BaseUsesToken.setUp();
 
-        _strategy = new MockStrategy[](2);
+        _strategy = new IStrategy[](2);
         _strategy[0] = new MockStrategy(_token);
-        _strategy[1] = new MockStrategy(_token);
+        BeefyLPStrategy tmp = new BeefyLPStrategy();
+        tmp.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
+        _strategy[1] = tmp;
 
         _vault = new Vault();
         (uint256 feePercent, uint256 feeDenominator) = Config.getFee();
