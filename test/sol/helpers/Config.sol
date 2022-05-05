@@ -35,22 +35,22 @@ library Config {
     }
 
     function getUniRouter() internal pure returns (IUniswapV2Router02 router) {
-        // return IUniswapV2Router02(0x5023882f4D1EC10544FCB2066abE9C1645E95AA0); // WigoSwap router
-        return IUniswapV2Router02(0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52); // SpiritSwap router
+        return IUniswapV2Router02(0x5023882f4D1EC10544FCB2066abE9C1645E95AA0); // WigoSwap router
+        // return IUniswapV2Router02(0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52); // SpiritSwap router
         // return IUniswapV2Router02(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506); // SushiSwap router
         // return IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29); // Spookyswap router
     }
 
     function getUniFactory() internal pure returns (IUniswapV2Factory factory) {
-        // return IUniswapV2Factory(0xC831A5cBfb4aC2Da5ed5B194385DFD9bF5bFcBa7); // WigoSwap factory
-        return IUniswapV2Factory(0xEF45d134b73241eDa7703fa787148D9C9F4950b0); // SpiritSwap factory
+        return IUniswapV2Factory(0xC831A5cBfb4aC2Da5ed5B194385DFD9bF5bFcBa7); // WigoSwap factory
+        // return IUniswapV2Factory(0xEF45d134b73241eDa7703fa787148D9C9F4950b0); // SpiritSwap factory
         // return IUniswapV2Factory(0xc35DADB65012eC5796536bD9864eD8773aBc74C4); // SushiSwap factory
         // return IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3); // Spookyswap factory
     }
 
     function getBeefyVault() internal pure returns (IBeefyVaultV6 beVault) {
-        // return IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05); // Beefy USDC-FTM LP WigoSwap
-        return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE); // Beefy USDC-FTM LP SpiritSwap
+        return IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05); // Beefy USDC-FTM LP WigoSwap
+        // return IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE); // Beefy USDC-FTM LP SpiritSwap
         // return IBeefyVaultV6(0xb870e4755C737D2753D7298D0e70344077905Ed5); // Beefy USDC-FTM LP SushiSwap
         // return IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968); // Beefy USDC-FTM LP Spookyswap
     }
