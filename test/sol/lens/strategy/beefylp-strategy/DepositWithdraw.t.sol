@@ -8,53 +8,46 @@ import {BaseStrategy} from "./BaseStrategy.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 
-import "forge-std/console2.sol";
-
 contract DepositWithdrawTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;
 
     // Deposit and withdraw funds from the strategy.
     function testDepositWithdraw() public useFunds(vm) {
         // Deposit amount into the strategy
-        // uint256[] memory initialBalance = new uint256[](_token.length);
-        // for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
+        uint256[] memory initialBalance = new uint256[](_token.length);
+        for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
-        // **** Something is wrong with something in `_injectAllIntoStrategy` - only allows one repetition before breaking ???
-
-        console2.log("Deposit");
         _strategy.deposit(_tokenAmount);
 
         // Check the balance is what was deposited
-        // uint256[] memory balance = new uint256[](_token.length);
-        // for (uint256 i = 0; i < _token.length; i++) {
-        //     assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
+        uint256[] memory balance = new uint256[](_token.length);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
 
-        //     balance[i] = _strategy.approxBalance(_token[i]);
-        //     _assertApproxEq(balance[i], _tokenAmount[i]);
-        // }
+            balance[i] = _strategy.approxBalance(_token[i]);
+            _assertApproxEq(balance[i], _tokenAmount[i]);
+        }
 
         // Calculate initial amount before withdraw
-        // for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
+        for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
         // Withdraw a safe amount to where the whole balance is not extracted
-        // uint256[] memory fosBalance = new uint256[](_token.length);
-        // (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
-        // for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
+        uint256[] memory fosBalance = new uint256[](_token.length);
+        (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
+        for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
 
-        // console2.log("");
-        // console2.log("Withdraw");
-        // _strategy.withdraw(fosBalance);
+        _strategy.withdraw(fosBalance);
 
-        // for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
+        for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
 
         // Withdraw all tokens from the strategy
-        // _strategy.withdrawAll();
+        _strategy.withdrawAll();
 
-        // for (uint256 i = 0; i < _token.length; i++) {
-        //     _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
 
-        //     assertEq(_strategy.approxBalance(_token[i]), 0);
-        // }
+            assertEq(_strategy.approxBalance(_token[i]), 0);
+        }
     }
 
     // Deposit and withdraw all funds from the strategy.
