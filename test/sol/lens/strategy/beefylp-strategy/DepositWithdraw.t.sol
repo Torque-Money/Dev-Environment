@@ -8,6 +8,8 @@ import {BaseStrategy} from "./BaseStrategy.sol";
 
 import {Config} from "../../../helpers/Config.sol";
 
+import "forge-std/console2.sol";
+
 contract DepositWithdrawTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;
 
@@ -17,6 +19,7 @@ contract DepositWithdrawTest is BaseStrategy {
         // uint256[] memory initialBalance = new uint256[](_token.length);
         // for (uint256 i = 0; i < _token.length; i++) initialBalance[i] = _token[i].balanceOf(address(this));
 
+        console2.log("Deposit");
         _strategy.deposit(_tokenAmount);
 
         // Check the balance is what was deposited
@@ -36,6 +39,7 @@ contract DepositWithdrawTest is BaseStrategy {
         (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
         for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
 
+        console2.log("Withdraw");
         _strategy.withdraw(fosBalance);
 
         // for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
