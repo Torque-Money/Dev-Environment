@@ -30,8 +30,8 @@ library Config {
 
         assert(amount.length == getToken().length);
 
-        amount[0] = 10 * 1e18; // wFTM amount
-        amount[1] = 10 * 1e6; // USDC amount
+        amount[0] = 100 * 1e18; // wFTM amount
+        amount[1] = 100 * 1e6; // USDC amount
     }
 
     function getUniRouter() internal pure returns (IUniswapV2Router02 router) {
