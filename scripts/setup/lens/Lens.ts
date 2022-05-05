@@ -9,8 +9,8 @@ async function main() {
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Add initial strategies to the lens
-    const strategies = data.contracts.BeefyLPStrategyV1.proxies;
-    for (const strategy in strategies) {
+    const strategies = [data.contracts.BeefyLPStrategyV1.proxies[0], data.contracts.BeefyLPStrategyV2.proxies[0]];
+    for (const strategy of strategies) {
         await (await lens.add(strategy)).wait();
         console.log(`Setup | Lens | Add strategy '${strategy}' to lens`);
     }
