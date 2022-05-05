@@ -36,18 +36,18 @@ contract DepositWithdrawTest is BaseStrategy {
         (uint256 fosPercent, uint256 fosDenominator) = Config.getFos();
         for (uint256 i = 0; i < _token.length; i++) fosBalance[i] = _tokenAmount[i].mul(fosDenominator.sub(fosPercent)).div(fosDenominator);
 
-        // _strategy.withdraw(fosBalance);
+        _strategy.withdraw(fosBalance);
 
-        // for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
+        for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), fosBalance[i]);
 
-        // // Withdraw all tokens from the strategy
-        // _strategy.withdrawAll();
+        // Withdraw all tokens from the strategy
+        _strategy.withdrawAll();
 
-        // for (uint256 i = 0; i < _token.length; i++) {
-        //     _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            _assertApproxEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), balance[i]);
 
-        //     assertEq(_strategy.approxBalance(_token[i]), 0);
-        // }
+            assertEq(_strategy.approxBalance(_token[i]), 0);
+        }
     }
 
     // Deposit and withdraw all funds from the strategy.
