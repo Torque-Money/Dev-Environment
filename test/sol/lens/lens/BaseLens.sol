@@ -31,7 +31,7 @@ abstract contract BaseLens is Base, BaseUsesToken {
 
         for (uint256 i = 0; i < _strategy.length; i++) {
             _strategy[i].grantRole(_strategy[i].STRATEGY_CONTROLLER_ROLE(), address(_vault));
-            _lens.add(address(_strategy[i])); // **** There is some sort of admin problem here with the roles that are used ???
+            _lens.add(address(_strategy[i]));
         }
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(_lens));
         _lens.grantRole(_lens.LENS_CONTROLLER_ROLE(), address(this));
