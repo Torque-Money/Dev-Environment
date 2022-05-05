@@ -22,10 +22,13 @@ abstract contract BaseLens is Base, BaseUsesToken {
         BaseUsesToken.setUp();
 
         _strategy = new IStrategy[](2);
-        _strategy[0] = new MockStrategy(_token);
-        BeefyLPStrategy tmp = new BeefyLPStrategy();
-        tmp.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
-        _strategy[1] = tmp;
+
+        MockStrategy mock = new MockStrategy(_token);
+        _strategy[0] = mock;
+
+        BeefyLPStrategy beefy = new BeefyLPStrategy();
+        beefy.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
+        _strategy[1] = beefy;
 
         _vault = new Vault();
         (uint256 feePercent, uint256 feeDenominator) = Config.getFee();
@@ -34,10 +37,10 @@ abstract contract BaseLens is Base, BaseUsesToken {
         _lens = new Lens();
         _lens.initialize(_vault);
 
-        for (uint256 i = 0; i < _strategy.length; i++) {
-            _strategy[i].grantRole(_strategy[i].STRATEGY_CONTROLLER_ROLE(), address(_vault));
-            _lens.add(address(_strategy[i]));
-        }
+        mock.grantRole(mock.STRATEGY_CONTROLLER_ROLE(), address(_vault));
+        beefy.grantRole(beefy.STRATEGY_CONTROLLER_ROLE(), address(_vault));
+        for (uint256 i = 0; i < _strategy.length; i++) _lens.add(address(_strategy[i]));
+
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(_lens));
         _lens.grantRole(_lens.LENS_CONTROLLER_ROLE(), address(this));
 
