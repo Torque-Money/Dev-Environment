@@ -17,8 +17,6 @@ import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
 import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
 import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
 
-import "forge-std/console2.sol";
-
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.
 
@@ -77,14 +75,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
 
         pair.safeIncreaseAllowance(address(beVault), pairBalance);
 
-        console2.log("Made it BEFORE beVault deposit");
-
-        // beVault.depositAll(); // **** Something happens inside of the second deposit that it does not like for some reason...
-        beVault.deposit(100);
-        console2.log("Made it AFTER beVault deposit 1");
-
-        beVault.deposit(100);
-        console2.log("Made it AFTER beVault deposit 2");
+        beVault.depositAll();
     }
 
     function _ejectAllFromStrategy() private {
