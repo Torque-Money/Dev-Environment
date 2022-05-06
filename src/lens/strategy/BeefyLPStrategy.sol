@@ -55,6 +55,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
+    // **** Instead of inject / eject all, we need to find a way of only injecting / ejecting a specific amount
+
     function _injectAllIntoStrategy() private {
         // Deposit assets into LP tokens
         IERC20Upgradeable token0 = tokenByIndex(0);
