@@ -24,44 +24,4 @@ contract InjectEjectTest is BaseVault {
 
         _vault.redeem(shares);
     }
-
-    // Eject vault funds from the strategy.
-    function testEjectAll() public useFunds(vm) {
-        // Make deposit
-        uint256 shares = _vault.deposit(_tokenAmount);
-
-        // Withdraw shares and check funds have flowed correctly
-        _vault.withdrawAllFromStrategy();
-
-        for (uint256 i = 0; i < _token.length; i++) {
-            assertEq(_vault.approxBalance(_token[i]), _tokenAmount[i]);
-            assertEq(_token[i].balanceOf(address(_vault)), _tokenAmount[i]);
-
-            assertEq(_strategy.approxBalance(_token[i]), 0);
-            assertEq(_token[i].balanceOf(address(_strategy)), 0);
-        }
-
-        _vault.redeem(shares);
-    }
-
-    // Inject vault funds into the strategy.
-    function testInjectAll() public useFunds(vm) {
-        // Make deposit
-        uint256 shares = _vault.deposit(_tokenAmount);
-
-        // Eject funds
-        _vault.withdrawAllFromStrategy();
-
-        // Inject funds and check they have flowed correctly
-        _vault.depositAllIntoStrategy();
-
-        for (uint256 i = 0; i < _token.length; i++) {
-            assertEq(_vault.approxBalance(_token[i]), _tokenAmount[i]);
-            assertEq(_token[i].balanceOf(address(_vault)), 0);
-
-            assertEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
-        }
-
-        _vault.redeem(shares);
-    }
 }

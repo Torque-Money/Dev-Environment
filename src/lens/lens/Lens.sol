@@ -37,10 +37,6 @@ contract Lens is Initializable, AccessControlUpgradeable, ILens, RegistryUpgrade
 
     // Update the vaults strategy
     function update(IStrategy strategy) external override onlyRole(LENS_CONTROLLER_ROLE) onlyEntry(address(strategy)) {
-        vault.withdrawAllFromStrategy();
-
         vault.setStrategy(strategy);
-
-        vault.depositAllIntoStrategy();
     }
 }
