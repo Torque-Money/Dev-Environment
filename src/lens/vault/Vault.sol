@@ -133,14 +133,14 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         for (uint256 i = 0; i < tokenCount(); i++) withdrawAmount[i] = amount[i].sub(tokenByIndex(i).balanceOf(address(this)));
         _withdrawFromStrategy(withdrawAmount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20Upgradeable token = tokenByIndex(i);
+        // for (uint256 i = 0; i < tokenCount(); i++) {
+        //     IERC20Upgradeable token = tokenByIndex(i);
 
-            uint256 max = token.balanceOf(address(this));
-            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
-        }
+        //     uint256 max = token.balanceOf(address(this));
+        //     token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
+        // }
 
-        _burn(_msgSender(), shares);
+        // _burn(_msgSender(), shares);
 
         emit Redeem(_msgSender(), shares, amount);
     }

@@ -128,7 +128,12 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function _withdraw(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20Upgradeable token = tokenByIndex(i);
+
+            uint256 max = token.balanceOf(address(this));
+            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
+        }
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
