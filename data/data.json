@@ -15,8 +15,8 @@
         },
         "LensV2.0": {
             "proxies": [],
-            "beacon": "",
-            "implementation": ""
+            "beacon": "0x0D9D08efE492a35DD26A55534E1e1e3Ff12Cb279",
+            "implementation": "0x609D829c2ABB78659D64d0092F62CA126B5B0956"
         }
     }
 }
