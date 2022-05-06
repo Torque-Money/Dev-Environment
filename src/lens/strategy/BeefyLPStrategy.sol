@@ -78,24 +78,21 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.depositAll();
     }
 
+    function _calculateWithdrawAmount() private {}
+
     function _ejectFromStrategy(uint256[] memory amount) private {
         // **** This needs to eject a specific amount from the vault of course
-
-        if (IERC20Upgradeable(address(beVault)).balanceOf(address(this)) == 0) return;
-
-        // Withdraw from Beefy vault
-        beVault.withdrawAll();
-
-        // Redeem LP tokens
-        address token0 = address(tokenByIndex(0));
-        address token1 = address(tokenByIndex(1));
-
-        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(token0, token1));
-        uint256 pairBalance = pair.balanceOf(address(this));
-
-        pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
-
-        uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+        // **** I need to figure out some way of calculating how much can come out ?
+        // if (IERC20Upgradeable(address(beVault)).balanceOf(address(this)) == 0) return;
+        // // Withdraw from Beefy vault
+        // beVault.withdrawAll();
+        // // Redeem LP tokens
+        // address token0 = address(tokenByIndex(0));
+        // address token1 = address(tokenByIndex(1));
+        // IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(token0, token1));
+        // uint256 pairBalance = pair.balanceOf(address(this));
+        // pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
+        // uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
     }
 
     function _deposit(uint256[] memory amount) private {
