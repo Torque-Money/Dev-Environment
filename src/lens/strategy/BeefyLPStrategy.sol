@@ -55,8 +55,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault = _beVault;
     }
 
-    // **** Instead of inject / eject all, we need to find a way of only injecting / ejecting a specific amount
-
     function _injectAllIntoStrategy() private {
         // Deposit assets into LP tokens
         IERC20Upgradeable token0 = tokenByIndex(0);
@@ -80,7 +78,9 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.depositAll();
     }
 
-    function _ejectAllFromStrategy() private {
+    function _ejectFromStrategy(uint256[] memory amount) private {
+        // **** This needs to eject a specific amount from the vault of course
+
         if (IERC20Upgradeable(address(beVault)).balanceOf(address(this)) == 0) return;
 
         // Withdraw from Beefy vault
