@@ -6,7 +6,7 @@ import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
 
 contract AuthorizeTest is BaseVault, BaseImpersonate {
     // Fail to set the strategy due to lack of authorization.
-    function testSetStrategy() public impersonate(vm, _empty) {
+    function testFailSetStrategy() public impersonate(vm, _empty) {
         _vault.setStrategy(_vault.getStrategy());
     }
 }
