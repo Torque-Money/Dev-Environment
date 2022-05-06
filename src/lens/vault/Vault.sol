@@ -50,7 +50,13 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
     }
 
     function setStrategy(IStrategy _strategy) external override onlyRole(VAULT_CONTROLLER_ROLE) {
+        require(_strategy != strategy, "Vault: New strategy cannot be current strategy");
+
+        _withdrawAllFromStrategy();
+
         strategy = _strategy;
+
+        _depositAllIntoStrategy();
     }
 
     function getStrategy() external view override returns (IStrategy _strategy) {
@@ -120,23 +126,19 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
             IERC20Upgradeable token = tokenByIndex(i);
 
             uint256 _balance = approxBalance(token);
-            amount[i] = _balance.mul(shares).div(_totalShares);
+
+            uint256 _amount = _balance.mul(shares).div(_totalShares);
+            uint256 max = token.balanceOf(address(this));
+            amount[i] = MathUpgradeable.min(_amount, max);
         }
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
         amount = estimateRedeem(shares);
 
-        _withdrawAllFromStrategy();
+        _withdrawFromStrategy(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20Upgradeable token = tokenByIndex(i);
-
-            amount[i] = MathUpgradeable.min(amount[i], token.balanceOf(address(this)));
-            token.safeTransfer(_msgSender(), amount[i]);
-        }
-
-        _depositAllIntoStrategy();
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
         _burn(_msgSender(), shares);
 
@@ -168,21 +170,5 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
 
     function _withdrawAllFromStrategy() private {
         strategy.withdrawAll();
-    }
-
-    function depositIntoStrategy(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(VAULT_CONTROLLER_ROLE) {
-        _depositIntoStrategy(amount);
-    }
-
-    function depositAllIntoStrategy() external onlyRole(VAULT_CONTROLLER_ROLE) {
-        _depositAllIntoStrategy();
-    }
-
-    function withdrawFromStrategy(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(VAULT_CONTROLLER_ROLE) {
-        _withdrawFromStrategy(amount);
-    }
-
-    function withdrawAllFromStrategy() external onlyRole(VAULT_CONTROLLER_ROLE) {
-        _withdrawAllFromStrategy();
     }
 }
