@@ -32,18 +32,6 @@ interface IVault is ISupportsToken, IERC20Upgradeable {
     // Reverts if sender does not have appropriate shares.
     function redeem(uint256 shares) external returns (uint256[] calldata amount);
 
-    // Deposit a given amoun of tokens into the strategy.
-    function depositIntoStrategy(uint256[] calldata amount) external;
-
-    // Withdraw a given amount of tokens from the strategy.
-    function withdrawFromStrategy(uint256[] calldata amount) external;
-
-    // Deposit all tokens into the strategy.
-    function depositAllIntoStrategy() external;
-
-    // Withdraw all tokens from the strategy.
-    function withdrawAllFromStrategy() external;
-
     event Deposit(address indexed caller, uint256[] amount, uint256 shares);
     event Redeem(address indexed caller, uint256 shares, uint256[] amount);
 }
