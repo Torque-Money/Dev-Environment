@@ -149,12 +149,6 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         return token.balanceOf(address(this)).add(strategy.approxBalance(token));
     }
 
-    function _depositIntoStrategy(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeIncreaseAllowance(address(strategy), amount[i]);
-
-        strategy.deposit(amount);
-    }
-
     function _depositAllIntoStrategy() private {
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20Upgradeable token = tokenByIndex(i);

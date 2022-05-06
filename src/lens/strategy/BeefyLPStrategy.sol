@@ -31,6 +31,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     IUniswapV2Factory public uniFactory;
     IBeefyVaultV6 public beVault;
 
+    uint256 private SHARE_BASE;
+
     function initialize(
         IERC20Upgradeable[] memory token,
         IUniswapV2Router02 _uniRouter,
@@ -53,6 +55,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uniRouter = _uniRouter;
         uniFactory = _uniFactory;
         beVault = _beVault;
+
+        SHARE_BASE = 1e18;
     }
 
     function _injectAllIntoStrategy() private {
@@ -78,21 +82,30 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.depositAll();
     }
 
-    function _calculateWithdrawAmount() private {}
+    function _ejectFromStrategy(uint256 shares) private {
+        if (shares == 0) return;
 
-    function _ejectFromStrategy(uint256[] memory amount) private {
-        // **** This needs to eject a specific amount from the vault of course
-        // **** I need to figure out some way of calculating how much can come out ?
-        // if (IERC20Upgradeable(address(beVault)).balanceOf(address(this)) == 0) return;
-        // // Withdraw from Beefy vault
-        // beVault.withdrawAll();
-        // // Redeem LP tokens
-        // address token0 = address(tokenByIndex(0));
-        // address token1 = address(tokenByIndex(1));
-        // IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(token0, token1));
-        // uint256 pairBalance = pair.balanceOf(address(this));
-        // pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
-        // uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+        // Withdraw from Beefy vault
+        beVault.withdraw(shares);
+
+        // Redeem LP tokens
+        address token0 = address(tokenByIndex(0));
+        address token1 = address(tokenByIndex(1));
+
+        IERC20Upgradeable pair = IERC20Upgradeable(uniFactory.getPair(token0, token1));
+
+        uint256 pairBalance = pair.balanceOf(address(this));
+        pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
+
+        uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+    }
+
+    function _ejectAmountFromStrategy(uint256[] memory amount) private {
+        _ejectFromStrategy(_beefySharesFromAmount(amount));
+    }
+
+    function _ejectAllFromStrategy() private {
+        _ejectFromStrategy(IERC20Upgradeable(address(beVault)).balanceOf(address(this)));
     }
 
     function _deposit(uint256[] memory amount) private {
@@ -120,8 +133,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _ejectAllFromStrategy();
 
         _withdraw(amount);
-
-        _injectAllIntoStrategy();
     }
 
     function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
@@ -133,9 +144,13 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _withdraw(amount);
     }
 
+    function _beefySharesFromAmount(uint256[] memory amount) private returns (uint256 shares) {
+        // **** Wait, I could get the approx balance, get my percentage allocation requested out from the amount specified as an input,
+        // **** and then from there I could calculate how much needs to be withdrawn !
+    }
+
     function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
-        uint256 SHARE_BASE = 1e18;
         uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20Upgradeable(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
 
         // Get the allocation of the specified balance
