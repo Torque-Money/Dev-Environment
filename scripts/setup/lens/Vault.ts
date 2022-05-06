@@ -9,9 +9,9 @@ async function main() {
     const vault = await hre.ethers.getContractAt("Vault", data.contracts["VaultV2.0"].proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
-    // const VAULT_CONTROLLER_ROLE = await vault.VAULT_CONTROLLER_ROLE();
-    // await (await vault.grantRole(VAULT_CONTROLLER_ROLE, lens)).wait();
-    // console.log("Setup | Vault | Assign vault controller to lens");
+    const VAULT_CONTROLLER_ROLE = await vault.VAULT_CONTROLLER_ROLE();
+    await (await vault.grantRole(VAULT_CONTROLLER_ROLE, lens)).wait();
+    console.log("Setup | Vault | Assign vault controller to lens");
 
     const FEE_ADMIN_ROLE = await vault.FEE_ADMIN_ROLE();
     await (await vault.grantRole(FEE_ADMIN_ROLE, data.contracts.timelock)).wait();
