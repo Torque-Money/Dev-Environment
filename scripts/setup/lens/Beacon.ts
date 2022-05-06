@@ -6,7 +6,7 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const beaconAddress = data.contracts["LensV2.0"].beacon;
+    const beaconAddress = data.contracts["BeefyLPStrategyV2.0"].beacon;
     const newOwner = data.contracts.timelock;
 
     const beacon = (await getUpgradeableBeaconFactory(hre, hre.ethers.provider.getSigner())).attach(beaconAddress);
