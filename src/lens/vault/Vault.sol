@@ -128,7 +128,10 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
         amount = estimateRedeem(shares);
 
-        _withdrawFromStrategy(amount);
+        // Calculate amount to be withdrawn from the strategy to meet the amount
+        uint256[] memory withdrawAmount = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) withdrawAmount[i] = amount[i].sub(tokenByIndex(i).balanceOf(address(this)));
+        _withdrawFromStrategy(withdrawAmount);
 
         for (uint256 i = 0; i < tokenCount(); i++) {
             IERC20Upgradeable token = tokenByIndex(i);
