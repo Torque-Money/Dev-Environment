@@ -122,15 +122,7 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         amount = new uint256[](tokenCount());
         if (_totalShares == 0) return amount;
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20Upgradeable token = tokenByIndex(i);
-
-            uint256 _balance = approxBalance(token);
-
-            uint256 _amount = _balance.mul(shares).div(_totalShares);
-            uint256 max = token.balanceOf(address(this));
-            amount[i] = MathUpgradeable.min(_amount, max);
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = approxBalance(tokenByIndex(i)).mul(shares).div(_totalShares);
     }
 
     function redeem(uint256 shares) external override returns (uint256[] memory amount) {
@@ -138,7 +130,12 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
 
         _withdrawFromStrategy(amount);
 
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20Upgradeable token = tokenByIndex(i);
+
+            uint256 max = token.balanceOf(address(this));
+            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
+        }
 
         _burn(_msgSender(), shares);
 
