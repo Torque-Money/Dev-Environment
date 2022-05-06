@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import {IVault} from "./IVault.sol";
 
 // Wraps around a vault and allows for ETH to ERC20 deposits by autowrapping.
-interface IVaultWrapper {
+interface IVaultETHWrapper {
     // Deposits senders funds into the vault and exchanges any ETH for its wrapped equivalent.
     // Sender will receive the same number of shares as if they had deposited themselves.
     function deposit(IVault vault, uint256[] calldata amount) external payable returns (uint256 shares);
