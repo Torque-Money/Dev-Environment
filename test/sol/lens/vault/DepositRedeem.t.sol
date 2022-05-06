@@ -7,6 +7,8 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 import {BaseVault} from "./BaseVault.sol";
 
+import "forge-std/console2.sol";
+
 contract DepositRedeemTest is BaseVault {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
@@ -60,6 +62,10 @@ contract DepositRedeemTest is BaseVault {
 
         // Check that a new depositor receives the allocated funds that were locked in the pool by the initial zero deposit
         uint256[] memory out = _vault.redeem(_vault.deposit(_tokenAmount));
+
+        console2.log("Out");
+        console2.log(out[0]);
+        console2.log(out[1]);
 
         assertGt(out[1], _tokenAmount[1]);
     }
