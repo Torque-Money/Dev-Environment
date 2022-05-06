@@ -1,6 +1,10 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
+import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+import {IBeefyVaultV6} from "../../../../lib/beefy/IBeefyVaultV6.sol";
+
 import {Base} from "../../bases/Base.sol";
 import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
 
@@ -27,7 +31,8 @@ abstract contract BaseLens is Base, BaseUsesToken {
         _strategy[0] = mock;
 
         BeefyLPStrategy beefy = new BeefyLPStrategy();
-        beefy.initialize(_token, Config.getUniRouter(), Config.getUniFactory(), Config.getBeefyVault());
+        (IUniswapV2Router02 router, IUniswapV2Factory factory, IBeefyVaultV6 beVault) = Config.getBeefyLPVaultParams();
+        beefy.initialize(_token, router, factory, beVault);
         _strategy[1] = beefy;
 
         _vault = new Vault();

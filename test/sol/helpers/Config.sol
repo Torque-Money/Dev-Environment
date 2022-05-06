@@ -68,8 +68,6 @@ library Config {
         // ); // Beefy USDC-FTM LP SpookySwap
     }
 
-    function getBeefyMasterChefVault() internal pure returns (IBeefyVaultV6 beVault) {}
-
     function getFos() internal pure returns (uint256 fosPercent, uint256 fosDenominator) {
         return (1, 100);
     }
