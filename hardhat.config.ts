@@ -3,29 +3,9 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 
-import { HardhatUserConfig, task } from "hardhat/config";
-
-import { loadData } from "./scripts/utils";
+import { HardhatUserConfig } from "hardhat/config";
 
 require("dotenv").config();
-
-task("Helper", "Helper task", async (args, hre) => {
-    const data = loadData();
-    
-    const vault = await hre.ethers.getContractAt("Vault", data.contracts.VaultV1.proxies[0]);
-
-    const VAULT_CONTROLLER_ROLE = await vault.VAULT_CONTROLLER_ROLE();
-    console.log("Vault controller role", VAULT_CONTROLLER_ROLE)
-    const VAULT_ADMIN_ROLE = await vault.VAULT_ADMIN_ROLE();
-    console.log("Vault admin role", VAULT_ADMIN_ROLE)
-
-    const encoded = vault.interface.encodeFunctionData("grantRole", [VAULT_CONTROLLER_ROLE, data.contracts.LensV1.proxies[0]]);
-    console.log("Encoded grant role", encoded);
-
-    console.log("Hash zero", hre.ethers.constants.HashZero);
-
-    console.log("Lens has vault role", await vault.hasRole(VAULT_CONTROLLER_ROLE, "0x05bf1Cb22fD99d6aab2b4dC757aD2e08D1887862"));
-});
 
 export default {
     solidity: {
