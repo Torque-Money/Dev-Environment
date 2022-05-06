@@ -3,22 +3,22 @@
         "multisig": "0x3FAe01d46ebe019b14216D17E3947871daa2F58b",
         "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
         "TAU": { "proxy": "0x4579F9832DC20567E4d690d0a981Cab0DC4E15FA", "implementation": "0x1526Ea5a1Cb630F0dcaB045A34D0215579fe3c13" },
-        "VaultV1": {
+        "VaultV1.0": {
             "proxies": ["0x7b02CBA8c6bFAc6eBAb2dfA57096A9D60d2162Ae"],
             "beacon": "0xAA6F01966f379dfCD7E8817F248643000b39f06D",
             "implementation": "0x6b71f6e5C6b2FC1C0B3F52fD1b45D0FA724f35ea"
         },
-        "BeefyLPStrategyV1": {
+        "BeefyLPStrategyV1.0": {
             "proxies": ["0x6Ad07E659563490d40377a98a7f0f62ed7d38C41"],
             "beacon": "0xAcB597F234ECdb6E8E67773D1a9952877CDe708E",
             "implementation": "0x87E995ee8fC7B92AE651169a62Be8986d71cC895"
         },
-        "BeefyLPStrategyV2": {
+        "BeefyLPStrategyV1.1": {
             "proxies": ["0xdFD432D8336fE8e20f3f1759C5e4F9bb4c6EA708"],
             "beacon": "0xa04723bD4a77d0d9D550830c566A55B252D3C1cc",
             "implementation": "0xED94d6e9a646864E77d9f0C5cb2B186606C21A31"
         },
-        "LensV1": {
+        "LensV1.0": {
             "proxies": ["0x05bf1Cb22fD99d6aab2b4dC757aD2e08D1887862"],
             "beacon": "0xA07385c0D68328213270b5312E4d983e08D4BE0B",
             "implementation": "0xBEC95B23209419259ABc6Acc8BD9bD07b9903E88"
