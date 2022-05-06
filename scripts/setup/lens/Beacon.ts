@@ -4,8 +4,6 @@ import hre from "hardhat";
 import { loadData } from "../../utils";
 
 async function main() {
-    console.log("Hello")
-
     const data = loadData();
 
     const beaconAddress = data.contracts["LensV2.0"].beacon;
