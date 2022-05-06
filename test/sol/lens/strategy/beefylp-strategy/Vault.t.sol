@@ -66,6 +66,6 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(_strategy.approxBalance(_token[i]), _tokenAmount[i]);
         }
 
-        // vault.redeem(shares);
+        vault.redeem(shares);
     }
 }
