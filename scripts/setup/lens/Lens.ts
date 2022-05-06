@@ -5,11 +5,11 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const lens = await hre.ethers.getContractAt("Lens", data.contracts.LensV1.proxies[0]);
+    const lens = await hre.ethers.getContractAt("Lens", data.contracts["LensV1.0"].proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Add initial strategies to the lens
-    const strategies = [data.contracts.BeefyLPStrategyV1.proxies[0], data.contracts.BeefyLPStrategyV2.proxies[0]];
+    const strategies = [data.contracts["BeefyLPStrategyV1.0"].proxies[0], data.contracts["BeefyLPStrategyV1.1"].proxies[0]];
     for (const strategy of strategies) {
         await (await lens.add(strategy)).wait();
         console.log(`Setup | Lens | Add strategy '${strategy}' to lens`);
