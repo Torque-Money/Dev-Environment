@@ -13,17 +13,24 @@ contract UpdateTest is BaseLens {
 
         // Update the strategy multiple times and check expected out
         for (uint256 i = 0; i < _strategy.length; i++) {
-            _lens.update(_strategy[i]);
+            if (_strategy[i] != _vault.getStrategy()) {
+                _lens.update(_strategy[i]);
 
-            uint256[] memory out = _vault.estimateRedeem(shares);
-            for (uint256 j = 0; j < _token.length; j++) _assertApproxEq(_tokenAmount[i], out[i]);
+                uint256[] memory out = _vault.estimateRedeem(shares);
+                for (uint256 j = 0; j < _token.length; j++) _assertApproxEq(_tokenAmount[i], out[i]);
+            }
         }
 
         _vault.redeem(shares);
     }
 
     // Test that only a registered strategy may be used
-    function testFailUpdate() public {
+    function testFailUpdateUnregistered() public {
         _lens.update(IStrategy(address(0)));
+    }
+
+    // Test that the current strategy cannot be used
+    function testFailUpdateCurrent() public {
+        _lens.update(_vault.getStrategy());
     }
 }
