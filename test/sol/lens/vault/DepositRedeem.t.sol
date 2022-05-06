@@ -74,6 +74,8 @@ contract DepositRedeemTest is BaseVault {
 
         for (uint256 i = 0; i < _token.length; i++) _token[i].safeTransfer(address(_vault), _tokenAmount[i]);
 
+        // **** Hold on, but why was this happening in the first place - shouldnt it be the exact same ?
+
         uint256[] memory out = _vault.redeem(shares);
 
         for (uint256 i = 0; i < _token.length; i++) assertGt(out[i], initialOut[i]);
