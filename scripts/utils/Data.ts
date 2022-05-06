@@ -18,10 +18,9 @@ interface Data {
         multisig: Address;
         timelock: Address;
         TAU: Proxy;
-        "VaultV1.0": BeaconProxy,
-        "BeefyLPStrategyV1.0": BeaconProxy
-        "BeefyLPStrategyV1.1": BeaconProxy
-        "LensV1.0": BeaconProxy
+        "VaultV2.0": BeaconProxy,
+        "BeefyLPStrategyV2.0": BeaconProxy
+        "LensV2.0": BeaconProxy
     };
 }
 
