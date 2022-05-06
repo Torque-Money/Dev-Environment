@@ -87,6 +87,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         if (shares == 0) return;
 
         // Withdraw from Beefy vault
+        shares = MathUpgradeable.min(shares, IERC20Upgradeable(address(beVault)).balanceOf(address(this)));
         beVault.withdraw(shares);
 
         // Redeem LP tokens
