@@ -43,11 +43,11 @@ library Config {
             IBeefyVaultV6 veVault
         )
     {
-        return (
-            IUniswapV2Router02(0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52),
-            IUniswapV2Factory(0xEF45d134b73241eDa7703fa787148D9C9F4950b0),
-            IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE)
-        ); // Beefy USDC-FTM LP SpiritSwap
+        // return (
+        //     IUniswapV2Router02(0x16327E3FbDaCA3bcF7E38F5Af2599D2DDc33aE52),
+        //     IUniswapV2Factory(0xEF45d134b73241eDa7703fa787148D9C9F4950b0),
+        //     IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE)
+        // ); // Beefy USDC-FTM LP SpiritSwap
 
         // return (
         //     IUniswapV2Router02(0x5023882f4D1EC10544FCB2066abE9C1645E95AA0),
@@ -61,11 +61,11 @@ library Config {
         //     IBeefyVaultV6(0xb870e4755C737D2753D7298D0e70344077905Ed5)
         // ); // Beefy USDC-FTM LP SushiSwap
 
-        // return (
-        //     IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29),
-        //     IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3),
-        //     IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968)
-        // ); // Beefy USDC-FTM LP SpookySwap
+        return (
+            IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29),
+            IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3),
+            IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968)
+        ); // Beefy USDC-FTM LP SpookySwap
     }
 
     function getFos() internal pure returns (uint256 fosPercent, uint256 fosDenominator) {
