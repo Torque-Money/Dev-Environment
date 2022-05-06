@@ -47,8 +47,10 @@ contract DepositRedeemTest is BaseVault {
     // Test a deposit and redeem when one of the amounts deposited is zero.
     function testDepositRedeemZero() public useFunds(vm) {
         // Check that the shares becomes zero
-        uint256[] memory tmpTokenAmount = _tokenAmount;
+        uint256[] memory tmpTokenAmount = new uint256[](_token.length);
+        for (uint256 i = 0; i < _token.length; i++) tmpTokenAmount[i] = _tokenAmount[i];
         tmpTokenAmount[0] = 0;
+
         uint256 shares = _vault.deposit(tmpTokenAmount);
 
         assertEq(shares, 0);
@@ -56,7 +58,7 @@ contract DepositRedeemTest is BaseVault {
         // Check that the vault has been allocated the correct amount of tokens
         for (uint256 i = 0; i < _token.length; i++) _assertApproxEq(_vault.approxBalance(_token[i]), tmpTokenAmount[i]);
 
-        // Check that the amount allocated out was more than the initial deposit after a proper share allocation
+        // Check that a new depositor receives the allocated funds that were locked in the pool by the initial zero deposit
         uint256[] memory out = _vault.redeem(_vault.deposit(_tokenAmount));
 
         assertGt(out[1], _tokenAmount[1]);
