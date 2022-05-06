@@ -7,6 +7,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
 import {IStrategy} from "../../src/interfaces/lens/IStrategy.sol";
 import {ISupportsToken} from "../../src/interfaces/utils/ISupportsToken.sol";
@@ -58,7 +59,10 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, Sup
     }
 
     function _withdraw(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            IERC20Upgradeable token = tokenByIndex(i);
+            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], token.balanceOf(address(this))));
+        }
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
