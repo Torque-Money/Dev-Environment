@@ -8,7 +8,8 @@ import {ISupportsToken} from "../utils/ISupportsToken.sol";
 
 // A multi-token vault that tracks each users share with its own ERC20 interface. Manages deposited funds using a strategy to earn rewards.
 interface IVault is ISupportsToken, IERC20Upgradeable {
-    // Set the strategy for the vault to use.
+    // Set the strategy for the vault to use and ensure funds are transferred properly.
+    // New strategy should be different than the old strategy.
     function setStrategy(IStrategy strategy) external;
 
     // Get the strategy the vault used.

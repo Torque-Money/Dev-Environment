@@ -12,6 +12,6 @@ interface ILens is IRegistry {
     // Get the vault used by the controller.
     function getVault() external view returns (IVault vault);
 
-    // Update the vault and strategy.
+    // Update the vaults strategy.
     function update(IStrategy strategy) external;
 }
