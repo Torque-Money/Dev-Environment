@@ -130,7 +130,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _ejectAllFromStrategy();
+        _ejectAmountFromStrategy(amount);
 
         _withdraw(amount);
     }
@@ -145,13 +145,16 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function _beefySharesFromAmount(uint256[] memory amount) private returns (uint256 shares) {
-        // **** Wait, I could get the approx balance, get my percentage allocation requested out from the amount specified as an input,
-        // **** and then from there I could calculate how much needs to be withdrawn !
+        // **** Needs to have enough shares such that it gets the maximum amount
+
+        uint256 perShare = beVault.getPricePerFullShare();
     }
 
     function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
         // Get LP tokens owed by beVault
-        uint256 LPAmount = beVault.getPricePerFullShare().mul(IERC20Upgradeable(address(beVault)).balanceOf(address(this))).div(SHARE_BASE);
+        uint256 perShare = beVault.getPricePerFullShare();
+        uint256 beBalance = IERC20Upgradeable(address(beVault)).balanceOf(address(this));
+        uint256 LPAmount = perShare.mul(beBalance).div(SHARE_BASE);
 
         // Get the allocation of the specified balance
         IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));
