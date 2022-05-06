@@ -7,6 +7,7 @@ import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/acce
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
+import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
@@ -144,10 +145,21 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         _withdraw(amount);
     }
 
-    function _beefySharesFromAmount(uint256[] memory amount) private returns (uint256 shares) {
-        // **** Needs to have enough shares such that it gets the maximum amount
+    function _beefySharesFromAmount(uint256[] memory amount) private view returns (uint256 shares) {
+        // Calculate the amount of LP tokens required
+        IUniswapV2Pair pair = IUniswapV2Pair(uniFactory.getPair(address(tokenByIndex(0)), address(tokenByIndex(1))));
+        uint256 pairTotalSupply = pair.totalSupply();
+        (uint256 reserve0, uint256 reserve1, ) = pair.getReserves();
+        if (pair.token0() != address(tokenByIndex(0))) (reserve0, reserve1) = (reserve1, reserve0);
 
+        uint256 LPOut1 = amount[0].mul(pairTotalSupply).div(reserve0);
+        uint256 LPOut2 = amount[1].mul(pairTotalSupply).div(reserve1);
+        uint256 LPOut = MathUpgradeable.max(LPOut1, LPOut2);
+
+        // Calculate the amount of shares required to satisfy the LP
         uint256 perShare = beVault.getPricePerFullShare();
+
+        return SHARE_BASE.mul(LPOut).div(perShare);
     }
 
     function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
