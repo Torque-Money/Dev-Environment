@@ -24,6 +24,7 @@ interface Data {
         "VaultV2.1": BeaconProxy;
         "BeefyLPStrategyV2.1": BeaconProxy;
         "LensV2.1": BeaconProxy;
+        "VaultETHWrapperV1.0": Proxy;
     };
 }
 

@@ -37,6 +37,7 @@
             "proxies": [],
             "beacon": "",
             "implementation": ""
-        }
+        },
+        "VaultETHWrapperV1.0": { "proxy": "", "implementation": "" }
     }
 }
