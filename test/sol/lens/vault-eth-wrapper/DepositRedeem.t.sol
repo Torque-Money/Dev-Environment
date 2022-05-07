@@ -49,12 +49,12 @@ contract DepositRedeemTest is BaseVaultETHWrapper {
                 uint256 expectedOut = _tokenAmount[i].mul(_feeDenominator.sub(_feePercent)).div(_feeDenominator);
 
                 _assertApproxEq(out[i], expectedOut);
-                _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i].sub(_tokenAmount[i]).add(out[i]));
+                assertEq(_token[i].balanceOf(address(this)), initialBalance[i].sub(_tokenAmount[i]).add(out[i]));
             } else {
                 uint256 expectedOut = ethDeposit.mul(_feeDenominator.sub(_feePercent)).div(_feeDenominator);
 
                 _assertApproxEq(out[i], expectedOut);
-                _assertApproxEq(address(this).balance, initialETH.sub(_tokenAmount[i]).add(out[i]));
+                assertEq(address(this).balance, initialETH.sub(_tokenAmount[i]).add(out[i]));
             }
 
         // Check the the correct shares are removed
