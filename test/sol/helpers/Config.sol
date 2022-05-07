@@ -5,6 +5,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IBeefyVaultV6} from "../../../lib/beefy/IBeefyVaultV6.sol";
+import {IWETH} from "../../../lib/weth/IWETH.sol";
 
 // Configured for the Fantom Opera mainnet
 
@@ -82,5 +83,9 @@ library Config {
 
     function getFee() internal pure returns (uint256 feePercent, uint256 feeDenominator) {
         return (1, 1000);
+    }
+
+    function getWETH() internal pure returns (IWETH weth) {
+        return IWETH(0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83); // wFTM
     }
 }
