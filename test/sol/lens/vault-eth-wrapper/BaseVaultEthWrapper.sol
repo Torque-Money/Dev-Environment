@@ -27,8 +27,11 @@ abstract contract BaseVaultEthWrapper is Base, BaseUsesToken {
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(_vault));
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(this));
 
+        _wrapper = new VaultETHWrapper();
+        _wrapper.initialize(Config.getWETH());
+
         address[] memory spender = new address[](1);
-        spender[0] = address(_vault);
+        spender[0] = address(_wrapper);
         _approveAll(spender);
     }
 }
