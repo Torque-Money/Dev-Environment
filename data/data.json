@@ -39,7 +39,7 @@
             "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
         },
         "LensV2.1": {
-            "proxies": [],
+            "proxies": ["0x72dc147ad119152dC8d7E86acD23b7EF9365D374"],
             "beacon": "0xC85F27C1501196B3E5609c711cb00D6FA19eC10e",
             "implementation": "0xb6700263cF1Dc427001B120Fb42C715ab906D424"
         },
