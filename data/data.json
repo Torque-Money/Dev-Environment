@@ -24,7 +24,7 @@
             "implementation": "0x609D829c2ABB78659D64d0092F62CA126B5B0956"
         },
         "VaultV2.1": {
-            "proxies": [],
+            "proxies": ["0x242E9E75Dea7Fd2Ba2e55783B79E76648178145D"],
             "beacon": "0xE5bbCE09C82f0ff3acD802Cc5E330F8bBCdeB6A3",
             "implementation": "0xe2f8ec674eE71d380153ff6bfdBFa55B8cfA8F3a"
         },
