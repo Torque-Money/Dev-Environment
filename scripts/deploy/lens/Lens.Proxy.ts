@@ -5,8 +5,8 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const beacon = data.contracts["LensV2.0"].beacon;
-    const vaultAddress = data.contracts["VaultV2.0"].proxies[0];
+    const beacon = data.contracts["LensV2.1"].beacon;
+    const vaultAddress = data.contracts["VaultV2.1"].proxies[0];
 
     const Lens = await hre.ethers.getContractFactory("Lens");
     const lens = await hre.upgrades.deployBeaconProxy(beacon, Lens, [vaultAddress]);

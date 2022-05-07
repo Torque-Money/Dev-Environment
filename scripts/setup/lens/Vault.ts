@@ -5,8 +5,8 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const lens = data.contracts["LensV2.0"].proxies[0];
-    const vault = await hre.ethers.getContractAt("Vault", data.contracts["VaultV2.0"].proxies[0]);
+    const lens = data.contracts["LensV2.1"].proxies[0];
+    const vault = await hre.ethers.getContractAt("Vault", data.contracts["VaultV2.1"].proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     const VAULT_CONTROLLER_ROLE = await vault.VAULT_CONTROLLER_ROLE();
