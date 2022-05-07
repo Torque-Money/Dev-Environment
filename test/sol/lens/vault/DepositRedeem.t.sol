@@ -34,7 +34,7 @@ contract DepositRedeemTest is BaseVault {
         uint256[] memory out = _vault.redeem(shares);
 
         for (uint256 i = 0; i < _token.length; i++) {
-            // **** Add extra logic here to make sure the right number of tokens come out of the vault
+            _assertApproxEq(out[i], _tokenAmount[i].mul(_feeDenominator.sub(_feePercent)).div(_feeDenominator));
             assertEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), out[i]);
 
             _assertApproxEq(expectedOut[i], out[i]);
