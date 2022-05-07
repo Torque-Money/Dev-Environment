@@ -59,6 +59,11 @@
       "address": "0x1937782cc8D4E459477ebcBa3a36109592C15b00",
       "txHash": "0x585ec4bf2d9298b0eeffbe1e192039b0c662b1d776070a8797bf9583360bfe90",
       "kind": "beacon"
+    },
+    {
+      "address": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7",
+      "txHash": "0xac73f763e1c3c69bab033808e69feb820aa80649cbda1086588b2a7ec5ec825c",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -2635,6 +2640,69 @@
               }
             ],
             "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "23c60dc165c6cb06e8102123fe4bd632632dc7d9c6259ee04fd41142f6d8847a": {
+      "address": "0x19412fEaaB4f5d2A378a2Bbe9DDa707564e9fac8",
+      "txHash": "0x057652fb05cabdf209b82a0ddfab81c4a378b0579256c1485c7f4d40090071d2",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_weth",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_contract(IWETH)3956",
+            "contract": "VaultETHWrapper",
+            "src": "src/lens/vault/VaultETHWrapper.sol:19"
+          }
+        ],
+        "types": {
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IWETH)3956": {
+            "label": "contract IWETH",
+            "numberOfBytes": "20"
           },
           "t_uint256": {
             "label": "uint256",

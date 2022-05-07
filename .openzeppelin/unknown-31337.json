@@ -1,8 +1,8 @@
 {
   "manifestVersion": "3.2",
   "admin": {
-    "address": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-    "txHash": "0x137c589a80a66f948cb62d414d231e8c6eb22b38d90c166aa80327542530cd9a"
+    "address": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7",
+    "txHash": "0x81ef9fcfb2320b4a5f6964ef0f0883408ad5b9bc1405a7781899c87ce8bf12c9"
   },
   "proxies": [
     {
@@ -39,6 +39,11 @@
       "address": "0x1937782cc8D4E459477ebcBa3a36109592C15b00",
       "txHash": "0xadfde7b98c76235b41bee1b6040a02c3b887277d530ef1387fc29c8f9bd9d7c5",
       "kind": "beacon"
+    },
+    {
+      "address": "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
+      "txHash": "0xadfbb6f26b0496a4c65dd9607debb31a75f51c44b92fe34ed0e90d2736e6f3b4",
+      "kind": "transparent"
     }
   ],
   "impls": {
@@ -1758,6 +1763,69 @@
               }
             ],
             "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "23c60dc165c6cb06e8102123fe4bd632632dc7d9c6259ee04fd41142f6d8847a": {
+      "address": "0x19412fEaaB4f5d2A378a2Bbe9DDa707564e9fac8",
+      "txHash": "0xaff8d4cef4b14adb03187c73386c8ec7e265c56a9f0751561809506bf905430a",
+      "layout": {
+        "storage": [
+          {
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool",
+            "contract": "Initializable",
+            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:67"
+          },
+          {
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage",
+            "contract": "ContextUpgradeable",
+            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
+          },
+          {
+            "label": "_weth",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_contract(IWETH)3956",
+            "contract": "VaultETHWrapper",
+            "src": "src/lens/vault/VaultETHWrapper.sol:19"
+          }
+        ],
+        "types": {
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IWETH)3956": {
+            "label": "contract IWETH",
+            "numberOfBytes": "20"
           },
           "t_uint256": {
             "label": "uint256",

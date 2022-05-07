@@ -38,6 +38,6 @@
             "beacon": "0xC85F27C1501196B3E5609c711cb00D6FA19eC10e",
             "implementation": "0xb6700263cF1Dc427001B120Fb42C715ab906D424"
         },
-        "VaultETHWrapperV1.0": { "proxy": "", "implementation": "" }
+        "VaultETHWrapperV1.0": { "proxy": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7", "implementation": "0x19412fEaaB4f5d2A378a2Bbe9DDa707564e9fac8" }
     }
 }
