@@ -3,9 +3,27 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 
-import { HardhatUserConfig } from "hardhat/config";
+import { HardhatUserConfig, task } from "hardhat/config";
 
 require("dotenv").config();
+
+import { loadData } from "./scripts/utils";
+
+task("t-deploy", "Check if the verify is really broken or not", async (args, hre) => {
+    const Vault = await hre.ethers.getContractFactory("Vault");
+    const vault = await Vault.deploy();
+    await vault.deployed();
+
+    console.log(vault.address);
+});
+
+task("upgradeable", "Check if a contract can be upgraded", async (args, hre) => {
+    const data = loadData();
+
+    const Vault = await hre.ethers.getContractFactory("Vault");
+    const x = await hre.upgrades.prepareUpgrade(data.contracts["VaultV2.0"].beacon, Vault);
+    console.log(x);
+});
 
 export default {
     solidity: {
