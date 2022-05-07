@@ -64,6 +64,26 @@
       "address": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7",
       "txHash": "0xac73f763e1c3c69bab033808e69feb820aa80649cbda1086588b2a7ec5ec825c",
       "kind": "transparent"
+    },
+    {
+      "address": "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
+      "txHash": "0x1da8bf5032627222fdc75253b80aa48fa8b3d195038cd887acf2eee0c21011de",
+      "kind": "beacon"
+    },
+    {
+      "address": "0x2439AF5Ff20Bd173f80a8c842d5bEa04E370EC57",
+      "txHash": "0xaf588ec6c2e4933c85a2dff95957d9bbf8eb1e5221dadb52a9126f5ed543feb0",
+      "kind": "beacon"
+    },
+    {
+      "address": "0xd703B3B90E25f2D46f59F4578bDdca2C5A49c275",
+      "txHash": "0xb2c187a44f0699a6b786e62ae431dbfd96fb1acd06d1d53cccf84577a77764b2",
+      "kind": "beacon"
+    },
+    {
+      "address": "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999",
+      "txHash": "0x14588d87d79ddafa9789088dbadd3937c4b408acc14b620c37b04ed0109d6f5f",
+      "kind": "beacon"
     }
   ],
   "impls": {

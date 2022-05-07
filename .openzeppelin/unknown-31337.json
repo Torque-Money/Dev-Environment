@@ -42,8 +42,8 @@
     },
     {
       "address": "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
-      "txHash": "0xadfbb6f26b0496a4c65dd9607debb31a75f51c44b92fe34ed0e90d2736e6f3b4",
-      "kind": "transparent"
+      "txHash": "0x2330ef0415754f4abc7c7e943028a1e12cd0a17051f5b1f8808bb67a1806e153",
+      "kind": "beacon"
     }
   ],
   "impls": {

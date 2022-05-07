@@ -29,7 +29,12 @@
             "implementation": "0xe2f8ec674eE71d380153ff6bfdBFa55B8cfA8F3a"
         },
         "BeefyLPStrategyV2.1": {
-            "proxies": [],
+            "proxies": [
+                "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
+                "0x2439AF5Ff20Bd173f80a8c842d5bEa04E370EC57",
+                "0xd703B3B90E25f2D46f59F4578bDdca2C5A49c275",
+                "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999"
+            ],
             "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
             "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
         },
