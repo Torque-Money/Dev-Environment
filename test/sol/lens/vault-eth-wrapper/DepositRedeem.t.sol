@@ -7,11 +7,13 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 import {BaseVaultETHWrapper} from "./BaseVaultETHWrapper.sol";
 
+import {Vault} from "../../../../src/lens/vault/Vault.sol";
 import {Config} from "../../helpers/Config.sol";
 
 contract DepositRedeemTest is BaseVaultETHWrapper {
     using SafeMathUpgradeable for uint256;
     using SafeERC20Upgradeable for IERC20Upgradeable;
+    using SafeERC20Upgradeable for Vault;
 
     // Test a regular deposit and redeem.
     function testDepositRedeem() public useFunds(vm) {
@@ -39,6 +41,7 @@ contract DepositRedeemTest is BaseVaultETHWrapper {
         assertEq(_vault.balanceOf(address(this)), shares);
 
         // Check that the required amounts are output
+        _vault.safeIncreaseAllowance(address(_wrapper), shares);
         uint256[] memory out = _wrapper.redeem(_vault, shares);
 
         for (uint256 i = 0; i < _token.length; i++)
