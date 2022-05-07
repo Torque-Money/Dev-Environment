@@ -34,6 +34,7 @@ contract DepositRedeemTest is BaseVault {
         uint256[] memory out = _vault.redeem(shares);
 
         for (uint256 i = 0; i < _token.length; i++) {
+            // **** Add extra logic here to make sure the right number of tokens come out of the vault
             assertEq(_token[i].balanceOf(address(this)).sub(initialBalance[i]), out[i]);
 
             _assertApproxEq(expectedOut[i], out[i]);
@@ -73,8 +74,6 @@ contract DepositRedeemTest is BaseVault {
         uint256[] memory initialOut = _vault.estimateRedeem(shares);
 
         for (uint256 i = 0; i < _token.length; i++) _token[i].safeTransfer(address(_vault), _tokenAmount[i]);
-
-        // **** Hold on, but why was this happening in the first place - shouldnt it be the exact same ?
 
         uint256[] memory out = _vault.redeem(shares);
 

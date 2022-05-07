@@ -9,7 +9,7 @@ import {MockStrategy} from "../../../mocks/MockStrategy.sol";
 import {Vault} from "../../../../src/lens/vault/Vault.sol";
 import {VaultETHWrapper} from "../../../../src/lens/vault/VaultETHWrapper.sol";
 
-abstract contract BaseVaultEthWrapper is Base, BaseUsesToken {
+abstract contract BaseVaultETHWrapper is Base, BaseUsesToken {
     Vault internal _vault;
     MockStrategy internal _strategy;
     VaultETHWrapper internal _wrapper;
