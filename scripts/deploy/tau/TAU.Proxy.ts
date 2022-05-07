@@ -1,14 +1,12 @@
 import hre from "hardhat";
 
-import { TorqueTAU } from "../../../typechain-types";
-
 async function main() {
     const TAU = await hre.ethers.getContractFactory("TorqueTAU");
-    const tau = (await hre.upgrades.deployProxy(TAU, ["10000000000000000000000000"])) as TorqueTAU;
+    const tau = (await hre.upgrades.deployProxy(TAU, ["10000000000000000000000000"]));
     await tau.deployed();
 
-    console.log("TAU proxy:", tau.address);
-    console.log("TAU implementation:", await hre.upgrades.erc1967.getImplementationAddress(tau.address));
+    console.log("Deploy | TAU | Proxy | Proxy:", tau.address);
+    console.log("Deploy | TAU | Proxy | Implementation:", await hre.upgrades.erc1967.getImplementationAddress(tau.address));
 }
 
 main()
