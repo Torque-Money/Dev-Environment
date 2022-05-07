@@ -19,7 +19,7 @@ abstract contract BaseVault is Base, BaseUsesToken {
         Base.setUp();
         BaseUsesToken.setUp();
 
-        (feePercent, feeDenominator) = Config.getFee();
+        (_feePercent, _feeDenominator) = Config.getFee();
 
         _strategy = new MockStrategy(_token);
 

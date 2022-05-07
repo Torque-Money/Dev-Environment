@@ -19,4 +19,6 @@ abstract contract Base is Test {
 
         AssertUtils.assertApproxEq(a, b, fosPercent, fosDenominator);
     }
+
+    receive() external payable {}
 }
