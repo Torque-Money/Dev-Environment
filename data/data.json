@@ -22,6 +22,21 @@
             "proxies": ["0x1937782cc8D4E459477ebcBa3a36109592C15b00"],
             "beacon": "0x0D9D08efE492a35DD26A55534E1e1e3Ff12Cb279",
             "implementation": "0x609D829c2ABB78659D64d0092F62CA126B5B0956"
+        },
+        "VaultV2.1": {
+            "proxies": [],
+            "beacon": "",
+            "implementation": ""
+        },
+        "BeefyLPStrategyV2.1": {
+            "proxies": [],
+            "beacon": "",
+            "implementation": ""
+        },
+        "LensV2.1": {
+            "proxies": [],
+            "beacon": "",
+            "implementation": ""
         }
     }
 }
