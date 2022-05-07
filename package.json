@@ -3,7 +3,7 @@
     "scripts": {
         "node": "NODE_OPTIONS=--openssl-legacy-provider hardhat node",
         "test-all": "export $(cat .env | xargs) && forge test --fork-url $NETWORK_URL_OPERA --fork-block-number 36258744 -vvv",
-        "test": "npm run test-all -- --match-path test/sol/lens/vault-eth-wrapper/DepositRedeem.t.sol --match-test testDepositRedeem"
+        "test": "npm run test-all -- --match-path test/sol/lens/strategy/beefylp-strategy/DepositWithdraw.t.sol --match-test testDepositAllWithdrawAll"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.5",
