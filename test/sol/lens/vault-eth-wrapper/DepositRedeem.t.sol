@@ -44,12 +44,18 @@ contract DepositRedeemTest is BaseVaultETHWrapper {
         _vault.safeIncreaseAllowance(address(_wrapper), shares);
         uint256[] memory out = _wrapper.redeem(_vault, shares);
 
-        // **** I need to now test the input amounts are what they should be with the fees and everything
-        // **** How do I bring fee calculations into the following calculation ?
-
         for (uint256 i = 0; i < _token.length; i++)
-            if (address(_token[i]) != address(Config.getWETH())) _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i]);
-            else _assertApproxEq(address(this).balance, initialETH);
+            if (address(_token[i]) != address(Config.getWETH())) {
+                uint256 expectedOut = _tokenAmount[i].mul(_feeDenominator.sub(_feePercent)).div(_feeDenominator);
+
+                _assertApproxEq(out[i], expectedOut);
+                _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i].sub(_tokenAmount[i]).add(out[i]));
+            } else {
+                uint256 expectedOut = ethDeposit.mul(_feeDenominator.sub(_feePercent)).div(_feeDenominator);
+
+                _assertApproxEq(out[i], expectedOut);
+                _assertApproxEq(address(this).balance, initialETH.sub(_tokenAmount[i]).add(out[i]));
+            }
 
         // Check the the correct shares are removed
         assertEq(_vault.balanceOf(address(this)), 0);
