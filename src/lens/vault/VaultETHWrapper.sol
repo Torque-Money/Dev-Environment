@@ -16,21 +16,25 @@ contract VaultETHWrapper is Initializable, ContextUpgradeable, IVaultETHWrapper 
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using SafeERC20Upgradeable for IVault;
 
-    IWETH public weth;
+    IWETH private _weth;
 
-    function initialize(IWETH _weth) external initializer {
+    function initialize(IWETH weth) external initializer {
         __Context_init();
 
-        weth = _weth;
+        _weth = weth;
+    }
+
+    function WETH() external view returns (IWETH weth) {
+        return _weth;
     }
 
     function deposit(IVault vault, uint256[] memory amount) external payable override returns (uint256 shares) {
-        // Pull all tokens and convert ETH to its WETH equivalent and add it to the specified amount
+        // Pull all tokens and convert ETH to its WETH equivalent and add it to the amount
         for (uint256 i = 0; i < vault.tokenCount(); i++) {
             IERC20Upgradeable token = vault.tokenByIndex(i);
 
-            if (address(token) == address(weth)) {
-                weth.deposit{value: msg.value}();
+            if (address(token) == address(_weth)) {
+                _weth.deposit{value: msg.value}();
                 amount[i] = msg.value;
             } else token.safeTransferFrom(_msgSender(), address(this), amount[i]);
 
@@ -45,11 +49,12 @@ contract VaultETHWrapper is Initializable, ContextUpgradeable, IVaultETHWrapper 
         vault.safeTransferFrom(_msgSender(), address(this), shares);
         amount = vault.redeem(shares);
 
+        // Push all tokens to the user and unwrap the WETH token and return it as ETH
         for (uint256 i = 0; i < vault.tokenCount(); i++) {
             IERC20Upgradeable token = vault.tokenByIndex(i);
 
-            if (address(token) == address(weth)) {
-                weth.withdraw(amount[i]);
+            if (address(token) == address(_weth)) {
+                _weth.withdraw(amount[i]);
                 TransferHelper.safeTransferETH(_msgSender(), amount[i]);
             } else token.safeTransfer(_msgSender(), amount[i]);
         }
