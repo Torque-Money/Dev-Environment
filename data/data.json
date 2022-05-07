@@ -30,8 +30,8 @@
         },
         "BeefyLPStrategyV2.1": {
             "proxies": [],
-            "beacon": "",
-            "implementation": ""
+            "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
+            "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
         },
         "LensV2.1": {
             "proxies": [],
