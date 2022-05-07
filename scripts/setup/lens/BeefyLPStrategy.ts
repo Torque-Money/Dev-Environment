@@ -9,10 +9,10 @@ async function main() {
     const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.contracts["BeefyLPStrategyV2.1"].proxies[0]);
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
-    // Assign the vault as a controller of the strategy
-    const STRATEGY_CONTROLLER_ROLE = await strategy.STRATEGY_CONTROLLER_ROLE();
-    await (await strategy.grantRole(STRATEGY_CONTROLLER_ROLE, vault.address)).wait();
-    console.log("Setup | BeefyLPStrategy | Assign vault as strategy controller");
+    // // Assign the vault as a controller of the strategy
+    // const STRATEGY_CONTROLLER_ROLE = await strategy.STRATEGY_CONTROLLER_ROLE();
+    // await (await strategy.grantRole(STRATEGY_CONTROLLER_ROLE, vault.address)).wait();
+    // console.log("Setup | BeefyLPStrategy | Assign vault as strategy controller");
 
     // Assign the emergency to the timelock (and revoke)
     const EMERGENCY_ADMIN_ROLE = await strategy.EMERGENCY_ADMIN_ROLE();
