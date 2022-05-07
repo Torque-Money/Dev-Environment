@@ -50,11 +50,11 @@ library Config {
         //     IBeefyVaultV6(0xA4e2EE5a7fF51224c27C98098D8DB5C770bAAdbE)
         // ); // Beefy USDC-FTM LP SpiritSwap
 
-        // return (
-        //     IUniswapV2Router02(0x5023882f4D1EC10544FCB2066abE9C1645E95AA0),
-        //     IUniswapV2Factory(0xC831A5cBfb4aC2Da5ed5B194385DFD9bF5bFcBa7),
-        //     IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05)
-        // ); // Beefy USDC-FTM LP WigoSwap
+        return (
+            IUniswapV2Router02(0x5023882f4D1EC10544FCB2066abE9C1645E95AA0),
+            IUniswapV2Factory(0xC831A5cBfb4aC2Da5ed5B194385DFD9bF5bFcBa7),
+            IBeefyVaultV6(0x70c6AF9Dff8C19B3db576E5E199B22A883874f05)
+        ); // Beefy USDC-FTM LP WigoSwap
 
         // return (
         //     IUniswapV2Router02(0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506),
@@ -62,11 +62,11 @@ library Config {
         //     IBeefyVaultV6(0xb870e4755C737D2753D7298D0e70344077905Ed5)
         // ); // Beefy USDC-FTM LP SushiSwap
 
-        return (
-            IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29),
-            IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3),
-            IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968)
-        ); // Beefy USDC-FTM LP SpookySwap
+        // return (
+        //     IUniswapV2Router02(0xF491e7B69E4244ad4002BC14e878a34207E38c29),
+        //     IUniswapV2Factory(0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3),
+        //     IBeefyVaultV6(0x41D44B276904561Ac51855159516FD4cB2c90968)
+        // ); // Beefy USDC-FTM LP SpookySwap
     }
 
     function getFos() internal pure returns (uint256 fosPercent, uint256 fosDenominator) {
