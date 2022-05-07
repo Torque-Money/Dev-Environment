@@ -14,15 +14,19 @@ abstract contract BaseVaultETHWrapper is Base, BaseUsesToken {
     MockStrategy internal _strategy;
     VaultETHWrapper internal _wrapper;
 
+    uint256 internal _feePercent;
+    uint256 internal _feeDenominator;
+
     function setUp() public virtual override(Base, BaseUsesToken) {
         Base.setUp();
         BaseUsesToken.setUp();
 
+        (_feePercent, _feeDenominator) = Config.getFee();
+
         _strategy = new MockStrategy(_token);
 
         _vault = new Vault();
-        (uint256 feePercent, uint256 feeDenominator) = Config.getFee();
-        _vault.initialize(_token, _strategy, _empty, feePercent, feeDenominator);
+        _vault.initialize(_token, _strategy, _empty, _feePercent, _feeDenominator);
 
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(_vault));
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(this));
