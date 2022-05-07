@@ -35,8 +35,8 @@
         },
         "LensV2.1": {
             "proxies": [],
-            "beacon": "",
-            "implementation": ""
+            "beacon": "0xC85F27C1501196B3E5609c711cb00D6FA19eC10e",
+            "implementation": "0xb6700263cF1Dc427001B120Fb42C715ab906D424"
         },
         "VaultETHWrapperV1.0": { "proxy": "", "implementation": "" }
     }
