@@ -17,18 +17,14 @@ async function main() {
     await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
     await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
 
-    await ftm.approve(vault.address, hre.ethers.constants.MaxUint256);
-    await usdc.approve(vault.address, hre.ethers.constants.MaxUint256);
-
     console.log("Test | Vault | Approved tokens");
 
     // Test the deposit
 
     // **** Something is wrong in here - we are not approving the correct balances or something ??? We need to test what failed and why (COULD be a setup error)
 
-    const amount = [1, 1];
-    // await wrapper.deposit(vault.address, amount);
-    await vault.deposit(amount);
+    const amount = [0, 0];
+    await wrapper.deposit(vault.address, amount);
     console.log("Test | Vault | Deposited");
 
     // Test the withdraw
