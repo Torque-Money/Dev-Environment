@@ -16,6 +16,10 @@ async function main() {
     // Approve the tokens for use with the wrapper
     await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
     await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
+
+    await ftm.approve(vault.address, hre.ethers.constants.MaxUint256);
+    await usdc.approve(vault.address, hre.ethers.constants.MaxUint256);
+
     console.log("Test | Vault | Approved tokens");
 
     // Test the deposit
