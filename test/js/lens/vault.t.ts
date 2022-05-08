@@ -20,9 +20,6 @@ async function main() {
     console.log("Test | Vault | Approved tokens");
 
     // Test the deposit
-
-    // **** Something is wrong in here - we are not approving the correct balances or something ??? We need to test what failed and why (COULD be a setup error)
-
     const amount = [1, 1];
     await wrapper.deposit(vault.address, amount);
     console.log("Test | Vault | Deposited");
