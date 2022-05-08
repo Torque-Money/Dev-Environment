@@ -24,8 +24,10 @@ interface Data {
     };
 }
 
+type DataVersion = "V2.0" | "V2.1";
+
 // Get the path of the data file
-export function getDataPath(version: "V2.0" | "V2.1" = "V2.0") {
+export function getDataPath(version: DataVersion) {
     if (version === "V2.0") {
         return process.cwd() + "/data/dataV2.0.json";
     } else if (version === "V2.1") {
@@ -36,16 +38,16 @@ export function getDataPath(version: "V2.0" | "V2.1" = "V2.0") {
 }
 
 // Save the data
-export function saveData(data: Data) {
-    const dataPath = getDataPath();
+export function saveData(data: Data, version: DataVersion = "V2.1") {
+    const dataPath = getDataPath(version);
     const stringified = JSON.stringify(data);
 
     fs.writeFileSync(dataPath, stringified);
 }
 
 // Load the data
-export function loadData() {
-    const dataPath = getDataPath();
+export function loadData(version: DataVersion = "V2.1") {
+    const dataPath = getDataPath(version);
     const stringified = fs.readFileSync(dataPath).toString();
 
     return JSON.parse(stringified) as Data;

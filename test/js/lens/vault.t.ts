@@ -27,7 +27,8 @@ async function main() {
     // **** Something is wrong in here - we are not approving the correct balances or something ??? We need to test what failed and why (COULD be a setup error)
 
     const amount = [1, 1];
-    await wrapper.deposit(vault.address, amount);
+    // await wrapper.deposit(vault.address, amount);
+    await vault.deposit(amount);
     console.log("Test | Vault | Deposited");
 
     // Test the withdraw
