@@ -33,6 +33,8 @@ export function getDataPath() {
     return process.cwd() + "/data/data.json";
 }
 
+// **** Fix this up to have an optional parameter for the given type
+
 // Save the data
 export function saveData(data: Data) {
     const dataPath = getDataPath();
