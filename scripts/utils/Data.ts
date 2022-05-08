@@ -17,23 +17,23 @@ interface Data {
     contracts: {
         multisig: Address;
         timelock: Address;
-        TAU: Proxy;
-        "VaultV2.0": BeaconProxy;
-        "BeefyLPStrategyV2.0": BeaconProxy;
-        "LensV2.0": BeaconProxy;
-        "VaultV2.1": BeaconProxy;
-        "BeefyLPStrategyV2.1": BeaconProxy;
-        "LensV2.1": BeaconProxy;
-        "VaultETHWrapperV1.0": Proxy;
+        Vault: BeaconProxy;
+        BeefyLPStrategy: BeaconProxy;
+        Lens: BeaconProxy;
+        VaultETHWrapper: Proxy;
     };
 }
 
 // Get the path of the data file
-export function getDataPath() {
-    return process.cwd() + "/data/data.json";
+export function getDataPath(version: "V2.0" | "V2.1" = "V2.0") {
+    if (version === "V2.0") {
+        return process.cwd() + "/data/dataV2.0.json";
+    } else if (version === "V2.1") {
+        return process.cwd() + "/data/dataV2.1.json";
+    } else {
+        throw new Error("Invalid data path");
+    }
 }
-
-// **** Fix this up to have an optional parameter for the given type
 
 // Save the data
 export function saveData(data: Data) {
