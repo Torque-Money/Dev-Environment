@@ -73,14 +73,6 @@ library Config {
         return (5, 1000);
     }
 
-    function getTAUInitialSupply() internal pure returns (uint256 initialSupply) {
-        return 10000000 * 1e18;
-    }
-
-    function getTAUMintAmount() internal pure returns (uint256 mintAmount) {
-        return 10 * 1e18;
-    }
-
     function getFee() internal pure returns (uint256 feePercent, uint256 feeDenominator) {
         return (1, 1000);
     }
