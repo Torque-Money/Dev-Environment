@@ -83,8 +83,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         beVault.depositAll();
     }
 
-    function _ejectFromStrategy(uint256 shares) private {
-        if (shares == 0) return;
+    function _ejectFromStrategy(uint256 shares) private returns (uint256[] memory out) {
+        if (shares == 0) return out;
 
         // Withdraw from Beefy vault
         shares = MathUpgradeable.min(shares, IERC20Upgradeable(address(beVault)).balanceOf(address(this)));
@@ -99,15 +99,18 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         uint256 pairBalance = pair.balanceOf(address(this));
         pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
 
-        uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+        (uint256 out0, uint256 out1) = uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
+        out = new uint256[](2);
+        out[0] = out0;
+        out[1] = out1;
     }
 
-    function _ejectAmountFromStrategy(uint256[] memory amount) private {
-        _ejectFromStrategy(_beefySharesFromAmount(amount));
+    function _ejectAmountFromStrategy(uint256[] memory amount) private returns (uint256[] memory out) {
+        return _ejectFromStrategy(_beefySharesFromAmount(amount));
     }
 
-    function _ejectAllFromStrategy() private {
-        _ejectFromStrategy(IERC20Upgradeable(address(beVault)).balanceOf(address(this)));
+    function _ejectAllFromStrategy() private returns (uint256[] memory out) {
+        return _ejectFromStrategy(IERC20Upgradeable(address(beVault)).balanceOf(address(this)));
     }
 
     function _deposit(uint256[] memory amount) private {
@@ -128,27 +131,22 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function _withdraw(uint256[] memory amount) private {
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20Upgradeable token = tokenByIndex(i);
-
-            uint256 max = token.balanceOf(address(this));
-            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
     }
 
-    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _ejectAmountFromStrategy(amount);
+    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
+        actual = _ejectAmountFromStrategy(amount);
 
-        _withdraw(amount);
+        _withdraw(actual);
     }
 
-    function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
+    function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
         _ejectAllFromStrategy();
 
-        uint256[] memory amount = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(address(this));
+        actual = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) actual[i] = tokenByIndex(i).balanceOf(address(this));
 
-        _withdraw(amount);
+        _withdraw(actual);
     }
 
     function _beefySharesFromAmount(uint256[] memory amount) private view returns (uint256 shares) {
