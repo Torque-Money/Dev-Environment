@@ -15,10 +15,12 @@ interface IStrategy is ISupportsToken {
     function depositAll() external;
 
     // Withdraw a given amount of the contracts funds to the caller.
+    // Returns the amount of tokens the caller receives.
     // Reverts if there are not enough funds available in the contract.
     // Not guaranteed to withdraw the exact amount specified.
-    function withdraw(uint256[] calldata amount) external;
+    function withdraw(uint256[] calldata amount) external returns (uint256[] calldata actual);
 
     // Withdraw all of the contracts funds to the caller.
-    function withdrawAll() external;
+    // Returns the amount of tokens the caller receives.
+    function withdrawAll() external returns (uint256[] calldata actual);
 }
