@@ -135,9 +135,24 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
-        // **** In here, we need to do a calculation for how much we have on hand as well as what we need to withdraw from the strategy
+        // Calculate amount to be withdrawn excluding the amount from the reserves
+        uint256[] memory fromEject = new uint256[](tokenCount());
+        uint256[] memory fromBalance = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            uint256 available = tokenByIndex(i).balanceOf(address(this));
 
-        actual = _ejectAmountFromStrategy(amount);
+            if (available < amount[i]) {
+                fromEject[i] = amount[i].sub(available);
+                fromBalance[i] = available;
+            } else fromBalance[i] = amount[i];
+        }
+
+        fromEject = _ejectAmountFromStrategy(fromEject);
+
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            amount[i] = fromEject[i].add(fromBalance[i]);
+            tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        }
 
         _withdraw(actual);
     }
