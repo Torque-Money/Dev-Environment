@@ -128,9 +128,18 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         uint256[] memory estimatedWithdraw = estimateRedeem(shares);
 
         // Calculate amount to be withdrawn from the strategy to meet the estimated amount
-        uint256[] memory toWithdraw = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) toWithdraw[i] = estimatedWithdraw[i].sub(tokenByIndex(i).balanceOf(address(this))); // **** This also has a safe math error
-        _withdrawFromStrategy(estimatedWithdraw);
+        uint256[] memory fromWithdraw = new uint256[](tokenCount());
+        uint256[] memory fromBalance = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            uint256 available = tokenByIndex(i).balanceOf(address(this));
+
+            if (available < estimatedWithdraw[i]) {
+                fromWithdraw[i] = estimatedWithdraw[i].sub(available);
+                fromBalance[i] = available;
+            } else fromBalance[i] = estimatedWithdraw;
+        }
+
+        _withdrawFromStrategy(toWithdraw); // **** Now this one needs fixing to use the ACTUAL withdrawn - SET THIS AS THE ACTUAL
 
         // **** I need to update it in here somewhere but I am not sure how - we need to calculate how
 
