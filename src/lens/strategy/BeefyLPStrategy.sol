@@ -84,6 +84,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function _ejectFromStrategy(uint256 shares) private returns (uint256[] memory out) {
+        out = new uint256[](2);
         if (shares == 0) return out;
 
         // Withdraw from Beefy vault
@@ -100,7 +101,6 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         pair.safeIncreaseAllowance(address(uniRouter), pairBalance);
 
         (uint256 out0, uint256 out1) = uniRouter.removeLiquidity(token0, token1, pairBalance, 1, 1, address(this), block.timestamp);
-        out = new uint256[](2);
         out[0] = out0;
         out[1] = out1;
     }
