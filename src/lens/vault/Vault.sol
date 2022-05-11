@@ -141,6 +141,7 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
 
         fromWithdraw = _withdrawFromStrategy(fromWithdraw);
 
+        amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++) {
             amount[i] = fromWithdraw[i].add(fromBalance[i]);
             tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);

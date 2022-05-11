@@ -12,14 +12,14 @@ contract UpdateTest is BaseLens {
         uint256 shares = _vault.deposit(_tokenAmount);
 
         // Update the strategy multiple times and check expected out
-        // for (uint256 i = 0; i < _strategy.length; i++) {
-        //     if (_strategy[i] != _vault.getStrategy()) {
-        //         _lens.update(_strategy[i]);
+        for (uint256 i = 0; i < _strategy.length; i++) {
+            if (_strategy[i] != _vault.getStrategy()) {
+                _lens.update(_strategy[i]);
 
-        //         uint256[] memory out = _vault.estimateRedeem(shares);
-        //         for (uint256 j = 0; j < _token.length; j++) _assertApproxEq(_tokenAmount[i], out[i]);
-        //     }
-        // }
+                uint256[] memory out = _vault.estimateRedeem(shares);
+                for (uint256 j = 0; j < _token.length; j++) _assertApproxEq(_tokenAmount[i], out[i]);
+            }
+        }
 
         _vault.redeem(shares);
     }
