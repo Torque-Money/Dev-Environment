@@ -124,7 +124,7 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = approxBalance(tokenByIndex(i)).mul(shares).div(_totalShares);
     }
 
-    function redeem(uint256 shares) external override returns (uint256[] memory amount_) {
+    function redeem(uint256 shares) external override returns (uint256[] memory amount) {
         uint256[] memory estimatedWithdraw = estimateRedeem(shares);
 
         // Calculate amount to be withdrawn from the strategy to meet the estimated amount
@@ -136,14 +136,15 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
             if (available < estimatedWithdraw[i]) {
                 fromWithdraw[i] = estimatedWithdraw[i].sub(available);
                 fromBalance[i] = available;
-            } else fromBalance[i] = estimatedWithdraw;
+            } else fromBalance[i] = estimatedWithdraw[i];
         }
 
-        _withdrawFromStrategy(toWithdraw); // **** Now this one needs fixing to use the ACTUAL withdrawn - SET THIS AS THE ACTUAL
+        fromWithdraw = _withdrawFromStrategy(fromWithdraw);
 
-        // **** I need to update it in here somewhere but I am not sure how - we need to calculate how
-
-        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        for (uint256 i = 0; i < tokenCount(); i++) {
+            amount[i] = fromWithdraw[i].add(fromBalance[i]);
+            tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        }
 
         _burn(_msgSender(), shares);
 
