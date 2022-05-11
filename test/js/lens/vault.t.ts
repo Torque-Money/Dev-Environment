@@ -19,47 +19,49 @@ async function main() {
     // First we will deploy the new contracts and upgrade them 
 
     const Strategy = await hre.ethers.getContractFactory("BeefyLPStrategy"); 
-    await hre.upgrades.upgradeBeacon(data.contracts.BeefyLPStrategy.beacon, Strategy);
-    console.log("Test | Vault | Upgraded strategy beacon");
+    const beacon1 = await hre.upgrades.upgradeBeacon(data.contracts.BeefyLPStrategy.beacon, Strategy);
+    const implementation1 = await hre.upgrades.beacon.getImplementationAddress(beacon1.address);
+    console.log("Test | Vault | Upgraded strategy beacon with implementation:", implementation1);
 
     const Vault = await hre.ethers.getContractFactory("Vault");
-    await hre.upgrades.upgradeBeacon(data.contracts.Vault.beacon, Vault);
-    console.log("Test | Vault | Upgraded vault beacon");
+    const beacon2 = await hre.upgrades.upgradeBeacon(data.contracts.Vault.beacon, Vault);
+    const implementation2 = await hre.upgrades.beacon.getImplementationAddress(beacon2.address);
+    console.log("Test | Vault | Upgraded vault beacon with implementation:", implementation2);
 
     // ===========
 
-    // Approve the tokens for use with the wrapper
-    await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
-    await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
-    console.log("Test | Vault | Approved tokens");
+    // // Approve the tokens for use with the wrapper
+    // await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
+    // await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
+    // console.log("Test | Vault | Approved tokens");
 
-    const initialFTM = await hre.ethers.provider.getSigner().getBalance();
-    const initialwFTM = await ftm.balanceOf(caller);
-    const initialUSDC = await usdc.balanceOf(caller);
-    console.log("Test | Vault | Initial FTM:", initialFTM.toString());
-    console.log("Test | Vault | Initial wFTM:", initialwFTM.toString());
-    console.log("Test | Vault | Initial USDC:", initialUSDC.toString());
+    // const initialFTM = await hre.ethers.provider.getSigner().getBalance();
+    // const initialwFTM = await ftm.balanceOf(caller);
+    // const initialUSDC = await usdc.balanceOf(caller);
+    // console.log("Test | Vault | Initial FTM:", initialFTM.toString());
+    // console.log("Test | Vault | Initial wFTM:", initialwFTM.toString());
+    // console.log("Test | Vault | Initial USDC:", initialUSDC.toString());
 
-    // Test the deposit
-    const amount = [hre.ethers.BigNumber.from(10).pow(18), hre.ethers.BigNumber.from(10).pow(6)];
-    await wrapper.deposit(vault.address, amount, { value: amount[0] });
-    console.log("Test | Vault | Deposited");
+    // // Test the deposit
+    // const amount = [hre.ethers.BigNumber.from(10).pow(18), hre.ethers.BigNumber.from(10).pow(6)];
+    // await wrapper.deposit(vault.address, amount, { value: amount[0] });
+    // console.log("Test | Vault | Deposited");
 
-    // Test the withdraw
-    await vault.approve(wrapper.address, hre.ethers.constants.MaxUint256);
+    // // Test the withdraw
+    // await vault.approve(wrapper.address, hre.ethers.constants.MaxUint256);
 
-    const shares = await vault.balanceOf(caller);
-    console.log("Test | Vault | Shares:", shares.toString());
-    await vault.redeem(shares);
-    // await wrapper.redeem(vault.address, shares);
-    console.log("Test | Vault | Redeemed");
+    // const shares = await vault.balanceOf(caller);
+    // console.log("Test | Vault | Shares:", shares.toString());
+    // await vault.redeem(shares);
+    // // await wrapper.redeem(vault.address, shares);
+    // console.log("Test | Vault | Redeemed");
 
-    const finalFTM = await hre.ethers.provider.getSigner().getBalance();
-    const finalwFTM = await ftm.balanceOf(caller);
-    const finalUSDC = await usdc.balanceOf(caller);
-    console.log("Test | Vault | Final FTM:", finalFTM.toString());
-    console.log("Test | Vault | Final wFTM:", finalwFTM.toString());
-    console.log("Test | Vault | Final USDC:", finalUSDC.toString());
+    // const finalFTM = await hre.ethers.provider.getSigner().getBalance();
+    // const finalwFTM = await ftm.balanceOf(caller);
+    // const finalUSDC = await usdc.balanceOf(caller);
+    // console.log("Test | Vault | Final FTM:", finalFTM.toString());
+    // console.log("Test | Vault | Final wFTM:", finalwFTM.toString());
+    // console.log("Test | Vault | Final USDC:", finalUSDC.toString());
 }
 
 main()
