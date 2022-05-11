@@ -150,10 +150,7 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
         fromEject = _ejectAmountFromStrategy(fromEject);
 
         actual = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            actual[i] = fromEject[i].add(fromBalance[i]);
-            tokenByIndex(i).safeTransfer(_msgSender(), actual[i]);
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) actual[i] = fromEject[i].add(fromBalance[i]);
 
         _withdraw(actual);
     }
