@@ -24,21 +24,18 @@ interface Data {
     };
 }
 
-type DataVersion = "V2.0" | "V2.1";
+type DataVersion = "V2.0" | "V2.1" | "V2.2";
 
 // Get the path of the data file
 export function getDataPath(version: DataVersion) {
-    if (version === "V2.0") {
-        return process.cwd() + "/data/dataV2.0.json";
-    } else if (version === "V2.1") {
-        return process.cwd() + "/data/dataV2.1.json";
-    } else {
-        throw new Error("Invalid data path");
-    }
+    if (version === "V2.0") return process.cwd() + "/data/dataV2.0.json";
+    else if (version === "V2.1") return process.cwd() + "/data/dataV2.1.json";
+    else if (version === "V2.2") return process.cwd() + "/data/dataV2.1.json";
+    else throw new Error("Invalid data path");
 }
 
 // Save the data
-export function saveData(data: Data, version: DataVersion = "V2.1") {
+export function saveData(data: Data, version: DataVersion = "V2.2") {
     const dataPath = getDataPath(version);
     const stringified = JSON.stringify(data);
 
@@ -46,7 +43,7 @@ export function saveData(data: Data, version: DataVersion = "V2.1") {
 }
 
 // Load the data
-export function loadData(version: DataVersion = "V2.1") {
+export function loadData(version: DataVersion = "V2.2") {
     const dataPath = getDataPath(version);
     const stringified = fs.readFileSync(dataPath).toString();
 
