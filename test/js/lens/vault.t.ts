@@ -37,7 +37,7 @@ async function main() {
     const shares = await vault.balanceOf(caller);
     console.log("Test | Vault | Shares:", shares.toString());
     await vault.redeem(shares);
-    // await wrapper.redeem(vault.address, shares);
+    // await wrapper.redeem(vault.address, shares); // **** There is some sort of problem with this - but what is the problem ?
     console.log("Test | Vault | Redeemed");
 
     const finalFTM = await hre.ethers.provider.getSigner().getBalance();
