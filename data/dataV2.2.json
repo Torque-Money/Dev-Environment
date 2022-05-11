@@ -15,7 +15,7 @@
                 "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999"
             ],
             "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
-            "implementation": ""
+            "implementation": "0x32929daa14ae36bbc69d5a3c1123d276ce61b648"
         },
         "Lens": {
             "proxies": ["0x72dc147ad119152dC8d7E86acD23b7EF9365D374"],

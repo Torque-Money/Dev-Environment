@@ -18,10 +18,10 @@ async function main() {
 
     // First we will deploy the new contracts and upgrade them 
 
-    const Strategy = await hre.ethers.getContractFactory("BeefyLPStrategy"); 
-    const beacon1 = await hre.upgrades.upgradeBeacon(data.contracts.BeefyLPStrategy.beacon, Strategy);
-    const implementation1 = await hre.upgrades.beacon.getImplementationAddress(beacon1.address);
-    console.log("Test | Vault | Upgraded strategy beacon with implementation:", implementation1);
+    // const Strategy = await hre.ethers.getContractFactory("BeefyLPStrategy"); 
+    // const beacon1 = await hre.upgrades.upgradeBeacon(data.contracts.BeefyLPStrategy.beacon, Strategy);
+    // const implementation1 = await hre.upgrades.beacon.getImplementationAddress(beacon1.address);
+    // console.log("Test | Vault | Upgraded strategy beacon with implementation:", implementation1);
 
     const Vault = await hre.ethers.getContractFactory("Vault");
     const beacon2 = await hre.upgrades.upgradeBeacon(data.contracts.Vault.beacon, Vault);
