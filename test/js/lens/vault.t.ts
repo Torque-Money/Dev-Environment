@@ -38,6 +38,7 @@ async function main() {
     console.log("Test | Vault | Shares:", shares.toString());
     await vault.redeem(shares);
     // await wrapper.redeem(vault.address, shares); // **** There is some sort of problem with this - but what is the problem ?
+    // **** Please do not tell me it is because the amount is outputting a different amount than what the vault expects there to be outputted ????
     console.log("Test | Vault | Redeemed");
 
     const finalFTM = await hre.ethers.provider.getSigner().getBalance();
