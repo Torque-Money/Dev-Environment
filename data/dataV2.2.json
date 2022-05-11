@@ -5,7 +5,7 @@
         "Vault": {
             "proxies": ["0x242E9E75Dea7Fd2Ba2e55783B79E76648178145D"],
             "beacon": "0xE5bbCE09C82f0ff3acD802Cc5E330F8bBCdeB6A3",
-            "implementation": "0xe2f8ec674eE71d380153ff6bfdBFa55B8cfA8F3a"
+            "implementation": ""
         },
         "BeefyLPStrategy": {
             "proxies": [
@@ -15,7 +15,7 @@
                 "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999"
             ],
             "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
-            "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
+            "implementation": ""
         },
         "Lens": {
             "proxies": ["0x72dc147ad119152dC8d7E86acD23b7EF9365D374"],
