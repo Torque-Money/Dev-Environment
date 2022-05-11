@@ -21,6 +21,8 @@ contract UpdateTest is BaseLens {
             }
         }
 
+        // **** Issue is something to do with one of the strategies guaranteed...
+
         _vault.redeem(shares);
     }
 
