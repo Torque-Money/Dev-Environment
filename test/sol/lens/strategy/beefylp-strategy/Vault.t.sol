@@ -49,6 +49,7 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i]);
             _assertApproxEq(out[i], _tokenAmount[i]);
 
+            // **** We need to compensate for the fees here I believe ???
             _assertApproxEq(vault.approxBalance(_token[i]), 0);
         }
     }
