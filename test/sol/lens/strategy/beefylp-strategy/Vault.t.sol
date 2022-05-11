@@ -6,7 +6,6 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
-import {Config} from "../../../helpers/Config.sol";
 import {Vault} from "../../../../../src/lens/vault/Vault.sol";
 
 contract VaultTest is BaseStrategy {
@@ -14,13 +13,8 @@ contract VaultTest is BaseStrategy {
 
     Vault private vault;
 
-    uint256 internal _feePercent;
-    uint256 internal _feeDenominator;
-
     function setUp() public override {
         super.setUp();
-
-        (_feePercent, _feeDenominator) = Config.getFee();
 
         vault = new Vault();
         vault.initialize(_token, _strategy, _empty, 0, 1);
