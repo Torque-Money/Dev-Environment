@@ -14,6 +14,20 @@ async function main() {
     const ftm = await hre.ethers.getContractAt("IERC20Upgradeable", "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83");
     const usdc = await hre.ethers.getContractAt("IERC20Upgradeable", "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75");
 
+    // ===========
+
+    // First we will deploy the new contracts and upgrade them 
+
+    const Strategy = await hre.ethers.getContractFactory("BeefyLPStrategy"); 
+    await hre.upgrades.upgradeBeacon(data.contracts.BeefyLPStrategy.beacon, Strategy);
+    console.log("Test | Vault | Upgraded strategy beacon");
+
+    const Vault = await hre.ethers.getContractFactory("Vault");
+    await hre.upgrades.upgradeBeacon(data.contracts.Vault.beacon, Vault);
+    console.log("Test | Vault | Upgraded vault beacon");
+
+    // ===========
+
     // Approve the tokens for use with the wrapper
     await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
     await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
