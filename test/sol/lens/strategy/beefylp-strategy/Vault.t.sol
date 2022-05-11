@@ -6,6 +6,7 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
+import {Config} from "../../../helpers/Config.sol";
 import {Vault} from "../../../../../src/lens/vault/Vault.sol";
 
 contract VaultTest is BaseStrategy {
@@ -13,8 +14,13 @@ contract VaultTest is BaseStrategy {
 
     Vault private vault;
 
+    uint256 internal _feePercent;
+    uint256 internal _feeDenominator;
+
     function setUp() public override {
         super.setUp();
+
+        (_feePercent, _feeDenominator) = Config.getFee();
 
         vault = new Vault();
         vault.initialize(_token, _strategy, _empty, 0, 1);
@@ -36,11 +42,11 @@ contract VaultTest is BaseStrategy {
         uint256 shares = vault.deposit(_tokenAmount);
 
         // Check the balances of the vault and the user
-        // for (uint256 i = 0; i < _token.length; i++) {
-        //     assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
+        for (uint256 i = 0; i < _token.length; i++) {
+            assertEq(initialBalance[i].sub(_token[i].balanceOf(address(this))), _tokenAmount[i]);
 
-        //     _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
-        // }
+            _assertApproxEq(vault.approxBalance(_token[i]), _tokenAmount[i]);
+        }
 
         // Withdraw funds and check the balances
         uint256[] memory out = vault.redeem(shares);
@@ -49,7 +55,6 @@ contract VaultTest is BaseStrategy {
             _assertApproxEq(_token[i].balanceOf(address(this)), initialBalance[i]);
             _assertApproxEq(out[i], _tokenAmount[i]);
 
-            // **** We need to compensate for the fees here I believe ???
             _assertApproxEq(vault.approxBalance(_token[i]), 0);
         }
     }
