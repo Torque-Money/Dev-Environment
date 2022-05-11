@@ -57,19 +57,20 @@ contract MockStrategy is Initializable, AccessControlUpgradeable, IStrategy, Sup
         _deposit(amount);
     }
 
-    function _withdraw(uint256[] memory amount) private {
+    function _withdraw(uint256[] memory amount) private returns (uint256[] memory actual) {
         for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
+        return amount;
     }
 
-    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) {
-        _withdraw(amount);
+    function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
+        return _withdraw(amount);
     }
 
-    function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) {
+    function withdrawAll() external onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
         uint256[] memory amount = new uint256[](tokenCount());
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = tokenByIndex(i).balanceOf(address(this));
 
-        _withdraw(amount);
+        return _withdraw(amount);
     }
 
     function approxBalance(IERC20Upgradeable token) public view override(ISupportsToken, SupportsTokenUpgradeable) onlySupportedToken(token) returns (uint256 amount) {
