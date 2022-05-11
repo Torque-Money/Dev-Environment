@@ -135,6 +135,8 @@ contract BeefyLPStrategy is Initializable, AccessControlUpgradeable, IStrategy, 
     }
 
     function withdraw(uint256[] memory amount) external onlyTokenAmount(amount) onlyRole(STRATEGY_CONTROLLER_ROLE) returns (uint256[] memory actual) {
+        // **** In here, we need to do a calculation for how much we have on hand as well as what we need to withdraw from the strategy
+
         actual = _ejectAmountFromStrategy(amount);
 
         _withdraw(actual);

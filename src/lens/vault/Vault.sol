@@ -8,7 +8,6 @@ import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol";
 
 import {IVault} from "../../interfaces/lens/IVault.sol";
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
@@ -125,20 +124,17 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         for (uint256 i = 0; i < tokenCount(); i++) amount[i] = approxBalance(tokenByIndex(i)).mul(shares).div(_totalShares);
     }
 
-    function redeem(uint256 shares) external override returns (uint256[] memory amount) {
-        amount = estimateRedeem(shares);
+    function redeem(uint256 shares) external override returns (uint256[] memory amount_) {
+        uint256[] memory estimatedWithdraw = estimateRedeem(shares);
 
-        // Calculate amount to be withdrawn from the strategy to meet the amount
-        uint256[] memory withdrawAmount = new uint256[](tokenCount());
-        for (uint256 i = 0; i < tokenCount(); i++) withdrawAmount[i] = amount[i].sub(tokenByIndex(i).balanceOf(address(this)));
-        _withdrawFromStrategy(withdrawAmount);
+        // Calculate amount to be withdrawn from the strategy to meet the estimated amount
+        uint256[] memory toWithdraw = new uint256[](tokenCount());
+        for (uint256 i = 0; i < tokenCount(); i++) toWithdraw[i] = estimatedWithdraw[i].sub(tokenByIndex(i).balanceOf(address(this))); // **** This also has a safe math error
+        _withdrawFromStrategy(estimatedWithdraw);
 
-        for (uint256 i = 0; i < tokenCount(); i++) {
-            IERC20Upgradeable token = tokenByIndex(i);
+        // **** I need to update it in here somewhere but I am not sure how - we need to calculate how
 
-            uint256 max = token.balanceOf(address(this));
-            token.safeTransfer(_msgSender(), MathUpgradeable.min(amount[i], max));
-        }
+        for (uint256 i = 0; i < tokenCount(); i++) tokenByIndex(i).safeTransfer(_msgSender(), amount[i]);
 
         _burn(_msgSender(), shares);
 
@@ -158,11 +154,11 @@ contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, Sup
         strategy.depositAll();
     }
 
-    function _withdrawFromStrategy(uint256[] memory amount) private {
-        strategy.withdraw(amount);
+    function _withdrawFromStrategy(uint256[] memory amount) private returns (uint256[] memory actual) {
+        return strategy.withdraw(amount);
     }
 
-    function _withdrawAllFromStrategy() private {
-        strategy.withdrawAll();
+    function _withdrawAllFromStrategy() private returns (uint256[] memory actual) {
+        return strategy.withdrawAll();
     }
 }
