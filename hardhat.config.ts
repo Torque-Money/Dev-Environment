@@ -17,6 +17,7 @@ export default {
     },
     networks: {
         hardhat: {
+            chainId: 1337,
             forking: {
                 url: process.env.NETWORK_URL_OPERA,
             },
