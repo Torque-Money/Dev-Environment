@@ -20,8 +20,8 @@ async function main() {
     console.log("Test | Vault | Approved tokens");
 
     // Test the deposit
-    const amount = [1, 1];
-    await wrapper.deposit(vault.address, amount);
+    const amount = [hre.ethers.BigNumber.from(10).pow(18), hre.ethers.BigNumber.from(10).pow(6)];
+    await wrapper.deposit(vault.address, amount, { value: amount[0] });
     console.log("Test | Vault | Deposited");
 
     // Test the withdraw
