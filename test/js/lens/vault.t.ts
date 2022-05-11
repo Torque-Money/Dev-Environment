@@ -6,6 +6,7 @@ import { loadData } from "../../../scripts/utils";
 
 async function main() {
     const data = loadData();
+    const caller = await hre.ethers.provider.getSigner().getAddress();
 
     const wrapper = (await hre.ethers.getContractAt("VaultETHWrapper", data.contracts.VaultETHWrapper.proxy)) as VaultETHWrapper;
     const vault = (await hre.ethers.getContractAt("Vault", data.contracts.Vault.proxies[0])) as Vault;
@@ -16,8 +17,14 @@ async function main() {
     // Approve the tokens for use with the wrapper
     await ftm.approve(wrapper.address, hre.ethers.constants.MaxUint256);
     await usdc.approve(wrapper.address, hre.ethers.constants.MaxUint256);
-
     console.log("Test | Vault | Approved tokens");
+
+    const initialFTM = await hre.ethers.provider.getSigner().getBalance();
+    const initialwFTM = await ftm.balanceOf(caller);
+    const initialUSDC = await usdc.balanceOf(caller);
+    console.log("Test | Vault | Initial FTM:", initialFTM.toString());
+    console.log("Test | Vault | Initial wFTM:", initialwFTM.toString());
+    console.log("Test | Vault | Initial USDC:", initialUSDC.toString());
 
     // Test the deposit
     const amount = [hre.ethers.BigNumber.from(10).pow(18), hre.ethers.BigNumber.from(10).pow(6)];
@@ -25,13 +32,20 @@ async function main() {
     console.log("Test | Vault | Deposited");
 
     // Test the withdraw
-    const caller = await hre.ethers.provider.getSigner().getAddress();
-
     await vault.approve(wrapper.address, hre.ethers.constants.MaxUint256);
 
     const shares = await vault.balanceOf(caller);
-    await wrapper.redeem(vault.address, shares);
+    console.log("Test | Vault | Shares:", shares.toString());
+    await vault.redeem(shares);
+    // await wrapper.redeem(vault.address, shares);
     console.log("Test | Vault | Redeemed");
+
+    const finalFTM = await hre.ethers.provider.getSigner().getBalance();
+    const finalwFTM = await ftm.balanceOf(caller);
+    const finalUSDC = await usdc.balanceOf(caller);
+    console.log("Test | Vault | Final FTM:", finalFTM.toString());
+    console.log("Test | Vault | Final wFTM:", finalwFTM.toString());
+    console.log("Test | Vault | Final USDC:", finalUSDC.toString());
 }
 
 main()
