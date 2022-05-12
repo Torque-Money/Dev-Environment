@@ -30,7 +30,7 @@ type DataVersion = "V2.0" | "V2.1" | "V2.2";
 export function getDataPath(version: DataVersion) {
     if (version === "V2.0") return process.cwd() + "/data/dataV2.0.json";
     else if (version === "V2.1") return process.cwd() + "/data/dataV2.1.json";
-    else if (version === "V2.2") return process.cwd() + "/data/dataV2.1.json";
+    else if (version === "V2.2") return process.cwd() + "/data/dataV2.2.json";
     else throw new Error("Invalid data path");
 }
 
