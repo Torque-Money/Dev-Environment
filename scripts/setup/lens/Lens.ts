@@ -9,12 +9,12 @@ async function main() {
     const newAdmin = data.contracts.timelock;
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
-    // // Add initial strategies to the lens
-    // const strategies = data.contracts.BeefyLPStrategy.proxies;
-    // for (const strategy of strategies) {
-    //     await (await lens.add(strategy)).wait();
-    //     console.log(`Setup | Lens | Add strategy '${strategy}' to lens`);
-    // }
+    // Add initial strategies to the lens
+    const strategies = data.contracts.BeefyLPStrategy.proxies;
+    for (const strategy of strategies) {
+        await (await lens.add(strategy)).wait();
+        console.log(`Setup | Lens | Add strategy '${strategy}' to lens`);
+    }
 
     // Assign the caller as a controller of the lens
     const LENS_CONTROLLER_ROLE = await lens.LENS_CONTROLLER_ROLE();
