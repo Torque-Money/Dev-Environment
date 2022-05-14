@@ -6,6 +6,7 @@
         "test": "npm run test-all -- --match-path test/sol/lens/strategy/beefylp-strategy/Vault.t.sol --match-test testDepositRedeem"
     },
     "devDependencies": {
+        "@chainlink/contracts": "^0.4.1",
         "@nomiclabs/hardhat-ethers": "^2.0.5",
         "@nomiclabs/hardhat-etherscan": "^3.0.3",
         "@openzeppelin/contracts": "^4.5.0",
