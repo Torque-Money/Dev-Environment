@@ -13,19 +13,14 @@ interface BeaconProxy {
     implementation: Address;
 }
 
-interface DataV2P0 {
+interface Data {
     multisig: Address;
     timelock: Address;
     Vault: BeaconProxy;
     BeefyLPStrategy: BeaconProxy;
     Lens: BeaconProxy;
     VaultETHWrapper: Proxy;
-}
-
-interface DataV2P1 extends DataV2P0 {}
-
-interface DataV2P2 extends DataV2P1 {
-    LensController: Address[];
+    LensController?: Address[];
 }
 
 type DataVersion = "V2.0" | "V2.1" | "V2.2";
@@ -39,14 +34,9 @@ export function getDataPath(version: DataVersion) {
 }
 
 // Load the data
-export function loadData(version: DataVersion = "V2.2"): DataV2P0 | DataV2P1 | DataV2P2 {
+export function loadData(version: DataVersion = "V2.2") {
     const dataPath = getDataPath(version);
     const stringified = fs.readFileSync(dataPath).toString();
 
-    const parsed = JSON.parse(stringified);
-
-    if (version === "V2.0") return parsed as DataV2P0;
-    else if (version === "V2.1") return parsed as DataV2P1;
-    else if (version === "V2.2") return parsed as DataV2P2;
-    else throw new Error("Invalid version");
+    return JSON.parse(stringified) as Data;
 }
