@@ -109,7 +109,7 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
 
     function fulfill(bytes32 requestId, uint256 index) external recordChainlinkFulfillment(requestId) {
         IStrategy newStrategy = IStrategy(_lens.entryByIndex(index));
-        
+
         if (address(_lens.getVault().getStrategy()) != address(newStrategy)) _lens.update(newStrategy);
 
         updateableAt = block.timestamp.add(updateCooldown);
