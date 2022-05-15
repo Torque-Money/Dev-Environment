@@ -5,9 +5,9 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const vault = await hre.ethers.getContractAt("Vault", data.contracts.Vault.proxies[0]);
-    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.contracts.BeefyLPStrategy.proxies[0]);
-    const newAdmin = data.contracts.timelock;
+    const vault = await hre.ethers.getContractAt("Vault", data.Vault.proxies[0]);
+    const strategy = await hre.ethers.getContractAt("BeefyLPStrategy", data.BeefyLPStrategy.proxies[0]);
+    const newAdmin = data.timelock;
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Assign the vault as a controller of the strategy

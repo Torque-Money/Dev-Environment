@@ -5,9 +5,9 @@ import { loadData } from "../../utils";
 async function main() {
     const data = loadData();
 
-    const lens = data.contracts.Lens.proxies[0];
-    const vault = await hre.ethers.getContractAt("Vault", data.contracts.Vault.proxies[0]);
-    const newAdmin = data.contracts.timelock;
+    const lens = data.Lens.proxies[0];
+    const vault = await hre.ethers.getContractAt("Vault", data.Vault.proxies[0]);
+    const newAdmin = data.timelock;
     const caller = await hre.ethers.provider.getSigner().getAddress();
 
     // Assign lens as a vault controller
