@@ -26,6 +26,7 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
     bytes32 public jobId;
     uint256 public fee;
     string public url;
+    string public jsonPath;
 
     constructor(
         ILens lens,
@@ -35,7 +36,8 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
         address oracle,
         bytes32 _jobId,
         uint256 _fee,
-        string memory _url
+        string memory _url,
+        string memory _jsonPath
     ) {
         setChainlinkToken(link);
         setChainlinkOracle(oracle);
@@ -51,6 +53,7 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
         jobId = _jobId;
         fee = _fee;
         url = _url;
+        jsonPath = _jsonPath;
     }
 
     function setLens(ILens lens) external onlyRole(LENS_CONTROLLER_ADMIN_ROLE) {
@@ -89,6 +92,10 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
         url = _url;
     }
 
+    function setJsonPath(string memory _jsonPath) external onlyRole(LENS_CONTROLLER_ADMIN_ROLE) {
+        jsonPath = _jsonPath;
+    }
+
     // Returns whether or not the lens can update the strategy.
     function isUpdateable() public view override returns (bool _isUpdateable) {
         return block.timestamp > updateableAt;
@@ -100,7 +107,7 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
 
         Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         req.add("get", url);
-        req.add("path", "NOT TOO SURE YET"); // **** THIS NEEDS TO BE FIXED UP IMMEDIATELY
+        req.add("path", jsonPath);
 
         sendChainlinkRequest(req, fee);
 
