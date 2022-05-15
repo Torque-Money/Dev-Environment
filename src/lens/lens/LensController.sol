@@ -9,7 +9,6 @@ import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import {ILensController} from "../../interfaces/lens/ILensController.sol";
 
 import {ILens} from "../../interfaces/lens/ILens.sol";
-import {IVault} from "../../interfaces/lens/IVault.sol";
 import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
 
 contract LensController is ChainlinkClient, AccessControl, ILensController {
@@ -109,9 +108,9 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
     }
 
     function fulfill(bytes32 requestId, uint256 index) external recordChainlinkFulfillment(requestId) {
-        address newStrategy = _lens.entryByIndex(index);
-        IVault vault = _lens.getVault();
-        if (address(vault.getStrategy()) != newStrategy) _lens.update(IStrategy(newStrategy));
+        IStrategy newStrategy = IStrategy(_lens.entryByIndex(index));
+        
+        if (address(_lens.getVault().getStrategy()) != address(newStrategy)) _lens.update(newStrategy);
 
         updateableAt = block.timestamp.add(updateCooldown);
     }
