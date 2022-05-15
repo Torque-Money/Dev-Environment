@@ -1,27 +1,25 @@
 {
-    "contracts": {
-        "multisig": "0x3FAe01d46ebe019b14216D17E3947871daa2F58b",
-        "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
-        "Vault": {
-            "proxies": ["0x242E9E75Dea7Fd2Ba2e55783B79E76648178145D"],
-            "beacon": "0xE5bbCE09C82f0ff3acD802Cc5E330F8bBCdeB6A3",
-            "implementation": "0xe2f8ec674eE71d380153ff6bfdBFa55B8cfA8F3a"
-        },
-        "BeefyLPStrategy": {
-            "proxies": [
-                "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
-                "0x2439AF5Ff20Bd173f80a8c842d5bEa04E370EC57",
-                "0xd703B3B90E25f2D46f59F4578bDdca2C5A49c275",
-                "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999"
-            ],
-            "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
-            "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
-        },
-        "Lens": {
-            "proxies": ["0x72dc147ad119152dC8d7E86acD23b7EF9365D374"],
-            "beacon": "0xC85F27C1501196B3E5609c711cb00D6FA19eC10e",
-            "implementation": "0xb6700263cF1Dc427001B120Fb42C715ab906D424"
-        },
-        "VaultETHWrapper": { "proxy": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7", "implementation": "0x19412fEaaB4f5d2A378a2Bbe9DDa707564e9fac8" }
-    }
+    "multisig": "0x3FAe01d46ebe019b14216D17E3947871daa2F58b",
+    "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
+    "Vault": {
+        "proxies": ["0x242E9E75Dea7Fd2Ba2e55783B79E76648178145D"],
+        "beacon": "0xE5bbCE09C82f0ff3acD802Cc5E330F8bBCdeB6A3",
+        "implementation": "0xe2f8ec674eE71d380153ff6bfdBFa55B8cfA8F3a"
+    },
+    "BeefyLPStrategy": {
+        "proxies": [
+            "0x529561Dfa18F6Ec726E5184579C018c202eA41EC",
+            "0x2439AF5Ff20Bd173f80a8c842d5bEa04E370EC57",
+            "0xd703B3B90E25f2D46f59F4578bDdca2C5A49c275",
+            "0xEACcF1f6dC9f7f77cF81Fc00FF8bc77065778999"
+        ],
+        "beacon": "0x44FFD805aDD37395257083a7ecc0a4E49338CfA7",
+        "implementation": "0x4a006F88f03668593825a29E02540e9D3911a570"
+    },
+    "Lens": {
+        "proxies": ["0x72dc147ad119152dC8d7E86acD23b7EF9365D374"],
+        "beacon": "0xC85F27C1501196B3E5609c711cb00D6FA19eC10e",
+        "implementation": "0xb6700263cF1Dc427001B120Fb42C715ab906D424"
+    },
+    "VaultETHWrapper": { "proxy": "0x5d7B57e4554Cd40141b50bb165BA9Ba0de290CA7", "implementation": "0x19412fEaaB4f5d2A378a2Bbe9DDa707564e9fac8" }
 }
