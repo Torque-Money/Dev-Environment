@@ -96,12 +96,10 @@ contract LensController is ChainlinkClient, AccessControl, ILensController {
         jsonPath = _jsonPath;
     }
 
-    // Returns whether or not the lens can update the strategy.
     function isUpdateable() public view override returns (bool _isUpdateable) {
         return block.timestamp > updateableAt;
     }
 
-    // Update the strategy.
     function update() external override {
         require(isUpdateable(), "LensController: Update is not available");
 
