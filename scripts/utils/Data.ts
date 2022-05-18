@@ -16,6 +16,7 @@ interface BeaconProxy {
 interface Data {
     multisig: Address;
     timelock: Address;
+    oracle?: Address;
     Vault: BeaconProxy;
     BeefyLPStrategy: BeaconProxy;
     Lens: BeaconProxy;

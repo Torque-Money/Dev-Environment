@@ -1,6 +1,7 @@
 {
     "multisig": "0x3FAe01d46ebe019b14216D17E3947871daa2F58b",
     "timelock": "0xF3C18b768Ca36c02564819a224a95E7a2EAc6239",
+    "oracle": "0xA943e1a640006133e9C2449f403DB7308d8bB95B",
     "Vault": {
         "proxies": ["0x242E9E75Dea7Fd2Ba2e55783B79E76648178145D"],
         "beacon": "0xE5bbCE09C82f0ff3acD802Cc5E330F8bBCdeB6A3",
