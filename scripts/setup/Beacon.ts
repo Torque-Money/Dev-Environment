@@ -1,7 +1,7 @@
 import { getUpgradeableBeaconFactory } from "@openzeppelin/hardhat-upgrades/dist/utils";
 import hre from "hardhat";
 
-import { loadData } from "../../utils";
+import { loadData } from "../utils";
 
 async function main() {
     const data = loadData();
