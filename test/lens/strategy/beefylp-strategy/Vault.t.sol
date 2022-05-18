@@ -6,7 +6,7 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
-import {Vault} from "../../../../../src/lens/vault/Vault.sol";
+import {Vault} from "../../../../src/lens/vault/Vault.sol";
 
 contract VaultTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;

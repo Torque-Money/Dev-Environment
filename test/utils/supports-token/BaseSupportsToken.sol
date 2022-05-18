@@ -5,7 +5,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 
 import {Base} from "../../bases/Base.sol";
 
-import {MockSupportsToken} from "../../../mocks/MockSupportsToken.sol";
+import {MockSupportsToken} from "../../mocks/MockSupportsToken.sol";
 import {Config} from "../../helpers/Config.sol";
 
 abstract contract BaseSupportsToken is Base {

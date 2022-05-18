@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {Base} from "../../bases/Base.sol";
 
-import {MockRegistry} from "../../../mocks/MockRegistry.sol";
+import {MockRegistry} from "../../mocks/MockRegistry.sol";
 
 abstract contract BaseRegistry is Base {
     MockRegistry internal _registry;

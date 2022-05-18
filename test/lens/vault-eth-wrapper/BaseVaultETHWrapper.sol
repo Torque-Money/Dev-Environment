@@ -5,12 +5,14 @@ import {Base} from "../../bases/Base.sol";
 import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
 
 import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../../mocks/MockStrategy.sol";
-import {Vault} from "../../../../src/lens/vault/Vault.sol";
+import {MockStrategy} from "../../mocks/MockStrategy.sol";
+import {Vault} from "../../../src/lens/vault/Vault.sol";
+import {VaultETHWrapper} from "../../../src/lens/vault/VaultETHWrapper.sol";
 
-abstract contract BaseVault is Base, BaseUsesToken {
+abstract contract BaseVaultETHWrapper is Base, BaseUsesToken {
     Vault internal _vault;
     MockStrategy internal _strategy;
+    VaultETHWrapper internal _wrapper;
 
     uint256 internal _feePercent;
     uint256 internal _feeDenominator;
@@ -29,8 +31,11 @@ abstract contract BaseVault is Base, BaseUsesToken {
         _strategy.grantRole(_strategy.STRATEGY_CONTROLLER_ROLE(), address(_vault));
         _vault.grantRole(_vault.VAULT_CONTROLLER_ROLE(), address(this));
 
+        _wrapper = new VaultETHWrapper();
+        _wrapper.initialize(Config.getWETH());
+
         address[] memory spender = new address[](1);
-        spender[0] = address(_vault);
+        spender[0] = address(_wrapper);
         _approveAll(spender);
     }
 }
