@@ -3,7 +3,7 @@ import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-etherscan";
 import "@openzeppelin/hardhat-upgrades";
 
-import { HardhatUserConfig, task } from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
 
 require("dotenv").config();
 
@@ -13,7 +13,6 @@ export default {
     },
     paths: {
         sources: "src",
-        tests: "test/js",
     },
     networks: {
         hardhat: {
