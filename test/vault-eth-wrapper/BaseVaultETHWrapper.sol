@@ -1,13 +1,13 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {Base} from "../../bases/Base.sol";
-import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
+import {Base} from "../bases/Base.sol";
+import {BaseUsesToken} from "../bases/BaseUsesToken.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../mocks/MockStrategy.sol";
-import {Vault} from "../../../src/lens/vault/Vault.sol";
-import {VaultETHWrapper} from "../../../src/lens/vault/VaultETHWrapper.sol";
+import {Config} from "../helpers/Config.sol";
+import {MockStrategy} from "../mocks/MockStrategy.sol";
+import {Vault} from "../../src/vault/Vault.sol";
+import {VaultETHWrapper} from "../../src/vault/VaultETHWrapper.sol";
 
 abstract contract BaseVaultETHWrapper is Base, BaseUsesToken {
     Vault internal _vault;

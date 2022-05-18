@@ -5,7 +5,7 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 
 import {BaseVault} from "./BaseVault.sol";
 
-import {Config} from "../../helpers/Config.sol";
+import {Config} from "../helpers/Config.sol";
 
 contract InjectEjectTest is BaseVault {
     // Test the flow of funds between the vault and the strategy

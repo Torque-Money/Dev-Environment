@@ -3,17 +3,17 @@ pragma solidity ^0.8.0;
 
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-import {IBeefyVaultV6} from "../../../lib/beefy/IBeefyVaultV6.sol";
+import {IBeefyVaultV6} from "../../lib/beefy/IBeefyVaultV6.sol";
 
-import {Base} from "../../bases/Base.sol";
-import {BaseUsesToken} from "../../bases/BaseUsesToken.sol";
+import {Base} from "../bases/Base.sol";
+import {BaseUsesToken} from "../bases/BaseUsesToken.sol";
 
-import {Config} from "../../helpers/Config.sol";
-import {MockStrategy} from "../../mocks/MockStrategy.sol";
-import {Lens} from "../../../src/lens/lens/Lens.sol";
-import {Vault} from "../../../src/lens/vault/Vault.sol";
-import {BeefyLPStrategy} from "../../../src/lens/strategy/BeefyLPStrategy.sol";
-import {IStrategy} from "../../../src/interfaces/lens/IStrategy.sol";
+import {Config} from "../helpers/Config.sol";
+import {MockStrategy} from "../mocks/MockStrategy.sol";
+import {Lens} from "../../src/lens/Lens.sol";
+import {Vault} from "../../src/vault/Vault.sol";
+import {BeefyLPStrategy} from "../../src/strategy/BeefyLPStrategy.sol";
+import {IStrategy} from "../../src/interfaces/IStrategy.sol";
 
 abstract contract BaseLens is Base, BaseUsesToken {
     IStrategy[] internal _strategy;

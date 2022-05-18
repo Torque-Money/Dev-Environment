@@ -6,7 +6,7 @@ import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/mat
 
 import {BaseStrategy} from "./BaseStrategy.sol";
 
-import {Config} from "../../../helpers/Config.sol";
+import {Config} from "../../helpers/Config.sol";
 
 contract DepositWithdrawTest is BaseStrategy {
     using SafeMathUpgradeable for uint256;

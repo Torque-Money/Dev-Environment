@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {BaseVault} from "./BaseVault.sol";
-import {BaseImpersonate} from "../../bases/BaseImpersonate.sol";
+import {BaseImpersonate} from "../bases/BaseImpersonate.sol";
 
 contract AuthorizeTest is BaseVault, BaseImpersonate {
     // Fail to set the strategy due to lack of authorization.

@@ -7,8 +7,8 @@ import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ER
 
 import {BaseVaultETHWrapper} from "./BaseVaultETHWrapper.sol";
 
-import {Vault} from "../../../src/lens/vault/Vault.sol";
-import {Config} from "../../helpers/Config.sol";
+import {Vault} from "../../src/vault/Vault.sol";
+import {Config} from "../helpers/Config.sol";
 
 contract DepositRedeemTest is BaseVaultETHWrapper {
     using SafeMathUpgradeable for uint256;

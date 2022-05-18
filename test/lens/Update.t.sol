@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import {BaseLens} from "./BaseLens.sol";
 
-import {IStrategy} from "../../../src/interfaces/lens/IStrategy.sol";
+import {IStrategy} from "../../src/interfaces/IStrategy.sol";
 
 contract UpdateTest is BaseLens {
     // Test that the lens can update the strategies
