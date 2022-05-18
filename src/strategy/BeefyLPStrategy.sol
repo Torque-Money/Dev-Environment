@@ -11,12 +11,12 @@ import {MathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/Ma
 import {IUniswapV2Router02} from "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import {IUniswapV2Factory} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
 import {IUniswapV2Pair} from "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
-import {IBeefyVaultV6} from "../../../lib/beefy/IBeefyVaultV6.sol";
+import {IBeefyVaultV6} from "../../lib/beefy/IBeefyVaultV6.sol";
 
-import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
-import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
-import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
-import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
+import {IStrategy} from "../interfaces/IStrategy.sol";
+import {ISupportsToken} from "../interfaces/utils/ISupportsToken.sol";
+import {SupportsTokenUpgradeable} from "../utils/SupportsTokenUpgradeable.sol";
+import {EmergencyUpgradeable} from "../utils/EmergencyUpgradeable.sol";
 
 // This strategy will take two tokens and will deposit them into the correct LP pair for the given pool.
 // It will then take the LP token and deposit it into a Beefy vault.

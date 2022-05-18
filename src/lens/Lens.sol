@@ -4,11 +4,11 @@ pragma solidity ^0.8.0;
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 
-import {ILens} from "../../interfaces/lens/ILens.sol";
-import {RegistryUpgradeable} from "../../utils/RegistryUpgradeable.sol";
+import {ILens} from "../interfaces/ILens.sol";
+import {RegistryUpgradeable} from "../utils/RegistryUpgradeable.sol";
 
-import {IVault} from "../../interfaces/lens/IVault.sol";
-import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
+import {IVault} from "../interfaces/IVault.sol";
+import {IStrategy} from "../interfaces/IStrategy.sol";
 
 contract Lens is Initializable, AccessControlUpgradeable, ILens, RegistryUpgradeable {
     bytes32 public LENS_ADMIN_ROLE;

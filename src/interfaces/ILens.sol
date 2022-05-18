@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.0;
 
-import {IRegistry} from "../utils/IRegistry.sol";
+import {IRegistry} from "./utils/IRegistry.sol";
 
 import {IVault} from "./IVault.sol";
 import {IStrategy} from "./IStrategy.sol";

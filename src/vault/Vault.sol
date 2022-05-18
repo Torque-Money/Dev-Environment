@@ -9,12 +9,12 @@ import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
 import {SafeMathUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 
-import {IVault} from "../../interfaces/lens/IVault.sol";
-import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
-import {ISupportsToken} from "../../interfaces/utils/ISupportsToken.sol";
-import {SupportsTokenUpgradeable} from "../../utils/SupportsTokenUpgradeable.sol";
-import {SupportsFeeUpgradeable} from "../../utils/SupportsFeeUpgradeable.sol";
-import {EmergencyUpgradeable} from "../../utils/EmergencyUpgradeable.sol";
+import {IVault} from "../interfaces/IVault.sol";
+import {IStrategy} from "../interfaces/IStrategy.sol";
+import {ISupportsToken} from "../interfaces/utils/ISupportsToken.sol";
+import {SupportsTokenUpgradeable} from "../utils/SupportsTokenUpgradeable.sol";
+import {SupportsFeeUpgradeable} from "../utils/SupportsFeeUpgradeable.sol";
+import {EmergencyUpgradeable} from "../utils/EmergencyUpgradeable.sol";
 
 contract Vault is Initializable, AccessControlUpgradeable, ERC20Upgradeable, SupportsTokenUpgradeable, IVault, SupportsFeeUpgradeable, EmergencyUpgradeable {
     using SafeMathUpgradeable for uint256;

@@ -6,11 +6,11 @@ import {ContextUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/Cont
 
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {SafeERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol";
-import {TransferHelper} from "../../../lib/transfer-helper/TransferHelper.sol";
-import {IWETH} from "../../../lib/weth/IWETH.sol";
+import {TransferHelper} from "../../lib/transfer-helper/TransferHelper.sol";
+import {IWETH} from "../../lib/weth/IWETH.sol";
 
-import {IVaultETHWrapper} from "../../interfaces/lens/IVaultETHWrapper.sol";
-import {IVault} from "../../interfaces/lens/IVault.sol";
+import {IVaultETHWrapper} from "../interfaces/IVaultETHWrapper.sol";
+import {IVault} from "../interfaces/IVault.sol";
 
 contract VaultETHWrapper is Initializable, ContextUpgradeable, IVaultETHWrapper {
     using SafeERC20Upgradeable for IERC20Upgradeable;

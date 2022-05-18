@@ -6,10 +6,10 @@ import {Chainlink, ChainlinkClient} from "@chainlink/contracts/src/v0.8/Chainlin
 
 import {SafeMath} from "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-import {ILensController} from "../../interfaces/lens/ILensController.sol";
+import {ILensController} from "../interfaces/ILensController.sol";
 
-import {ILens} from "../../interfaces/lens/ILens.sol";
-import {IStrategy} from "../../interfaces/lens/IStrategy.sol";
+import {ILens} from "../interfaces/ILens.sol";
+import {IStrategy} from "../interfaces/IStrategy.sol";
 
 contract LensController is ChainlinkClient, AccessControl, ILensController {
     using Chainlink for Chainlink.Request;
